@@ -28,6 +28,7 @@
 ;
 ; Scene 1:
   .equ SCENE_1_BANK 4
+  .equ NON_ASCII_AREA_START $0c00
 
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3

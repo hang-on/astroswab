@@ -22,11 +22,13 @@
     ; Load the font tiles.
     SELECT_BANK FONT_BANK
     ld bc,font_tiles_end-font_tiles
-    ld de,$0000
+    ld de,BACKGROUND_BANK_START
     ld hl,font_tiles
     call load_vram
     ;
     call PSGInit
+    ;
+    ; TODO: Perform PAL region check here!
     ;
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
@@ -64,17 +66,26 @@
     call set_register
     SELECT_BANK SCENE_1_BANK
     ld bc,scene_1_tiles_end-scene_1_tiles
-    ld de,$0c00
+    ld de,NON_ASCII_AREA_START
     ld hl,scene_1_tiles
     call load_vram
     ld bc,scene_1_tilemap_end-scene_1_tilemap
     ld de,NAME_TABLE_START
     ld hl,scene_1_tilemap
     call load_vram
+    SELECT_BANK SPRITE_BANK
+    ld bc,sprite_tiles_end-sprite_tiles
+    ld de,SPRITE_BANK_START
+    ld hl,sprite_tiles
+    call load_vram
     ;
     ld b,22
     ld c,5
     ld hl,dummy_text
+    call print
+    ld b,23
+    ld c,5
+    ld hl,dummy_text2
     call print
     ; Wipe sprites.
     call begin_sprites
@@ -93,6 +104,8 @@
   jp main_loop
   dummy_text:
     .asc "Score: 00000   Lives: 8#"
+  dummy_text2:
+    .asc "  Max: 00000    Rank: 0#"
   ;
   run_scene_1:
   call await_frame_interrupt
