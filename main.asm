@@ -207,3 +207,11 @@
     .include "bank_3\spritesheet.png_tiles.inc"
   sprite_tiles_end:
 .ends
+.bank SCENE_1_BANK slot 2
+; -----------------------------------------------------------------------------
+.section "Scene 1 assets" free
+; -----------------------------------------------------------------------------
+  scene_1_tiles:
+    ;.include "bank_4\spritesheet.png_tiles.inc"
+  scene_1_tiles_end:
+.ends
