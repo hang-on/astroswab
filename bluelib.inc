@@ -1,0 +1,1251 @@
+; bluelib.inc - GG/SMS project boilerplate and standard library.
+; Latest revision: Spring 2017 for project astroswab.
+
+; *****************************************************************************
+;                              BASE LIBRARY
+; *****************************************************************************
+.equ ROMSIZE 128                      ; Make a 128k or 256k rom.
+.equ INCLUDE_VDP_INTERRUPT_HANDLER    ; Comment out to exclude it.
+.equ INCLUDE_PAUSE_BUTTON_HANDLER     ; Comment out to exclude it.
+; -----------------------------------------------------------------------------
+; HARDWARE DEFINITIONS
+; -----------------------------------------------------------------------------
+; Video memory and initialization:
+.equ NAME_TABLE_START $3800
+.equ NAME_TABLE_SIZE 2*32*24          ; The whole 'effective area' (SMS/TV).
+.equ SPRITE_BANK_START $2000
+.equ BACKGROUND_BANK_START $0000
+.equ SPRITE_PALETTE_START 16
+.equ BACKGROUND_PALETTE_START 0
+.equ SAT_Y_START $3f00
+.equ SAT_XC_START SAT_Y_START+64+64
+.equ SPRITE_TERMINATOR $d0
+
+; Memory map and initialization:
+.equ RAM_START $c000
+.equ STACK_INIT_ADDRESS $dff0
+
+; Port communication and control:
+.equ SYSTEM_CONTROL_PORT $00          ; GG: start, region, ntsc/pal.
+.equ START_BUTTON_BIT %10000000       ; 0 = Switch is on!
+.equ INPUT_PORT_1 $dc
+.equ INPUT_PORT_2 $dd
+.equ PSG_PORT $7f
+.equ V_COUNTER_PORT $7e
+.equ CONTROL_PORT $BF
+.equ DATA_PORT $BE
+.equ VRAM_WRITE_COMMAND %01000000
+.equ VRAM_READ_COMMAND %00000000
+.equ REGISTER_WRITE_COMMAND %10000000
+.equ CRAM_WRITE_COMMAND %11000000
+
+; --- NB! Developed for GG -------------------
+; Register 0 settings:
+.equ SCROLL_0_LINE_0_SPRITES_0 %00000110
+; Register 1 settings:
+.equ DISPLAY_1_FRAME_1_SIZE_0 %11100000
+.equ DISPLAY_0_FRAME_1_SIZE_0 %10100000
+.equ DISPLAY_0_FRAME_0_SIZE_0 %10000000
+.equ DISPLAY_1_FRAME_1_SIZE_0_ZOOM %11100001
+; ---------------------------------------------
+;
+.equ HORIZONTAL_SCROLL_REGISTER 8
+.equ VERTICAL_SCROLL_REGISTER 9
+.equ RASTER_INTERRUPT_REGISTER 10
+
+; Banks / ROM / External RAM control:
+.equ SET_EXTRAM_BIT %00001000
+.equ RESET_EXTRAM_BIT %11110111
+.equ EXTRAM_START $8000
+.equ EXTRAM_SIZE $4000
+.equ SLOT_2_CONTROL $ffff
+.equ BANK_CONTROL $fffc
+
+; CRT screen values:
+.equ CRT_LEFT_BORDER 0
+.equ CRT_RIGHT_BORDER 255
+.equ CRT_TOP_BORDER 0
+.equ CRT_BOTTOM_BORDER 191
+
+; LCD screen values:
+.equ LCD_RIGHT_BORDER (6*8)+(20*8)
+.equ LCD_LEFT_BORDER 6*8
+.equ LCD_TOP_BORDER 3*8
+.equ LCD_BOTTOM_BORDER (3*8)+(18*8)
+.equ LCD_WIDTH 20*8
+.equ LCD_HEIGHT 18*8
+
+; Invisible area:
+.equ INVISIBLE_AREA_TOP_BORDER 192
+.equ INVISIBLE_AREA_BOTTOM_BORDER 224
+; -----------------------------------------------------------------------------
+; SOFTWARE DEFINITIONS
+; -----------------------------------------------------------------------------
+.equ TRUE $ff
+.equ FALSE 0
+.equ ENABLED $ff
+.equ DISABLED 0
+.equ PAUSE_FLAG_RESET $00
+.equ PAUSE_FLAG_SET $ff
+
+.equ ONE_TILEMAP_ROW 32*2
+.equ END_OF_TABLE $ff
+.equ ASCII_ZERO 16        ; Where in the tilebank is the ASCII zero?
+.equ ASCII_SPACE 0
+; =============================================================================
+; M A C R O S
+; =============================================================================
+; -----------------------------------------------------------------------------
+.macro SELECT_EXTRAM
+; -----------------------------------------------------------------------------
+  ; Select external RAM: Now memory addresses from $8000 - $c000 (slot 2)
+  ; are mapped to the battery-backed RAM, and thus its contents are saved
+  ; between sessions.
+  push af
+  ld a,(BANK_CONTROL)
+  or SET_EXTRAM_BIT
+  ld (BANK_CONTROL),a
+  pop af
+.endm
+; -----------------------------------------------------------------------------
+.macro SELECT_ROM
+; -----------------------------------------------------------------------------
+  ; Select ROM: Used to switch mapping in slot 2 ($8000 - $c000) back to ROM
+  ; if external RAM was selected.
+  push af
+  ld a,(BANK_CONTROL)
+  and RESET_EXTRAM_BIT
+  ld (BANK_CONTROL),a
+  pop af
+.endm
+; -----------------------------------------------------------------------------
+.macro SELECT_BANK
+; -----------------------------------------------------------------------------
+  ; Select a bank for slot 2, i.e. SELECT_BANK 4.
+  push af
+  ld a,\1
+  ld (SLOT_2_CONTROL),a
+  pop af
+.endm
+; -----------------------------------------------------------------------------
+.macro SAVE_REGISTERS
+; -----------------------------------------------------------------------------
+  ; Save all registers, except IX and IY
+  push af
+  push bc
+  push de
+  push hl
+.endm
+; -----------------------------------------------------------------------------
+.macro RESTORE_REGISTERS
+; -----------------------------------------------------------------------------
+  ; Restore all registers, except IX and IY
+  pop hl
+  pop de
+  pop bc
+  pop af
+.endm
+
+; -----------------------------------------------------------------------------
+.memorymap
+; -----------------------------------------------------------------------------
+  defaultslot 0
+  slotsize $4000
+  slot 0 $0000
+  slot 1 $4000
+  slot 2 $8000
+  slotsize $2000
+  slot 3 RAM_START
+.endme
+.if ROMSIZE == 128
+  .rombankmap ; 128K rom
+    bankstotal 8
+    banksize $4000
+    banks 8
+  .endro
+.endif
+.if ROMSIZE == 256
+  .rombankmap ; 256K rom
+    bankstotal 16
+    banksize $4000
+    banks 16
+  .endro
+.endif
+
+; -----------------------------------------------------------------------------
+.ramsection "bluelib global variables" slot 3
+; -----------------------------------------------------------------------------
+  VDPStatus db
+  pause_flag db
+  input_ports dw
+  ;
+  rnd_generator_word dw   ; Used by the random number generator.
+.ends
+
+.org 0
+.bank 0 slot 0
+; -----------------------------------------------------------------------------
+.section "Boot" force
+; -----------------------------------------------------------------------------
+  boot:
+  di
+  im 1
+  ld sp,STACK_INIT_ADDRESS
+
+  ; Initialize the standard Sega mapper.
+  ld de,$fffc
+  ld hl,_MapperInitData
+  ld bc,$0004
+  ldir
+
+  call ClearRam ; Except the top (stack, slot/bank registers, etc.)
+  call ClearVRam
+  call InitializeVDPRegisters
+  jp init
+
+  _MapperInitData:
+    .db $00,$00,$01,$02
+.ends
+
+.ifdef INCLUDE_VDP_INTERRUPT_HANDLER
+  .org $0038
+  ; ---------------------------------------------------------------------------
+  .section "!VDP interrupt" force
+  ; ---------------------------------------------------------------------------
+    push af
+      in a,CONTROL_PORT
+      ld (VDPStatus),a
+    pop af
+    ei
+    reti
+  .ends
+.endif
+
+.ifdef INCLUDE_PAUSE_BUTTON_HANDLER
+  .org $0066
+  ; ---------------------------------------------------------------------------
+  .section "!Pause interrupt" force
+  ; ---------------------------------------------------------------------------
+    push af
+      ld a,(pause_flag)
+      cpl
+      ld (pause_flag),a
+    pop af
+    retn
+  .ends
+.endif
+
+
+; =============================================================================
+; H E L P E R  F U N C T I O N S                        (sorted alphabetically)
+; =============================================================================
+
+; -----------------------------------------------------------------------------
+.section "await_frame_interrupt" free
+; -----------------------------------------------------------------------------
+  ; Await frame interrupt.
+  ; Repeatedly test bit 7 of VDPStatus until it is set (by the VDP interrupt
+  ; handler). Then reset this bit and return.
+  ; Entry: None
+  ; Exit: Bit 7 of variable VDPStatus is cleared.
+  ; Uses: VDPStatus (1 byte)
+  await_frame_interrupt:
+    push af
+      -:
+        ld a,(VDPStatus)
+        bit 7,a
+      jp z,-
+      res 7,a
+      ld (VDPStatus),a
+    pop af
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "clear_extram" free
+; -----------------------------------------------------------------------------
+  ; Clear external ram by writing zeroes to all bytes.
+  ; Uses AF, BC, HL
+  clear_extram:
+    SELECT_EXTRAM
+    ld bc,EXTRAM_SIZE               ; Every byte in external ram.
+    ld hl,EXTRAM_START              ; Begin from the first byte.
+    -:
+      xor a                         ; Write zeroes over all external ram bytes.
+      ld (hl),a
+      inc hl
+      dec bc
+      ld a,b
+      or c
+    jp nz,-
+    SELECT_ROM
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "ClearRam" free
+; -----------------------------------------------------------------------------
+  ; Overwrite ram with zeroes from RAM_START to STACK_INIT_ADDRESS - 16
+  ; Uses AF, BC, DE, HL
+  ClearRam:
+    ld hl,RAM_START
+    ld bc,STACK_INIT_ADDRESS-16-RAM_START
+    ld a,0
+    call _FillMemory
+  ret
+
+  _FillMemory:
+    ld (hl),a
+    ld d,h
+    ld e,l
+    inc de
+    dec bc
+    ld a,b
+    or c
+    ret z
+    ldir
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "ClearVRam" free
+; -----------------------------------------------------------------------------
+  ; Write 00 to all vram positions. Assumes disabled display.
+  ; Uses AF, BC
+  ClearVRam:
+    xor a
+    out (CONTROL_PORT),a
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ld bc,$4000 ; 16K
+    -:
+      xor a
+      out (DATA_PORT),a
+      dec bc
+      ld a,b
+      or c
+    jp nz,-
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "cp_word" free
+; -----------------------------------------------------------------------------
+  cp_word:
+    ; Compare a word-sized variable at HL to a word-sized value in DE.
+    ; Entry: HL = Pointer to variable.
+    ;        BC = Value to compare.
+    ; Exit: Zero flag is set/reset.
+    ;
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
+    sbc hl,bc
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "dec_table_item" free
+; -----------------------------------------------------------------------------
+  dec_table_item:
+    ; Decrement a byte-sized table item.
+    ; Entry: A = index, HL = Pointer to table.
+    ; Exit: None.
+    ; Preserves all registers.
+    push de
+    push hl
+    ld d,0
+    ld e,a
+    add hl,de
+    dec (hl)
+    pop hl
+    pop de
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "get_input_ports" free
+; -----------------------------------------------------------------------------
+  ; Set input_ports (word) to mirror current state of ports $dc and $dd.
+  ; Uses: AF
+  get_input_ports:
+    in a,(INPUT_PORT_1)
+    ld (input_ports),a
+    in a,(INPUT_PORT_2)
+    ld (input_ports+1),a
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "get_random_number" free
+; -----------------------------------------------------------------------------
+  get_random_number:
+    ; Uses a 16-bit RAM variable called rnd_generator_word
+    ; Returns an 8-bit pseudo-random number in A
+    push hl
+      ld hl,(rnd_generator_word)
+      ld a,h         ; get high byte
+      rrca           ; rotate right by 2
+      rrca
+      xor h          ; xor with original
+      rrca           ; rotate right by 1
+      xor l          ; xor with low byte
+      rrca           ; rotate right by 4
+      rrca
+      rrca
+      rrca
+      xor l          ; xor again
+      rra            ; rotate right by 1 through carry
+      adc hl,hl      ; add rnd_generator_word to itself
+      jr nz,+
+        ld hl,$733c   ; if last xor resulted in zero then re-seed.
+      +:
+      ld a,r         ; r = refresh register = semi-random number
+      xor l          ; xor with l which is fairly random
+      ld (rnd_generator_word),hl
+    pop hl
+  ret                ; return random number in a
+.ends
+
+; -----------------------------------------------------------------------------
+.section "get_table_item" free
+; -----------------------------------------------------------------------------
+  get_table_item:
+    ; Gets the byte at index [in A] in table [pointer in HL].
+    ; Entry: A = Index, HL = Poiner to table
+    ; Exit: Byte in A.
+    ; Preserves all registers.
+    push de
+    push hl
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
+    pop hl
+    pop de
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "Get Word" free
+; -----------------------------------------------------------------------------
+  get_word:
+    ; Load word-sized variable into HL.
+    ; Entry: HL = Pointer to variable address.
+    ; Exit: HL = Value of the variable.
+    ; Preserves all registers.
+    push af
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
+    pop af
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "Increment Word" free
+; -----------------------------------------------------------------------------
+  inc_word:
+    ; Increments a word-sized variable at HL.
+    ; Entry: HL = Pointer to variable.
+    ; Exit: None
+    ; Preserves all registers.
+    push af
+    push hl
+    ld a,(hl)
+    inc a
+    ld (hl),a
+    jp nz,+
+      inc hl
+      inc (hl)
+    +:
+    pop hl
+    pop af
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "inc_table_item" free
+; -----------------------------------------------------------------------------
+  inc_table_item:
+    ; Increments a byte-sized table item.
+    ; Entry: A = index, HL = Pointer to table.
+    ; Exit: None.
+    ; Preserves all registers.
+    push de
+    push hl
+    ld d,0
+    ld e,a
+    add hl,de
+    inc (hl)
+    pop hl
+    pop de
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "InitializeVDPRegisters" free
+; -----------------------------------------------------------------------------
+; Initialize the 11 VDP registers with the preset data block.
+; Uses: AF, B, HL
+  _VDPRegisterInitData:
+    .db SCROLL_0_LINE_0_SPRITES_0
+    .db DISPLAY_0_FRAME_0_SIZE_0
+    .db $ff,$ff,$ff,$ff,$ff,$00,$00,$00,$ff
+
+  InitializeVDPRegisters:
+    ld hl,_VDPRegisterInitData
+    xor b
+    -:
+      ld a,(hl)
+      out (CONTROL_PORT),a
+      inc hl
+      ld a,b
+      or REGISTER_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      cp REGISTER_WRITE_COMMAND|10
+      ret z
+      inc b
+    jr -
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_dpad_pressed" free
+; -----------------------------------------------------------------------------
+  is_dpad_pressed:
+    ld a,(input_ports)
+    and %00001111   ; Isolate the dpad bits.
+    cpl             ; Invert bits; now 1 = keypress!
+    and %00001111   ; Get rid of garbage from cpl in last four bits.
+    cp 0            ; Now, is any dpad key preseed?
+    ret z           ; No, then return with carry flag reset (by the AND).
+    scf             ; Yes, then set carry flag and...
+  ret               ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_button_1_pressed" free
+; -----------------------------------------------------------------------------
+  is_button_1_pressed:
+    ld a,(input_ports)
+    and %00010000
+    ret nz            ; Return with carry flag reset
+    scf
+  ret                 ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_button_2_pressed" free
+; -----------------------------------------------------------------------------
+  is_button_2_pressed:
+    ld a,(input_ports)
+    and %00100000
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+; -----------------------------------------------------------------------------
+.section "is_down_pressed" free
+; -----------------------------------------------------------------------------
+  is_down_pressed:
+    ld a,(input_ports)
+    and %00000010
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_left_pressed" free
+; -----------------------------------------------------------------------------
+  is_left_pressed:
+    ld a,(input_ports)
+    and %00000100
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_right_pressed" free
+; -----------------------------------------------------------------------------
+  is_right_pressed:
+    ld a,(input_ports)
+    and %00001000
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "is_up_pressed" free
+; -----------------------------------------------------------------------------
+  is_up_pressed:
+    ld a,(input_ports)
+    and %00000001
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+
+
+; -----------------------------------------------------------------------------
+.section "is_start_pressed" free
+; -----------------------------------------------------------------------------
+  is_start_pressed:
+    in a,(SYSTEM_CONTROL_PORT)
+    and START_BUTTON_BIT
+    ret nz          ; Return with carry flag reset
+    scf
+  ret               ; Return with carry flag set.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "kill_psg" free
+; -----------------------------------------------------------------------------
+  ; Manually silence all sound.
+  ; Entry: None.
+  ; Saves registers used.
+  kill_psg:
+    push af
+    ld a,$9f
+    out (PSG_PORT),a
+    ld a,$bf
+    out (PSG_PORT),a
+    ld a,$df
+    out (PSG_PORT),a
+    pop af
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "load_cram" free
+; -----------------------------------------------------------------------------
+  ; Load a number of colors into color ram (SMS).
+  ; Entry: A = Palette index (0-31)
+  ;        B = Number of colors to load
+  ;        HL = Base address of source data (color bytes, SMS)
+  ; Uses: AF, BC, HL
+  ; Assumes blanked display and interrupts off.
+  load_cram:
+    out (CONTROL_PORT),a
+    ld a,CRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    -:
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+    djnz -
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "load_cram_gg" free
+; -----------------------------------------------------------------------------
+  ; Load a number of colors into color ram (GG).
+  ; Entry: A = Palette index (0-31)
+  ;        B = Number of colors to load
+  ;        HL = Base address of source data (color words, GG)
+  ; Uses: AF, BC, HL
+  ; Assumes blanked display and interrupts off.
+  load_cram_gg:
+    sla a
+    out (CONTROL_PORT),a
+    ld a,CRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    -:
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+    djnz -
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "load_vdp_registers" free
+; -----------------------------------------------------------------------------
+  load_vdp_registers:
+    ; Load all 11 vdp registers with preset values.
+    ; Entry: HL pointing to init data block (11 bytes).
+    xor b
+    -:
+      ld a,(hl)
+      out (CONTROL_PORT),a
+      inc hl
+      ld a,b
+      or REGISTER_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      cp REGISTER_WRITE_COMMAND|10
+      ret z
+      inc b
+    jr -
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "load_vram" free
+; -----------------------------------------------------------------------------
+  ; Load a number of bytes from a source address into vram.
+  ; Entry: BC = Number of bytes to load
+  ;        DE = Destination address in vram
+  ;        HL = Source address
+  ; Exit:  DE = Next free byte in vram.
+  ; Uses: AF, BC, DE, HL,
+  load_vram:
+    ld a,e
+    out (CONTROL_PORT),a
+    ld a,d
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    -:
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+      dec bc
+      ld a,c
+      or b
+    jp nz,-
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "ReadVRam" free
+; -----------------------------------------------------------------------------
+  ; Read a number of bytes from vram into a buffer.
+  ; Entry: BC = Number of bytes to read
+  ;        DE = Destination address in ram (buffer)
+  ;        HL = Source address in vram
+  ; Uses: AF, BC, DE, HL,
+  ReadVRam:
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_READ_COMMAND
+    out (CONTROL_PORT),a
+    -:
+      in a,(DATA_PORT)
+      ld (de),a
+      inc de
+      dec bc
+      ld a,c
+      or b
+    jp nz,-
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "Set register (vdp)" free
+; -----------------------------------------------------------------------------
+  ; Write to target register.
+  ; Entry: A = byte to be loaded into vdp register.
+  ;        B = target register 0-10.
+  ; Uses: AF, B
+  set_register:
+    out (CONTROL_PORT),a
+    ld a,REGISTER_WRITE_COMMAND
+    or b
+    out (CONTROL_PORT),a
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "set_table_item" free
+; -----------------------------------------------------------------------------
+  set_table_item:
+    ; Set a byte at index [in A] in table [pointer in HL].
+    ; Entry: A = Index, B = value, HL = Poiner to table
+    ; Exit: None
+    ; Preserves all registers.
+    push de
+    push hl
+    ld d,0
+    ld e,a
+    add hl,de
+    ld (hl),b
+    pop hl
+    pop de
+  ret
+.ends
+
+; *****************************************************************************
+;                           SPRITE LIBRARY
+; *****************************************************************************
+; Note: Spritelib depends on constants from bluelib.inc.
+
+.equ PLAYER_SIZE 4          ; Number of tiles not part of asc/desc flicker.
+.equ ASCENDING 0
+.equ DESCENDING $ff
+
+.ramsection "Spritelib Variables" slot 3
+  SpriteBufferY dsb 64
+  SpriteBufferXC dsb 128
+  NextFreeSprite db
+  SATLoadMode db             ; Ascending or descending - for flickering.
+.ends
+
+; -----------------------------------------------------------------------------
+.section "add_sprite" free
+; -----------------------------------------------------------------------------
+  ; Add a sprite of size = 1 character to the SAT.
+  ; Entry: A = Character code (character in bank 2).
+  ;        B = vertical position, C = horizontal position.
+  ; Exit:
+  ; Uses: None - all registers saved
+  add_sprite:
+    ; Test for sprite overflow (more than 64 hardware sprites at once).
+    SAVE_REGISTERS
+    ld d,a                    ; Save the tile in unused register.
+    ld a,(NextFreeSprite)
+    inc a
+    cp 65
+    jp nc,exit_add_sprite
+    ld a,d                    ; Restore tile in A.
+    ;
+    push af
+    push bc
+    ; Point DE to SpriteBufferY[NextFreeSprite].
+    ld a,(NextFreeSprite)
+    ld de,SpriteBufferY
+    add a,e
+    ld e,a
+    ld a,0
+    adc a,d
+    ld d,a
+
+    ; Retrieve Y and X coords.
+    pop bc
+    ld a,b
+    ld (de),a               ; Write the Y to the sprite buffer.
+
+    ; Point DE to SpriteBufferXC[NextFreeSprite].
+    ld a,(NextFreeSprite)
+    add a,a               ; Table elements are words!
+    ld de,SpriteBufferXC
+    add a,e
+    ld e,a
+    ld a,0
+    adc a,d
+    ld d,a
+
+
+    ld a,c                ; Get the x-pos.
+    ld (de),a             ; Write it to the buffer.
+    inc de
+    pop af                ; Retrieve the charcode.
+    ld (de),a             ; Write it to the buffer
+
+    ld hl,NextFreeSprite
+    inc (hl)
+    ;
+    exit_add_sprite:
+    RESTORE_REGISTERS
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "begin_sprites" free
+; -----------------------------------------------------------------------------
+  WipeData:
+    .rept 64
+      .db INVISIBLE_AREA_TOP_BORDER
+    .endr
+
+  begin_sprites:
+    ; Reset the NextFreeSprite index at the beginning of every frame
+    xor a
+    ld (NextFreeSprite),a
+
+    ; Toggle ascending/descending sat load mode.
+    ld a,(SATLoadMode)
+    cpl
+    ld (SATLoadMode),a
+
+    ; Wipe Y-buffer with $e0 to get unused sprites out of the way.
+    ld hl,WipeData
+    ld de,SpriteBufferY
+    ld bc,64
+    ldir
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "load_sat" free
+; -----------------------------------------------------------------------------
+  ; Load the vram sat with the SatY and SatXC buffers.
+  ; Sonic 2 inspired flicker engine is in place: Flicker sprites by loading the
+  ; SAT in ascending/descending order every other frame.
+  load_sat:
+    ld a,(SATLoadMode)
+    cp DESCENDING
+    jp z,_DescendingLoad
+      ; If not descending, then fall through to ascending load mode.
+
+      ; Load y-coordinates.
+      ld hl,SAT_Y_START
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld hl,SpriteBufferY
+      ld c,DATA_PORT
+      .rept 64
+        outi
+      .endr
+
+      ; Load x-coordinates and character codes.
+      ld hl,SAT_XC_START
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld hl,SpriteBufferXC
+      ld c,DATA_PORT
+      .rept 128
+        outi
+      .endr
+  ret
+
+    _DescendingLoad:
+      ; Load y-coordinates.
+      ld hl,SAT_Y_START
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld c,DATA_PORT
+      ld hl,SpriteBufferY
+      .rept PLAYER_SIZE
+        outi
+      .endr
+
+      ld hl,SpriteBufferY+63    ; Point to last y-value in buffer.
+      .rept 64-PLAYER_SIZE
+        outd                    ; Output and decrement HL, thus going
+      .endr                     ; backwards (descending) through the buffer.
+
+      ; Load x-coordinates and character codes
+      ld hl,SAT_XC_START
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld c,DATA_PORT
+      ld hl,SpriteBufferXC
+      .rept PLAYER_SIZE
+        outi
+        outi
+      .endr
+
+      ld hl,SpriteBufferXC+126
+      ld de,-4
+      .rept 64-PLAYER_SIZE
+        outi
+        outi
+        add hl,de
+      .endr
+  ret
+.ends
+; =============================================================================
+; E X T E N D E D  F U N C T I O N S                        (grouped in themes)
+; =============================================================================
+; -----------------------------------------------------------------------------
+.ramsection "extended functions variables" slot 3
+; -----------------------------------------------------------------------------
+  cursor_y db
+  cursor_x db
+.ends
+
+; -----------------------------------------------------------------------------
+.section "tilemap / name table editing" free
+; -----------------------------------------------------------------------------
+  copy_tilemap_rect_to_buffer:
+    ; Copy the tilemap words under a rectangle to a buffer.
+    ; A = Rect width.
+    ; B = Rect height.
+    ; HL = Top left tile (address) of rectangle to copy.
+    ; DE = Destination buffer.
+    ; All registers are preserved.
+    SAVE_REGISTERS
+    add a,a                 ; Double width - the table elements are words.
+    ld c,a                  ; Save width in C for counting.
+    ; For each 'rect-height' do the following...
+    --:
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_READ_COMMAND
+      out (CONTROL_PORT),a
+      push de
+        ld de,ONE_TILEMAP_ROW
+        add hl,de
+      pop de
+      push bc               ; Save rect width*2.
+      ; For each 'rect-width*2' do the following...
+        -:
+          in a,(DATA_PORT)  ; Get byte from tilemap.
+          ld (de),a         ; Store it in the buffer.
+          inc de            ; Update buffer pointer.
+          dec c             ; Decrement 'for counter'.
+          xor a             ; Do the rect-width*2 for-loop logic...
+          cp c
+        jp nz,-
+      pop bc                ; Restore rect-width*2.
+    djnz --                 ; The rect-height for-loop.
+    RESTORE_REGISTERS
+  ret
+  ; ---------------------------------------------------------------------------
+  copy_buffer_to_tilemap_rect:
+    ; Reverse of copy_tilemap_rect_to_buffer.
+    ; A = Rect width.
+    ; B = Rect height.
+    ; HL = Base address of buffer.
+    ; DE = Address of top left tile of tilemap rectangle.
+    ; Preserves all registers used.
+    ; Time: 11 lines.
+    SAVE_REGISTERS
+    add a,a                 ; Double width - the table elements are words.
+    ld c,a                  ; Save width in C for counting.
+    ; For each 'rect-height' do the following...
+    --:
+      ld a,e
+      out (CONTROL_PORT),a
+      ld a,d
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      push hl
+        ld hl,ONE_TILEMAP_ROW
+        add hl,de
+        ex de,hl
+      pop hl
+      push bc               ; Save rect width*2.
+      ; For each 'rect-width*2' do the following...
+        -:
+          ld a,(hl)
+          out (DATA_PORT),a
+          inc hl
+          dec c             ; Decrement 'for counter'.
+          xor a             ; Do the rect-width*2 for-loop logic...
+          cp c
+        jp nz,-
+      pop bc                ; Restore rect-width*2.
+    djnz --                 ; The rect-height for-loop.
+    RESTORE_REGISTERS
+  ret
+  ; ---------------------------------------------------------------------------
+  blank_tilemap_rect:
+    ; Write $0000 to the tilemap words under a rectangle.
+    ; A = Rect width.
+    ; B = Rect height.
+    ; HL = Address of first tile to blank.
+    add a,a                 ; Double width - the table elements are words.
+    ld c,a                  ; Save width in C for counting.
+    ; For each 'rect-height' do the following...
+    --:
+      ld a,l
+      out (CONTROL_PORT),a
+      ld a,h
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld de,ONE_TILEMAP_ROW
+      add hl,de
+      ld a,$00
+      push bc               ; Save rect width*2.
+      ; For each 'rect-width*2' do the following...
+        -:
+          out (DATA_PORT),a
+          dec c             ; Decrement 'for counter'.
+          cp c              ; A is already $00 = blanked.
+        jp nz,-
+      pop bc                ; Restore rect-width*2.
+    djnz --                 ; The rect-height for-loop.
+  ret
+
+  reset_name_table:
+    ; Overwrite all name table entries with a specified tile.
+    ; Entry: A = Tile index
+    ;        B = Bank (1/2) - selects corresponding palette.
+    ; Uses: AF, B, DE, HL
+    push af
+    dec b
+    jp z,+
+      ld b,%00001001
+    +:
+    ld hl,NAME_TABLE_START
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    pop af
+    ld h,a                                    ; Index of tile.
+    ld l,b                                    ; 2nd byte, bank and pal.
+    ld de,32*28                               ; 32 columns, 28 rows.
+    -:
+      ld a,h
+      out (DATA_PORT),a                       ; Write 1st word to name table.
+      ld a,l
+      out (DATA_PORT),a                       ; Write 2nd word to name table.
+      dec de
+      ld a,e
+      or d
+    jp nz,-
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
+.section "Printing" free
+; -----------------------------------------------------------------------------
+  ; Functions for printing ascii chars.
+  ; Put this ascii map in header:
+  ;   .asciitable
+  ;      map " " to "z" = 0
+  ;    .enda
+  ;
+  print:
+    ; Print a string to the name table. Terminate with # (ascii).
+    ; N.B. Make sure that this function is not interrupted!
+    ; Entry:
+    ;        B = row, C = column.
+    ;        HL = Pointer to string.
+    ; Uses: AF, BC, DE, HL
+    push hl                       ; Save pointer and string length for later.
+    ld hl,NAME_TABLE_START        ; Get ready to calculate destination address.
+    ld a,b
+    cp 0
+    jp z,add_row_offset_end
+      ld de,$40                   ; For each row, add $40 to the dest. address.
+      -:
+        add hl,de
+      djnz -
+    add_row_offset_end:
+    ld a,c
+    cp 0
+    jp z,add_column_offset_end
+      ld b,a
+      ld de,2                     ; Each column adds 1 word to dest. address.
+      -:
+        add hl,de
+      djnz -
+    add_column_offset_end:
+    ld a,l                        ; Setup vram to load bytes at dest. address.
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ;
+    pop hl                          ; Get pointer to string from stack.
+    -:
+      ld a,(hl)                     ; Get character from string.
+      cp STRING_TERMINATOR
+      ret z
+      out (DATA_PORT),a             ; Write it to name table.
+      ld a,%00000000                ; Select background palette for this char.
+      out (DATA_PORT),a             ; Write 2nd byte to name table.
+      inc hl                        ; Point to next char.
+    djnz -
+  ret
+
+  set_cursor:
+    ; Set cursor used by put_char.
+    ; Entry: A = cursor_y / row, B = cursor_x / column.
+    ld (cursor_y),a
+    ld a,b
+    ld (cursor_x),a
+  ret
+
+  put_char:
+    ; Put char at cursor y,x and move cursor right.
+    ; N.B. Make sure that this function is not interrupted!
+    ; Entry: A = tile number (0-255 - in tile bank 1).
+    ; Uses: A, B and C, but saves the rest.
+    SAVE_REGISTERS
+    push af                       ;
+    ld hl,NAME_TABLE_START        ; Get ready to calculate destination address.
+    ld a,(cursor_y)
+    ld b,a
+    cp 0
+    jp z,+
+      ld de,$40                   ; For each row, add $40 to the dest. address.
+      -:
+        add hl,de
+      djnz -
+    +:
+    ld a,(cursor_x)
+    cp 0
+    jp z,+
+      ld b,a
+      ld de,2                     ; Each column adds 1 word to dest. address.
+      -:
+        add hl,de
+      djnz -
+    +:
+    inc a
+    ld (cursor_x),a               ; Inc cursor x position.
+    ld a,l                        ; Setup vram to load bytes at dest. address.
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ;
+    pop af                        ; Get tile.
+    out (DATA_PORT),a             ; Write it to name table.
+    ld a,%00000000                ; Select background palette for this char.
+    out (DATA_PORT),a             ; Write 2nd byte to name table.
+  RESTORE_REGISTERS
+  ret
+
+  print_register_hl:
+    ; Print the contents of register HL as 5 ascii digits using put_char at
+    ; position cursor (y,x).
+    ; Entry: HL = value to print.
+    ; Uses AF, BC, HL
+  	ld	bc,-10000
+  	call	+
+  	ld	bc,-1000
+  	call	+
+    ld	bc,-100
+  	call	+
+  	ld	c,-10
+  	call +
+  	ld	c,-1
+    +:
+      ld	a,ASCII_ZERO-1 ; Maybe 16 here?
+      -:
+        inc	a
+  	    add	hl,bc
+  	  jr	c,-
+  	sbc	hl,bc
+  	call put_char
+  ret
+
+  print_register_a:
+    ; Print the contents of register A as 3 ascii digits using put_char at
+    ; position cursor (y,x).
+    ; Entry: A = value to print.
+    ; Uses AF, BC, HL
+    ld h,0
+    ld l,a
+    ld	bc,-100
+  	call	+
+  	ld	c,-10
+  	call +
+  	ld	c,-1
+    +:
+      ld	a,ASCII_ZERO-1 ;
+      -:
+        inc	a
+  	    add	hl,bc
+  	  jr	c,-
+  	sbc	hl,bc
+  	call put_char
+  ret
+.ends
