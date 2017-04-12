@@ -51,11 +51,65 @@
     ;
   jump_table:
     ; Check the game state constants.
-    .dw prepare_devmenu, run_devmenu
+    .dw prepare_devmenu, run_devmenu, prepare_scene_1, run_scene_1
   ;
   ; ---------------------------------------------------------------------------
   ;
   ; ---------------------------------------------------------------------------
+  prepare_scene_1:
+    di
+    ; Turn off display and frame interrupts.
+    ld a,DISPLAY_0_FRAME_0_SIZE_0
+    ld b,1
+    call set_register
+    SELECT_BANK SCENE_1_BANK
+    ld bc,scene_1_tiles_end-scene_1_tiles
+    ld de,$0c00
+    ld hl,scene_1_tiles
+    call load_vram
+    ld bc,scene_1_tilemap_end-scene_1_tilemap
+    ld de,NAME_TABLE_START
+    ld hl,scene_1_tilemap
+    call load_vram
+    ;
+    ld b,22
+    ld c,5
+    ld hl,dummy_text
+    call print
+    ; Wipe sprites.
+    call begin_sprites
+    call load_sat
+    ; Turn on screen, frame interrupts and blank left column.
+    ld a,DISPLAY_1_FRAME_1_SIZE_0
+    ld b,1
+    call set_register
+    ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
+    ld b,0
+    call set_register
+    ei
+    ; When all is set, change the game state.
+    ld a,GS_RUN_SCENE_1
+    ld (game_state),a
+  jp main_loop
+  dummy_text:
+    .asc "Score: 00000   Lives: 8#"
+  ;
+  run_scene_1:
+  call await_frame_interrupt
+  call load_sat
+  ;
+  ; update()
+  call get_input_ports
+  call begin_sprites
+  ;
+  call is_reset_pressed
+  jp nc,+
+    ld a,GS_PREPARE_DEVMENU
+    ld (game_state),a
+  +:
+  ;
+  jp main_loop
+
   prepare_devmenu:
     ld a,ASCII_SPACE
     ld b,TILE_BANK_1
@@ -164,7 +218,7 @@
         call set_register                 ; safely done.
       jp main_loop
       menu_state_to_game_state:           ; menu_item(0) == game_state(1), etc.
-        .db 1, 5, 7, 11
+        .db GS_PREPARE_SCENE_1
       ;
     menu_end:
     ; Place menu sprite
@@ -212,6 +266,10 @@
 .section "Scene 1 assets" free
 ; -----------------------------------------------------------------------------
   scene_1_tiles:
-    ;.include "bank_4\spritesheet.png_tiles.inc"
+    .include "bank_4\scene_1_tiles.inc"
   scene_1_tiles_end:
+
+  scene_1_tilemap:
+    .include "bank_4\scene_1_tilemap.inc"
+  scene_1_tilemap_end:
 .ends
