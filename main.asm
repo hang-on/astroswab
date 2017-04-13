@@ -152,6 +152,10 @@
         ld (swabby_state),a
         jp swabby_state_end
       +:
+      call is_left_pressed
+      jp nc,swabby_state_end
+        ld a,SWABBY_TURNING
+        ld (swabby_state),a
     jp swabby_state_end
     swabby_moving:
       ld a,(swabby_direction)
@@ -175,6 +179,8 @@
       call is_dpad_pressed
       jp c,+
         ; No dpad, shift to idle.
+        xor a
+        ld (swabby_timer),a
         ld a,SWABBY_IDLE
         ld (swabby_state),a
         jp ++
@@ -186,6 +192,8 @@
           cp RIGHT
           jp z,++
             ; right is pressed, but we are going left = turn!
+            xor a
+            ld (swabby_timer),a
             ld a,SWABBY_TURNING
             ld (swabby_state),a
             jp ++
@@ -195,6 +203,8 @@
           cp LEFT
           jp z,++
             ; left is pressed, but we are going right = turn!
+            xor a
+            ld (swabby_timer),a
             ld a,SWABBY_TURNING
             ld (swabby_state),a
             jp ++
@@ -206,6 +216,8 @@
       ld (swabby_sprite),a
       call is_dpad_pressed
       jp nc,+
+        xor a
+        ld (swabby_timer),a
         ld a,SWABBY_TURNING
         ld (swabby_state),a
       +:
@@ -213,6 +225,9 @@
     swabby_turning:
       ld a,SPRITE_3
       ld (swabby_sprite),a
+      ld a,(swabby_timer)
+      cp 5
+      jp c,swabby_state_end
       ld a,SWABBY_MOVING
       ld (swabby_state),a
       ld a,(swabby_direction)
