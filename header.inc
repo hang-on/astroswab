@@ -55,5 +55,6 @@
   swabby_sprite db
   ;
   gun_timer db
+  gun_released db
   bullet_table dsb 3*3            ; 3 bullets, state,y,x,
 .ends

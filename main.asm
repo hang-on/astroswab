@@ -98,6 +98,8 @@
     ld (ix+0),a     ; Sleeping bullets.
     ld (ix+3),a
     ld (ix+6),a
+    ld a,TRUE
+    ld (gun_released),a
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -152,6 +154,11 @@
   ld ix,swabby_y
   call add_metasprite
   ; Handle gun and bullets:
+  call is_button_1_pressed
+  jp c,+
+    ld a,TRUE
+    ld (gun_released),a
+  +:
   ld a,(gun_timer)
   or a
   jp z,+
@@ -163,28 +170,33 @@
     ld a,(gun_timer)
     or a
     jp nz,activate_bullet_end
-      ld b,3
-      ld ix,bullet_table
-      -:
-        ld a,(ix+0)
-        cp BULLET_SLEEPING
-        jp nz,+
-          ld a,(swabby_y)
-          dec a
-          ld (ix+1),a
-          ld a,(swabby_x)
-          add a,4
-          ld (ix+2),a
-          ld a,BULLET_ACTIVE
-          ld (ix+0),a
-          ld a,GUN_DELAY
-          ld (gun_timer),a
-          jp activate_bullet_end
-        +:
-        inc ix
-        inc ix
-        inc ix
-      djnz -
+      ld a,(gun_released)
+      cp TRUE
+      jp nz,activate_bullet_end
+        ld b,3
+        ld ix,bullet_table
+        -:
+          ld a,(ix+0)
+          cp BULLET_SLEEPING
+          jp nz,+
+            ld a,(swabby_y)
+            dec a
+            ld (ix+1),a
+            ld a,(swabby_x)
+            add a,4
+            ld (ix+2),a
+            ld a,BULLET_ACTIVE
+            ld (ix+0),a
+            ld a,GUN_DELAY
+            ld (gun_timer),a
+            ld a,FALSE
+            ld (gun_released),a
+            jp activate_bullet_end
+          +:
+          inc ix
+          inc ix
+          inc ix
+        djnz -
   activate_bullet_end:
   ; Move bullets:
   ld d,3
