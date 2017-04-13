@@ -125,6 +125,108 @@
   ; update()
   call get_input_ports
   call begin_sprites
+  ; Handle Swabby state.
+  ld a,(swabby_timer)
+  cp 255
+  jp z,+
+    inc a
+    ld (swabby_timer),a
+  +:
+  ld a,(swabby_state)
+  dec a
+  jp z,swabby_greeting
+  dec a
+  jp z,swabby_moving
+  dec a
+  jp z,swabby_idle
+  dec a
+  jp z,swabby_turning
+    swabby_greeting:
+      ld a,SPRITE_1
+      ld (swabby_sprite),a
+      call is_right_pressed
+      jp nc,+
+        xor a
+        ld (swabby_timer),a
+        ld a,SWABBY_MOVING
+        ld (swabby_state),a
+        jp swabby_state_end
+      +:
+    jp swabby_state_end
+    swabby_moving:
+      ld a,(swabby_direction)
+      cp RIGHT
+      jp nz,+
+        ld a,SPRITE_1
+        ld (swabby_sprite),a
+        ld a,(swabby_x)
+        ld b,SWABBY_SPEED
+        add a,b
+        ld (swabby_x),a
+        jp ++
+      +:
+        ld a,SPRITE_2
+        ld (swabby_sprite),a
+        ld a,(swabby_x)
+        ld b,SWABBY_SPEED
+        sub b
+        ld (swabby_x),a
+      ++:
+      call is_dpad_pressed
+      jp c,+
+        ; No dpad, shift to idle.
+        ld a,SWABBY_IDLE
+        ld (swabby_state),a
+        jp ++
+      +:
+        ; dpad pressed, see if we should turn?
+        call is_right_pressed
+        jp nc,+
+          ld a,(swabby_direction)
+          cp RIGHT
+          jp z,++
+            ; right is pressed, but we are going left = turn!
+            ld a,SWABBY_TURNING
+            ld (swabby_state),a
+            jp ++
+        +:
+        ; left is pressed.
+          ld a,(swabby_direction)
+          cp LEFT
+          jp z,++
+            ; left is pressed, but we are going right = turn!
+            ld a,SWABBY_TURNING
+            ld (swabby_state),a
+            jp ++
+      ++:
+      ;
+    jp swabby_state_end
+    swabby_idle:
+      ld a,SPRITE_3
+      ld (swabby_sprite),a
+      call is_dpad_pressed
+      jp nc,+
+        ld a,SWABBY_TURNING
+        ld (swabby_state),a
+      +:
+    jp swabby_state_end
+    swabby_turning:
+      ld a,SPRITE_3
+      ld (swabby_sprite),a
+      ld a,SWABBY_MOVING
+      ld (swabby_state),a
+      ld a,(swabby_direction)
+      cp RIGHT
+      jp nz,+
+        ld a,LEFT
+        ld (swabby_direction),a
+        jp ++
+      +:
+        ld a,RIGHT
+        ld (swabby_direction),a
+      ++:
+    jp swabby_state_end
+  swabby_state_end:
   ld ix,swabby_y
   call add_metasprite
   ;
