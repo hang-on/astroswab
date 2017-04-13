@@ -37,7 +37,7 @@
   .equ BULLET_ACTIVE 1
   .equ BULLET_SPEED 5
   .equ BULLET_SPRITE 169
-  .equ GUN_DELAY 12
+  .equ GUN_DELAY_INIT 4
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.
@@ -56,5 +56,6 @@
   ;
   gun_timer db
   gun_released db
+  gun_delay db
   bullet_table dsb 3*3            ; 3 bullets, state,y,x,
 .ends

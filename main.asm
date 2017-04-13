@@ -92,6 +92,8 @@
     ld (swabby_x),a
     ld a,SPRITE_1
     ld (swabby_sprite),a
+    ld a,GUN_DELAY_INIT
+    ld (gun_delay),a
     xor a
     ld (gun_timer),a
     ld ix,bullet_table
@@ -100,6 +102,7 @@
     ld (ix+6),a
     ld a,TRUE
     ld (gun_released),a
+
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -187,7 +190,7 @@
             ld (ix+2),a
             ld a,BULLET_ACTIVE
             ld (ix+0),a
-            ld a,GUN_DELAY
+            ld a,(gun_delay)
             ld (gun_timer),a
             ld a,FALSE
             ld (gun_released),a
