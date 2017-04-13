@@ -92,12 +92,12 @@
     ld (swabby_x),a
     ld a,SPRITE_1
     ld (swabby_sprite),a
-    ld a,SWABBY_GREETING
-    ld (swabby_state),a
-    ld a,RIGHT
-    ld (swabby_direction),a
     xor a
-    ld (swabby_timer),a
+    ld (gun_timer),a
+    ld ix,bullet_table
+    ld (ix+0),a     ; Sleeping bullets.
+    ld (ix+3),a
+    ld (ix+6),a
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -125,6 +125,7 @@
   ; update()
   call get_input_ports
   call begin_sprites
+  ; Handle Swabby movement:
   call is_right_pressed
   jp nc,+
     ld a,SPRITE_1
@@ -150,6 +151,25 @@
   ++:
   ld ix,swabby_y
   call add_metasprite
+  ; Handle bullets:
+  ld ix,bullet_table
+  call is_button_1_pressed
+  jp nc,activate_bullet_end
+    ld a,(swabby_y)
+    dec a
+    ld (ix+1),a
+    ld a,(swabby_x)
+    add a,4
+    ld (ix+2),a
+  activate_bullet_end:
+  ld a,(ix+1)
+  sub BULLET_SPEED
+  ld (ix+1),a
+  ld b,a
+  ld a,(ix+2)
+  ld c,a
+  ld a,BULLET_SPRITE
+  call add_sprite
   ;
   call is_reset_pressed
   jp nc,+

@@ -31,16 +31,12 @@
   .equ NON_ASCII_AREA_START $0c00
   .equ SWABBY_Y_INIT 155
   .equ SWABBY_X_INIT 248/2
-  .equ SWABBY_SPEED 2
+  .equ SWABBY_SPEED 5
   ;
-  .equ SWABBY_GREETING 1
-  .equ SWABBY_MOVING 2
-  .equ SWABBY_IDLE 3
-  .equ SWABBY_TURNING 4
-  ;
-  .equ RIGHT 0
-  .equ LEFT 1
-
+  .equ BULLET_SLEEPING 0
+  .equ BULLET_ACTIVE 1
+  .equ BULLET_SPEED 5
+  .equ BULLET_SPRITE 169
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.
@@ -56,7 +52,7 @@
   swabby_y db
   swabby_x db
   swabby_sprite db
-  swabby_state db
-  swabby_timer db
-  swabby_direction db
+  ;
+  gun_timer db
+  bullet_table dsb 3*3            ; 3 bullets, state,y,x,
 .ends
