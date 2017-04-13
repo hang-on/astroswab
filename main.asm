@@ -132,6 +132,7 @@
   ;
   ; update()
   call get_input_ports
+  call PSGSFXFrame
   call begin_sprites
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
@@ -199,6 +200,12 @@
             ld (gun_timer),a      ;
             ld a,FALSE            ; Lock gun (released on fire button release).
             ld (gun_released),a   ;
+
+            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+            ld c,SFX_CHANNEL2
+            ld hl,shot_1
+            call PSGSFXPlay           ; Play the swabby shot sound effect.
+
             jp activate_bullet_end
           +:                      ; Increment bullet table pointer.
           inc ix                  ;
@@ -443,4 +450,11 @@
   scene_1_tilemap:
     .include "bank_4\scene_1_tilemap.inc"
   scene_1_tilemap_end:
+.ends
+.bank SOUND_BANK slot 2
+; -----------------------------------------------------------------------------
+.section "Sound assets" free
+; -----------------------------------------------------------------------------
+  shot_1:
+    .incbin "bank_5\shot_1.psg"
 .ends

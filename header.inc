@@ -39,6 +39,9 @@
   .equ BULLET_SPEED 5
   .equ BULLET_SPRITE 169
   .equ GUN_DELAY_INIT 12
+;
+; Sound:
+  .equ SOUND_BANK 5
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.
