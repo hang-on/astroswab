@@ -100,6 +100,8 @@
     ld (ix+0),a     ; Sleeping bullets.
     ld (ix+3),a
     ld (ix+6),a
+    ld (ix+9),a
+    ld (ix+12),a
     ld a,TRUE
     ld (gun_released),a
 
@@ -176,7 +178,7 @@
       ld a,(gun_released)
       cp TRUE
       jp nz,activate_bullet_end
-        ld b,3
+        ld b,MAX_BULLETS
         ld ix,bullet_table
         -:
           ld a,(ix+0)
@@ -202,7 +204,7 @@
         djnz -
   activate_bullet_end:
   ; Move bullets:
-  ld d,3
+  ld d,MAX_BULLETS
   ld ix,bullet_table
   -:
     ld a,(ix+0)
