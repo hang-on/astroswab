@@ -28,8 +28,6 @@
     ;
     call PSGInit
     ;
-    ; TODO: Perform PAL region check here!
-    ;
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
   jp main_loop
@@ -87,6 +85,19 @@
     ld c,5
     ld hl,dummy_text2
     call print
+    ; Initialize variables
+    ld a,SWABBY_Y_INIT
+    ld (swabby_y),a
+    ld a,SWABBY_X_INIT
+    ld (swabby_x),a
+    ld a,SPRITE_1
+    ld (swabby_sprite),a
+    ld a,SWABBY_GREETING
+    ld (swabby_state),a
+    ld a,RIGHT
+    ld (swabby_direction),a
+    xor a
+    ld (swabby_timer),a
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -114,6 +125,8 @@
   ; update()
   call get_input_ports
   call begin_sprites
+  ld ix,swabby_y
+  call add_metasprite
   ;
   call is_reset_pressed
   jp nc,+

@@ -29,6 +29,16 @@
 ; Scene 1:
   .equ SCENE_1_BANK 4
   .equ NON_ASCII_AREA_START $0c00
+  .equ SWABBY_Y_INIT 155
+  .equ SWABBY_X_INIT 248/2
+  ;
+  .equ SWABBY_GREETING 0
+  .equ SWABBY_MOVING 1
+  .equ SWABBY_IDLE 2
+  .equ SWABBY_TURNING 3
+  ;
+  .equ RIGHT 0
+  .equ LEFT 1
 
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
@@ -41,4 +51,11 @@
   ;
   menu_timer db
   menu_state db
+  ;
+  swabby_y db
+  swabby_x db
+  swabby_sprite db
+  swabby_state db
+  swabby_timer db
+  swabby_direction db
 .ends
