@@ -132,32 +132,34 @@
   ; update()
   call get_input_ports
   call begin_sprites
-  ; Handle Swabby movement:
-  call is_right_pressed
-  jp nc,+
-    ld a,SPRITE_1
+  ; ---------------------------------------------------------------------------
+  ; Handle Swabby sprite and movement:
+  call is_right_pressed       ; See if player is pressing right.
+  jp nc,+                     ; If not, skip forward.
+    ld a,SPRITE_1             ; Else set sprite to "Swabby looking right".
     ld (swabby_sprite),a
-    ld a,(swabby_x)
-    ld b,SWABBY_SPEED
-    add a,b
-    ld (swabby_x),a
-    jp ++
-  +:
-  call is_left_pressed
-  jp nc,+
-    ld a,SPRITE_2
-    ld (swabby_sprite),a
+    ld a,(swabby_x)           ; Get Swabby x-pos.
+    ld b,SWABBY_SPEED         ; Get speed from constant.
+    add a,b                   ; Apply speed to x-pos.
+    ld (swabby_x),a           ; And load it back into swabby_x.
+    jp ++                     ; Skip past the other two move options.
+  +:                          ; OK, player is not pressing right...
+  call is_left_pressed        ; Is he pressing left, then?
+  jp nc,+                     ; If not, skip forward.
+    ld a,SPRITE_2             ; Else set sprite to "Swabby looking left".
+    ld (swabby_sprite),a      ; And do almost like above...
     ld a,(swabby_x)
     ld b,SWABBY_SPEED
     sub b
     ld (swabby_x),a
     jp ++
-  +:
-    ld a,SPRITE_3
-    ld (swabby_sprite),a
-  ++:
-  ld ix,swabby_y
-  call add_metasprite
+  +:                          ; OK, not pressing right, nor left...
+    ld a,SPRITE_3             ; Set sprite to "Swabby's back".
+    ld (swabby_sprite),a      ;
+  ++:                         ; We have fresh sprite info.
+  ld ix,swabby_y              ; Pass Swabby data block as function argument.
+  call add_metasprite         ; Put the tiles into the SAT.
+  ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
   call is_button_1_pressed
   jp c,+
