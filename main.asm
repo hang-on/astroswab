@@ -54,7 +54,7 @@
     .dw prepare_devmenu, run_devmenu, prepare_scene_1, run_scene_1
   ;
   ; ---------------------------------------------------------------------------
-  ;
+  ; S C E N E  1                                                     (gameplay)
   ; ---------------------------------------------------------------------------
   prepare_scene_1:
     di
@@ -124,7 +124,8 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
-  ;
+  ; ---------------------------------------------------------------------------
+  ; ---------------------------------------------------------------------------
   run_scene_1:
   call await_frame_interrupt
   call load_sat
@@ -161,77 +162,77 @@
   call add_metasprite         ; Put the tiles into the SAT.
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
-  call is_button_1_pressed
-  jp c,+
-    ld a,TRUE
-    ld (gun_released),a
-  +:
-  ld a,(gun_timer)
-  or a
-  jp z,+
-    dec a
-    ld (gun_timer),a
-  +:
-  call is_button_1_pressed
-  jp nc,activate_bullet_end
-    ld a,(gun_timer)
-    or a
-    jp nz,activate_bullet_end
-      ld a,(gun_released)
-      cp TRUE
-      jp nz,activate_bullet_end
-        ld b,MAX_BULLETS
-        ld ix,bullet_table
-        -:
-          ld a,(ix+0)
-          cp BULLET_SLEEPING
-          jp nz,+
-            ld a,(swabby_y)
-            dec a
-            ld (ix+1),a
-            ld a,(swabby_x)
-            add a,4
-            ld (ix+2),a
-            ld a,BULLET_ACTIVE
-            ld (ix+0),a
-            ld a,(gun_delay)
-            ld (gun_timer),a
-            ld a,FALSE
-            ld (gun_released),a
+  call is_button_1_pressed        ; AUTO FIRE PREVENTION.
+  jp c,+                          ; Is the player pressing the fire button?
+    ld a,TRUE                     ; No - then set gun flag (to prevent
+    ld (gun_released),a           ; auto fire).
+  +:                              ; PROCESS GUN TIMER.
+  ld a,(gun_timer)                ; If gun_timer is not already zero then
+  or a                            ; decrement it.
+  jp z,+                          ;
+    dec a                         ;
+    ld (gun_timer),a              ;
+  +:                              ; ACTIVATE BULLET.
+  call is_button_1_pressed        ; If the fire button is not pressed, skip...
+  jp nc,activate_bullet_end       ; Else proceed to check gun timer.
+    ld a,(gun_timer)              ; Check gun timer (delay between shots).
+    or a                          ;
+    jp nz,activate_bullet_end     ; If timer not set, skip...
+      ld a,(gun_released)         ; 3rd test: Is gun released? (no autofire!)
+      cp TRUE                     ;
+      jp nz,activate_bullet_end   ; If not, skip...
+        ld b,MAX_BULLETS          ; OK, if we come here, we are clear to fire
+        ld ix,bullet_table        ; a new bullet (if not all MAX_BULLETS are
+        -:                        ; already active).
+          ld a,(ix+0)             ; Search for sleeping bullet.
+          cp BULLET_SLEEPING      ;
+          jp nz,+                 ; If no luck, goto end of loop to try next.
+            ld a,(swabby_y)       ; Else, activate this bullet!
+            dec a                 ; Add a little y,x offset to bullet sprite in
+            ld (ix+1),a           ; relation to Swabby's current location.
+            ld a,(swabby_x)       ;
+            add a,4               ;
+            ld (ix+2),a           ;
+            ld a,BULLET_ACTIVE    ; Activate this bullet!
+            ld (ix+0),a           ;
+            ld a,(gun_delay)      ; Make gun wait a little (load time)!
+            ld (gun_timer),a      ;
+            ld a,FALSE            ; Lock gun (released on fire button release).
+            ld (gun_released),a   ;
             jp activate_bullet_end
-          +:
-          inc ix
-          inc ix
-          inc ix
-        djnz -
-  activate_bullet_end:
-  ; Move bullets:
-  ld d,MAX_BULLETS
-  ld ix,bullet_table
-  -:
-    ld a,(ix+0)
-    cp BULLET_ACTIVE
-    jp nz,+
-      ld a,(ix+1)
-      sub BULLET_SPEED
-      ld (ix+1),a
-      ld b,a
-      ld a,(ix+2)
-      ld c,a
-      ld a,BULLET_SPRITE
-      call add_sprite
-      ld a,(ix+1)
-      cp INVISIBLE_AREA_BOTTOM_BORDER-BULLET_SPEED
-      jp c,+
-        ld a,BULLET_SLEEPING
-        ld (ix+0),a
-    +:
-    inc ix
-    inc ix
-    inc ix
-    dec d
-  jp nz,-
+          +:                      ; Increment bullet table pointer.
+          inc ix                  ;
+          inc ix                  ;
+          inc ix                  ;
+        djnz -                    ; Process all bullets (MAX_BULLETS).
+  activate_bullet_end:            ; End of bullet activation code.
   ;
+  ld d,MAX_BULLETS                ; PROCESS ALL BULLETS IN TABLE.
+  ld ix,bullet_table              ; Load loop counter and table pointer.
+  -:                              ; For each bullet do...
+    ld a,(ix+0)                   ; See if it is active.
+    cp BULLET_ACTIVE              ;
+    jp nz,+                       ; If not, skip to end of loop.
+      ld a,(ix+1)                 ; Else, get this bullet's y-pos.
+      sub BULLET_SPEED            ; Subtract bullet speed to move it up.
+      ld (ix+1),a                 ;
+      ld b,a                      ; Argument: Sprite y goes into B.
+      ld a,(ix+2)                 ; Get sprite x-pos.
+      ld c,a                      ; Argument: Sprite x goes into C.
+      ld a,BULLET_SPRITE          ; Bullet sprite is a constant (argument).
+      call add_sprite             ; Add this bullet sprite to SAT buffer.
+      ld a,(ix+1)                 ; Get bullet y-pos.
+      cp INVISIBLE_AREA_BOTTOM_BORDER-BULLET_SPEED
+      jp c,+                      ; If this bullet has left through the roof,
+        ld a,BULLET_SLEEPING      ; we can put it to sleep now...
+        ld (ix+0),a               ;
+    +:                            ; Forward the table pointer to next bullet.
+    inc ix                        ;
+    inc ix                        ;
+    inc ix                        ;
+    dec d                         ;
+  jp nz,-                         ; Loop back and process next bullet.
+  ; ---------------------------------------------------------------------------
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_DEVMENU
@@ -239,7 +240,9 @@
   +:
   ;
   jp main_loop
-
+  ; ---------------------------------------------------------------------------
+  ; D E V E L O P M E N T  M E N U
+  ; ---------------------------------------------------------------------------
   prepare_devmenu:
     di
     ; Turn off display and frame interrupts.
@@ -329,8 +332,8 @@
     .asc "TV type: PAL#"
   ntsc_msg:
     .asc "TV type: NTSC#"
-
-  ;
+  ; ---------------------------------------------------------------------------
+  ; ---------------------------------------------------------------------------
   run_devmenu:
     call await_frame_interrupt
     call load_sat
