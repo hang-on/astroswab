@@ -124,6 +124,12 @@
   jp main_loop
 
   prepare_devmenu:
+    di
+    ; Turn off display and frame interrupts.
+    ld a,DISPLAY_0_FRAME_0_SIZE_0
+    ld b,1
+    call set_register
+    ;
     ld a,ASCII_SPACE
     ld b,TILE_BANK_1
     call reset_name_table
@@ -140,6 +146,19 @@
     xor a
     ld (menu_state),a
     ld (menu_timer),a
+    ; Get the TV type (set during boot).
+    ld a,(tv_type)
+    ld b,20
+    ld c,5
+    or a
+    jp z,+
+      ld hl,pal_msg
+      call print
+      jp ++
+    +:
+      ld hl,ntsc_msg
+      call print
+    ++:
     ; Increment and print external ram counter.
     ld a,16
     ld b,21
@@ -175,6 +194,25 @@
     .asc "<unused>#"
   menu_footer:
     .asc "---------------------#"
+  batch_print_table:
+    .dw menu_title
+    .db 4, 5
+    .dw item_1
+    .db 6, 10
+    .dw item_2
+    .db 8, 10
+    .dw item_3
+    .db 10, 10
+    .dw item_4
+    .db 12, 10
+    .dw menu_footer
+    .db 18, 5
+  batch_print_table_end:
+  pal_msg:
+    .asc "TV type: PAL#"
+  ntsc_msg:
+    .asc "TV type: NTSC#"
+
   ;
   run_devmenu:
     call await_frame_interrupt

@@ -27,20 +27,6 @@
       dec a
     jp nz,-
   ret
-  batch_print_table:
-    .dw menu_title
-    .db 4, 5
-    .dw item_1
-    .db 6, 10
-    .dw item_2
-    .db 8, 10
-    .dw item_3
-    .db 10, 10
-    .dw item_4
-    .db 12, 10
-    .dw menu_footer
-    .db 18, 5
-  batch_print_table_end:
 
   add_metasprite:
     ; Put a 16x16 metasprite in the SAT.
