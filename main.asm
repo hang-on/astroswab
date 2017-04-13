@@ -151,25 +151,67 @@
   ++:
   ld ix,swabby_y
   call add_metasprite
-  ; Handle bullets:
-  ld ix,bullet_table
+  ; Handle gun and bullets:
+  ld a,(gun_timer)
+  or a
+  jp z,+
+    dec a
+    ld (gun_timer),a
+  +:
   call is_button_1_pressed
   jp nc,activate_bullet_end
-    ld a,(swabby_y)
-    dec a
-    ld (ix+1),a
-    ld a,(swabby_x)
-    add a,4
-    ld (ix+2),a
+    ld a,(gun_timer)
+    or a
+    jp nz,activate_bullet_end
+      ld b,3
+      ld ix,bullet_table
+      -:
+        ld a,(ix+0)
+        cp BULLET_SLEEPING
+        jp nz,+
+          ld a,(swabby_y)
+          dec a
+          ld (ix+1),a
+          ld a,(swabby_x)
+          add a,4
+          ld (ix+2),a
+          ld a,BULLET_ACTIVE
+          ld (ix+0),a
+          ld a,GUN_DELAY
+          ld (gun_timer),a
+          jp activate_bullet_end
+        +:
+        inc ix
+        inc ix
+        inc ix
+      djnz -
   activate_bullet_end:
-  ld a,(ix+1)
-  sub BULLET_SPEED
-  ld (ix+1),a
-  ld b,a
-  ld a,(ix+2)
-  ld c,a
-  ld a,BULLET_SPRITE
-  call add_sprite
+  ; Move bullets:
+  ld d,3
+  ld ix,bullet_table
+  -:
+    ld a,(ix+0)
+    cp BULLET_ACTIVE
+    jp nz,+
+      ld a,(ix+1)
+      sub BULLET_SPEED
+      ld (ix+1),a
+      ld b,a
+      ld a,(ix+2)
+      ld c,a
+      ld a,BULLET_SPRITE
+      call add_sprite
+      ld a,(ix+1)
+      cp INVISIBLE_AREA_BOTTOM_BORDER-BULLET_SPEED
+      jp c,+
+        ld a,BULLET_SLEEPING
+        ld (ix+0),a
+    +:
+    inc ix
+    inc ix
+    inc ix
+    dec d
+  jp nz,-
   ;
   call is_reset_pressed
   jp nc,+
