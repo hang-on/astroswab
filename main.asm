@@ -172,10 +172,14 @@
   call add_metasprite         ; Put the tiles into the SAT.
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
-  call is_button_1_pressed        ; AUTO FIRE PREVENTION.
+  call is_button_1_pressed        ; AUTO FIRE PREVENTION AND RND_SEED
   jp c,+                          ; Is the player pressing the fire button?
     ld a,TRUE                     ; No - then set gun flag (to prevent
     ld (gun_released),a           ; auto fire).
+    ld a,r                        ; Seed the randomizer!
+    ld hl,(rnd_generator_word)
+    add a,(hl)
+    ld (hl),a
   +:                              ; PROCESS GUN TIMER.
   ld a,(gun_timer)                ; If gun_timer is not already zero then
   or a                            ; decrement it.

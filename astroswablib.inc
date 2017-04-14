@@ -119,6 +119,11 @@
     pop de
     ld bc,_sizeof_enemy_object
     ldir
+    call get_random_number
+    and %00000001
+    add a,(ix+enemy_object.speed)
+    ld (ix+enemy_object.speed),a
+
     RESTORE_REGISTERS
   ret
 
