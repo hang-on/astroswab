@@ -71,6 +71,7 @@
 0000:0b55 draw_asteroid
 0000:0b5d init_asteroids
 0000:0b69 asteroid_table_init
+0000:0b6c asteroid_table_init_end
 0000:0027 PSGInit
 0000:0a97 PSGSFXPlayLoop
 0000:0a9c PSGSFXPlay

@@ -39,6 +39,9 @@
   .equ BULLET_SPEED 5
   .equ BULLET_SPRITE 169
   .equ GUN_DELAY_INIT 12
+
+  .equ ASTEROID_START_Y 50
+  .equ ASTEROID_START_x 50
 ;
 ; Sound:
   .equ SOUND_BANK 5

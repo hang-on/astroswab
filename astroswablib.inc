@@ -90,11 +90,12 @@
   init_asteroids:
     ld hl,asteroid_table_init
     ld de,asteroid_table
-    ld bc,3
+    ld bc,asteroid_table_init_end-asteroid_table_init
     ldir
   ret
   asteroid_table_init:
-    .db 50, 50, SPRITE_4
+    .db ASTEROID_START_Y, ASTEROID_START_x, SPRITE_4
+  asteroid_table_init_end:
 
 
 
