@@ -266,24 +266,26 @@
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
 
+  debug2:
   ld ix,asteroid
   ld b,ASTEROID_MAX
-  ld c,_sizeof_enemy_object
-  -:
-  ld a,ASTEROID_REACTIVATE_VALUE
-  ld hl,asteroid_activation_table
-  call rnd_activate_enemy_object
-  call move_enemy_object
-  call draw_enemy_object
-  ld a,(ix+enemy_object.y)
-  cp GROUND_LEVEL
-  jp c,+
-    ld a,ENEMY_OBJECT_INACTIVE
-    ld (ix+enemy_object.state),a
-  +:
   ld d,0
-  ld e,c
-  add ix,de
+  ld e,_sizeof_enemy_object
+  -:
+    push bc
+    ld a,ASTEROID_REACTIVATE_VALUE
+    ld hl,asteroid_activation_table
+    call rnd_activate_enemy_object
+    call move_enemy_object
+    call draw_enemy_object
+    ld a,(ix+enemy_object.y)
+    cp GROUND_LEVEL
+    jp c,+
+      ld a,ENEMY_OBJECT_INACTIVE
+      ld (ix+enemy_object.state),a
+    +:
+    add ix,de
+    pop bc
   djnz -
 
   ; ---------------------------------------------------------------------------
