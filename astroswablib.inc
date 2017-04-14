@@ -87,6 +87,7 @@
   x db
   sprite db
   speed db
+  state db
   init_table dw
 .endst
 
@@ -106,7 +107,9 @@
     ; Entry: IX = Pointer to struct.
     ; No registers destroyed.
     SAVE_REGISTERS
-    call add_metasprite
+    ld a,(ix+enemy_object.state)
+    cp ASTEROID_ACTIVE
+    call z,add_metasprite
     RESTORE_REGISTERS
   ret
   ;
