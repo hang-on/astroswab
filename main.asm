@@ -256,7 +256,7 @@
   ld ix,asteroid
   call move_enemy_object
   call draw_enemy_object
-  ld a,(asteroid.y)
+  ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
   jp c,+
     ld hl,asteroid_table_init
