@@ -129,6 +129,10 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
+  asteroid_table_init:
+    .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
+    .dw asteroid_table_init
+  asteroid_table_init_end:
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
   run_scene_1:
@@ -249,11 +253,11 @@
   call move_enemy_object
   call draw_enemy_object
   ld a,(asteroid.y)
-  ld b,GROUND_LEVEL
-  ld c,A_IS_BIGGER_THAN_B
-  ld hl,asteroid_table_init
-  call conditional_respawn
-
+  cp GROUND_LEVEL
+  jp c,+
+    ld hl,asteroid_table_init
+    call init_enemy_object
+  +:
   ; ---------------------------------------------------------------------------
 
   call is_reset_pressed

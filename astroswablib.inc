@@ -92,22 +92,6 @@
 
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
-  conditional_respawn:
-    ; Entry: IX = Pointer to struct.
-    ;        A = value 1, B = value 2, HL = pointer to init.
-    ;        C = Mode
-    ; Destroys: None.
-    dec c
-    jp nz,+
-      ; Mode 1: A is bigger than B.
-      cp b
-      ret c
-        call init_enemy_object
-    +:
-  ret
-    ; Mode definitions.
-    .equ A_IS_BIGGER_THAN_B 1
-  ;
   move_enemy_object:
     ; Entry: IX = Pointer to struct.
     ; Uses: None.
@@ -137,10 +121,6 @@
     ldir
     RESTORE_REGISTERS
   ret
-
-  asteroid_table_init:
-    .db ASTEROID_START_Y, ASTEROID_START_x, SPRITE_4, ASTEROID_SPEED_INIT
-  asteroid_table_init_end:
 
 
 
