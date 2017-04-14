@@ -107,7 +107,7 @@
     ld (gun_released),a
     ;
     ld ix,asteroid
-    ld hl,asteroid_init_table
+    ld hl,asteroid_activation_table
     call init_enemy_object
     ;
     ; Wipe sprites.
@@ -129,11 +129,11 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
-  asteroid_init_table:
+  asteroid_activation_table:
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
     .db ASTEROID_ACTIVE
-    .dw asteroid_init_table
-  asteroid_init_table_end:
+    .dw asteroid_activation_table
+  asteroid_activation_table_end:
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
@@ -258,13 +258,15 @@
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
   ld ix,asteroid
-  call activate_enemy_object
+  ld a,ASTEROID_REACTIVATE_VALUE
+  ld hl,asteroid_activation_table
+  call rnd_activate_enemy_object
   call move_enemy_object
   call draw_enemy_object
   ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
   jp c,+
-    ;ld hl,asteroid_init_table
+    ;ld hl,asteroid_activation_table
     ;call init_enemy_object
     ld a,ASTEROID_SLEEPING
     ld (ix+enemy_object.state),a

@@ -94,17 +94,26 @@
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
 
-  activate_enemy_object:
+  rnd_activate_enemy_object:
     ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to activation table.
+    ;        A = Chance value.
     ; Uses:
+    push bc
+    push hl
+    ld b,a
     ld a,(ix+enemy_object.state)
     cp ASTEROID_SLEEPING
-    ret nz
+    jp nz,+
       call get_random_number
-      cp ASTEROID_RESPAWN_VALUE
-      ret nc
-        ld hl,asteroid_init_table
+      cp b
+      jp nc,+
+        ;ld hl,asteroid_activation_table
         call init_enemy_object
+    +:
+    pop bc
+    pop hl
+
   ret
 
   move_enemy_object:
