@@ -45,12 +45,7 @@
   .equ ASTEROID_SPEED_INIT 2
   .equ GROUND_LEVEL SWABBY_Y_INIT
 
-  .struct enemy_object
-    y db
-    x db
-    sprite db
-    speed db
-  .endst
+
 ;
 ; Sound:
   .equ SOUND_BANK 5

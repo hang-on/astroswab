@@ -80,18 +80,18 @@
 .ends
 
 ; -----------------------------------------------------------------------------
-.section "Asteroids" free
+; ENEMY OBJECTS
 ; -----------------------------------------------------------------------------
-  ; Functions that work on the asteroid instane of enemy_object structure.
-  crash_asteroid:
-    ld hl,asteroid.y
-    ld a,(hl)
-    cp GROUND_LEVEL
-    ret c
-      ld hl,asteroid_table_init
-      call init_enemy_object
-    ret
-  ;
+.struct enemy_object
+  y db
+  x db
+  sprite db
+  speed db
+  init_table dw
+.endst
+
+.section "Enemy objects" free
+  ; Functions that work on the enemy_object structure.
   conditional_respawn:
     ; Entry: IX = Pointer to struct.
     ;        A = value 1, B = value 2, HL = pointer to init.

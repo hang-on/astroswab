@@ -1,6 +1,7 @@
 .include "bluelib.inc"
-.include "header.inc"
 .include "astroswablib.inc"
+.include "header.inc"
+
 .include "psglib.inc"
 ;
 .bank 0 slot 0
