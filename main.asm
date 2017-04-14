@@ -104,7 +104,9 @@
     ld (ix+12),a
     ld a,TRUE
     ld (gun_released),a
-
+    ;
+    call init_asteroid
+    ;
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -240,8 +242,9 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
-  call init_asteroids
+  call move_asteroid
   call draw_asteroid
+
 
 
   call is_reset_pressed

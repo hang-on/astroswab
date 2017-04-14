@@ -83,11 +83,17 @@
 .section "Modules" free
 ; -----------------------------------------------------------------------------
 
+  move_asteroid:
+    ld hl,asteroid_table
+    inc (hl)
+  ret
+  ;
   draw_asteroid:
     ld ix,asteroid_table
     call add_metasprite
   ret
-  init_asteroids:
+  ;
+  init_asteroid:
     ld hl,asteroid_table_init
     ld de,asteroid_table
     ld bc,asteroid_table_init_end-asteroid_table_init
