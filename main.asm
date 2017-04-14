@@ -141,7 +141,6 @@
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
     .db ENEMY_OBJECT_ACTIVE
     .dw asteroid_activation_table
-  asteroid_activation_table_end:
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4

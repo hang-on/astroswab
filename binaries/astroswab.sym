@@ -167,7 +167,6 @@
 0000:017b dummy_text
 0000:0193 dummy_text2
 0000:01ab asteroid_activation_table
-0000:01b2 asteroid_activation_table_end
 0000:01b2 asteroid_sprite_table
 0000:01b6 run_scene_1
 0000:0278 activate_bullet_end
