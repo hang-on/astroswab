@@ -133,7 +133,7 @@
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
     .dw asteroid_init_table
   asteroid_init_table_end:
-  asteroid_shape_table:
+  asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
   ; ---------------------------------------------------------------------------

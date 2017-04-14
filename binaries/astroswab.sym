@@ -130,7 +130,7 @@
 0000:0188 dummy_text2
 0000:01a0 asteroid_init_table
 0000:01a6 asteroid_init_table_end
-0000:01a6 asteroid_shape_table
+0000:01a6 asteroid_sprite_table
 0000:01aa run_scene_1
 0000:026c activate_bullet_end
 0000:02c9 prepare_devmenu

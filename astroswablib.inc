@@ -127,7 +127,7 @@
     ld (ix+enemy_object.x),a
     call get_random_number
     and %00000011
-    ld hl,asteroid_shape_table
+    ld hl,asteroid_sprite_table
     ld d,0
     ld e,a
     add hl,de
