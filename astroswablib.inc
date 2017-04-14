@@ -101,7 +101,7 @@
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to activation table.
     ;        A = Chance value.
-    ; Uses:
+    ; Uses: None.
     push bc
     push hl
     ld b,a
@@ -163,7 +163,5 @@
     ld (ix+enemy_object.sprite),a
     RESTORE_REGISTERS
   ret
-
-
 
 .ends
