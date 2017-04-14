@@ -113,9 +113,8 @@
       jp nc,+
         call init_enemy_object
     +:
-    pop bc
     pop hl
-
+    pop bc
   ret
 
   move_enemy_object:

@@ -272,6 +272,7 @@
   ld e,_sizeof_enemy_object
   -:
     push bc
+    push de
     ld a,ASTEROID_REACTIVATE_VALUE
     ld hl,asteroid_activation_table
     call rnd_activate_enemy_object
@@ -283,8 +284,9 @@
       ld a,ENEMY_OBJECT_INACTIVE
       ld (ix+enemy_object.state),a
     +:
-    add ix,de
+    pop de
     pop bc
+    add ix,de
   djnz -
 
   ; ---------------------------------------------------------------------------
