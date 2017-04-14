@@ -111,7 +111,7 @@
     ld c,_sizeof_enemy_object
     ld ix,asteroid
     -:
-      ld hl,asteroid_activation_table
+      ld hl,asteroid_initialization_table
       call init_enemy_object
       ld d,0
       ld e,c
@@ -137,6 +137,10 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
+  asteroid_initialization_table:
+    .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
+    .db ENEMY_OBJECT_INACTIVE
+    .dw asteroid_activation_table
   asteroid_activation_table:
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
     .db ENEMY_OBJECT_ACTIVE
@@ -271,8 +275,6 @@
   ld d,0
   ld e,_sizeof_enemy_object
   -:
-    push bc
-    push de
     ld a,ASTEROID_REACTIVATE_VALUE
     ld hl,asteroid_activation_table
     call rnd_activate_enemy_object
@@ -284,8 +286,6 @@
       ld a,ENEMY_OBJECT_INACTIVE
       ld (ix+enemy_object.state),a
     +:
-    pop de
-    pop bc
     add ix,de
   djnz -
 
