@@ -32,7 +32,7 @@
     ; Put a 16x16 metasprite in the SAT.
     ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
     ;             and IX+2 is the character code.
-    ; Uses: AF, BC, DE, HL, IX.
+    ; Uses: AF, BC, DE, HL
     ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
     ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
     ld d,4
@@ -80,27 +80,66 @@
 .ends
 
 ; -----------------------------------------------------------------------------
-.section "Modules" free
+.section "Asteroids" free
 ; -----------------------------------------------------------------------------
-
-  move_asteroid:
-    ld hl,asteroid_table
-    inc (hl)
+  ; Functions that work on the asteroid instane of enemy_object structure.
+  crash_asteroid:
+    ld hl,asteroid.y
+    ld a,(hl)
+    cp GROUND_LEVEL
+    ret c
+      ld hl,asteroid_table_init
+      call init_enemy_object
+    ret
+  ;
+  conditional_respawn:
+    ; Entry: IX = Pointer to struct.
+    ;        A = value 1, B = value 2, HL = pointer to init.
+    ;        C = Mode
+    ; Destroys: None.
+    dec c
+    jp nz,+
+      ; Mode 1: A is bigger than B.
+      cp b
+      ret c
+        call init_enemy_object
+    +:
+  ret
+    ; Mode definitions.
+    .equ A_IS_BIGGER_THAN_B 1
+  ;
+  move_enemy_object:
+    ; Entry: IX = Pointer to struct.
+    ; Uses: None.
+    push af
+    ld a,(ix+enemy_object.y)
+    add a,(ix+enemy_object.speed)
+    ld (ix+enemy_object.y),a
+    pop af
   ret
   ;
-  draw_asteroid:
-    ld ix,asteroid_table
+  draw_enemy_object:
+    ; Entry: IX = Pointer to struct.
+    ; No registers destroyed.
+    SAVE_REGISTERS
     call add_metasprite
+    RESTORE_REGISTERS
   ret
   ;
-  init_asteroid:
-    ld hl,asteroid_table_init
-    ld de,asteroid_table
-    ld bc,asteroid_table_init_end-asteroid_table_init
+  init_enemy_object:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to initialization table.
+    ; Saves all registers.
+    SAVE_REGISTERS
+    push ix
+    pop de
+    ld bc,_sizeof_enemy_object
     ldir
+    RESTORE_REGISTERS
   ret
+
   asteroid_table_init:
-    .db ASTEROID_START_Y, ASTEROID_START_x, SPRITE_4
+    .db ASTEROID_START_Y, ASTEROID_START_x, SPRITE_4, ASTEROID_SPEED_INIT
   asteroid_table_init_end:
 
 

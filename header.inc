@@ -42,6 +42,15 @@
 
   .equ ASTEROID_START_Y 50
   .equ ASTEROID_START_x 50
+  .equ ASTEROID_SPEED_INIT 2
+  .equ GROUND_LEVEL SWABBY_Y_INIT
+
+  .struct enemy_object
+    y db
+    x db
+    sprite db
+    speed db
+  .endst
 ;
 ; Sound:
   .equ SOUND_BANK 5
@@ -66,5 +75,5 @@
   gun_delay db
   bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
   ;
-  asteroid_table dsb 3
+  asteroid instanceof enemy_object
 .ends

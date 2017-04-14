@@ -105,7 +105,9 @@
     ld a,TRUE
     ld (gun_released),a
     ;
-    call init_asteroid
+    ld ix,asteroid
+    ld hl,asteroid_table_init
+    call init_enemy_object
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -242,10 +244,16 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
-  call move_asteroid
-  call draw_asteroid
+  ld ix,asteroid
+  call move_enemy_object
+  call draw_enemy_object
+  ld a,(asteroid.y)
+  ld b,GROUND_LEVEL
+  ld c,A_IS_BIGGER_THAN_B
+  ld hl,asteroid_table_init
+  call conditional_respawn
 
-
+  ; ---------------------------------------------------------------------------
 
   call is_reset_pressed
   jp nc,+
