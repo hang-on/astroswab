@@ -125,6 +125,14 @@
     ld (ix+enemy_object.speed),a
     call get_random_number
     ld (ix+enemy_object.x),a
+    call get_random_number
+    and %00000011
+    ld hl,asteroid_shape_table
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
+    ld (ix+enemy_object.sprite),a
     RESTORE_REGISTERS
   ret
 

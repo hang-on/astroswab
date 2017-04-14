@@ -134,8 +134,8 @@
     .dw asteroid_init_table
   asteroid_init_table_end:
   asteroid_shape_table:
-    .db SPRITE_4, SPRITE_5, SPRITE_6
-  asteroid_shape_table_end:
+    ; Note - only first four items are taken into account.
+    .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
   run_scene_1:
