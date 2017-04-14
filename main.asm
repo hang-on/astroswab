@@ -107,7 +107,7 @@
     ld (gun_released),a
     ;
     ld ix,asteroid
-    ld hl,asteroid_table_init
+    ld hl,asteroid_init_table
     call init_enemy_object
     ;
     ; Wipe sprites.
@@ -129,10 +129,13 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
-  asteroid_table_init:
+  asteroid_init_table:
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
-    .dw asteroid_table_init
-  asteroid_table_init_end:
+    .dw asteroid_init_table
+  asteroid_init_table_end:
+  asteroid_shape_table:
+    .db SPRITE_4, SPRITE_5, SPRITE_6
+  asteroid_shape_table_end:
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
   run_scene_1:
@@ -259,7 +262,7 @@
   ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
   jp c,+
-    ld hl,asteroid_table_init
+    ld hl,asteroid_init_table
     call init_enemy_object
   +:
   ; ---------------------------------------------------------------------------

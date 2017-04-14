@@ -123,7 +123,8 @@
     and %00000001
     add a,(ix+enemy_object.speed)
     ld (ix+enemy_object.speed),a
-
+    call get_random_number
+    ld (ix+enemy_object.x),a
     RESTORE_REGISTERS
   ret
 
