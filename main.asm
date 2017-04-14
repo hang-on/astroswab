@@ -258,6 +258,7 @@
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
   ld ix,asteroid
+  call activate_enemy_object
   call move_enemy_object
   call draw_enemy_object
   ld a,(ix+enemy_object.y)
