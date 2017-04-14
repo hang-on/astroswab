@@ -86,7 +86,7 @@
   y db
   x db
   sprite db
-  speed db
+  yspeed db
   state db
 .endst
 
@@ -105,8 +105,11 @@
     ldir
   ret
   ;
-  
-
+  move_enemy_object_vertically:
+    ld a,(ix+enemy_object.yspeed)
+    add a,(ix+enemy_object.y)
+    ld (ix+enemy_object.y),a
+  ret
   draw_enemy_object:
     ; Entry: IX = Pointer to struct.
     ; No registers destroyed.

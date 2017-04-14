@@ -111,16 +111,6 @@
     ld hl,enemy_object_init_table
     call init_enemy_object
     ;
-    ; Spawn asteroid.
-    xor a
-    ld (ix+0),a
-    call get_random_number
-    ld (ix+1),a
-    ld a,SPRITE_4
-    ld (ix+2),a
-    ld a,ASTEROID_SPEED_INIT
-    ld (ix+3),a
-    call activate_enemy_object
     ;
     ;
     ; Wipe sprites.
@@ -274,10 +264,20 @@
 
   debug2:
     ld ix,asteroid
-
-
-
-
+    call is_button_2_pressed
+    jp nc,+
+      ; Spawn asteroid.
+      xor a
+      ld (ix+0),a
+      call get_random_number
+      ld (ix+1),a
+      ld a,SPRITE_4
+      ld (ix+2),a
+      ld a,ASTEROID_YSPEED_INIT
+      ld (ix+3),a
+      call activate_enemy_object
+    +:
+    call move_enemy_object_vertically
     call draw_enemy_object
 
 
