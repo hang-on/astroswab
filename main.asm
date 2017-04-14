@@ -240,6 +240,10 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
+  call init_asteroids
+  call draw_asteroid
+
+
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_DEVMENU

@@ -78,3 +78,24 @@
   .equ SPRITE_15 56
   .equ SPRITE_16 58
 .ends
+
+; -----------------------------------------------------------------------------
+.section "Modules" free
+; -----------------------------------------------------------------------------
+
+  draw_asteroid:
+    ld ix,asteroid_table
+    call add_metasprite
+  ret
+  init_asteroids:
+    ld hl,asteroid_table_init
+    ld de,asteroid_table
+    ld bc,3
+    ldir
+  ret
+  asteroid_table_init:
+    .db 50, 50, SPRITE_4
+
+
+
+.ends

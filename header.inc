@@ -62,4 +62,6 @@
   gun_released db
   gun_delay db
   bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
+  ;
+  asteroid_table dsb 3
 .ends
