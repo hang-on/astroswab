@@ -106,9 +106,17 @@
     ld a,TRUE
     ld (gun_released),a
     ;
+    debug1:
+    ld b,ASTEROID_MAX
+    ld c,_sizeof_enemy_object
     ld ix,asteroid
-    ld hl,asteroid_activation_table
-    call init_enemy_object
+    -:
+      ld hl,asteroid_activation_table
+      call init_enemy_object
+      ld d,0
+      ld e,c
+      add ix,de
+    djnz -
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -257,7 +265,11 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
+
   ld ix,asteroid
+  ld b,ASTEROID_MAX
+  ld c,_sizeof_enemy_object
+  -:
   ld a,ASTEROID_REACTIVATE_VALUE
   ld hl,asteroid_activation_table
   call rnd_activate_enemy_object
@@ -266,11 +278,14 @@
   ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
   jp c,+
-    ;ld hl,asteroid_activation_table
-    ;call init_enemy_object
     ld a,ENEMY_OBJECT_INACTIVE
     ld (ix+enemy_object.state),a
   +:
+  ld d,0
+  ld e,c
+  add ix,de
+  djnz -
+
   ; ---------------------------------------------------------------------------
 
   call is_reset_pressed

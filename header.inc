@@ -45,6 +45,7 @@
   .equ ASTEROID_SPEED_INIT 1
   .equ GROUND_LEVEL SWABBY_Y_INIT
   .equ ASTEROID_REACTIVATE_VALUE 3
+  .equ ASTEROID_MAX 5
 ;
 ; Sound:
   .equ SOUND_BANK 5
@@ -69,5 +70,5 @@
   gun_delay db
   bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
   ;
-  asteroid instanceof enemy_object
+  asteroid instanceof enemy_object ASTEROID_MAX
 .ends
