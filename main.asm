@@ -106,8 +106,22 @@
     ld a,TRUE
     ld (gun_released),a
     ;
+    ; init (wipe struct):
     ld ix,asteroid
-    call deactivate_enemy_object
+    ld hl,enemy_object_init_table
+    call init_enemy_object
+    ;
+    ; Spawn asteroid.
+    xor a
+    ld (ix+0),a
+    call get_random_number
+    ld (ix+1),a
+    ld a,SPRITE_4
+    ld (ix+2),a
+    ld a,ASTEROID_SPEED_INIT
+    ld (ix+3),a
+    call activate_enemy_object
+    ;
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -128,6 +142,12 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
+  enemy_object_init_table:
+    .rept _sizeof_enemy_object
+      .db 0
+    .endr
+  asteroid_dummy_draw_table:
+    .db 50, 50, SPRITE_4, 1, ENEMY_OBJECT_ACTIVE
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
@@ -254,15 +274,11 @@
 
   debug2:
     ld ix,asteroid
-    ld a,ASTEROID_START_Y
-    ld (ix+enemy_object.y),a
-    ld a,ASTEROID_START_X
-    ld (ix+enemy_object.x),a
-    ld a,SPRITE_4
-    ld (ix+enemy_object.sprite),a
-    ld a,ENEMY_OBJECT_ACTIVE
-    ld (ix+enemy_object.state),a
-    call add_metasprite
+
+
+
+
+    call draw_enemy_object
 
 
 

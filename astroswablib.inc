@@ -96,24 +96,31 @@
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
 
-  move_enemy_object:
-    ; Entry: IX = Pointer to struct.
-    ; Uses: None.
-    push af
-    ld a,(ix+enemy_object.y)
-    add a,(ix+enemy_object.speed)
-    ld (ix+enemy_object.y),a
-    pop af
+  init_enemy_object:
+    ; HL = init table ptr.
+    ; IX = enemy object ptr.
+    push ix
+    pop de
+    ld bc,_sizeof_enemy_object
+    ldir
   ret
   ;
+  
+
   draw_enemy_object:
     ; Entry: IX = Pointer to struct.
     ; No registers destroyed.
-    SAVE_REGISTERS
     ld a,(ix+enemy_object.state)
     cp ENEMY_OBJECT_ACTIVE
     call z,add_metasprite
-    RESTORE_REGISTERS
+  ret
+  ;
+  activate_enemy_object:
+    ; Entry: IX = Pointer to struct.
+    push af
+    ld a,ENEMY_OBJECT_ACTIVE
+    ld (ix+enemy_object.state),a
+    pop af
   ret
   ;
   deactivate_enemy_object:
