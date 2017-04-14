@@ -106,17 +106,8 @@
     ld a,TRUE
     ld (gun_released),a
     ;
-    debug1:
-    ld b,ASTEROID_MAX
-    ld c,_sizeof_enemy_object
     ld ix,asteroid
-    -:
-      ld hl,asteroid_initialization_table
-      call init_enemy_object
-      ld d,0
-      ld e,c
-      add ix,de
-    djnz -
+    call deactivate_enemy_object
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -137,14 +128,6 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
-  asteroid_initialization_table:
-    .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
-    .db ENEMY_OBJECT_INACTIVE
-    .dw asteroid_activation_table
-  asteroid_activation_table:
-    .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
-    .db ENEMY_OBJECT_ACTIVE
-    .dw asteroid_activation_table
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
@@ -270,24 +253,18 @@
   ; ---------------------------------------------------------------------------
 
   debug2:
-  ld ix,asteroid
-  ld b,ASTEROID_MAX
-  ld d,0
-  ld e,_sizeof_enemy_object
-  -:
-    ld a,ASTEROID_REACTIVATE_VALUE
-    ld hl,asteroid_activation_table
-    call rnd_activate_enemy_object
-    call move_enemy_object
-    call draw_enemy_object
-    ld a,(ix+enemy_object.y)
-    cp GROUND_LEVEL
-    jp c,+
-      ld a,ENEMY_OBJECT_INACTIVE
-      ld (ix+enemy_object.state),a
-    +:
-    add ix,de
-  djnz -
+    ld ix,asteroid
+    ld a,ASTEROID_START_Y
+    ld (ix+enemy_object.y),a
+    ld a,ASTEROID_START_X
+    ld (ix+enemy_object.x),a
+    ld a,SPRITE_4
+    ld (ix+enemy_object.sprite),a
+    ld a,ENEMY_OBJECT_ACTIVE
+    ld (ix+enemy_object.state),a
+    call add_metasprite
+
+
 
   ; ---------------------------------------------------------------------------
 

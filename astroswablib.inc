@@ -88,7 +88,6 @@
   sprite db
   speed db
   state db
-  init_table dw
 .endst
 
 .equ ENEMY_OBJECT_ACTIVE 1
@@ -96,26 +95,6 @@
 
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
-
-  rnd_activate_enemy_object:
-    ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to activation table.
-    ;        A = Chance value.
-    ; Uses: None.
-    push bc
-    push hl
-    ld b,a
-    ld a,(ix+enemy_object.state)
-    cp ENEMY_OBJECT_INACTIVE
-    jp nz,+
-      call get_random_number
-      cp b
-      jp nc,+
-        call init_enemy_object
-    +:
-    pop hl
-    pop bc
-  ret
 
   move_enemy_object:
     ; Entry: IX = Pointer to struct.
@@ -137,30 +116,12 @@
     RESTORE_REGISTERS
   ret
   ;
-  init_enemy_object:
+  deactivate_enemy_object:
     ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to initialization table.
-    ; Saves all registers.
-    SAVE_REGISTERS
-    push ix
-    pop de
-    ld bc,_sizeof_enemy_object
-    ldir
-    call get_random_number
-    and %00000001
-    add a,(ix+enemy_object.speed)
-    ld (ix+enemy_object.speed),a
-    call get_random_number
-    ld (ix+enemy_object.x),a
-    call get_random_number
-    and %00000011
-    ld hl,asteroid_sprite_table
-    ld d,0
-    ld e,a
-    add hl,de
-    ld a,(hl)
-    ld (ix+enemy_object.sprite),a
-    RESTORE_REGISTERS
+    push af
+    ld a,ENEMY_OBJECT_INACTIVE
+    ld (ix+enemy_object.state),a
+    pop af
   ret
 
 .ends
