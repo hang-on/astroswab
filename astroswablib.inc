@@ -91,6 +91,9 @@
   init_table dw
 .endst
 
+.equ ENEMY_OBJECT_ACTIVE 1
+.equ ENEMY_OBJECT_INACTIVE 0
+
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
 
@@ -103,12 +106,11 @@
     push hl
     ld b,a
     ld a,(ix+enemy_object.state)
-    cp ASTEROID_SLEEPING
+    cp ENEMY_OBJECT_INACTIVE
     jp nz,+
       call get_random_number
       cp b
       jp nc,+
-        ;ld hl,asteroid_activation_table
         call init_enemy_object
     +:
     pop bc
@@ -131,7 +133,7 @@
     ; No registers destroyed.
     SAVE_REGISTERS
     ld a,(ix+enemy_object.state)
-    cp ASTEROID_ACTIVE
+    cp ENEMY_OBJECT_ACTIVE
     call z,add_metasprite
     RESTORE_REGISTERS
   ret

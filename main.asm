@@ -131,7 +131,7 @@
     .asc "  Max: 00000    Rank: 0#"
   asteroid_activation_table:
     .db ASTEROID_START_Y, ASTEROID_START_X, SPRITE_4, ASTEROID_SPEED_INIT
-    .db ASTEROID_ACTIVE
+    .db ENEMY_OBJECT_ACTIVE
     .dw asteroid_activation_table
   asteroid_activation_table_end:
   asteroid_sprite_table:
@@ -268,7 +268,7 @@
   jp c,+
     ;ld hl,asteroid_activation_table
     ;call init_enemy_object
-    ld a,ASTEROID_SLEEPING
+    ld a,ENEMY_OBJECT_INACTIVE
     ld (ix+enemy_object.state),a
   +:
   ; ---------------------------------------------------------------------------
