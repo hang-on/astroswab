@@ -268,7 +268,9 @@
       ld (ix+enemy_object.x),a
       ld a,SPRITE_4
       ld (ix+enemy_object.sprite),a
-      ld a,ASTEROID_YSPEED_INIT
+      call get_random_number
+      and ASTEROID_SPEED_MODIFIER
+      inc a
       ld (ix+enemy_object.yspeed),a
       call activate_enemy_object
   +:
