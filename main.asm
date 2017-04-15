@@ -91,7 +91,7 @@
     ld (swabby.y),a
     ld a,SWABBY_X_INIT
     ld (swabby.x),a
-    ld a,SPRITE_1
+    ld a,SPRITE_3
     ld (swabby.sprite),a
     ;
     ld a,GUN_DELAY_INIT
@@ -146,7 +146,8 @@
   call begin_sprites
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
-
+  ld ix,swabby
+  call add_metasprite
   ;
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
