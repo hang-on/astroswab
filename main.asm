@@ -144,6 +144,11 @@
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
+  call is_right_pressed
+  jp nc,+
+    ld hl,swabby.x
+    inc (hl)
+  +:
   call draw_player_object
   ;
   ; ---------------------------------------------------------------------------
