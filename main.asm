@@ -144,18 +144,21 @@
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
-  call is_right_pressed
+  ld a,SWABBY_IDLE_SPRITE
+  ld (ix+player_object.sprite),a
+  ;
+  call is_right_pressed             ; Check if player press right.
   ld a,0
   jp nc,+
-    ld a,SWABBY_RIGHT_SPRITE
+    ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
     ld (ix+player_object.sprite),a
     ld a,(ix+player_object.xspeed)
-    cp SWABBY_X_SPEED_MAX
-    jp z,++
-      inc a
-      jp ++
+    cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
+    jp z,++                         ; If we are already there, skip ahead...
+      inc a                         ; If not, then accelerate a bit.
+      jp ++                         ; Skip over the dpad-left check below.
   +:
-  call is_left_pressed
+  call is_left_pressed              ; Check if player press left.
   ld a,0
   jp nc,++
     ld a,SWABBY_LEFT_SPRITE
@@ -165,15 +168,8 @@
     jp z,++
       dec a
   ++:
-  ld (ix+player_object.xspeed),a
+  ld (ix+player_object.xspeed),a    ; Load new value into Swabby's xspeed.
   ;
-  ;
-  ld a,(ix+player_object.xspeed)
-  or a
-  jp nz,+
-    ld a,SWABBY_IDLE_SPRITE
-    ld (ix+player_object.sprite),a
-  +:
   call move_player_object
   call draw_player_object
   ;
