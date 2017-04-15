@@ -251,22 +251,23 @@
   ld ix,asteroid
   ld a,(ix+enemy_object.state)
   cp ENEMY_OBJECT_INACTIVE
-  jp nz,++
+  jp nz,+
     call get_random_number
     cp ASTEROID_REACTIVATE_VALUE
-    jp nc,++
+    jp nc,+
       ; Activate asteroid.
       xor a
       ld (ix+enemy_object.y),a
       call get_random_number
-      cp 8
-      jp nc,+
-        ld a,8
-      +:
-      cp 230
-      jp c,+
-        ld a,230
-      +:
+      and %01111111             ; rnd(128)
+      ld b,a
+      call get_random_number
+      and %00111111             ; rnd(64)
+      add a,b
+      ld b,a
+      call get_random_number
+      and %00011111             ; rnd(32)
+      add a,b
       ld (ix+enemy_object.x),a
       call get_random_number
       and ASTEROID_SPRITE_MASK
@@ -281,7 +282,7 @@
       inc a
       ld (ix+enemy_object.yspeed),a
       call activate_enemy_object
-  ++:
+  +:
   ; Perform crash test.
   ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
