@@ -78,6 +78,34 @@
   .equ SPRITE_15 56
   .equ SPRITE_16 58
 .ends
+; Random number generator.
+.section "rnd" free
+  get_random_number:
+    ld hl,(rnd_seed)
+    ld a,h
+    and 31
+    ld h,a
+    ld a,(hl)
+    inc hl
+    ld (rnd_seed),hl
+  ret
+
+  randomize:
+    ld a,(randomizer_table)
+    ld b,a
+    ld a,(frame_counter)
+    add a,b
+    cpl
+    ld b,a
+    ld a,r
+    sub b
+    ld (rnd_seed),a
+  ret
+
+  randomizer_table:
+    .dbrnd 1,0,255
+.ends
+
 
 ; -----------------------------------------------------------------------------
 ; ENEMY OBJECTS

@@ -78,6 +78,8 @@
     ld hl,sprite_tiles
     call load_vram
     ;
+    call randomize
+    ;
     ld b,22
     ld c,5
     ld hl,dummy_text
@@ -110,7 +112,6 @@
     ld ix,asteroid
     ld hl,enemy_object_init_table
     call init_enemy_object
-    ;
     ;
     ;
     ; Wipe sprites.
@@ -184,8 +185,8 @@
   jp c,+                          ; Is the player pressing the fire button?
     ld a,TRUE                     ; No - then set gun flag (to prevent
     ld (gun_released),a           ; auto fire).
-    ld a,r                        ; Seed the randomizer!
-    ld hl,(rnd_generator_word)
+    ;ld a,r                        ; Seed the randomizer!
+    ;ld hl,(rnd_generator_word)
     add a,(hl)
     ld (hl),a
   +:                              ; PROCESS GUN TIMER.
@@ -262,11 +263,13 @@
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
 
-  debug2:
-    ld ix,asteroid
-    call is_button_2_pressed
-    jp nc,+
-      ; Spawn asteroid.
+  ld ix,asteroid
+  ld a,(ix+enemy_object.state)
+  cp ENEMY_OBJECT_INACTIVE
+  jp nz,+
+    ld a,r
+    or 0
+    jp nz,+
       xor a
       ld (ix+0),a
       call get_random_number
@@ -276,14 +279,22 @@
       ld a,ASTEROID_YSPEED_INIT
       ld (ix+3),a
       call activate_enemy_object
-    +:
-    call move_enemy_object_vertically
-    call draw_enemy_object
+  +:
+
+
+
+  ; Perform crash test.
+  ld a,(ix+enemy_object.y)
+  cp GROUND_LEVEL
+  call nc,deactivate_enemy_object
+  call move_enemy_object_vertically
+  call draw_enemy_object
 
 
 
   ; ---------------------------------------------------------------------------
-
+  ld hl,frame_counter
+  inc (hl)
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_DEVMENU
