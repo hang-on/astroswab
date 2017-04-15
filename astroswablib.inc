@@ -180,3 +180,23 @@
   ret
 
 .ends
+
+; -----------------------------------------------------------------------------
+; PLAYER OBJECTS
+; -----------------------------------------------------------------------------
+.struct player_object
+  y db
+  x db
+  sprite db
+  yspeed db
+  xspeed db
+  state db
+.endst
+
+.equ PLAYER_OBJECT_ACTIVE 1
+.equ PLAYER_OBJECT_INACTIVE 0
+
+.section "Player objects" free
+  ; Functions that work on the player_object structure.
+  ;
+.ends

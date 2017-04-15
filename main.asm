@@ -88,11 +88,12 @@
     call print
     ; Initialize variables
     ld a,SWABBY_Y_INIT
-    ld (swabby_y),a
+    ld (swabby.y),a
     ld a,SWABBY_X_INIT
-    ld (swabby_x),a
+    ld (swabby.x),a
     ld a,SPRITE_1
-    ld (swabby_sprite),a
+    ld (swabby.sprite),a
+    ;
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a
     xor a
@@ -145,31 +146,8 @@
   call begin_sprites
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
-  call is_right_pressed       ; See if player is pressing right.
-  jp nc,+                     ; If not, skip forward.
-    ld a,SPRITE_1             ; Else set sprite to "Swabby looking right".
-    ld (swabby_sprite),a
-    ld a,(swabby_x)           ; Get Swabby x-pos.
-    ld b,SWABBY_SPEED         ; Get speed from constant.
-    add a,b                   ; Apply speed to x-pos.
-    ld (swabby_x),a           ; And load it back into swabby_x.
-    jp ++                     ; Skip past the other two move options.
-  +:                          ; OK, player is not pressing right...
-  call is_left_pressed        ; Is he pressing left, then?
-  jp nc,+                     ; If not, skip forward.
-    ld a,SPRITE_2             ; Else set sprite to "Swabby looking left".
-    ld (swabby_sprite),a      ; And do almost like above...
-    ld a,(swabby_x)
-    ld b,SWABBY_SPEED
-    sub b
-    ld (swabby_x),a
-    jp ++
-  +:                          ; OK, not pressing right, nor left...
-    ld a,SPRITE_3             ; Set sprite to "Swabby's back".
-    ld (swabby_sprite),a      ;
-  ++:                         ; We have fresh sprite info.
-  ld ix,swabby_y              ; Pass Swabby data block as function argument.
-  call add_metasprite         ; Put the tiles into the SAT.
+
+  ;
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
   call is_button_1_pressed        ; AUTO FIRE PREVENTION AND RND_SEED
@@ -200,10 +178,10 @@
           ld a,(ix+0)             ; Search for sleeping bullet.
           cp BULLET_SLEEPING      ;
           jp nz,+                 ; If no luck, goto end of loop to try next.
-            ld a,(swabby_y)       ; Else, activate this bullet!
+            ld a,(swabby.y)       ; Else, activate this bullet!
             dec a                 ; Add a little y,x offset to bullet sprite in
             ld (ix+1),a           ; relation to Swabby's current location.
-            ld a,(swabby_x)       ;
+            ld a,(swabby.x)       ;
             add a,4               ;
             ld (ix+2),a           ;
             ld a,BULLET_ACTIVE    ; Activate this bullet!

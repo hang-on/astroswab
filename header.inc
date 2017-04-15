@@ -60,9 +60,8 @@
   menu_timer db
   menu_state db
   ;
-  swabby_y db
-  swabby_x db
-  swabby_sprite db
+  swabby instanceof player_object
+  ;
   ;
   gun_timer db
   gun_released db
