@@ -40,11 +40,9 @@
   .equ BULLET_SPRITE 169
   .equ GUN_DELAY_INIT 12
 
-  .equ ASTEROID_START_Y 50
-  .equ ASTEROID_START_X 50
   .equ ASTEROID_YSPEED_INIT 2
   .equ GROUND_LEVEL SWABBY_Y_INIT
-  .equ ASTEROID_REACTIVATE_VALUE 1
+  .equ ASTEROID_REACTIVATE_VALUE 5
   .equ ASTEROID_MAX 5
 ;
 ; Sound:
@@ -71,5 +69,6 @@
   bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
   ;
   rnd_seed dw
+
   asteroid instanceof enemy_object ASTEROID_MAX
 .ends

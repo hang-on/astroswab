@@ -110,7 +110,6 @@
     ;
     ; init (wipe struct):
     ld ix,asteroid
-    ld hl,enemy_object_init_table
     call init_enemy_object
     ;
     ;
@@ -133,12 +132,6 @@
     .asc "Score: 00000   Lives: 8#"
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
-  enemy_object_init_table:
-    .rept _sizeof_enemy_object
-      .db 0
-    .endr
-  asteroid_dummy_draw_table:
-    .db 50, 50, SPRITE_4, 1, ENEMY_OBJECT_ACTIVE
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
@@ -185,8 +178,6 @@
   jp c,+                          ; Is the player pressing the fire button?
     ld a,TRUE                     ; No - then set gun flag (to prevent
     ld (gun_released),a           ; auto fire).
-    ;ld a,r                        ; Seed the randomizer!
-    ;ld hl,(rnd_generator_word)
     add a,(hl)
     ld (hl),a
   +:                              ; PROCESS GUN TIMER.
@@ -198,6 +189,7 @@
   +:                              ; ACTIVATE BULLET.
   call is_button_1_pressed        ; If the fire button is not pressed, skip...
   jp nc,activate_bullet_end       ; Else proceed to check gun timer.
+    call randomize                ; Re-seed random number generator!
     ld a,(gun_timer)              ; Check gun timer (delay between shots).
     or a                          ;
     jp nz,activate_bullet_end     ; If timer not set, skip...
@@ -267,17 +259,17 @@
   ld a,(ix+enemy_object.state)
   cp ENEMY_OBJECT_INACTIVE
   jp nz,+
-    ld a,r
-    or 0
-    jp nz,+
+    call get_random_number
+    cp ASTEROID_REACTIVATE_VALUE
+    jp nc,+
       xor a
-      ld (ix+0),a
+      ld (ix+enemy_object.y),a
       call get_random_number
-      ld (ix+1),a
+      ld (ix+enemy_object.x),a
       ld a,SPRITE_4
-      ld (ix+2),a
+      ld (ix+enemy_object.sprite),a
       ld a,ASTEROID_YSPEED_INIT
-      ld (ix+3),a
+      ld (ix+enemy_object.yspeed),a
       call activate_enemy_object
   +:
 

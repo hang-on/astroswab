@@ -78,32 +78,50 @@
   .equ SPRITE_15 56
   .equ SPRITE_16 58
 .ends
-; Random number generator.
-.section "rnd" free
+
+; -----------------------------------------------------------------------------
+.section "Random number generation" free
+; -----------------------------------------------------------------------------
   get_random_number:
+    ; SMS-Power!
+    ; Returns an 8-bit pseudo-random number in a
+    push hl
     ld hl,(rnd_seed)
-    ld a,h
-    and 31
-    ld h,a
-    ld a,(hl)
-    inc hl
+    ld a,h         ; get high byte
+    rrca           ; rotate right by 2
+    rrca
+    xor h          ; xor with original
+    rrca           ; rotate right by 1
+    xor l          ; xor with low byte
+    rrca           ; rotate right by 4
+    rrca
+    rrca
+    rrca
+    xor l          ; xor again
+    rra            ; rotate right by 1 through carry
+    adc hl,hl      ; add RandomNumberGeneratorWord to itself
+    jr nz,+
+      ld hl,$733c  ; if last xor resulted in zero then re-seed.
+    +:
+    ld a,r         ; r = refresh register = semi-random number
+    xor l          ; xor with l which is fairly random
     ld (rnd_seed),hl
-  ret
-
+    pop hl
+  ret              ; return random number in a
+  ;
   randomize:
-    ld a,(randomizer_table)
-    ld b,a
-    ld a,(frame_counter)
-    add a,b
-    cpl
-    ld b,a
-    ld a,r
-    sub b
+    ld hl,randomizer_table
+    ld a,(rnd_seed)
+    add a,(hl)
     ld (rnd_seed),a
+    ld hl,randomizer_table+1
+    ld a,(rnd_seed+1)
+    add a,(hl)
+    ld (rnd_seed+1),a
   ret
-
+  ;
   randomizer_table:
-    .dbrnd 1,0,255
+    .dbrnd 2,1,254
 .ends
 
 
@@ -129,9 +147,14 @@
     ; IX = enemy object ptr.
     push ix
     pop de
+    ld hl,enemy_object_init_table
     ld bc,_sizeof_enemy_object
     ldir
   ret
+  enemy_object_init_table:
+    .rept _sizeof_enemy_object
+      .db 0
+    .endr
   ;
   move_enemy_object_vertically:
     ld a,(ix+enemy_object.yspeed)
