@@ -203,14 +203,6 @@
 .section "Player objects" free
   ; Functions that work on the player_object structure.
   ;
-
-  ;absolute value of A
-  get_absolute_value:
-   bit 7,a
-   ret z
-    neg
-  ret
-
   initialize_player_object:
     ; Entry: HL = Pointer to init table that matches the player object struct.
     ;        IX = Pointer to instance of player object.
@@ -219,7 +211,7 @@
     pop de
     ldir
   ret
-
+  ;
   move_player_object:
     ; Apply yspeed to y and xspeed to x.
     ; Entry: IX = Pointer to instance of player object.
@@ -235,10 +227,9 @@
     add a,b
     ld (ix+player_object.x),a
   ret
-
-
+  ;
   draw_player_object:
-    ; Put a 16x16 metasprite in the SAT.
+    ; Put a 16x16 metasprite representing the player into the SAT.
     ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
     ;             and IX+2 is the character code.
     ; Uses: AF, BC, DE, HL

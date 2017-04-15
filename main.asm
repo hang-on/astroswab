@@ -144,7 +144,7 @@
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
-  ld a,SWABBY_IDLE_SPRITE
+  ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
   ld (ix+player_object.sprite),a
   ;
   call is_right_pressed             ; Check if player press right.
