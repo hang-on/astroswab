@@ -147,6 +147,8 @@
   call is_right_pressed
   ld a,SWABBY_X_SPEED_MIN
   jp nc,+
+    ld a,SWABBY_RIGHT_SPRITE
+    ld (ix+player_object.sprite),a
     ld a,(ix+player_object.xspeed)
     cp SWABBY_X_SPEED_MAX
     jp z,+
@@ -154,6 +156,13 @@
       jp +
   +:
   ld (ix+player_object.xspeed),a
+  ;
+  ld a,(ix+player_object.xspeed)
+  or a
+  jp nz,+
+    ld a,SWABBY_IDLE_SPRITE
+    ld (ix+player_object.sprite),a
+  +:
   call move_player_object
   call draw_player_object
   ;
