@@ -262,11 +262,19 @@
     call get_random_number
     cp ASTEROID_REACTIVATE_VALUE
     jp nc,+
+      ; Activate asteroid.
       xor a
       ld (ix+enemy_object.y),a
       call get_random_number
       ld (ix+enemy_object.x),a
-      ld a,SPRITE_4
+      call get_random_number
+      and %00000011
+      ld hl,asteroid_sprite_table
+      ld d,0
+      ld e,a
+      add hl,de
+      ld a,(hl)
+      ;ld a,SPRITE_4
       ld (ix+enemy_object.sprite),a
       call get_random_number
       and ASTEROID_SPEED_MODIFIER
