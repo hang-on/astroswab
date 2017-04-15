@@ -87,12 +87,9 @@
     ld hl,dummy_text2
     call print
     ; Initialize variables
-    ld a,SWABBY_Y_INIT
-    ld (swabby.y),a
-    ld a,SWABBY_X_INIT
-    ld (swabby.x),a
-    ld a,SPRITE_3
-    ld (swabby.sprite),a
+    ld ix,swabby
+    ld hl,swabby_init_table
+    call initialize_player_object
     ;
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a

@@ -203,6 +203,15 @@
 .section "Player objects" free
   ; Functions that work on the player_object structure.
   ;
+  initialize_player_object:
+    ; Entry: HL = Pointer to init table that matches the player object struct.
+    ;        IX = Pointer to instance of player object.
+    ld bc,_sizeof_player_object
+    push ix
+    pop de
+    ldir
+  ret
+
   draw_player_object:
     ; Put a 16x16 metasprite in the SAT.
     ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X

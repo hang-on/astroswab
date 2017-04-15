@@ -14,6 +14,9 @@
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
+  swabby_init_table:
+    .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
+    .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE
   ;
   ; Menu item strings:
   menu_title:
