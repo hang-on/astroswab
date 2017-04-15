@@ -143,6 +143,7 @@
   ; Functions that work on the enemy_object structure.
 
   init_enemy_object:
+    ; Reset the struct with content from the table below.
     ; HL = init table ptr.
     ; IX = enemy object ptr.
     push ix
