@@ -143,20 +143,27 @@
   ; Functions that work on the enemy_object structure.
   ;
   move_enemy_object_vertically:
+    ; Apply yspeed (+/-) to object's y.
+    ; Uses: None.
+    push af
     ld a,(ix+enemy_object.yspeed)
     add a,(ix+enemy_object.y)
     ld (ix+enemy_object.y),a
+    pop af
   ret
   draw_enemy_object:
     ; Entry: IX = Pointer to struct.
-    ; No registers destroyed.
+    ; Registers used: None.
+    SAVE_REGISTERS                ; Because add_metasprite mess with registers!
     ld a,(ix+enemy_object.state)
     cp ENEMY_OBJECT_ACTIVE
     call z,add_metasprite
+    RESTORE_REGISTERS
   ret
   ;
   activate_enemy_object:
     ; Entry: IX = Pointer to struct.
+    ; Registers used: None.
     push af
     ld a,ENEMY_OBJECT_ACTIVE
     ld (ix+enemy_object.state),a
@@ -165,6 +172,7 @@
   ;
   deactivate_enemy_object:
     ; Entry: IX = Pointer to struct.
+    ; Registers used: None.
     push af
     ld a,ENEMY_OBJECT_INACTIVE
     ld (ix+enemy_object.state),a
