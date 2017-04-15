@@ -146,9 +146,14 @@
   ld ix,swabby
   call is_right_pressed
   jp nc,+
-    ld hl,swabby.x
-    inc (hl)
+    ld a,2
+    ld (ix+player_object.xspeed),a
+    jp ++
   +:
+    ld a,0
+    ld (ix+player_object.xspeed),a
+  ++:
+  call move_player_object
   call draw_player_object
   ;
   ; ---------------------------------------------------------------------------

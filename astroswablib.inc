@@ -212,6 +212,23 @@
     ldir
   ret
 
+  move_player_object:
+    ; Apply yspeed to y and xspeed to x.
+    ; Entry: IX = Pointer to instance of player object.
+    ld a,(ix+player_object.yspeed)
+    ld b,a
+    ld a,(ix+player_object.y)
+    add a,b
+    ld (ix+player_object.y),a
+    ;
+    ld a,(ix+player_object.xspeed)
+    ld b,a
+    ld a,(ix+player_object.x)
+    add a,b
+    ld (ix+player_object.x),a
+  ret
+
+
   draw_player_object:
     ; Put a 16x16 metasprite in the SAT.
     ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
