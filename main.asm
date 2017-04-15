@@ -145,17 +145,28 @@
   ; Handle Swabby sprite and movement:
   ld ix,swabby
   call is_right_pressed
-  ld a,SWABBY_X_SPEED_MIN
+  ld a,0
   jp nc,+
     ld a,SWABBY_RIGHT_SPRITE
     ld (ix+player_object.sprite),a
     ld a,(ix+player_object.xspeed)
     cp SWABBY_X_SPEED_MAX
-    jp z,+
+    jp z,++
       inc a
-      jp +
+      jp ++
   +:
+  call is_left_pressed
+  ld a,0
+  jp nc,++
+    ld a,SWABBY_LEFT_SPRITE
+    ld (ix+player_object.sprite),a
+    ld a,(ix+player_object.xspeed)
+    cp -(SWABBY_X_SPEED_MAX)
+    jp z,++
+      dec a
+  ++:
   ld (ix+player_object.xspeed),a
+  ;
   ;
   ld a,(ix+player_object.xspeed)
   or a
