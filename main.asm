@@ -107,8 +107,13 @@
     ld (gun_released),a
     ;
     ; init (wipe struct):
+    ld b,ASTEROID_MAX
     ld ix,asteroid
-    call deactivate_enemy_object
+    -:
+      call deactivate_enemy_object
+      ld de,_sizeof_enemy_object
+      add ix,de
+    djnz -
     ;
     ;
     ; Wipe sprites.
@@ -249,48 +254,56 @@
   ; ---------------------------------------------------------------------------
   ;
   ld ix,asteroid
-  ld a,(ix+enemy_object.state)
-  cp ENEMY_OBJECT_INACTIVE
-  jp nz,+
-    call get_random_number
-    cp ASTEROID_REACTIVATE_VALUE
-    jp nc,+
-      ; Activate asteroid.
-      xor a
-      ld (ix+enemy_object.y),a
+  ld b,ASTEROID_MAX
+  process_asteroids:
+    push bc
+    ld a,(ix+enemy_object.state)
+    cp ENEMY_OBJECT_INACTIVE
+    jp nz,+
       call get_random_number
-      and %01111111             ; rnd(128).
-      ld b,a
-      call get_random_number
-      and %00111111             ; rnd(64).
-      add a,b
-      ld b,a
-      call get_random_number
-      and %00011111             ; rnd(32).
-      add a,b
-      add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
-      ld (ix+enemy_object.x),a  ; x = 8 - 229.
-      call get_random_number
-      and ASTEROID_SPRITE_MASK
-      ld hl,asteroid_sprite_table
-      ld d,0
-      ld e,a
-      add hl,de
-      ld a,(hl)
-      ld (ix+enemy_object.sprite),a
-      call get_random_number
-      and ASTEROID_SPEED_MODIFIER
-      inc a
-      ld (ix+enemy_object.yspeed),a
-      call activate_enemy_object
-  +:
-  ; Perform crash test.
-  ld a,(ix+enemy_object.y)
-  cp GROUND_LEVEL
-  call nc,deactivate_enemy_object
-  ;
-  call move_enemy_object_vertically   ; Move asteroid downwards.
-  call draw_enemy_object              ; Put it in the SAT.
+      cp ASTEROID_REACTIVATE_VALUE
+      jp nc,+
+        ; Activate asteroid.
+        xor a
+        ld (ix+enemy_object.y),a
+        call get_random_number
+        and %01111111             ; rnd(128).
+        ld b,a
+        call get_random_number
+        and %00111111             ; rnd(64).
+        add a,b
+        ld b,a
+        call get_random_number
+        and %00011111             ; rnd(32).
+        add a,b
+        add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
+        ld (ix+enemy_object.x),a  ; x = 8 - 229.
+        call get_random_number
+        and ASTEROID_SPRITE_MASK
+        ld hl,asteroid_sprite_table
+        ld d,0
+        ld e,a
+        add hl,de
+        ld a,(hl)
+        ld (ix+enemy_object.sprite),a
+        call get_random_number
+        and ASTEROID_SPEED_MODIFIER
+        inc a
+        ld (ix+enemy_object.yspeed),a
+        call activate_enemy_object
+    +:
+    ; Perform crash test.
+    ld a,(ix+enemy_object.y)
+    cp GROUND_LEVEL
+    call nc,deactivate_enemy_object
+    ;
+    call move_enemy_object_vertically   ; Move asteroid downwards.
+    call draw_enemy_object              ; Put it in the SAT.
+    ;
+    ld de,_sizeof_enemy_object
+    add ix,de
+    pop bc
+  djnz process_asteroids
   ;
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
