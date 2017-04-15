@@ -247,18 +247,26 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
-
+  ;
   ld ix,asteroid
   ld a,(ix+enemy_object.state)
   cp ENEMY_OBJECT_INACTIVE
-  jp nz,+
+  jp nz,++
     call get_random_number
     cp ASTEROID_REACTIVATE_VALUE
-    jp nc,+
+    jp nc,++
       ; Activate asteroid.
       xor a
       ld (ix+enemy_object.y),a
       call get_random_number
+      cp 8
+      jp nc,+
+        ld a,8
+      +:
+      cp 230
+      jp c,+
+        ld a,230
+      +:
       ld (ix+enemy_object.x),a
       call get_random_number
       and ASTEROID_SPRITE_MASK
@@ -267,20 +275,20 @@
       ld e,a
       add hl,de
       ld a,(hl)
-      ;ld a,SPRITE_4
       ld (ix+enemy_object.sprite),a
       call get_random_number
       and ASTEROID_SPEED_MODIFIER
       inc a
       ld (ix+enemy_object.yspeed),a
       call activate_enemy_object
-  +:
+  ++:
   ; Perform crash test.
   ld a,(ix+enemy_object.y)
   cp GROUND_LEVEL
   call nc,deactivate_enemy_object
-  call move_enemy_object_vertically
-  call draw_enemy_object
+  ;
+  call move_enemy_object_vertically   ; Move asteroid downwards.
+  call draw_enemy_object              ; Put it in the SAT.
   ;
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
