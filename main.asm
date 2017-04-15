@@ -145,15 +145,14 @@
   ; Handle Swabby sprite and movement:
   ld ix,swabby
   call is_right_pressed
+  ld a,SWABBY_X_SPEED_MIN
   jp nc,+
     ld a,(ix+player_object.xspeed)
     cp SWABBY_X_SPEED_MAX
-    jp z,++
+    jp z,+
       inc a
-      jp ++
+      jp +
   +:
-    xor a
-  ++:
   ld (ix+player_object.xspeed),a
   call move_player_object
   call draw_player_object
