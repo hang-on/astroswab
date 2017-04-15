@@ -141,21 +141,6 @@
 
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
-
-  init_enemy_object:
-    ; Reset the struct with content from the table below.
-    ; HL = init table ptr.
-    ; IX = enemy object ptr.
-    push ix
-    pop de
-    ld hl,enemy_object_init_table
-    ld bc,_sizeof_enemy_object
-    ldir
-  ret
-  enemy_object_init_table:
-    .rept _sizeof_enemy_object
-      .db 0
-    .endr
   ;
   move_enemy_object_vertically:
     ld a,(ix+enemy_object.yspeed)

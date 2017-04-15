@@ -110,7 +110,7 @@
     ;
     ; init (wipe struct):
     ld ix,asteroid
-    call init_enemy_object
+    call deactivate_enemy_object
     ;
     ;
     ; Wipe sprites.
