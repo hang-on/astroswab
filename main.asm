@@ -147,7 +147,7 @@
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
-  call add_metasprite
+  call draw_player_object
   ;
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:
