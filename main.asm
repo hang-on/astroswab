@@ -146,13 +146,15 @@
   ld ix,swabby
   call is_right_pressed
   jp nc,+
-    ld a,2
-    ld (ix+player_object.xspeed),a
-    jp ++
+    ld a,(ix+player_object.xspeed)
+    cp SWABBY_X_SPEED_MAX
+    jp z,++
+      inc a
+      jp ++
   +:
-    ld a,0
-    ld (ix+player_object.xspeed),a
+    xor a
   ++:
+  ld (ix+player_object.xspeed),a
   call move_player_object
   call draw_player_object
   ;
