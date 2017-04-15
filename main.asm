@@ -259,16 +259,17 @@
       xor a
       ld (ix+enemy_object.y),a
       call get_random_number
-      and %01111111             ; rnd(128)
+      and %01111111             ; rnd(128).
       ld b,a
       call get_random_number
-      and %00111111             ; rnd(64)
+      and %00111111             ; rnd(64).
       add a,b
       ld b,a
       call get_random_number
-      and %00011111             ; rnd(32)
+      and %00011111             ; rnd(32).
       add a,b
-      ld (ix+enemy_object.x),a
+      add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
+      ld (ix+enemy_object.x),a  ; x = 8 - 229.
       call get_random_number
       and ASTEROID_SPRITE_MASK
       ld hl,asteroid_sprite_table
