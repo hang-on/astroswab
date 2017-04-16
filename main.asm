@@ -267,7 +267,7 @@
       cp ASTEROID_REACTIVATE_VALUE
       jp nc,+
         ; Activate asteroid.
-        xor a
+        ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
         ld (ix+enemy_object.y),a
         call get_random_number
         and %01111111             ; rnd(128).
@@ -295,12 +295,16 @@
         ld (ix+enemy_object.yspeed),a
         call activate_enemy_object
     +:
-    ; Perform crash test.
-    ld a,(ix+enemy_object.y)
-    cp GROUND_LEVEL
-    call nc,deactivate_enemy_object
-    ;
     call move_enemy_object_vertically   ; Move asteroid downwards.
+    ; Deactivate asteroid if it is within the deactivate zone.
+    ld a,(ix+enemy_object.y)
+    cp ASTEROID_DEACTIVATE_ZONE_START
+    jp c,+
+      cp ASTEROID_DEACTIVATE_ZONE_END
+      jp nc,+
+        call deactivate_enemy_object
+    +:
+    ;
     call draw_enemy_object              ; Put it in the SAT.
     ;
     ld de,_sizeof_enemy_object
