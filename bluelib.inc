@@ -20,7 +20,7 @@
 .equ SAT_Y_START $3f00
 .equ SAT_XC_START SAT_Y_START+64+64
 .equ SPRITE_TERMINATOR $d0
-.equ BYTES_PER_TILE 36
+
 
 ; Memory map and initialization:
 .equ RAM_START $c000
@@ -92,10 +92,18 @@
 .equ PAUSE_FLAG_RESET $00
 .equ PAUSE_FLAG_SET $ff
 
+.equ BYTES_PER_TILE 36
 .equ ONE_TILEMAP_ROW 32*2
 .equ END_OF_TABLE $ff
+
+; Font / printing support.
+.equ CHARS_IN_ASCII_SET 91
+.equ STRING_TERMINATOR 3        ; Terminate strings with #
 .equ ASCII_ZERO 16        ; Where in the tilebank is the ASCII zero?
 .equ ASCII_SPACE 0
+.asciitable
+  map " " to "z" = 0
+.enda
 ; =============================================================================
 ; M A C R O S
 ; =============================================================================

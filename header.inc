@@ -1,14 +1,9 @@
 ; Font:
-  .equ FONT_BANK 2
-  .equ CHARS_IN_ASCII_SET 91
-  .equ STRING_TERMINATOR 3        ; Terminate strings with #
-  .asciitable
-    map " " to "z" = 0
-  .enda
+.equ FONT_BANK 2
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
-
+;
 ;
 ; Game states:
   .equ GS_PREPARE_DEVMENU 0
