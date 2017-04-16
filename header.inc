@@ -23,9 +23,11 @@
   .equ TILE_BANK_1 1
   .equ TILE_BANK_2 2
 ;
-; Scene 1:
-  .equ SCENE_1_BANK 4
+; Background - nametable, tiles etc.:
+  .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
+;
+; Swabby:
   .equ SWABBY_Y_INIT 155
   .equ SWABBY_X_INIT (248/2)+8
   .equ SWABBY_X_SPEED_MAX 5

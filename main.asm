@@ -61,14 +61,14 @@
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,1
     call set_register
-    SELECT_BANK SCENE_1_BANK
-    ld bc,scene_1_tiles_end-scene_1_tiles
+    SELECT_BANK BACKGROUND_BANK
+    ld bc,background_1_tiles_end-background_1_tiles
     ld de,NON_ASCII_AREA_START
-    ld hl,scene_1_tiles
+    ld hl,background_1_tiles
     call load_vram
-    ld bc,scene_1_tilemap_end-scene_1_tilemap
+    ld bc,VISIBLE_NAME_TABLE_SIZE
     ld de,NAME_TABLE_START
-    ld hl,scene_1_tilemap
+    ld hl,background_1_tilemap
     call load_vram
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles

@@ -78,17 +78,28 @@
     .include "bank_3\spritesheet.png_tiles.inc"
   sprite_tiles_end:
 .ends
-.bank SCENE_1_BANK slot 2
+.bank BACKGROUND_BANK slot 2
 ; -----------------------------------------------------------------------------
-.section "Scene 1 assets" free
+.section "Background assets" free
 ; -----------------------------------------------------------------------------
-  scene_1_tiles:
-    .include "bank_4\scene_1_tiles.inc"
-  scene_1_tiles_end:
-
-  scene_1_tilemap:
-    .include "bank_4\scene_1_tilemap.inc"
-  scene_1_tilemap_end:
+  ;
+  background_1_tiles:
+    .include "bank_4\background_1_tiles.inc"
+  background_1_tiles_end:
+  background_1_tilemap:
+    .include "bank_4\background_1_tilemap.inc"
+  ;
+  beach_tiles:
+    .include "bank_4\beach_tiles.inc"
+  beach_tiles_end:
+  beach_tilemap:
+    .include "bank_4\beach_tilemap.inc"
+  ;
+  shroomopia_tiles:
+    .include "bank_4\shroomopia_tiles.inc"
+  shroomopia_tiles_end:
+  hroomopia_tilemap:
+    .include "bank_4\shroomopia_tilemap.inc"
 .ends
 .bank SOUND_BANK slot 2
 ; -----------------------------------------------------------------------------

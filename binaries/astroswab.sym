@@ -205,8 +205,13 @@
 0002:8b60 dd_revolution_tiles
 0003:8000 sprite_tiles
 0003:9800 sprite_tiles_end
-0004:8000 scene_1_tiles
-0004:8640 scene_1_tiles_end
-0004:8640 scene_1_tilemap
-0004:8c40 scene_1_tilemap_end
+0004:8000 background_1_tiles
+0004:8760 background_1_tiles_end
+0004:8760 background_1_tilemap
+0004:8d60 beach_tiles
+0004:93c0 beach_tiles_end
+0004:93c0 beach_tilemap
+0004:99c0 shroomopia_tiles
+0004:a640 shroomopia_tiles_end
+0004:a640 hroomopia_tilemap
 0005:8000 shot_1
