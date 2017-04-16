@@ -64,13 +64,10 @@
   ;   .asciitable
   ;      map " " to "z" = 0
   ;    .enda
-  font_tiles:
+  atascii_tiles:
     .include "bank_2\asciifont_atascii_tiles.inc"
-  font_tiles_end:
-  font_2_tiles:
+  dd_revolution_tiles:
     .include "bank_2\dd_revolution_tiles.inc"
-  font_2_tiles_end:
-
 .ends
 ;
 .bank SPRITE_BANK slot 2

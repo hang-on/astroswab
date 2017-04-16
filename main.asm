@@ -24,7 +24,7 @@
     SELECT_BANK FONT_BANK
     ld bc,CHARS_IN_ASCII_SET*BYTES_PER_TILE
     ld de,BACKGROUND_BANK_START
-    ld hl,font_2_tiles
+    ld hl,dd_revolution_tiles
     call load_vram
     ;
     call PSGInit
