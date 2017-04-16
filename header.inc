@@ -1,5 +1,5 @@
 ; Font:
-.equ FONT_BANK 2
+  .equ FONT_BANK 2
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
