@@ -89,17 +89,17 @@
   background_1_tilemap:
     .include "bank_4\background_1_tilemap.inc"
   ;
-  beach_tiles:
-    .include "bank_4\beach_tiles.inc"
-  beach_tiles_end:
-  beach_tilemap:
-    .include "bank_4\beach_tilemap.inc"
+  background_2_tiles:
+    .include "bank_4\background_2_tiles.inc"
+  background_2_tiles_end:
+  background_2_tilemap:
+    .include "bank_4\background_2_tilemap.inc"
   ;
-  shroomopia_tiles:
-    .include "bank_4\shroomopia_tiles.inc"
-  shroomopia_tiles_end:
-  hroomopia_tilemap:
-    .include "bank_4\shroomopia_tilemap.inc"
+  background_3_tiles:
+    .include "bank_4\background_3_tiles.inc"
+  background_3_tiles_end:
+  background_3_tilemap:
+    .include "bank_4\background_3_tilemap.inc"
 .ends
 .bank SOUND_BANK slot 2
 ; -----------------------------------------------------------------------------
