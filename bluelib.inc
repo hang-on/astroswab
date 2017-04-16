@@ -20,6 +20,7 @@
 .equ SAT_Y_START $3f00
 .equ SAT_XC_START SAT_Y_START+64+64
 .equ SPRITE_TERMINATOR $d0
+.equ BYTES_PER_TILE 36
 
 ; Memory map and initialization:
 .equ RAM_START $c000

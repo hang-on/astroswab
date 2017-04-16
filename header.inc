@@ -1,5 +1,6 @@
 ; Font:
   .equ FONT_BANK 2
+  .equ CHARS_IN_ASCII_SET 91
   .equ STRING_TERMINATOR 3        ; Terminate strings with #
   .asciitable
     map " " to "z" = 0
@@ -7,6 +8,7 @@
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
+
 ;
 ; Game states:
   .equ GS_PREPARE_DEVMENU 0
@@ -46,7 +48,7 @@
   .equ GUN_DELAY_INIT 12
 
   .equ ASTEROID_DEACTIVATE_ZONE_START 155
-  .equ ASTEROID_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_START+8   
+  .equ ASTEROID_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_START+8
   .equ ASTEROID_REACTIVATE_VALUE 1
   .equ ASTEROID_MAX 3
   .equ ASTEROID_SPEED_MODIFIER 1

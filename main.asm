@@ -22,9 +22,9 @@
     call load_cram
     ; Load the font tiles.
     SELECT_BANK FONT_BANK
-    ld bc,font_tiles_end-font_tiles
+    ld bc,CHARS_IN_ASCII_SET*BYTES_PER_TILE
     ld de,BACKGROUND_BANK_START
-    ld hl,font_tiles
+    ld hl,font_2_tiles
     call load_vram
     ;
     call PSGInit

@@ -203,6 +203,8 @@
 0001:40c3 ntsc_msg
 0002:8000 font_tiles
 0002:8b60 font_tiles_end
+0002:8b60 font_2_tiles
+0002:96c0 font_2_tiles_end
 0003:8000 sprite_tiles
 0003:9800 sprite_tiles_end
 0004:8000 scene_1_tiles
