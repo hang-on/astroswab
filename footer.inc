@@ -12,7 +12,9 @@
     .asc "  Max: 00000    Rank: 0#"
   ;
   background_table:
-    
+    .dw background_1_tiles_end-background_1_tiles, background_1_tiles, background_1_tilemap
+    .dw background_2_tiles_end-background_2_tiles, background_2_tiles, background_2_tilemap
+    .dw background_3_tiles_end-background_3_tiles, background_3_tiles, background_3_tilemap
   ;
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.

@@ -88,9 +88,14 @@
     call load_vram
     jp ++
     +:
-    ld bc,background_1_tiles_end-background_1_tiles
+    ld ix,background_table
+    ld c,(ix+0)
+    ld b,(ix+1)
+    ld l,(ix+2)
+    ld h,(ix+3)
+    ;ld bc,background_1_tiles_end-background_1_tiles
     ld de,NON_ASCII_AREA_START
-    ld hl,background_1_tiles
+    ;ld hl,background_1_tiles
     call load_vram
     ld bc,VISIBLE_NAME_TABLE_SIZE
     ld de,NAME_TABLE_START
