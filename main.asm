@@ -22,10 +22,8 @@
     call load_cram
     ; Load the font tiles.
     SELECT_BANK FONT_BANK
-    ld bc,CHARS_IN_ASCII_SET*BYTES_PER_TILE
-    ld de,BACKGROUND_BANK_START
-    ld hl,dd_revolution_tiles
-    call load_vram
+    ld hl,font_table
+    call load_vram_from_table
     ;
     call PSGInit
     ;
@@ -82,7 +80,6 @@
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     ++:
-
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
