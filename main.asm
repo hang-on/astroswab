@@ -88,10 +88,9 @@
     call load_vram
     jp ++
     +:
-    ld hl,background_table_2
-    call load_vram_from_table
-    ld hl,background_table_3
-    call load_vram_from_table
+    ld hl,background_table_1
+    call load_vram_from_table             ; Load the tiles.
+    call load_vram_from_table             ; Load the tilemap.
     ++:
 
     ;

@@ -655,9 +655,10 @@
   ;        Destination address in vram (word).
   ;        Amount of bytes (word).
   ;        Source address (word).
-  ; Exit:  DE = Next free byte in vram.
+  ; Exit:  HL = Next item in table.
   ; Uses: AF, BC, DE, HL,
   load_vram_from_table:
+    push hl
     ld a,(hl)
     out (CONTROL_PORT),a
     inc hl
@@ -681,6 +682,9 @@
       ld a,c
       or b
     jp nz,-
+    ld de,6
+    pop hl
+    add hl,de
   ret
 .ends
 

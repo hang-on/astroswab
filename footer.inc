@@ -11,16 +11,11 @@
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
   ;
-  background_table:
-    .dw background_1_tiles_end-background_1_tiles, background_1_tiles, background_1_tilemap
-    .dw background_2_tiles_end-background_2_tiles, background_2_tiles, background_2_tilemap
-    .dw background_3_tiles_end-background_3_tiles, background_3_tiles, background_3_tilemap
   ;
-  background_table_2:
+  background_table_1:
     .dw NON_ASCII_AREA_START,
     .dw background_1_tiles_end-background_1_tiles,
     .dw background_1_tiles
-  background_table_3:
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
