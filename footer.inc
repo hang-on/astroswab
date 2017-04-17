@@ -19,6 +19,20 @@
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
+  background_table_2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_2_tiles_end-background_2_tiles,
+    .dw background_2_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_2_tilemap
+  background_table_3:
+    .dw NON_ASCII_AREA_START,
+    .dw background_3_tiles_end-background_3_tiles,
+    .dw background_3_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_3_tilemap
 
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.

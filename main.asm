@@ -66,26 +66,16 @@
     call get_input_ports
     call is_left_pressed
     jp nc,+
-    ld bc,background_3_tiles_end-background_3_tiles
-    ld de,NON_ASCII_AREA_START
-    ld hl,background_3_tiles
-    call load_vram
-    ld bc,VISIBLE_NAME_TABLE_SIZE
-    ld de,NAME_TABLE_START
-    ld hl,background_3_tilemap
-    call load_vram
+    ld hl,background_table_3
+    call load_vram_from_table             ; Load the tiles.
+    call load_vram_from_table             ; Load the tilemap.
     jp ++
     +:
     call is_right_pressed
     jp nc,+
-    ld bc,background_2_tiles_end-background_2_tiles
-    ld de,NON_ASCII_AREA_START
-    ld hl,background_2_tiles
-    call load_vram
-    ld bc,VISIBLE_NAME_TABLE_SIZE
-    ld de,NAME_TABLE_START
-    ld hl,background_2_tilemap
-    call load_vram
+    ld hl,background_table_2
+    call load_vram_from_table             ; Load the tiles.
+    call load_vram_from_table             ; Load the tilemap.
     jp ++
     +:
     ld hl,background_table_1
