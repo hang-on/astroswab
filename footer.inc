@@ -11,9 +11,12 @@
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
   ;
+  background_table:
+    
+  ;
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
-    .db SPRITE_4, SPRITE_5, SPRITE_6, SPRITE_4
+    .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
     .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE

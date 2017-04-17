@@ -61,7 +61,11 @@
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,1
     call set_register
+    ;
     SELECT_BANK BACKGROUND_BANK
+    call get_input_ports
+    call is_left_pressed
+    jp nc,+
     ld bc,background_3_tiles_end-background_3_tiles
     ld de,NON_ASCII_AREA_START
     ld hl,background_3_tiles
@@ -70,6 +74,31 @@
     ld de,NAME_TABLE_START
     ld hl,background_3_tilemap
     call load_vram
+    jp ++
+    +:
+    call is_right_pressed
+    jp nc,+
+    ld bc,background_2_tiles_end-background_2_tiles
+    ld de,NON_ASCII_AREA_START
+    ld hl,background_2_tiles
+    call load_vram
+    ld bc,VISIBLE_NAME_TABLE_SIZE
+    ld de,NAME_TABLE_START
+    ld hl,background_2_tilemap
+    call load_vram
+    jp ++
+    +:
+    ld bc,background_1_tiles_end-background_1_tiles
+    ld de,NON_ASCII_AREA_START
+    ld hl,background_1_tiles
+    call load_vram
+    ld bc,VISIBLE_NAME_TABLE_SIZE
+    ld de,NAME_TABLE_START
+    ld hl,background_1_tilemap
+    call load_vram
+    ++:
+
+    ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
     ld de,SPRITE_BANK_START
