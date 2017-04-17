@@ -362,26 +362,6 @@
     sbc hl,bc
   ret
 .ends
-
-; -----------------------------------------------------------------------------
-.section "dec_table_item" free
-; -----------------------------------------------------------------------------
-  dec_table_item:
-    ; Decrement a byte-sized table item.
-    ; Entry: A = index, HL = Pointer to table.
-    ; Exit: None.
-    ; Preserves all registers.
-    push de
-    push hl
-    ld d,0
-    ld e,a
-    add hl,de
-    dec (hl)
-    pop hl
-    pop de
-  ret
-.ends
-
 ; -----------------------------------------------------------------------------
 .section "detect_tv_type" free
 ; -----------------------------------------------------------------------------
@@ -427,83 +407,6 @@
   ret
 .ends
 
-
-; -----------------------------------------------------------------------------
-.section "get_table_item" free
-; -----------------------------------------------------------------------------
-  get_table_item:
-    ; Gets the byte at index [in A] in table [pointer in HL].
-    ; Entry: A = Index, HL = Poiner to table
-    ; Exit: Byte in A.
-    ; Preserves all registers.
-    push de
-    push hl
-    ld d,0
-    ld e,a
-    add hl,de
-    ld a,(hl)
-    pop hl
-    pop de
-  ret
-.ends
-
-; -----------------------------------------------------------------------------
-.section "Get Word" free
-; -----------------------------------------------------------------------------
-  get_word:
-    ; Load word-sized variable into HL.
-    ; Entry: HL = Pointer to variable address.
-    ; Exit: HL = Value of the variable.
-    ; Preserves all registers.
-    push af
-    ld a,(hl)
-    inc hl
-    ld h,(hl)
-    ld l,a
-    pop af
-  ret
-.ends
-
-; -----------------------------------------------------------------------------
-.section "Increment Word" free
-; -----------------------------------------------------------------------------
-  inc_word:
-    ; Increments a word-sized variable at HL.
-    ; Entry: HL = Pointer to variable.
-    ; Exit: None
-    ; Preserves all registers.
-    push af
-    push hl
-    ld a,(hl)
-    inc a
-    ld (hl),a
-    jp nz,+
-      inc hl
-      inc (hl)
-    +:
-    pop hl
-    pop af
-  ret
-.ends
-
-; -----------------------------------------------------------------------------
-.section "inc_table_item" free
-; -----------------------------------------------------------------------------
-  inc_table_item:
-    ; Increments a byte-sized table item.
-    ; Entry: A = index, HL = Pointer to table.
-    ; Exit: None.
-    ; Preserves all registers.
-    push de
-    push hl
-    ld d,0
-    ld e,a
-    add hl,de
-    inc (hl)
-    pop hl
-    pop de
-  ret
-.ends
 
 ; -----------------------------------------------------------------------------
 .section "InitializeVDPRegisters" free
@@ -783,26 +686,7 @@
     out (CONTROL_PORT),a
   ret
 .ends
-
-; -----------------------------------------------------------------------------
-.section "set_table_item" free
-; -----------------------------------------------------------------------------
-  set_table_item:
-    ; Set a byte at index [in A] in table [pointer in HL].
-    ; Entry: A = Index, B = value, HL = Poiner to table
-    ; Exit: None
-    ; Preserves all registers.
-    push de
-    push hl
-    ld d,0
-    ld e,a
-    add hl,de
-    ld (hl),b
-    pop hl
-    pop de
-  ret
-.ends
-
+;
 ; *****************************************************************************
 ;                           SPRITE LIBRARY
 ; *****************************************************************************
