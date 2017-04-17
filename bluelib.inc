@@ -648,6 +648,43 @@
 .ends
 
 ; -----------------------------------------------------------------------------
+.section "load_vram_from_table" free
+; -----------------------------------------------------------------------------
+  ; Load a number of bytes from a source address into vram.
+  ; Entry: HL = Pointer to table, w. data in the following format:
+  ;        Destination address in vram (word).
+  ;        Amount of bytes (word).
+  ;        Source address (word).
+  ; Exit:  DE = Next free byte in vram.
+  ; Uses: AF, BC, DE, HL,
+  load_vram_from_table:
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    inc hl
+    ld c,(hl)
+    inc hl
+    ld b,(hl)
+    inc hl
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
+    -:
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+      dec bc
+      ld a,c
+      or b
+    jp nz,-
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
 .section "ReadVRam" free
 ; -----------------------------------------------------------------------------
   ; Read a number of bytes from vram into a buffer.

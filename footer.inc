@@ -16,6 +16,15 @@
     .dw background_2_tiles_end-background_2_tiles, background_2_tiles, background_2_tilemap
     .dw background_3_tiles_end-background_3_tiles, background_3_tiles, background_3_tilemap
   ;
+  background_table_2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_1_tiles_end-background_1_tiles,
+    .dw background_1_tiles
+  background_table_3:
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_1_tilemap
+
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
