@@ -267,6 +267,10 @@
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
   ;
+  ; -------
+
+
+  ; -------
   ld ix,asteroid
   ld b,ASTEROID_MAX
   process_asteroids:

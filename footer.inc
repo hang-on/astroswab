@@ -33,13 +33,15 @@
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_3_tilemap
-
+  ;
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
+  ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
     .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE
+
   ;
   ; Menu item strings:
   menu_title:
