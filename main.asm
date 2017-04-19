@@ -282,20 +282,7 @@
       cp ASTEROID_REACTIVATE_VALUE
       jp nc,+
         ; Activate asteroid.
-        ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
-        ld (ix+enemy_object.y),a
-        call get_random_number
-        and %01111111             ; rnd(128).
-        ld b,a
-        call get_random_number
-        and %00111111             ; rnd(64).
-        add a,b
-        ld b,a
-        call get_random_number
-        and %00011111             ; rnd(32).
-        add a,b
-        add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
-        ld (ix+enemy_object.x),a  ; x = 8 - 229.
+        call reset_enemy_object_position
         call get_random_number
         and ASTEROID_SPRITE_MASK
         ld hl,asteroid_sprite_table
@@ -303,14 +290,15 @@
         ld e,a
         add hl,de
         ld a,(hl)
-        ld (ix+enemy_object.sprite),a
+        call set_enemy_object_sprite
         call get_random_number
         and ASTEROID_SPEED_MODIFIER
         inc a
-        ld (ix+enemy_object.yspeed),a
+        ld b,0
+        call set_enemy_object_speed
         call activate_enemy_object
     +:
-    call move_enemy_object_vertically   ; Move asteroid downwards.
+    call move_enemy_object  ; Move asteroid downwards.
     ; Deactivate asteroid if it is within the deactivate zone.
     ld a,(ix+enemy_object.y)
     cp ASTEROID_DEACTIVATE_ZONE_START

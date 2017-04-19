@@ -25,6 +25,8 @@
 ; -----------------------------------------------------------------------------
 .section "astroswablib" free
 ; -----------------------------------------------------------------------------
+
+
   batch_print:
     ; Batch print strings at different screen positions. Handy for making a
     ; menu, or for setting up text in various places. Strings and positions are
@@ -137,6 +139,7 @@
   x db
   sprite db
   yspeed db
+  xspeed db
   state db
 .endst
 
@@ -146,15 +149,56 @@
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
   ;
-  move_enemy_object_vertically:
-    ; Apply yspeed (+/-) to object's y.
-    ; Uses: None.
-    push af
-    ld a,(ix+enemy_object.yspeed)
-    add a,(ix+enemy_object.y)
+  reset_enemy_object_position:
+    ; In Astroswab, all enemy objects share the feature that they spawn
+    ; in the bottom of the invisible area (at x = 8-229). Thus when an enemy
+    ; object gets its position reset, y is fixed and x is randomized.
+    ; Entry: IX = Pointer to enemy object.
+    ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
     ld (ix+enemy_object.y),a
-    pop af
+    call get_random_number
+    and %01111111             ; rnd(128).
+    ld b,a
+    call get_random_number
+    and %00111111             ; rnd(64).
+    add a,b
+    ld b,a
+    call get_random_number
+    and %00011111             ; rnd(32).
+    add a,b
+    add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
+    ld (ix+enemy_object.x),a  ; x = 8 - 229.
   ret
+  ;
+  set_enemy_object_sprite:
+    ; Entry: IX = Pointer to enemy object.
+    ;        A = Sprite index.
+    ld (ix+enemy_object.sprite),a
+  ret
+  ;
+  set_enemy_object_speed:
+    ; IX = Pointer to enemy object.
+    ; A = Yspeed, B = Xspeed.
+    ld (ix+enemy_object.yspeed),a
+    ld (ix+enemy_object.xspeed),b
+  ret
+  ;
+  move_enemy_object:
+    ; Apply yspeed to y and xspeed to x.
+    ; Entry: IX = Pointer to instance of enemy object.
+    ld a,(ix+enemy_object.yspeed)
+    ld b,a
+    ld a,(ix+enemy_object.y)
+    add a,b
+    ld (ix+enemy_object.y),a
+    ;
+    ld a,(ix+enemy_object.xspeed)
+    ld b,a
+    ld a,(ix+enemy_object.x)
+    add a,b
+    ld (ix+enemy_object.x),a
+  ret
+  ;
   draw_enemy_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
