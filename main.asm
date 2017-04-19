@@ -266,16 +266,11 @@
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
   ; ---------------------------------------------------------------------------
-  ;
-  ; -------
-
-
-  ; -------
   ld ix,asteroid
   ld b,ASTEROID_MAX
   process_asteroids:
     push bc
-    ld a,(ix+enemy_object.state)
+    call get_enemy_object_state
     cp ENEMY_OBJECT_INACTIVE
     jp nz,+
       call get_random_number
@@ -300,13 +295,14 @@
     +:
     call move_enemy_object  ; Move asteroid downwards.
     ; Deactivate asteroid if it is within the deactivate zone.
-    ld a,(ix+enemy_object.y)
+    ld a,(ix+enemy_object.y)            ; FIXME: Make a crash-test enemy_object!
     cp ASTEROID_DEACTIVATE_ZONE_START
     jp c,+
       cp ASTEROID_DEACTIVATE_ZONE_END
       jp nc,+
         call deactivate_enemy_object
     +:
+    ; TODO: enemy_object_frame...?
     ;
     call draw_enemy_object              ; Put it in the SAT.
     ;

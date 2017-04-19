@@ -226,7 +226,14 @@
     ld (ix+enemy_object.state),a
     pop af
   ret
-
+  ;
+  get_enemy_object_state:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A state of the enemy object, which should be either
+    ; ENEMY_OBJECT_INACTIVE or ENEMY_OBJECT_ACTIVE.
+    ld a,(ix+enemy_object.state)
+  ret
+  ;
 .ends
 
 ; -----------------------------------------------------------------------------
