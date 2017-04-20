@@ -148,6 +148,21 @@
 
 .section "Enemy objects" free
   ; Functions that work on the enemy_object structure.
+  horizontal_zone_deactivate_enemy_object:
+    ; Test enemy object y to see if it is within the horizontal zone defined
+    ; the borders passed in A and B. If true, then deactivate enemy object.
+    ; Entry: IX = Pointer to struct.
+    ;        A = Zone start. B = Zone end.
+    ; Uses: AF, BC.
+    ld c,b
+    ld b,a
+    ld a,(ix+enemy_object.y)
+    cp b
+    ret c
+    cp c
+    ret nc
+    call deactivate_enemy_object
+  ret
   ;
   reset_enemy_object_position:
     ; In Astroswab, all enemy objects share the feature that they spawn

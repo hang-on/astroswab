@@ -293,16 +293,11 @@
         call set_enemy_object_speed
         call activate_enemy_object
     +:
-    call move_enemy_object  ; Move asteroid downwards.
+    call move_enemy_object              ; Move asteroid downwards.
     ; Deactivate asteroid if it is within the deactivate zone.
-    ld a,(ix+enemy_object.y)            ; FIXME: Make a crash-test enemy_object!
-    cp ASTEROID_DEACTIVATE_ZONE_START
-    jp c,+
-      cp ASTEROID_DEACTIVATE_ZONE_END
-      jp nc,+
-        call deactivate_enemy_object
-    +:
-    ; TODO: enemy_object_frame...?
+    ld a,ASTEROID_DEACTIVATE_ZONE_START
+    ld b,ASTEROID_DEACTIVATE_ZONE_END
+    call horizontal_zone_deactivate_enemy_object
     ;
     call draw_enemy_object              ; Put it in the SAT.
     ;
