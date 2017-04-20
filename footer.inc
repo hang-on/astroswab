@@ -47,9 +47,9 @@
   menu_title:
     .asc "ASTROSWAB! debug menu#"
   item_1:
-    .asc "Scene 1#"
+    .asc "Countryside#"
   item_2:
-    .asc "<unused>#"
+    .asc "Beach#"
   item_3:
     .asc "<unused>#"
   item_4:
@@ -57,7 +57,7 @@
   menu_footer:
     .asc "---------------------#"
   menu_state_to_game_state:           ; menu_item(0) == game_state(1), etc.
-    .db GS_PREPARE_SCENE_1
+    .db GS_PREPARE_SCENE_1, GS_PREPARE_SCENE_2
   menu_table:
     .db 47, 63, 79, 95                       ; Contains y-pos for menu selector.
   ;

@@ -10,7 +10,8 @@
   .equ GS_RUN_DEVMENU 1
   .equ GS_PREPARE_SCENE_1 2
   .equ GS_RUN_SCENE_1 3
-  .equ INITIAL_GAME_STATE GS_PREPARE_SCENE_1 ; Where to go after boot?
+  .equ GS_PREPARE_SCENE_2 4
+  .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
 ;
 ; Sprites:
   .equ SPRITE_BANK 3

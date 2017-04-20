@@ -48,7 +48,8 @@
     ;
   jump_table:
     ; Check the game state constants.
-    .dw prepare_devmenu, run_devmenu, prepare_scene_1, run_scene_1
+    .dw prepare_devmenu, run_devmenu, prepare_scene_1, run_scene_1,
+    .dw prepare_scene_2
   ;
   ; ---------------------------------------------------------------------------
   ; S C E N E  1                                                     (gameplay)
@@ -144,6 +145,86 @@
     ld (game_state),a
   jp main_loop
   ; ---------------------------------------------------------------------------
+  ; ---------------------------------------------------------------------------
+  ; S C E N E  2                                                     (gameplay)
+  ; ---------------------------------------------------------------------------
+  prepare_scene_2:
+    di
+    ; Turn off display and frame interrupts.
+    ld a,DISPLAY_0_FRAME_0_SIZE_0
+    ld b,1
+    call set_register
+    ;
+    SELECT_BANK BACKGROUND_BANK
+    call get_input_ports
+    ld hl,background_table_2
+    call load_vram_from_table             ; Load the tiles.
+    call load_vram_from_table             ; Load the tilemap.
+    ;
+    SELECT_BANK SPRITE_BANK
+    ld bc,sprite_tiles_end-sprite_tiles
+    ld de,SPRITE_BANK_START
+    ld hl,sprite_tiles
+    call load_vram
+    ;
+    call randomize
+    ;
+    ld b,22
+    ld c,5
+    ld hl,dummy_text
+    call print
+    ld b,23
+    ld c,5
+    ld hl,dummy_text2
+    call print
+    ; Initialize variables
+    ld ix,swabby
+    ld hl,swabby_init_table
+    call initialize_player_object
+    ;
+    ld a,GUN_DELAY_INIT
+    ld (gun_delay),a
+    xor a
+    ld (gun_timer),a
+    ld ix,bullet_table
+    ld (ix+0),a     ; Sleeping bullets.
+    ld (ix+3),a
+    ld (ix+6),a
+    ld (ix+9),a
+    ld (ix+12),a
+    ld a,TRUE
+    ld (gun_released),a
+    ;
+    ; init (wipe struct):
+    ld b,ASTEROID_MAX
+    ld ix,asteroid
+    -:
+      call deactivate_enemy_object
+      ld de,_sizeof_enemy_object
+      add ix,de
+    djnz -
+    ;
+    ;
+    ; Wipe sprites.
+    call begin_sprites
+    call load_sat
+    ;
+    call PSGSFXStop
+    call PSGStop
+    ; Turn on screen, frame interrupts and blank left column.
+    ld a,DISPLAY_1_FRAME_1_SIZE_0
+    ld b,1
+    call set_register
+    ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
+    ld b,0
+    call set_register
+    ei
+    ; When all is set, change the game state.
+    ld a,GS_RUN_SCENE_1
+    ld (game_state),a
+  jp main_loop
+  ; ---------------------------------------------------------------------------
+
   ; ---------------------------------------------------------------------------
   run_scene_1:
   call await_frame_interrupt
