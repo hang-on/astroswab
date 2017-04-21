@@ -8,9 +8,9 @@
 ; Game states:
   .equ GS_PREPARE_DEVMENU 0
   .equ GS_RUN_DEVMENU 1
-  .equ GS_PREPARE_SCENE_1 2
-  .equ GS_RUN_SCENE_1 3
-  .equ GS_PREPARE_SCENE_2 4
+  .equ GS_PREPARE_SCENE 2
+  .equ GS_RUN_SCENE 3
+
   .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
 ;
 ; Sprites:
@@ -28,6 +28,12 @@
   .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
 ;
+; Levels:
+  .equ LEVEL_1 1
+  .equ LEVEL_2 2
+  .equ LEVEL_3 3
+  .equ LEVEL_4 4
+  .equ LEVEL_5 5
 ; Swabby:
   .equ SWABBY_Y_INIT 155
   .equ SWABBY_X_INIT (248/2)+8
@@ -65,6 +71,8 @@
   ;
   menu_timer db
   menu_state db
+  ;
+  level db
   ;
   swabby instanceof player_object
   ;

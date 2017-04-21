@@ -48,13 +48,13 @@
     ;
   jump_table:
     ; Check the game state constants.
-    .dw prepare_devmenu, run_devmenu, prepare_scene_1, run_scene_1,
-    .dw prepare_scene_2
+    .dw prepare_devmenu, run_devmenu, prepare_scene, run_scene,
+
   ;
   ; ---------------------------------------------------------------------------
-  ; S C E N E  1                                                     (gameplay)
+  ; S C E N E                                                       (gameplay)
   ; ---------------------------------------------------------------------------
-  prepare_scene_1:
+  prepare_scene:
     di
     ; Turn off display and frame interrupts.
     ld a,DISPLAY_0_FRAME_0_SIZE_0
@@ -62,22 +62,23 @@
     call set_register
     ;
     SELECT_BANK BACKGROUND_BANK
-    call get_input_ports
-    call is_left_pressed
-    jp nc,+
-    ld hl,background_table_3
+    ld a,(level)
+    cp LEVEL_1
+    jp nz,+
+    ld hl,background_table_1
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     jp ++
     +:
-    call is_right_pressed
-    jp nc,+
+    cp LEVEL_2
+    jp nz,+
     ld hl,background_table_2
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     jp ++
     +:
-    ld hl,background_table_1
+    ;cp LEVEL_2
+    ld hl,background_table_3
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     ++:
@@ -141,92 +142,14 @@
     call set_register
     ei
     ; When all is set, change the game state.
-    ld a,GS_RUN_SCENE_1
-    ld (game_state),a
-  jp main_loop
-  ; ---------------------------------------------------------------------------
-  ; ---------------------------------------------------------------------------
-  ; S C E N E  2                                                     (gameplay)
-  ; ---------------------------------------------------------------------------
-  prepare_scene_2:
-    di
-    ; Turn off display and frame interrupts.
-    ld a,DISPLAY_0_FRAME_0_SIZE_0
-    ld b,1
-    call set_register
-    ;
-    SELECT_BANK BACKGROUND_BANK
-    call get_input_ports
-    ld hl,background_table_2
-    call load_vram_from_table             ; Load the tiles.
-    call load_vram_from_table             ; Load the tilemap.
-    ;
-    SELECT_BANK SPRITE_BANK
-    ld bc,sprite_tiles_end-sprite_tiles
-    ld de,SPRITE_BANK_START
-    ld hl,sprite_tiles
-    call load_vram
-    ;
-    call randomize
-    ;
-    ld b,22
-    ld c,5
-    ld hl,dummy_text
-    call print
-    ld b,23
-    ld c,5
-    ld hl,dummy_text2
-    call print
-    ; Initialize variables
-    ld ix,swabby
-    ld hl,swabby_init_table
-    call initialize_player_object
-    ;
-    ld a,GUN_DELAY_INIT
-    ld (gun_delay),a
-    xor a
-    ld (gun_timer),a
-    ld ix,bullet_table
-    ld (ix+0),a     ; Sleeping bullets.
-    ld (ix+3),a
-    ld (ix+6),a
-    ld (ix+9),a
-    ld (ix+12),a
-    ld a,TRUE
-    ld (gun_released),a
-    ;
-    ; init (wipe struct):
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    -:
-      call deactivate_enemy_object
-      ld de,_sizeof_enemy_object
-      add ix,de
-    djnz -
-    ;
-    ;
-    ; Wipe sprites.
-    call begin_sprites
-    call load_sat
-    ;
-    call PSGSFXStop
-    call PSGStop
-    ; Turn on screen, frame interrupts and blank left column.
-    ld a,DISPLAY_1_FRAME_1_SIZE_0
-    ld b,1
-    call set_register
-    ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
-    ld b,0
-    call set_register
-    ei
-    ; When all is set, change the game state.
-    ld a,GS_RUN_SCENE_1
+    ld a,GS_RUN_SCENE
     ld (game_state),a
   jp main_loop
   ; ---------------------------------------------------------------------------
 
+
   ; ---------------------------------------------------------------------------
-  run_scene_1:
+  run_scene:
   call await_frame_interrupt
   call load_sat
   ;
@@ -510,28 +433,41 @@
       handle_menu_click:
         ld a,(menu_state)
         dec a
-        jp nc,++
+        jp p,++
           ; Menu item 0:
+          ld a,LEVEL_1
+          ld (level),a
           jp +++
         ++:
         dec a
-        jp nc,++
+        jp p,++
           ; Menu item 1:
+          ld a,LEVEL_2
+          ld (level),a
           jp +++
         ++:
         dec a
-        jp nc,++
+        jp p,++
           ; Menu item 2:
+          ld a,LEVEL_3
+          ld (level),a
           jp +++
         ++:
         +++:
+        ld a,GS_PREPARE_SCENE
+        ld (game_state),a                 ; Load game state for next loop,
+        di                                ; based on menu item. Also disable
+        ld a,DISPLAY_0_FRAME_0_SIZE_0     ; interrupts and turn screen off
+        ld b,1                            ; so preparations of next mode are
+        call set_register                 ; safely done.
+
         ; Common to all menu items:
-        ld hl,menu_state_to_game_state
-        ld a,(menu_state)
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
+        ;ld hl,menu_state_to_game_state
+        ;ld a,(menu_state)
+        ;ld d,0
+        ;ld e,a
+        ;add hl,de
+        ld a,GS_PREPARE_SCENE
         ld (game_state),a                 ; Load game state for next loop,
         di                                ; based on menu item. Also disable
         ld a,DISPLAY_0_FRAME_0_SIZE_0     ; interrupts and turn screen off

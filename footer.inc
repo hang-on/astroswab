@@ -51,13 +51,13 @@
   item_2:
     .asc "Beach#"
   item_3:
-    .asc "<unused>#"
+    .asc "Shroomopia#"
   item_4:
     .asc "<unused>#"
   menu_footer:
     .asc "---------------------#"
   menu_state_to_game_state:           ; menu_item(0) == game_state(1), etc.
-    .db GS_PREPARE_SCENE_1, GS_PREPARE_SCENE_2
+    .db GS_PREPARE_SCENE, GS_PREPARE_SCENE
   menu_table:
     .db 47, 63, 79, 95                       ; Contains y-pos for menu selector.
   ;
