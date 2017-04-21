@@ -29,11 +29,11 @@
   .equ NON_ASCII_AREA_START $0c00
 ;
 ; Levels:
-  .equ LEVEL_1 1
-  .equ LEVEL_2 2
-  .equ LEVEL_3 3
-  .equ LEVEL_4 4
-  .equ LEVEL_5 5
+  .equ LEVEL_1 0
+  .equ LEVEL_2 1
+  .equ LEVEL_3 2
+  .equ LEVEL_4 3
+  .equ LEVEL_5 4
 ; Swabby:
   .equ SWABBY_Y_INIT 155
   .equ SWABBY_X_INIT (248/2)+8

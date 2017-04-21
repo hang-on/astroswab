@@ -63,25 +63,17 @@
     ;
     SELECT_BANK BACKGROUND_BANK
     ld a,(level)
-    cp LEVEL_1
-    jp nz,+
-    ld hl,background_table_1
+    add a,a
+    ld d,0
+    ld e,a
+    ld hl,level_to_background_table
+    add hl,de
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
-    jp ++
-    +:
-    cp LEVEL_2
-    jp nz,+
-    ld hl,background_table_2
-    call load_vram_from_table             ; Load the tiles.
-    call load_vram_from_table             ; Load the tilemap.
-    jp ++
-    +:
-    ;cp LEVEL_2
-    ld hl,background_table_3
-    call load_vram_from_table             ; Load the tiles.
-    call load_vram_from_table             ; Load the tilemap.
-    ++:
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
@@ -117,7 +109,7 @@
     ld a,TRUE
     ld (gun_released),a
     ;
-    ; init (wipe struct):
+    ; Init (deactivate) all asteroids:
     ld b,ASTEROID_MAX
     ld ix,asteroid
     -:
@@ -125,7 +117,6 @@
       ld de,_sizeof_enemy_object
       add ix,de
     djnz -
-    ;
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -146,8 +137,6 @@
     ld (game_state),a
   jp main_loop
   ; ---------------------------------------------------------------------------
-
-
   ; ---------------------------------------------------------------------------
   run_scene:
   call await_frame_interrupt
@@ -460,13 +449,7 @@
         ld a,DISPLAY_0_FRAME_0_SIZE_0     ; interrupts and turn screen off
         ld b,1                            ; so preparations of next mode are
         call set_register                 ; safely done.
-
-        ; Common to all menu items:
-        ;ld hl,menu_state_to_game_state
-        ;ld a,(menu_state)
-        ;ld d,0
-        ;ld e,a
-        ;add hl,de
+        ;
         ld a,GS_PREPARE_SCENE
         ld (game_state),a                 ; Load game state for next loop,
         di                                ; based on menu item. Also disable

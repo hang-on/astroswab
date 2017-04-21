@@ -147,7 +147,11 @@
 .equ ENEMY_OBJECT_INACTIVE 0
 
 .section "Enemy objects" free
-  ; Functions that work on the enemy_object structure.
+  ; Functions that work on the Astroswab enemy_object structure.
+  ; What Astroswab enemy objects are assumed to have in common:
+  ; 1. ...
+  ; 2. ...
+  
   horizontal_zone_deactivate_enemy_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.

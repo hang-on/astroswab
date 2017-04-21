@@ -11,6 +11,10 @@
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
   ;
+  level_to_background_table:
+    .dw background_table_1
+    .dw background_table_2
+    .dw background_table_3
   ;
   background_table_1:
     .dw NON_ASCII_AREA_START,
@@ -41,7 +45,6 @@
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
     .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE
-
   ;
   ; Menu item strings:
   menu_title:
@@ -56,8 +59,6 @@
     .asc "<unused>#"
   menu_footer:
     .asc "---------------------#"
-  menu_state_to_game_state:           ; menu_item(0) == game_state(1), etc.
-    .db GS_PREPARE_SCENE, GS_PREPARE_SCENE
   menu_table:
     .db 47, 63, 79, 95                       ; Contains y-pos for menu selector.
   ;
