@@ -8,8 +8,6 @@
   ;
   dummy_text:
     .asc "Score: 00000   Lives: 8#"
-  dummy_text2:
-    .asc "  Max: 00000    Rank: 0#"
   ;
   background_table:
     ; level 1:
@@ -19,7 +17,7 @@
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
-    .dw $0000, $0000
+    .dw $0000, $0000                                  ; Filler: 2 words.
     ; level 2:
     .dw NON_ASCII_AREA_START,
     .dw background_2_tiles_end-background_2_tiles,

@@ -86,10 +86,6 @@
     ld c,5
     ld hl,dummy_text
     call print
-    ld b,23
-    ld c,5
-    ld hl,dummy_text2
-    call print
     ; Initialize variables
     ld ix,swabby
     ld hl,swabby_init_table
