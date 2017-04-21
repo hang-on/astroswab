@@ -49,7 +49,6 @@
   jump_table:
     ; Check the game state constants.
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level,
-
   ;
   ; ---------------------------------------------------------------------------
   ; L E V E L                                                        (gameplay)

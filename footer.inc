@@ -92,8 +92,6 @@
     .dw CHARS_IN_ASCII_SET*BYTES_PER_TILE
     .dw dd_revolution_tiles
   ;
-  atascii_tiles:
-    .include "bank_2\asciifont_atascii_tiles.inc"
   dd_revolution_tiles:
     .include "bank_2\dd_revolution_tiles.inc"
 .ends
