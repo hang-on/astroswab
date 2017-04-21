@@ -83,6 +83,7 @@
   bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
   ;
   rnd_seed dw
-
+  ;
   asteroid instanceof enemy_object ASTEROID_MAX
+  
 .ends

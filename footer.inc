@@ -11,32 +11,31 @@
   dummy_text2:
     .asc "  Max: 00000    Rank: 0#"
   ;
-  level_to_background_table:
-    .dw background_table_1
-    .dw background_table_2
-    .dw background_table_3
-  ;
-  background_table_1:
+  background_table:
+    ; level 1:
     .dw NON_ASCII_AREA_START,
     .dw background_1_tiles_end-background_1_tiles,
     .dw background_1_tiles
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
-  background_table_2:
+    .dw $0000, $0000
+    ; level 2:
     .dw NON_ASCII_AREA_START,
     .dw background_2_tiles_end-background_2_tiles,
     .dw background_2_tiles
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_2_tilemap
-  background_table_3:
+    .dw $0000, $0000
+    ; level 3:
     .dw NON_ASCII_AREA_START,
     .dw background_3_tiles_end-background_3_tiles,
     .dw background_3_tiles
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_3_tilemap
+    .dw $0000, $0000
   ;
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.

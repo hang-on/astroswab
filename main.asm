@@ -62,16 +62,15 @@
     call set_register
     ;
     SELECT_BANK BACKGROUND_BANK
-    ld a,(level)
-    add a,a
+    ld a,(level)                          ; Multiply level with 16, because
+    rla                                   ; the background table elements are
+    rla                                   ; 3+3+2 words wide.
+    rla
+    rla
     ld d,0
     ld e,a
-    ld hl,level_to_background_table
+    ld hl,background_table
     add hl,de
-    ld a,(hl)
-    inc hl
-    ld h,(hl)
-    ld l,a
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     ;
