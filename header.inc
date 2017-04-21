@@ -8,8 +8,8 @@
 ; Game states:
   .equ GS_PREPARE_DEVMENU 0
   .equ GS_RUN_DEVMENU 1
-  .equ GS_PREPARE_SCENE 2
-  .equ GS_RUN_SCENE 3
+  .equ GS_PREPARE_LEVEL 2
+  .equ GS_RUN_LEVEL 3
 
   .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
 ;

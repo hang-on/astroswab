@@ -48,14 +48,14 @@
     ;
   jump_table:
     ; Check the game state constants.
-    .dw prepare_devmenu, run_devmenu, prepare_scene, run_scene,
+    .dw prepare_devmenu, run_devmenu, prepare_level, run_level,
 
   ;
   ; ---------------------------------------------------------------------------
-  ; S C E N E                                                       (gameplay)
+  ; L E V E L                                                        (gameplay)
   ; ---------------------------------------------------------------------------
-  prepare_scene:
-    di                                
+  prepare_level:
+    di
     ; Turn off display and frame interrupts.
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,1
@@ -133,12 +133,12 @@
     call set_register
     ei
     ; When all is set, change the game state.
-    ld a,GS_RUN_SCENE
+    ld a,GS_RUN_LEVEL
     ld (game_state),a
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
-  run_scene:
+  run_level:
   call await_frame_interrupt
   call load_sat
   ;
@@ -443,7 +443,7 @@
           jp +++
         ++:
         +++:
-        ld a,GS_PREPARE_SCENE
+        ld a,GS_PREPARE_LEVEL
         ld (game_state),a                 ; Load game state for next loop,
       jp main_loop
 
