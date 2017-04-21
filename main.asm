@@ -55,7 +55,7 @@
   ; S C E N E                                                       (gameplay)
   ; ---------------------------------------------------------------------------
   prepare_scene:
-    di
+    di                                
     ; Turn off display and frame interrupts.
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,1
@@ -445,17 +445,6 @@
         +++:
         ld a,GS_PREPARE_SCENE
         ld (game_state),a                 ; Load game state for next loop,
-        di                                ; based on menu item. Also disable
-        ld a,DISPLAY_0_FRAME_0_SIZE_0     ; interrupts and turn screen off
-        ld b,1                            ; so preparations of next mode are
-        call set_register                 ; safely done.
-        ;
-        ld a,GS_PREPARE_SCENE
-        ld (game_state),a                 ; Load game state for next loop,
-        di                                ; based on menu item. Also disable
-        ld a,DISPLAY_0_FRAME_0_SIZE_0     ; interrupts and turn screen off
-        ld b,1                            ; so preparations of next mode are
-        call set_register                 ; safely done.
       jp main_loop
 
     menu_end:
