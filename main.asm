@@ -506,7 +506,26 @@
       jp c,handle_menu_click
       jp menu_end
       ;
+      ; -----------------------------
       handle_menu_click:
+        ld a,(menu_state)
+        dec a
+        jp nc,++
+          ; Menu item 0:
+          jp +++
+        ++:
+        dec a
+        jp nc,++
+          ; Menu item 1:
+          jp +++
+        ++:
+        dec a
+        jp nc,++
+          ; Menu item 2:
+          jp +++
+        ++:
+        +++:
+        ; Common to all menu items:
         ld hl,menu_state_to_game_state
         ld a,(menu_state)
         ld d,0
@@ -519,7 +538,7 @@
         ld b,1                            ; so preparations of next mode are
         call set_register                 ; safely done.
       jp main_loop
-      ;
+
     menu_end:
     ; Place menu sprite
     call begin_sprites
