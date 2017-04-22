@@ -59,6 +59,7 @@
   .equ ASTEROID_SPRITE_MASK %00000011
 
   .equ SHARD_MAX 2 + (ASTEROID_MAX*2)
+  .equ SHARD_SPEED_MODIFIER 1
   .equ SHARD_DEACTIVATE_ZONE_START 163
   .equ SHARD_DEACTIVATE_ZONE_END SHARD_DEACTIVATE_ZONE_START+8
 ;
@@ -89,5 +90,6 @@
   rnd_seed dw
   ;
   asteroid instanceof enemy_object ASTEROID_MAX
+  shard_generator_timer db
   shard instanceof enemy_object SHARD_MAX
 .ends

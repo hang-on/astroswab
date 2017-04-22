@@ -79,7 +79,7 @@
     ld hl,sprite_tiles
     call load_vram
     ;
-    call randomize
+    call randomize  ; FIXME! Base on player input (titlescreen).
     ;
     ld b,22
     ld c,5
@@ -119,17 +119,6 @@
       ld de,_sizeof_enemy_object
       add ix,de
     djnz -
-    ; Activate one shard for testing.
-    ld ix,shard
-    call reset_enemy_object_position
-    ld a,170
-    call set_enemy_object_sprite
-    call get_random_number
-    and ASTEROID_SPEED_MODIFIER
-    inc a
-    ld b,0
-    call set_enemy_object_speed
-    call activate_enemy_object
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -312,6 +301,24 @@
     pop bc
   djnz process_asteroids
   ;
+  ; Shard generator
+  ld a,(shard_generator_timer)
+  dec a
+  ld (shard_generator_timer),a
+  jp nz,+++
+    ; If shard_generator_timer is up, do...
+    ; Activate one shard for testing.
+    ld ix,shard
+    call reset_enemy_object_position
+    ld a,170  ; FIXME!!
+    call set_enemy_object_sprite
+    call get_random_number
+    and SHARD_SPEED_MODIFIER
+    inc a
+    ld b,0
+    call set_enemy_object_speed
+    call activate_enemy_object
+  +++:
   ld ix,shard
   ld b,SHARD_MAX
   process_shards:
