@@ -319,9 +319,9 @@
     call get_enemy_object_state
     call move_enemy_object              ; Move shard.
     ; Deactivate asteroid if it is within the deactivate zone.
-    ;ld a,ASTEROID_DEACTIVATE_ZONE_START
-    ;ld b,ASTEROID_DEACTIVATE_ZONE_END
-    ;call horizontal_zone_deactivate_enemy_object
+    ld a,SHARD_DEACTIVATE_ZONE_START
+    ld b,SHARD_DEACTIVATE_ZONE_END
+    call horizontal_zone_deactivate_enemy_object
     ;
     call draw_enemy_object              ; Put it in the SAT.
     ;
