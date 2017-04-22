@@ -123,6 +123,16 @@
     ld a,SHARD_GENERATOR_CHANCE_INIT
     ld (shard_generator_chance),a
     ;
+    ; ---- spinner, WIP area.
+    ld ix,spinner
+    call reset_enemy_object_position
+    ld a,SPRITE_12
+    call set_enemy_object_sprite
+    ld a,1
+    ld b,0
+    call set_enemy_object_speed
+    call activate_enemy_object
+    ;
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -368,6 +378,11 @@
     add ix,de
     pop bc
   djnz process_shards
+  ;
+  ld ix,spinner
+  call move_enemy_object              ; Move
+  call draw_enemy_object              ; Put it in the SAT.
+
   ;
   ; ---------------------------------------------------------------------------
 

@@ -97,4 +97,5 @@
   shard_generator_timer db
   shard_generator_chance db
   shard instanceof enemy_object SHARD_MAX
+  spinner instanceof enemy_object
 .ends

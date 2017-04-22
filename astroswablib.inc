@@ -20,6 +20,9 @@
 .equ SPRITE_14 50
 .equ SPRITE_15 56
 .equ SPRITE_16 58
+.equ SPRITE_17 64
+.equ SPRITE_18 66
+
 ; . . .
 .equ FIRST_8x8_SPRITE 168
 .equ SPRITE_43 FIRST_8x8_SPRITE
@@ -91,6 +94,40 @@
     .db 0, 8, 1
     .db 8, 0, 4
     .db 8, 8, 5
+
+    add_tall_metasprite:
+      ; Put a 16x16 metasprite in the SAT.
+      ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+      ;             and IX+2 is the character code.
+      ; Uses: AF, BC, DE, HL
+      ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+      ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+      ld d,4
+      ld hl,meta_sprite_table
+      -:
+        ld a,(ix+0)
+        add a,(hl)
+        ld b,a
+        inc hl
+        ld a,(ix+1)
+        add a,(hl)
+        ld c,a
+        inc hl
+        ld a,(hl)
+        ld e,a
+        ld a,(ix+2)
+        add a,e
+        inc hl
+        call add_sprite
+        dec d
+      jp nz,-
+    ret
+    tall_meta_sprite_table:
+      .db 0, 0, 0
+      .db 0, 8, 1
+      .db 8, 0, 4
+      .db 8, 8, 5
+
 .ends
 
 ; -----------------------------------------------------------------------------
@@ -147,10 +184,14 @@
   yspeed db
   xspeed db
   state db
+  shape db
 .endst
 
 .equ ENEMY_OBJECT_ACTIVE 1
 .equ ENEMY_OBJECT_INACTIVE 0
+.equ ENEMY_OBJECT_SHAPE_REGULAR 0
+.equ ENEMY_OBJECT_SHAPE_TALL 1
+.equ ENEMY_OBJECT_SHAPE_WIDE 2
 
 .section "Enemy objects" free
   ; Functions that work on the Astroswab enemy_object structure.
@@ -238,6 +279,10 @@
       cp FIRST_8x8_SPRITE
       jp nc,+
         call add_metasprite
+        ld a,(ix+enemy_object.shape)
+        cp ENEMY_OBJECT_SHAPE_TALL
+        jp nz,+++
+
         jp +++
       +:
         ld c,(ix+enemy_object.x)
