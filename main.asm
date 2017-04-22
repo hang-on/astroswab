@@ -111,6 +111,14 @@
       ld de,_sizeof_enemy_object
       add ix,de
     djnz -
+    ; Init (deactivate) all shards:
+    ld b,SHARD_MAX
+    ld ix,shard
+    -:
+      call deactivate_enemy_object
+      ld de,_sizeof_enemy_object
+      add ix,de
+    djnz -
     ;
     ; Wipe sprites.
     call begin_sprites

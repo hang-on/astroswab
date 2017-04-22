@@ -57,6 +57,8 @@
   .equ ASTEROID_MAX 3
   .equ ASTEROID_SPEED_MODIFIER 1
   .equ ASTEROID_SPRITE_MASK %00000011
+
+  .equ SHARD_MAX 2 + (ASTEROID_MAX*2)
 ;
 ; Sound:
   .equ SOUND_BANK 5
@@ -85,5 +87,5 @@
   rnd_seed dw
   ;
   asteroid instanceof enemy_object ASTEROID_MAX
-  
+  shard instanceof enemy_object SHARD_MAX
 .ends
