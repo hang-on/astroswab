@@ -271,25 +271,28 @@
     call get_enemy_object_state
     cp ENEMY_OBJECT_INACTIVE
     jp nz,+
-      call get_random_number
-      cp ASTEROID_REACTIVATE_VALUE
-      jp nc,+
-        ; Activate asteroid.
-        call reset_enemy_object_position
+      ld hl,frame_counter
+      bit 0,(hl)
+      jp nz,+
         call get_random_number
-        and ASTEROID_SPRITE_MASK
-        ld hl,asteroid_sprite_table
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
-        call set_enemy_object_sprite
-        call get_random_number
-        and ASTEROID_SPEED_MODIFIER
-        inc a
-        ld b,0
-        call set_enemy_object_speed
-        call activate_enemy_object
+        cp ASTEROID_REACTIVATE_VALUE
+        jp nc,+
+          ; Activate asteroid.
+          call reset_enemy_object_position
+          call get_random_number
+          and ASTEROID_SPRITE_MASK
+          ld hl,asteroid_sprite_table
+          ld d,0
+          ld e,a
+          add hl,de
+          ld a,(hl)
+          call set_enemy_object_sprite
+          call get_random_number
+          and ASTEROID_SPEED_MODIFIER
+          inc a
+          ld b,0
+          call set_enemy_object_speed
+          call activate_enemy_object
     +:
     call move_enemy_object              ; Move asteroid downwards.
     ; Deactivate asteroid if it is within the deactivate zone.
@@ -315,39 +318,38 @@
     call get_random_number
     cp b
     jp nc,+++
-    ; Activate one shard for testing.
-    ld b,SHARD_MAX
-    ld ix,shard
-    -:
-      push bc
-      call get_enemy_object_state
-      cp ENEMY_OBJECT_INACTIVE
-      jp nz,+
-        call reset_enemy_object_position
-        ld a,SHARD_YELLOW_SPRITE
-        ld b,a
-        call get_random_number
-        and %00000011
-        add a,b
-        call set_enemy_object_sprite
-        call get_random_number
-        and SHARD_SPEED_MODIFIER
-        inc a
-        ld b,SHARD_FREEFALLING_XSPEED
-        call set_enemy_object_speed
-        call activate_enemy_object
-        call get_random_number        ; Get interval modifier.
-        and %00111111                 ; ... and mask it to 0-63.
-        ld b,a
-        ld a,SHARD_GENERATOR_INTERVAL
-        sub b
-        ld (shard_generator_timer),a
-        jp +++
-      +:
-      ld de,_sizeof_enemy_object
-      add ix,de
-      pop bc
-    djnz -
+      ld b,SHARD_MAX
+      ld ix,shard
+      -:
+        push bc
+        call get_enemy_object_state
+        cp ENEMY_OBJECT_INACTIVE        ; Search for an inactive shard.
+        jp nz,+
+          call reset_enemy_object_position
+          ld a,SHARD_YELLOW_SPRITE
+          ld b,a
+          call get_random_number
+          and %00000011
+          add a,b
+          call set_enemy_object_sprite
+          call get_random_number
+          and SHARD_SPEED_MODIFIER
+          inc a
+          ld b,SHARD_FREEFALLING_XSPEED
+          call set_enemy_object_speed
+          call activate_enemy_object
+          call get_random_number        ; Get interval modifier.
+          and %00111111                 ; ... and mask it to 0-63.
+          ld b,a
+          ld a,SHARD_GENERATOR_INTERVAL
+          sub b
+          ld (shard_generator_timer),a
+          jp +++                        ; Jump out of loop.
+        +:
+        ld de,_sizeof_enemy_object
+        add ix,de
+        pop bc
+      djnz -
   +++:
   ld ix,shard
   ld b,SHARD_MAX
@@ -366,8 +368,9 @@
     add ix,de
     pop bc
   djnz process_shards
-
+  ;
   ; ---------------------------------------------------------------------------
+
   ld hl,frame_counter
   inc (hl)
   call is_reset_pressed
