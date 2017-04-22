@@ -38,6 +38,8 @@
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
+  shard_sprite_table:
+    .db SPRITE_45
   ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3

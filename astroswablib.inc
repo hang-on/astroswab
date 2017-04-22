@@ -25,6 +25,9 @@
 .equ SPRITE_43 FIRST_8x8_SPRITE
 .equ SPRITE_44 169
 .equ SPRITE_45 170
+.equ SPRITE_46 171
+.equ SPRITE_47 172
+
 
 
 ; -----------------------------------------------------------------------------
@@ -155,7 +158,7 @@
   ; 1. ...
   ; 2. ...
 
-  
+
 
   horizontal_zone_deactivate_enemy_object:
     ; Test enemy object y to see if it is within the horizontal zone defined

@@ -325,6 +325,10 @@
       jp nz,+
         call reset_enemy_object_position
         ld a,SHARD_YELLOW_SPRITE
+        ld b,a
+        call get_random_number
+        and %00000011
+        add a,b
         call set_enemy_object_sprite
         call get_random_number
         and SHARD_SPEED_MODIFIER
@@ -333,7 +337,7 @@
         call set_enemy_object_speed
         call activate_enemy_object
         call get_random_number        ; Get interval modifier.
-        and %00111111
+        and %00111111                 ; ... and mask it to 0-63.
         ld b,a
         ld a,SHARD_GENERATOR_INTERVAL
         sub b
