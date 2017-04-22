@@ -119,6 +119,9 @@
       ld de,_sizeof_enemy_object
       add ix,de
     djnz -
+    ; Init shard generator:
+    ld a,SHARD_GENERATOR_CHANCE_INIT
+    ld (shard_generator_chance),a
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -307,17 +310,40 @@
   ld (shard_generator_timer),a
   jp nz,+++
     ; If shard_generator_timer is up, do...
-    ; Activate one shard for testing.
-    ld ix,shard
-    call reset_enemy_object_position
-    ld a,SHARD_YELLOW_SPRITE
-    call set_enemy_object_sprite
+    ld a,(shard_generator_chance)
+    ld b,a
     call get_random_number
-    and SHARD_SPEED_MODIFIER
-    inc a
-    ld b,SHARD_FREEFALLING_XSPEED
-    call set_enemy_object_speed
-    call activate_enemy_object
+    cp b
+    jp nc,+++
+    ; Activate one shard for testing.
+    ld b,SHARD_MAX
+    ld ix,shard
+    -:
+      push bc
+      call get_enemy_object_state
+      cp ENEMY_OBJECT_INACTIVE
+      jp nz,+
+        call reset_enemy_object_position
+        ld a,SHARD_YELLOW_SPRITE
+        call set_enemy_object_sprite
+        call get_random_number
+        and SHARD_SPEED_MODIFIER
+        inc a
+        ld b,SHARD_FREEFALLING_XSPEED
+        call set_enemy_object_speed
+        call activate_enemy_object
+        call get_random_number        ; Get interval modifier.
+        and %00111111
+        ld b,a
+        ld a,SHARD_GENERATOR_INTERVAL
+        sub b
+        ld (shard_generator_timer),a
+        jp +++
+      +:
+      ld de,_sizeof_enemy_object
+      add ix,de
+      pop bc
+    djnz -
   +++:
   ld ix,shard
   ld b,SHARD_MAX

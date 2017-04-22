@@ -58,6 +58,8 @@
   .equ ASTEROID_SPEED_MODIFIER 1
   .equ ASTEROID_SPRITE_MASK %00000011
 
+  .equ SHARD_GENERATOR_CHANCE_INIT 130
+  .equ SHARD_GENERATOR_INTERVAL 120
   .equ SHARD_MAX 2 + (ASTEROID_MAX*2)
   .equ SHARD_SPEED_MODIFIER 1
   .equ SHARD_FREEFALLING_XSPEED 0
@@ -93,5 +95,6 @@
   ;
   asteroid instanceof enemy_object ASTEROID_MAX
   shard_generator_timer db
+  shard_generator_chance db
   shard instanceof enemy_object SHARD_MAX
 .ends
