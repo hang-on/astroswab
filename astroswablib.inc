@@ -20,6 +20,11 @@
 .equ SPRITE_14 50
 .equ SPRITE_15 56
 .equ SPRITE_16 58
+; . . .
+.equ FIRST_8x8_SPRITE 168
+.equ SPRITE_43 FIRST_8x8_SPRITE
+.equ SPRITE_44 169
+.equ SPRITE_45 170
 
 
 ; -----------------------------------------------------------------------------
@@ -222,7 +227,19 @@
     SAVE_REGISTERS                ; Because add_metasprite mess with registers!
     ld a,(ix+enemy_object.state)
     cp ENEMY_OBJECT_ACTIVE
-    call z,add_metasprite
+    jp nz,+++
+      ; Put active objects in the SAT buffer.
+      ld a,(ix+enemy_object.sprite)
+      cp FIRST_8x8_SPRITE
+      jp nc,+
+        call add_metasprite
+        jp +++
+      +:
+        ld c,(ix+enemy_object.x)
+        ld b,(ix+enemy_object.y)
+        ld a,(ix+enemy_object.sprite)
+        call add_sprite
+    +++:
     RESTORE_REGISTERS
   ret
   ;

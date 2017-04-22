@@ -119,6 +119,17 @@
       ld de,_sizeof_enemy_object
       add ix,de
     djnz -
+    ; Activate one shard for testing.
+    ld ix,shard
+    call reset_enemy_object_position
+    ld a,170
+    call set_enemy_object_sprite
+    call get_random_number
+    and ASTEROID_SPEED_MODIFIER
+    inc a
+    ld b,0
+    call set_enemy_object_speed
+    call activate_enemy_object
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -301,6 +312,24 @@
     pop bc
   djnz process_asteroids
   ;
+  ld ix,shard
+  ld b,SHARD_MAX
+  process_shards:
+    push bc
+    call get_enemy_object_state
+    call move_enemy_object              ; Move shard.
+    ; Deactivate asteroid if it is within the deactivate zone.
+    ;ld a,ASTEROID_DEACTIVATE_ZONE_START
+    ;ld b,ASTEROID_DEACTIVATE_ZONE_END
+    ;call horizontal_zone_deactivate_enemy_object
+    ;
+    call draw_enemy_object              ; Put it in the SAT.
+    ;
+    ld de,_sizeof_enemy_object
+    add ix,de
+    pop bc
+  djnz process_shards
+
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
   inc (hl)
