@@ -155,6 +155,8 @@
   ; 1. ...
   ; 2. ...
 
+  
+
   horizontal_zone_deactivate_enemy_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.

@@ -310,12 +310,12 @@
     ; Activate one shard for testing.
     ld ix,shard
     call reset_enemy_object_position
-    ld a,170  ; FIXME!!
+    ld a,SHARD_YELLOW_SPRITE
     call set_enemy_object_sprite
     call get_random_number
     and SHARD_SPEED_MODIFIER
     inc a
-    ld b,0
+    ld b,SHARD_FREEFALLING_XSPEED
     call set_enemy_object_speed
     call activate_enemy_object
   +++:
