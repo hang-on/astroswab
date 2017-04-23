@@ -190,6 +190,11 @@
   xspeed db
   state db
   shape db
+  anim_pointer dw
+  anim_total_frames db
+  anim_current_frame db
+  anim_speed db
+  anim_counter db
 .endst
 
 .equ ENEMY_OBJECT_ACTIVE 1
@@ -205,7 +210,9 @@
   ; 1. ...
   ; 2. ...
 
-
+  animate_enemy_object:
+    
+  ret
 
   horizontal_zone_deactivate_enemy_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
