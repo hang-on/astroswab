@@ -95,38 +95,43 @@
     .db 8, 0, 4
     .db 8, 8, 5
 
-    add_tall_metasprite:
-      ; Put a 16x16 metasprite in the SAT.
-      ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-      ;             and IX+2 is the character code.
-      ; Uses: AF, BC, DE, HL
-      ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-      ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-      ld d,4
-      ld hl,meta_sprite_table
-      -:
-        ld a,(ix+0)
-        add a,(hl)
-        ld b,a
-        inc hl
-        ld a,(ix+1)
-        add a,(hl)
-        ld c,a
-        inc hl
-        ld a,(hl)
-        ld e,a
-        ld a,(ix+2)
-        add a,e
-        inc hl
-        call add_sprite
-        dec d
-      jp nz,-
-    ret
-    tall_meta_sprite_table:
-      .db 0, 0, 0
-      .db 0, 8, 1
-      .db 8, 0, 4
-      .db 8, 8, 5
+  add_tall_metasprite:
+    ; Put a 16x32 metasprite in the SAT.
+    ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+    ;             and IX+2 is the character code.
+    ; Uses: AF, BC, DE, HL
+    ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+    ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+    ld d,8
+    ld hl,tall_meta_sprite_table
+    -:
+      ld a,(ix+0)
+      add a,(hl)
+      ld b,a
+      inc hl
+      ld a,(ix+1)
+      add a,(hl)
+      ld c,a
+      inc hl
+      ld a,(hl)
+      ld e,a
+      ld a,(ix+2)
+      add a,e
+      inc hl
+      call add_sprite
+      dec d
+    jp nz,-
+  ret
+  tall_meta_sprite_table:
+    .db 0, 0, 0
+    .db 0, 8, 1
+    .db 8, 0, 4
+    .db 8, 8, 5
+    ;
+    .db 16, 0, 6
+    .db 16, 8, 7
+    .db 24, 0, 10
+    .db 24, 8, 11
 
 .ends
 
@@ -192,6 +197,7 @@
 .equ ENEMY_OBJECT_SHAPE_REGULAR 0
 .equ ENEMY_OBJECT_SHAPE_TALL 1
 .equ ENEMY_OBJECT_SHAPE_WIDE 2
+.equ ENEMY_OBJECT_SHAPE_SMALL 3
 
 .section "Enemy objects" free
   ; Functions that work on the Astroswab enemy_object structure.
@@ -273,25 +279,33 @@
     SAVE_REGISTERS                ; Because add_metasprite mess with registers!
     ld a,(ix+enemy_object.state)
     cp ENEMY_OBJECT_ACTIVE
-    jp nz,+++
+    jp nz,draw_enemy_object_end
       ; Put active objects in the SAT buffer.
       ld a,(ix+enemy_object.sprite)
       cp FIRST_8x8_SPRITE
-      jp nc,+
-        call add_metasprite
-        ld a,(ix+enemy_object.shape)
-        cp ENEMY_OBJECT_SHAPE_TALL
-        jp nz,+++
-
-        jp +++
-      +:
-        ld c,(ix+enemy_object.x)
-        ld b,(ix+enemy_object.y)
-        ld a,(ix+enemy_object.sprite)
-        call add_sprite
-    +++:
+      jp nc,small_shape
+      ld a,(ix+enemy_object.shape)
+      cp ENEMY_OBJECT_SHAPE_REGULAR
+      jp z,regular_shape
+      cp ENEMY_OBJECT_SHAPE_TALL
+      jp z,tall_shape
+    draw_enemy_object_end:
     RESTORE_REGISTERS
   ret
+  small_shape:
+    ld c,(ix+enemy_object.x)
+    ld b,(ix+enemy_object.y)
+    ld a,(ix+enemy_object.sprite)
+    call add_sprite
+  jp draw_enemy_object_end
+  regular_shape:
+    call add_metasprite
+  jp draw_enemy_object_end
+  tall_shape:
+    call add_tall_metasprite
+  jp draw_enemy_object_end
+
+
   ;
   activate_enemy_object:
     ; Entry: IX = Pointer to struct.

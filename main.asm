@@ -131,6 +131,8 @@
     ld a,1
     ld b,0
     call set_enemy_object_speed
+    ld a,ENEMY_OBJECT_SHAPE_TALL
+    ld (ix+enemy_object.shape),a ; FIXME! Encapsulate!
     call activate_enemy_object
     ;
     ; Wipe sprites.
