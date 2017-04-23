@@ -133,6 +133,9 @@
     call set_enemy_object_speed
     ld a,ENEMY_OBJECT_SHAPE_TALL
     ld (ix+enemy_object.shape),a ; FIXME! Encapsulate!
+    ld hl,spinner_anim_table
+    ld (ix+enemy_object.anim_pointer),l
+    ld (ix+enemy_object.anim_pointer+1),h
     call activate_enemy_object
     ;
     ; Wipe sprites.
@@ -383,6 +386,7 @@
   ;
   ld ix,spinner
   call move_enemy_object              ; Move
+  call animate_enemy_object
   call draw_enemy_object              ; Put it in the SAT.
 
   ;

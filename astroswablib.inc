@@ -190,11 +190,8 @@
   xspeed db
   state db
   shape db
-  anim_pointer dw
-  anim_total_frames db
-  anim_current_frame db
-  anim_speed db
   anim_counter db
+  anim_pointer dw
 .endst
 
 .equ ENEMY_OBJECT_ACTIVE 1
@@ -209,9 +206,24 @@
   ; What Astroswab enemy objects are assumed to have in common:
   ; 1. ...
   ; 2. ...
+  load_animation_enemy_object:
+
+  ret
 
   animate_enemy_object:
-    
+    ; Entry: IX = Pointer to struct.
+    SAVE_REGISTERS
+    ld a,(ix+enemy_object.anim_counter)
+    inc a
+    ld (ix+enemy_object.anim_counter),a
+    ld d,0
+    ld e,a
+    ld l,(ix+enemy_object.anim_pointer)
+    ld h,(ix+enemy_object.anim_pointer+1)
+    add hl,de
+    ld a,(hl)
+    ld (ix+enemy_object.sprite),a
+    RESTORE_REGISTERS
   ret
 
   horizontal_zone_deactivate_enemy_object:

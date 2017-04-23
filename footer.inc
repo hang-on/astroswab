@@ -40,9 +40,22 @@
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
   shard_sprite_table:
     .db SPRITE_45
+; WIP --------------
   spinner_anim_table:
-    .db SPRITE_12, SPRITE_14, SPRITE_16
-  spinner_anim_table_end:
+  .rept 8
+    .rept 8
+      .db SPRITE_12
+    .endr
+    .rept 8
+      .db SPRITE_14
+    .endr
+    .rept 8
+      .db SPRITE_16
+    .endr
+    .rept 8
+      .db SPRITE_14
+    .endr
+  .endr
   ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
