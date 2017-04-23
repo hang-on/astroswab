@@ -207,7 +207,10 @@
   ; 1. ...
   ; 2. ...
   load_animation_enemy_object:
-
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to animation table.
+    ld (ix+enemy_object.anim_pointer),l
+    ld (ix+enemy_object.anim_pointer+1),h
   ret
 
   animate_enemy_object:

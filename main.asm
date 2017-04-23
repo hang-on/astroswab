@@ -134,8 +134,7 @@
     ld a,ENEMY_OBJECT_SHAPE_TALL
     ld (ix+enemy_object.shape),a ; FIXME! Encapsulate!
     ld hl,spinner_anim_table
-    ld (ix+enemy_object.anim_pointer),l
-    ld (ix+enemy_object.anim_pointer+1),h
+    call load_animation_enemy_object
     call activate_enemy_object
     ;
     ; Wipe sprites.
