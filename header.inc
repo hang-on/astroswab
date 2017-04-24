@@ -66,6 +66,9 @@
   .equ SHARD_YELLOW_SPRITE SPRITE_45
   .equ SHARD_DEACTIVATE_ZONE_START 163
   .equ SHARD_DEACTIVATE_ZONE_END SHARD_DEACTIVATE_ZONE_START+8
+
+  .equ SPINNER_DEACTIVATE_ZONE_START ASTEROID_DEACTIVATE_ZONE_START-16
+  .equ SPINNER_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_END-16
 ;
 ; Sound:
   .equ SOUND_BANK 5
@@ -98,4 +101,6 @@
   shard_generator_chance db
   shard instanceof enemy_object SHARD_MAX
   spinner instanceof enemy_object
+  spinner_generator_timer db
+  spinner_generator_chance db
 .ends
