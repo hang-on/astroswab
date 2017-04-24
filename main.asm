@@ -107,16 +107,16 @@
     ld b,ASTEROID_MAX
     ld ix,asteroid
     -:
-      call deactivate_enemy_object
-      ld de,_sizeof_enemy_object
+      call deactivate_game_object
+      ld de,_sizeof_game_object
       add ix,de
     djnz -
     ; Init (deactivate) all shards:
     ld b,SHARD_MAX
     ld ix,shard
     -:
-      call deactivate_enemy_object
-      ld de,_sizeof_enemy_object
+      call deactivate_game_object
+      ld de,_sizeof_game_object
       add ix,de
     djnz -
     ; Init shard generator:
@@ -125,7 +125,7 @@
     ;
     ; Init spinner and generator:
     ld ix,spinner
-    call deactivate_enemy_object
+    call deactivate_game_object
     ld ix,spinner_trigger
     ld hl,spinner_trigger_init_table
     call initialize_trigger
@@ -275,7 +275,7 @@
   ld b,ASTEROID_MAX
   process_asteroids:
     push bc
-    call get_enemy_object_state
+    call get_game_object_state
     cp ENEMY_OBJECT_INACTIVE
     jp nz,+
       ld hl,frame_counter
@@ -285,7 +285,7 @@
         cp ASTEROID_REACTIVATE_VALUE
         jp nc,+
           ; Activate asteroid.
-          call reset_enemy_object_position
+          call reset_game_object_position
           call get_random_number
           and ASTEROID_SPRITE_MASK
           ld hl,asteroid_sprite_table
@@ -293,23 +293,23 @@
           ld e,a
           add hl,de
           ld a,(hl)
-          call set_enemy_object_sprite
+          call set_game_object_sprite
           call get_random_number
           and ASTEROID_SPEED_MODIFIER
           inc a
           ld b,0
-          call set_enemy_object_speed
-          call activate_enemy_object
+          call set_game_object_speed
+          call activate_game_object
     +:
-    call move_enemy_object              ; Move asteroid downwards.
+    call move_game_object              ; Move asteroid downwards.
     ; Deactivate asteroid if it is within the deactivate zone.
     ld a,ASTEROID_DEACTIVATE_ZONE_START
     ld b,ASTEROID_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_enemy_object
+    call horizontal_zone_deactivate_game_object
     ;
-    call draw_enemy_object              ; Put it in the SAT.
+    call draw_game_object              ; Put it in the SAT.
     ;
-    ld de,_sizeof_enemy_object
+    ld de,_sizeof_game_object
     add ix,de
     pop bc
   djnz process_asteroids
@@ -329,22 +329,22 @@
       ld ix,shard
       -:
         push bc
-        call get_enemy_object_state
+        call get_game_object_state
         cp ENEMY_OBJECT_INACTIVE        ; Search for an inactive shard.
         jp nz,+
-          call reset_enemy_object_position
+          call reset_game_object_position
           ld a,SHARD_YELLOW_SPRITE
           ld b,a
           call get_random_number
           and %00000011
           add a,b
-          call set_enemy_object_sprite
+          call set_game_object_sprite
           call get_random_number
           and SHARD_SPEED_MODIFIER
           inc a
           ld b,SHARD_FREEFALLING_XSPEED
-          call set_enemy_object_speed
-          call activate_enemy_object
+          call set_game_object_speed
+          call activate_game_object
           call get_random_number        ; Get interval modifier.
           and %00111111                 ; ... and mask it to 0-63.
           ld b,a
@@ -353,7 +353,7 @@
           ld (shard_generator_timer),a
           jp +++                        ; Jump out of loop.
         +:
-        ld de,_sizeof_enemy_object
+        ld de,_sizeof_game_object
         add ix,de
         pop bc
       djnz -
@@ -362,22 +362,22 @@
   ld b,SHARD_MAX
   process_shards:
     push bc
-    call get_enemy_object_state
-    call move_enemy_object              ; Move shard.
+    call get_game_object_state
+    call move_game_object              ; Move shard.
     ; Deactivate shard if it is within the deactivate zone.
     ld a,SHARD_DEACTIVATE_ZONE_START
     ld b,SHARD_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_enemy_object
+    call horizontal_zone_deactivate_game_object
     ;
-    call draw_enemy_object              ; Put it in the SAT.
+    call draw_game_object              ; Put it in the SAT.
     ;
-    ld de,_sizeof_enemy_object
+    ld de,_sizeof_game_object
     add ix,de
     pop bc
   djnz process_shards
   ;
   ld ix,spinner
-  call get_enemy_object_state           ; If spinner is already out, skip!
+  call get_game_object_state           ; If spinner is already out, skip!
   cp ENEMY_OBJECT_ACTIVE
   jp z,+
     ld ix,spinner_trigger               ;
@@ -386,21 +386,21 @@
       ; If spinner_generator_timer is up, do...
       ; Activate a new spinner.
       ld ix,spinner
-      call reset_enemy_object_position
+      call reset_game_object_position
       ld hl,spinner_setup_table
-      call set_enemy_object_from_table
+      call set_game_object_from_table
       ld hl,spinner_anim_table
-      call load_animation_enemy_object
-      call activate_enemy_object
+      call load_animation_game_object
+      call activate_game_object
   +:
   ;
   ld ix,spinner
-  call move_enemy_object              ; Move
+  call move_game_object              ; Move
   ld a,SPINNER_DEACTIVATE_ZONE_START
   ld b,SPINNER_DEACTIVATE_ZONE_END
-  call horizontal_zone_deactivate_enemy_object
-  call animate_enemy_object
-  call draw_enemy_object              ; Put it in the SAT.
+  call horizontal_zone_deactivate_game_object
+  call animate_game_object
+  call draw_game_object              ; Put it in the SAT.
   ;
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter

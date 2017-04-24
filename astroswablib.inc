@@ -228,7 +228,7 @@
 ; -----------------------------------------------------------------------------
 ; ENEMY OBJECTS
 ; -----------------------------------------------------------------------------
-.struct enemy_object
+.struct game_object
   y db
   x db
   sprite db
@@ -248,34 +248,34 @@
 .equ ENEMY_OBJECT_SHAPE_SMALL 3
 
 .section "Enemy objects" free
-  ; Functions that work on the Astroswab enemy_object structure.
+  ; Functions that work on the Astroswab game_object structure.
   ; What Astroswab enemy objects are assumed to have in common:
   ; 1. ...
   ; 2. ...
-  load_animation_enemy_object:
+  load_animation_game_object:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to animation table.
-    ld (ix+enemy_object.anim_pointer),l
-    ld (ix+enemy_object.anim_pointer+1),h
+    ld (ix+game_object.anim_pointer),l
+    ld (ix+game_object.anim_pointer+1),h
   ret
   ;
-  animate_enemy_object:
+  animate_game_object:
     ; Entry: IX = Pointer to struct.
     SAVE_REGISTERS
-    ld a,(ix+enemy_object.anim_counter)
+    ld a,(ix+game_object.anim_counter)
     inc a
-    ld (ix+enemy_object.anim_counter),a
+    ld (ix+game_object.anim_counter),a
     ld d,0
     ld e,a
-    ld l,(ix+enemy_object.anim_pointer)
-    ld h,(ix+enemy_object.anim_pointer+1)
+    ld l,(ix+game_object.anim_pointer)
+    ld h,(ix+game_object.anim_pointer+1)
     add hl,de
     ld a,(hl)
-    ld (ix+enemy_object.sprite),a
+    ld (ix+game_object.sprite),a
     RESTORE_REGISTERS
   ret
   ;
-  horizontal_zone_deactivate_enemy_object:
+  horizontal_zone_deactivate_game_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.
     ; Entry: IX = Pointer to struct.
@@ -283,21 +283,21 @@
     ; Uses: AF, BC.
     ld c,b
     ld b,a
-    ld a,(ix+enemy_object.y)
+    ld a,(ix+game_object.y)
     cp b
     ret c
     cp c
     ret nc
-    call deactivate_enemy_object
+    call deactivate_game_object
   ret
   ;
-  reset_enemy_object_position:
+  reset_game_object_position:
     ; In Astroswab, all enemy objects share the feature that they spawn
     ; in the bottom of the invisible area (at x = 8-229). Thus when an enemy
     ; object gets its position reset, y is fixed and x is randomized.
     ; Entry: IX = Pointer to enemy object.
     ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
-    ld (ix+enemy_object.y),a
+    ld (ix+game_object.y),a
     call get_random_number
     and %01111111             ; rnd(128).
     ld b,a
@@ -309,111 +309,111 @@
     and %00011111             ; rnd(32).
     add a,b
     add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
-    ld (ix+enemy_object.x),a  ; x = 8 - 229.
+    ld (ix+game_object.x),a  ; x = 8 - 229.
   ret
   ;
-  set_enemy_object_from_table:
+  set_game_object_from_table:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to table (sprite, yspeed, xspeed, shape).
     ld a,(hl)
-    ld (ix+enemy_object.sprite),a
+    ld (ix+game_object.sprite),a
     inc hl
     ld a,(hl)
-    ld (ix+enemy_object.yspeed),a
+    ld (ix+game_object.yspeed),a
     inc hl
     ld a,(hl)
-    ld (ix+enemy_object.xspeed),a
+    ld (ix+game_object.xspeed),a
     inc hl
     ld a,(hl)
-    ld (ix+enemy_object.shape),a
+    ld (ix+game_object.shape),a
   ret
   ;
-  set_enemy_object_sprite:
+  set_game_object_sprite:
     ; Entry: IX = Pointer to enemy object.
     ;        A = Sprite index.
-    ld (ix+enemy_object.sprite),a
+    ld (ix+game_object.sprite),a
   ret
   ;
-  set_enemy_object_speed:
+  set_game_object_speed:
     ; IX = Pointer to enemy object.
     ; A = Yspeed, B = Xspeed.
-    ld (ix+enemy_object.yspeed),a
-    ld (ix+enemy_object.xspeed),b
+    ld (ix+game_object.yspeed),a
+    ld (ix+game_object.xspeed),b
   ret
   ;
-  move_enemy_object:
+  move_game_object:
     ; Apply yspeed to y and xspeed to x.
     ; Entry: IX = Pointer to instance of enemy object.
-    ld a,(ix+enemy_object.yspeed)
+    ld a,(ix+game_object.yspeed)
     ld b,a
-    ld a,(ix+enemy_object.y)
+    ld a,(ix+game_object.y)
     add a,b
-    ld (ix+enemy_object.y),a
+    ld (ix+game_object.y),a
     ;
-    ld a,(ix+enemy_object.xspeed)
+    ld a,(ix+game_object.xspeed)
     ld b,a
-    ld a,(ix+enemy_object.x)
+    ld a,(ix+game_object.x)
     add a,b
-    ld (ix+enemy_object.x),a
+    ld (ix+game_object.x),a
   ret
   ;
-  draw_enemy_object:
+  draw_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
     SAVE_REGISTERS                ; Because add_metasprite mess with registers!
-    ld a,(ix+enemy_object.state)
+    ld a,(ix+game_object.state)
     cp ENEMY_OBJECT_ACTIVE
-    jp nz,draw_enemy_object_end
+    jp nz,draw_game_object_end
       ; Put active objects in the SAT buffer.
-      ld a,(ix+enemy_object.sprite)
+      ld a,(ix+game_object.sprite)
       cp FIRST_8x8_SPRITE
       jp nc,small_shape
-      ld a,(ix+enemy_object.shape)
+      ld a,(ix+game_object.shape)
       cp ENEMY_OBJECT_SHAPE_REGULAR
       jp z,regular_shape
       cp ENEMY_OBJECT_SHAPE_TALL
       jp z,tall_shape
-    draw_enemy_object_end:
+    draw_game_object_end:
     RESTORE_REGISTERS
   ret
   small_shape:
-    ld c,(ix+enemy_object.x)
-    ld b,(ix+enemy_object.y)
-    ld a,(ix+enemy_object.sprite)
+    ld c,(ix+game_object.x)
+    ld b,(ix+game_object.y)
+    ld a,(ix+game_object.sprite)
     call add_sprite
-  jp draw_enemy_object_end
+  jp draw_game_object_end
   regular_shape:
     call add_metasprite
-  jp draw_enemy_object_end
+  jp draw_game_object_end
   tall_shape:
     call add_tall_metasprite
-  jp draw_enemy_object_end
+  jp draw_game_object_end
 
 
   ;
-  activate_enemy_object:
+  activate_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
     push af
     ld a,ENEMY_OBJECT_ACTIVE
-    ld (ix+enemy_object.state),a
+    ld (ix+game_object.state),a
     pop af
   ret
   ;
-  deactivate_enemy_object:
+  deactivate_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
     push af
     ld a,ENEMY_OBJECT_INACTIVE
-    ld (ix+enemy_object.state),a
+    ld (ix+game_object.state),a
     pop af
   ret
   ;
-  get_enemy_object_state:
+  get_game_object_state:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A state of the enemy object, which should be either
     ; ENEMY_OBJECT_INACTIVE or ENEMY_OBJECT_ACTIVE.
-    ld a,(ix+enemy_object.state)
+    ld a,(ix+game_object.state)
   ret
   ;
 .ends
