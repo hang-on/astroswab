@@ -212,7 +212,7 @@
     ld (ix+enemy_object.anim_pointer),l
     ld (ix+enemy_object.anim_pointer+1),h
   ret
-
+  ;
   animate_enemy_object:
     ; Entry: IX = Pointer to struct.
     SAVE_REGISTERS
@@ -228,7 +228,7 @@
     ld (ix+enemy_object.sprite),a
     RESTORE_REGISTERS
   ret
-
+  ;
   horizontal_zone_deactivate_enemy_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.
@@ -264,6 +264,22 @@
     add a,b
     add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
     ld (ix+enemy_object.x),a  ; x = 8 - 229.
+  ret
+  ;
+  set_enemy_object_from_table:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to table (sprite, yspeed, xspeed, shape).
+    ld a,(hl)
+    ld (ix+enemy_object.sprite),a
+    inc hl
+    ld a,(hl)
+    ld (ix+enemy_object.yspeed),a
+    inc hl
+    ld a,(hl)
+    ld (ix+enemy_object.xspeed),a
+    inc hl
+    ld a,(hl)
+    ld (ix+enemy_object.shape),a
   ret
   ;
   set_enemy_object_sprite:

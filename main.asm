@@ -126,13 +126,8 @@
     ; ---- spinner, WIP area.
     ld ix,spinner
     call reset_enemy_object_position
-    ld a,SPRITE_12
-    call set_enemy_object_sprite
-    ld a,1
-    ld b,0
-    call set_enemy_object_speed
-    ld a,ENEMY_OBJECT_SHAPE_TALL
-    ld (ix+enemy_object.shape),a ; FIXME! Encapsulate!
+    ld hl,spinner_setup_table
+    call set_enemy_object_from_table
     ld hl,spinner_anim_table
     call load_animation_enemy_object
     call activate_enemy_object

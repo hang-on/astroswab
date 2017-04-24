@@ -41,6 +41,9 @@
   shard_sprite_table:
     .db SPRITE_45
 ; WIP --------------
+  spinner_setup_table:
+    .db SPRITE_12, 1, 0, ENEMY_OBJECT_SHAPE_TALL
+
   spinner_anim_table:
   .rept 8
     .rept 8
