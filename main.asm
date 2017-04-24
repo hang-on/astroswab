@@ -134,6 +134,7 @@
     call deactivate_game_object
     ld ix,danish_trigger
     ld hl,danish_trigger_init_table
+    call initialize_trigger
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -407,6 +408,31 @@
   call animate_game_object
   call draw_game_object              ; Put it in the SAT.
   ;
+  ; Danish WIP ---------
+  ld ix,danish
+  call get_game_object_state           ; If danish is already out, skip!
+  cp ENEMY_OBJECT_ACTIVE
+  jp z,+
+    ld ix,danish_trigger               ;
+    call process_trigger
+    jp nc,+
+      ; If danish_generator_timer is up, do...
+      ; Activate a new spinner.
+      ld ix,danish
+      call reset_game_object_position
+      ld hl,danish_setup_table
+      call set_game_object_from_table
+      call activate_game_object
+  +:
+  ;
+  ld ix,danish
+  call move_game_object              ; Move
+  ld a,ASTEROID_DEACTIVATE_ZONE_START
+  ld b,ASTEROID_DEACTIVATE_ZONE_END
+  call horizontal_zone_deactivate_game_object
+  call draw_game_object              ; Put it in the SAT.
+
+  ;----------------
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
   inc (hl)
