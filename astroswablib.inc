@@ -182,12 +182,48 @@
 
 
 ; -----------------------------------------------------------------------------
-; GENERATORS
+; TRIGGERS
 ; -----------------------------------------------------------------------------
-.struct generator
+; Triggers have...
+.struct trigger
   timer db
+  interval db
   chance db
+  ; add interval modifier here...?
 .endst
+
+.section "Trigger functions" free
+  initialize_trigger:
+    ; Entry: HL = Pointer to init table.
+    ;        IX = Pointer to trigger struct.
+    ld a,(hl)
+    ld (ix+trigger.chance),a
+    inc hl
+    ld a,(hl)
+    ld (ix+trigger.interval),a
+    ld (ix+trigger.timer),a
+  ret
+  ;
+  process_trigger:
+    ; Entry: IX = Pointer to trigger struct.
+    ld a,(ix+trigger.timer)
+    dec a
+    ld (ix+trigger.timer),a
+    or a
+    jp nz,+
+      ld a,(ix+trigger.chance)
+      ld b,a
+      call get_random_number
+      cp b
+      jp nc,+
+        ld a,(ix+trigger.interval)
+        ld (ix+trigger.timer),a
+        scf
+        ret
+    +:
+    or a
+  ret
+.ends
 
 ; -----------------------------------------------------------------------------
 ; ENEMY OBJECTS

@@ -67,8 +67,8 @@
   .equ SHARD_DEACTIVATE_ZONE_START 163
   .equ SHARD_DEACTIVATE_ZONE_END SHARD_DEACTIVATE_ZONE_START+8
 
-  .equ SPINNER_GENERATOR_CHANCE_INIT 40
-  .equ SPINNER_GENERATOR_INTERVAL 195
+  .equ SPINNER_TRIGGER_CHANCE_INIT 40
+  .equ SPINNER_TRIGGER_INTERVAL_INIT 195
   .equ SPINNER_DEACTIVATE_ZONE_START ASTEROID_DEACTIVATE_ZONE_START-16
   .equ SPINNER_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_END-16
 ;
@@ -103,6 +103,5 @@
   shard_generator_chance db
   shard instanceof enemy_object SHARD_MAX
   spinner instanceof enemy_object
-  spinner_generator_timer db
-  spinner_generator_chance db
+  spinner_trigger instanceof trigger
 .ends

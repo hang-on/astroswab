@@ -126,9 +126,9 @@
     ; Init spinner and generator:
     ld ix,spinner
     call deactivate_enemy_object
-    ld a,SPINNER_GENERATOR_CHANCE_INIT
-    ld (spinner_generator_chance),a
-
+    ld ix,spinner_trigger
+    ld hl,spinner_trigger_init_table
+    call initialize_trigger
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -376,30 +376,24 @@
     pop bc
   djnz process_shards
   ;
-  ; Spinner generator
-  ld a,(spinner_generator_timer)
-  dec a
-  ld (spinner_generator_timer),a
-  jp nz,+++
-    ; If spinner_generator_timer is up, do...
-    ld ix,spinner
-    call get_enemy_object_state           ; If spinner is already out, skip!
-    cp ENEMY_OBJECT_ACTIVE
-    jp z,++
-      ld a,(spinner_generator_chance)     
-      ld b,a
-      call get_random_number
-      cp b
-      jp nc,+++
-        ; Activate a new spinner.
-        ld ix,spinner
-        call reset_enemy_object_position
-        ld hl,spinner_setup_table
-        call set_enemy_object_from_table
-        ld hl,spinner_anim_table
-        call load_animation_enemy_object
-        call activate_enemy_object
-  +++:
+  ld ix,spinner
+  call get_enemy_object_state           ; If spinner is already out, skip!
+  cp ENEMY_OBJECT_ACTIVE
+  jp z,+
+    ld ix,spinner_trigger               ;
+    call process_trigger
+    jp nc,+
+      ; If spinner_generator_timer is up, do...
+      ; Activate a new spinner.
+      ld ix,spinner
+      call reset_enemy_object_position
+      ld hl,spinner_setup_table
+      call set_enemy_object_from_table
+      ld hl,spinner_anim_table
+      call load_animation_enemy_object
+      call activate_enemy_object
+  +:
+  ;
   ld ix,spinner
   call move_enemy_object              ; Move
   ld a,SPINNER_DEACTIVATE_ZONE_START
@@ -409,7 +403,6 @@
   call draw_enemy_object              ; Put it in the SAT.
   ;
   ; ---------------------------------------------------------------------------
-
   ld hl,frame_counter
   inc (hl)
   call is_reset_pressed
