@@ -71,6 +71,10 @@
   .equ SPINNER_TRIGGER_INTERVAL_INIT 230
   .equ SPINNER_DEACTIVATE_ZONE_START ASTEROID_DEACTIVATE_ZONE_START-16
   .equ SPINNER_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_END-16
+
+  .equ DANISH_TRIGGER_CHANCE_INIT 70
+  .equ DANISH_TRIGGER_INTERVAL_INIT 230
+
 ;
 ; Sound:
   .equ SOUND_BANK 5
@@ -99,9 +103,14 @@
   rnd_seed dw
   ;
   asteroid instanceof game_object ASTEROID_MAX
+  ;
   shard_generator_timer db
   shard_generator_chance db
   shard instanceof game_object SHARD_MAX
+  ;
   spinner instanceof game_object
   spinner_trigger instanceof trigger
+  ;
+  danish instanceof game_object
+  danish_trigger instanceof trigger
 .ends

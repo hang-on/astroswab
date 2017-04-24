@@ -242,7 +242,7 @@
 
 .equ ENEMY_OBJECT_ACTIVE 1
 .equ ENEMY_OBJECT_INACTIVE 0
-.equ ENEMY_OBJECT_SHAPE_REGULAR 0
+.equ GAME_OBJECT_SHAPE_REGULAR 0
 .equ ENEMY_OBJECT_SHAPE_TALL 1
 .equ ENEMY_OBJECT_SHAPE_WIDE 2
 .equ ENEMY_OBJECT_SHAPE_SMALL 3
@@ -369,7 +369,7 @@
       cp FIRST_8x8_SPRITE
       jp nc,small_shape
       ld a,(ix+game_object.shape)
-      cp ENEMY_OBJECT_SHAPE_REGULAR
+      cp GAME_OBJECT_SHAPE_REGULAR
       jp z,regular_shape
       cp ENEMY_OBJECT_SHAPE_TALL
       jp z,tall_shape

@@ -60,6 +60,11 @@
     .endr
   .endr
   ;
+  danish_setup_table:
+    .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
+  danish_trigger_init_table:
+    .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
+  ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
     .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE

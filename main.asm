@@ -129,6 +129,11 @@
     ld ix,spinner_trigger
     ld hl,spinner_trigger_init_table
     call initialize_trigger
+    ; Init danish and generator:
+    ld ix,danish
+    call deactivate_game_object
+    ld ix,danish_trigger
+    ld hl,danish_trigger_init_table
     ;
     ; Wipe sprites.
     call begin_sprites
