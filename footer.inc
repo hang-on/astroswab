@@ -41,7 +41,7 @@
   shard_sprite_table:
     .db SPRITE_45
   spinner_setup_table:
-    .db SPRITE_12, 1, 0, ENEMY_OBJECT_SHAPE_TALL
+    .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
   spinner_trigger_init_table:
     .db SPINNER_TRIGGER_CHANCE_INIT, SPINNER_TRIGGER_INTERVAL_INIT
   spinner_anim_table:

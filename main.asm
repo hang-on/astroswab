@@ -282,7 +282,7 @@
   process_asteroids:
     push bc
     call get_game_object_state
-    cp ENEMY_OBJECT_INACTIVE
+    cp GAME_OBJECT_INACTIVE
     jp nz,+
       ld hl,frame_counter
       bit 0,(hl)
@@ -336,7 +336,7 @@
       -:
         push bc
         call get_game_object_state
-        cp ENEMY_OBJECT_INACTIVE        ; Search for an inactive shard.
+        cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
         jp nz,+
           call reset_game_object_position
           ld a,SHARD_YELLOW_SPRITE
@@ -384,7 +384,7 @@
   ;
   ld ix,spinner
   call get_game_object_state           ; If spinner is already out, skip!
-  cp ENEMY_OBJECT_ACTIVE
+  cp GAME_OBJECT_ACTIVE
   jp z,+
     ld ix,spinner_trigger               ;
     call process_trigger
@@ -411,7 +411,7 @@
   ; Danish WIP ---------
   ld ix,danish
   call get_game_object_state           ; If danish is already out, skip!
-  cp ENEMY_OBJECT_ACTIVE
+  cp GAME_OBJECT_ACTIVE
   jp z,+
     ld ix,danish_trigger               ;
     call process_trigger

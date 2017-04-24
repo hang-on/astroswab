@@ -226,7 +226,7 @@
 .ends
 
 ; -----------------------------------------------------------------------------
-; ENEMY OBJECTS
+; GAME OBJECTS
 ; -----------------------------------------------------------------------------
 .struct game_object
   y db
@@ -240,12 +240,12 @@
   anim_pointer dw
 .endst
 
-.equ ENEMY_OBJECT_ACTIVE 1
-.equ ENEMY_OBJECT_INACTIVE 0
+.equ GAME_OBJECT_ACTIVE 1
+.equ GAME_OBJECT_INACTIVE 0
 .equ GAME_OBJECT_SHAPE_REGULAR 0
-.equ ENEMY_OBJECT_SHAPE_TALL 1
-.equ ENEMY_OBJECT_SHAPE_WIDE 2
-.equ ENEMY_OBJECT_SHAPE_SMALL 3
+.equ GAME_OBJECT_SHAPE_TALL 1
+.equ GAME_OBJECT_SHAPE_WIDE 2
+.equ GAME_OBJECT_SHAPE_SMALL 3
 
 .section "Enemy objects" free
   ; Functions that work on the Astroswab game_object structure.
@@ -362,7 +362,7 @@
     ; Registers used: None.
     SAVE_REGISTERS                ; Because add_metasprite mess with registers!
     ld a,(ix+game_object.state)
-    cp ENEMY_OBJECT_ACTIVE
+    cp GAME_OBJECT_ACTIVE
     jp nz,draw_game_object_end
       ; Put active objects in the SAT buffer.
       ld a,(ix+game_object.sprite)
@@ -371,7 +371,7 @@
       ld a,(ix+game_object.shape)
       cp GAME_OBJECT_SHAPE_REGULAR
       jp z,regular_shape
-      cp ENEMY_OBJECT_SHAPE_TALL
+      cp GAME_OBJECT_SHAPE_TALL
       jp z,tall_shape
     draw_game_object_end:
     RESTORE_REGISTERS
@@ -395,7 +395,7 @@
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
     push af
-    ld a,ENEMY_OBJECT_ACTIVE
+    ld a,GAME_OBJECT_ACTIVE
     ld (ix+game_object.state),a
     pop af
   ret
@@ -404,7 +404,7 @@
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
     push af
-    ld a,ENEMY_OBJECT_INACTIVE
+    ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
     pop af
   ret
@@ -412,7 +412,7 @@
   get_game_object_state:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A state of the enemy object, which should be either
-    ; ENEMY_OBJECT_INACTIVE or ENEMY_OBJECT_ACTIVE.
+    ; GAME_OBJECT_INACTIVE or GAME_OBJECT_ACTIVE.
     ld a,(ix+game_object.state)
   ret
   ;
