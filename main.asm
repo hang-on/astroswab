@@ -408,7 +408,6 @@
   call animate_game_object
   call draw_game_object              ; Put it in the SAT.
   ;
-  ; Danish WIP ---------
   ld ix,danish
   call get_game_object_state           ; If danish is already out, skip!
   cp GAME_OBJECT_ACTIVE
@@ -417,7 +416,7 @@
     call process_trigger
     jp nc,+
       ; If danish_generator_timer is up, do...
-      ; Activate a new spinner.
+      ; Activate a new danish.
       ld ix,danish
       call reset_game_object_position
       ld hl,danish_setup_table
@@ -431,8 +430,6 @@
   ld b,ASTEROID_DEACTIVATE_ZONE_END
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
-
-  ;----------------
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
   inc (hl)
