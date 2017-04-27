@@ -64,6 +64,9 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
   danish_trigger_init_table:
     .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
+  danish_sprite_table:
+    ; Note - only first four items are taken into account.
+    .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3

@@ -421,6 +421,15 @@
       call reset_game_object_position
       ld hl,danish_setup_table
       call set_game_object_from_table
+      call get_random_number
+      and DANISH_SPRITE_MASK
+      ld hl,danish_sprite_table
+      ld d,0
+      ld e,a
+      add hl,de
+      ld a,(hl)
+      call set_game_object_sprite
+
       call activate_game_object
   +:
   ;

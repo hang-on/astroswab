@@ -22,6 +22,10 @@
 .equ SPRITE_16 58
 .equ SPRITE_17 64
 .equ SPRITE_18 66
+.equ SPRITE_19 72
+.equ SPRITE_20 74
+.equ SPRITE_21 80
+.equ SPRITE_22 82
 
 ; . . .
 .equ FIRST_8x8_SPRITE 168
