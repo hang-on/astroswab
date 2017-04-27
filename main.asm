@@ -463,6 +463,8 @@
   +:
   ;
   ld ix,missile
+  call get_game_object_x
+  ; get player x, and then compare 1) somewhere above, 2) right 3) left
   call move_game_object              ; Move
   ld a,ASTEROID_DEACTIVATE_ZONE_START
   ld b,ASTEROID_DEACTIVATE_ZONE_END

@@ -420,6 +420,11 @@
     ld a,(ix+game_object.state)
   ret
   ;
+  get_game_object_x:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A x of the enemy object.
+    ld a,(ix+game_object.x)
+  ret
 .ends
 
 ; -----------------------------------------------------------------------------
