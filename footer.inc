@@ -68,6 +68,12 @@
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
+  missile_setup_table:
+    .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
+  missile_trigger_init_table:
+    .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
+
+  ;
   swabby_init_table:
     .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
     .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE

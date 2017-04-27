@@ -135,6 +135,12 @@
     ld ix,danish_trigger
     ld hl,danish_trigger_init_table
     call initialize_trigger
+    ; Init missile and generator:
+    ld ix,missile
+    call deactivate_game_object
+    ld ix,missile_trigger
+    ld hl,missile_trigger_init_table
+    call initialize_trigger
     ;
     ; Wipe sprites.
     call begin_sprites
@@ -439,6 +445,32 @@
   ld b,ASTEROID_DEACTIVATE_ZONE_END
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
+  ; WIP - missile-----
+  ld ix,missile
+  call get_game_object_state           ; If danish is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,missile_trigger               ;
+    call process_trigger
+    jp nc,+
+      ; If missile_generator_timer is up, do...
+      ; Activate a new missile.
+      ld ix,missile
+      call reset_game_object_position
+      ld hl,missile_setup_table
+      call set_game_object_from_table
+      call activate_game_object
+  +:
+  ;
+  ld ix,missile
+  call move_game_object              ; Move
+  ld a,ASTEROID_DEACTIVATE_ZONE_START
+  ld b,ASTEROID_DEACTIVATE_ZONE_END
+  call horizontal_zone_deactivate_game_object
+  call draw_game_object              ; Put it in the SAT.
+
+
+
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
   inc (hl)

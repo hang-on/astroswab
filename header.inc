@@ -114,4 +114,7 @@
   ;
   danish instanceof game_object
   danish_trigger instanceof trigger
+  ;
+  missile instanceof game_object
+  missile_trigger instanceof trigger
 .ends
