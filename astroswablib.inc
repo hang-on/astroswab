@@ -266,9 +266,9 @@
 .equ GAME_OBJECT_SHAPE_WIDE 2
 .equ GAME_OBJECT_SHAPE_SMALL 3
 
-.section "Enemy objects" free
+.section "Game objects" free
   ; Functions that work on the Astroswab game_object structure.
-  ; What Astroswab enemy objects are assumed to have in common:
+  ; What Astroswab game objects are assumed to have in common:
   ; 1. ...
   ; 2. ...
   load_animation_game_object:
@@ -434,6 +434,27 @@
     pop af
   ret
   ;
+  get_inactive_game_object:
+    ; Entry: IX = Pointer to first instance of struct.
+    ;        A = Instances of this struct.
+    ; Exit:  If no inactive object is found, then carry is set.
+    ;        Else: IX = Pointer to inactive game object and carry is cleared.
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      call get_game_object_state
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+      add ix,de
+    djnz -
+    ; Here we come if no inactive objects are found...
+    ; Set carry to indicate error and return.
+    scf
+    ret
+    +:
+      or a        ; Clear carry.
+  ret             ; Return with ix pointing...
+  ;
   get_game_object_state:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A state of the enemy object, which should be either
@@ -445,6 +466,13 @@
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A x of the enemy object.
     ld a,(ix+game_object.x)
+  ret
+  ;
+  get_game_object_position:
+    ; Entry: IX = pointer to struct.
+    ; Exit: A = object Y and B = object X.
+    ld a,(ix+game_object.y)
+    ld b,(ix+game_object.x)
   ret
   ;
   ;

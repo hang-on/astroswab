@@ -98,15 +98,30 @@
     ld (gun_delay),a
     xor a
     ld (gun_timer),a
-    ld ix,bullet_table
-    ld (ix+0),a     ; Sleeping bullets.
-    ld (ix+3),a
-    ld (ix+6),a
-    ld (ix+9),a
-    ld (ix+12),a
     ld a,TRUE
     ld (gun_released),a
-    ;
+
+; -------------- WIP Bullets -------------
+    ;ld ix,bullet_table
+    ;ld (ix+0),a     ; Sleeping bullets.
+    ;ld (ix+3),a
+    ;ld (ix+6),a
+    ;ld (ix+9),a
+    ;ld (ix+12),a
+
+    ; Init (deactivate) all bullets:
+    ld b,BULLET_MAX
+    ld ix,bullet
+    ld hl,bullet_setup_table
+    -:
+      call set_game_object_from_table
+      call deactivate_game_object
+      ld de,_sizeof_game_object
+      add ix,de
+    djnz -
+
+; ---------------------------------------
+
     ; Init (deactivate) all asteroids:
     ld b,ASTEROID_MAX
     ld ix,asteroid
@@ -249,13 +264,45 @@
       ld (gun_timer),a      ;
       ld a,FALSE            ; Lock gun (released on fire button release).
       ld (gun_released),a   ;
-      SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-      ld c,SFX_CHANNEL2
-      ld hl,shot_1
-      call PSGSFXPlay           ; Play the swabby shot sound effect.
+      ld ix,bullet
+      ld a,BULLET_MAX
+      call get_inactive_game_object
+      jp c,activate_bullet_end   ; If no inactive objects are available now...
+        call activate_game_object
+        push ix
+        ld ix,swabby
+        call get_game_object_position
+        pop ix
+        sub BULLET_Y_OFFSET
+        ld c,a
+        ld a,b
+        add a,BULLET_X_OFFSET
+        ld b,a
+        ld a,c
+        call set_game_object_position
+
+        SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+        ld c,SFX_CHANNEL2
+        ld hl,shot_1
+        call PSGSFXPlay           ; Play the swabby shot sound effect.
+
   activate_bullet_end:            ; End of bullet activation code.
+  ld ix,bullet
+  ld b,BULLET_MAX
+  -:
+    push bc
+    call move_game_object
+    ld a,BULLET_DEACTIVATE_ZONE_START
+    ld b,BULLET_DEACTIVATE_ZONE_END
+    call horizontal_zone_deactivate_game_object
 
+    call draw_game_object
 
+    ld de,_sizeof_game_object
+    add ix,de
+    pop bc
+  djnz -
+    ; ***********************
         /*
         ld b,MAX_BULLETS          ; OK, if we come here, we are clear to fire
         ld ix,bullet_table        ; a new bullet (if not all MAX_BULLETS are
@@ -413,7 +460,7 @@
   ld b,SHARD_MAX
   process_shards:
     push bc
-    call get_game_object_state
+    ;call get_game_object_state
     call move_game_object              ; Move shard.
     ; Deactivate shard if it is within the deactivate zone.
     ld a,SHARD_DEACTIVATE_ZONE_START
