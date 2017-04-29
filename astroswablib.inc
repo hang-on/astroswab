@@ -334,6 +334,8 @@
   set_game_object_from_table:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to table (sprite, yspeed, xspeed, shape).
+    ; Uses: A - but HL is preserved.
+    push hl
     ld a,(hl)
     ld (ix+game_object.sprite),a
     inc hl
@@ -345,6 +347,7 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.shape),a
+    pop hl
   ret
   ;
   set_game_object_sprite:

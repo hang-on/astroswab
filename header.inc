@@ -44,7 +44,7 @@
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
   ;
-  .equ BULLET_MAX 5
+  .equ BULLET_MAX 7
   .equ BULLET_Y_OFFSET 1
   .equ BULLET_X_OFFSET 4
   ;.equ BULLET_SLEEPING 0
@@ -56,7 +56,7 @@
   .equ BULLET_DEACTIVATE_ZONE_END INVISIBLE_AREA_BOTTOM_BORDER
 
 
-  .equ GUN_DELAY_INIT 12
+  .equ GUN_DELAY_INIT 11;12
 
   .equ ASTEROID_DEACTIVATE_ZONE_START 155
   .equ ASTEROID_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_START+8
@@ -112,7 +112,6 @@
   gun_timer db
   gun_released db
   gun_delay db
-  bullet instanceof game_object BULLET_MAX
   ;bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
   ;
   rnd_seed dw
@@ -131,4 +130,7 @@
   ;
   missile instanceof game_object
   missile_trigger instanceof trigger
+  ;
+  bullet instanceof game_object BULLET_MAX
+
 .ends

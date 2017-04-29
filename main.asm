@@ -113,10 +113,10 @@
     ld b,BULLET_MAX
     ld ix,bullet
     ld hl,bullet_setup_table
+    ld de,_sizeof_game_object
     -:
       call set_game_object_from_table
       call deactivate_game_object
-      ld de,_sizeof_game_object
       add ix,de
     djnz -
 
@@ -302,68 +302,6 @@
     add ix,de
     pop bc
   djnz -
-    ; ***********************
-        /*
-        ld b,MAX_BULLETS          ; OK, if we come here, we are clear to fire
-        ld ix,bullet_table        ; a new bullet (if not all MAX_BULLETS are
-        -:                        ; already active).
-          ld a,(ix+0)             ; Search for sleeping bullet.
-          cp BULLET_SLEEPING      ;
-          jp nz,+                 ; If no luck, goto end of loop to try next.
-            ld a,(swabby.y)       ; Else, activate this bullet!
-            dec a                 ; Add a little y,x offset to bullet sprite in
-            ld (ix+1),a           ; relation to Swabby's current location.
-            ld a,(swabby.x)       ;
-            add a,4               ;
-            ld (ix+2),a           ;
-            ld a,BULLET_ACTIVE    ; Activate this bullet!
-            ld (ix+0),a           ;
-            ld a,(gun_delay)      ; Make gun wait a little (load time)!
-            ld (gun_timer),a      ;
-            ld a,FALSE            ; Lock gun (released on fire button release).
-            ld (gun_released),a   ;
-
-            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-            ld c,SFX_CHANNEL2
-            ld hl,shot_1
-            call PSGSFXPlay           ; Play the swabby shot sound effect.
-
-            jp activate_bullet_end
-          +:                      ; Increment bullet table pointer.
-          inc ix                  ;
-          inc ix                  ;
-          inc ix                  ;
-        djnz -                    ; Process all bullets (MAX_BULLETS).
-
-  activate_bullet_end:            ; End of bullet activation code.
-
-  ;
-  ld d,MAX_BULLETS                ; PROCESS ALL BULLETS IN TABLE.
-  ld ix,bullet_table              ; Load loop counter and table pointer.
-  -:                              ; For each bullet do...
-    ld a,(ix+0)                   ; See if it is active.
-    cp BULLET_ACTIVE              ;
-    jp nz,+                       ; If not, skip to end of loop.
-      ld a,(ix+1)                 ; Else, get this bullet's y-pos.
-      sub BULLET_SPEED            ; Subtract bullet speed to move it up.
-      ld (ix+1),a                 ;
-      ld b,a                      ; Argument: Sprite y goes into B.
-      ld a,(ix+2)                 ; Get sprite x-pos.
-      ld c,a                      ; Argument: Sprite x goes into C.
-      ld a,BULLET_SPRITE          ; Bullet sprite is a constant (argument).
-      call add_sprite             ; Add this bullet sprite to SAT buffer.
-      ld a,(ix+1)                 ; Get bullet y-pos.
-      cp INVISIBLE_AREA_BOTTOM_BORDER-BULLET_SPEED
-      jp c,+                      ; If this bullet has left through the roof,
-        ld a,BULLET_SLEEPING      ; we can put it to sleep now...
-        ld (ix+0),a               ;
-    +:                            ; Forward the table pointer to next bullet.
-    inc ix                        ;
-    inc ix                        ;
-    inc ix                        ;
-    dec d                         ;
-  jp nz,-                         ; Loop back and process next bullet.
-  */
   ; WIP area end....
   ; -------------------------------------------------------------------------
 
