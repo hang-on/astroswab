@@ -94,6 +94,9 @@
   menu_timer db
   menu_state db
   ;
+  vblank_update_finished_line db
+  main_loop_finished_line db
+  ;
   level db
   ;
   ;swabby instanceof player_object

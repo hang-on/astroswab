@@ -89,6 +89,13 @@
     .asc "<unused>#"
   menu_footer:
     .asc "---------------------#"
+  extram_counter_label:
+    .asc "EXTRAM counter:#"
+  gfx_label:
+    .asc "GFX:#"
+  loop_label:
+    .asc "Loop:#"
+  ;
   menu_table:
     .db 47, 63, 79, 95                       ; Contains y-pos for menu selector.
   ;
@@ -104,7 +111,13 @@
     .dw item_4
     .db 12, 10
     .dw menu_footer
-    .db 18, 5
+    .db 14, 5
+    .dw extram_counter_label
+    .db 16, 5
+    .dw gfx_label
+    .db 17, 5
+    .dw loop_label
+    .db 17, 15
   batch_print_table_end:
   pal_msg:
     .asc "TV type: PAL#"

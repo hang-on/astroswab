@@ -86,9 +86,6 @@
     ld hl,dummy_text
     call print
     ; Initialize variables
-    ;ld ix,swabby
-    ;ld hl,swabby_init_table
-    ;call initialize_player_object
     ld ix,swabby
     ld hl,swabby_setup_table
     call set_game_object_from_table
@@ -148,7 +145,10 @@
     ld ix,missile_trigger
     ld hl,missile_trigger_init_table
     call initialize_trigger
-    ;
+    ; Reset debug meters:
+    xor a
+    ld (vblank_update_finished_line),a
+    ld (main_loop_finished_line),a
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -172,7 +172,16 @@
   run_level:
   call await_frame_interrupt
   call load_sat
-  ;
+  ; Set debug meter:
+  in a,(V_COUNTER_PORT)
+  ld b,a
+  ld a,(vblank_update_finished_line)
+  cp b
+  jp nc,+
+    ld a,b
+    ld (vblank_update_finished_line),a
+  +:
+  ; End of VDP-updating.
   ; update()
   call get_input_ports
   call begin_sprites
@@ -421,7 +430,7 @@
   call horizontal_zone_deactivate_game_object
   call animate_game_object
   call draw_game_object              ; Put it in the SAT.
-  ;
+  ; Handle danish and trigger.
   ld ix,danish
   call get_game_object_state           ; If danish is already out, skip!
   cp GAME_OBJECT_ACTIVE
@@ -453,7 +462,8 @@
   ld b,ASTEROID_DEACTIVATE_ZONE_END
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
-  ; WIP - missile-----
+  ; Handle missile and trigger. -----------------------------------------------
+  ; Disabled at the moment.
   ld ix,missile
   call get_game_object_state           ; If missile is already out, skip!
   cp GAME_OBJECT_ACTIVE
@@ -474,6 +484,7 @@
   +:
   ;
   ld ix,missile
+  ; TODO: Make missile track/follow Swabby.
   call get_game_object_x
   ; get player x, and then compare 1) somewhere above, 2) right 3) left
   call move_game_object              ; Move
@@ -496,6 +507,15 @@
   call PSGSFXFrame
   call PSGFrame
   ;
+  ; Set debug meter:
+  in a,(V_COUNTER_PORT)
+  ld b,a
+  ld a,(main_loop_finished_line)
+  cp b
+  jp nc,+
+    ld a,b
+    ld (main_loop_finished_line),a
+  +:
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; D E V E L O P M E N T  M E N U
@@ -545,6 +565,17 @@
       ld a,(hl)
       inc (hl)
     SELECT_ROM
+    call print_register_a
+    ; Print debug meters:
+    ld a,17
+    ld b,10
+    call set_cursor
+    ld a,(vblank_update_finished_line)
+    call print_register_a
+    ld a,17
+    ld b,21
+    call set_cursor
+    ld a,(main_loop_finished_line)
     call print_register_a
     ; Wipe sprites.
     call begin_sprites
