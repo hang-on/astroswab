@@ -455,19 +455,22 @@
   call draw_game_object              ; Put it in the SAT.
   ; WIP - missile-----
   ld ix,missile
-  call get_game_object_state           ; If danish is already out, skip!
+  call get_game_object_state           ; If missile is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
     ld ix,missile_trigger               ;
-    call process_trigger
-    jp nc,+
-      ; If missile_generator_timer is up, do...
-      ; Activate a new missile.
-      ld ix,missile
-      call reset_game_object_position
-      ld hl,missile_setup_table
-      call set_game_object_from_table
-      call activate_game_object
+    call get_trigger_state
+    cp ENABLED
+    jp nz,+
+      call process_trigger
+      jp nc,+
+        ; If missile_generator_timer is up, do...
+        ; Activate a new missile.
+        ld ix,missile
+        call reset_game_object_position
+        ld hl,missile_setup_table
+        call set_game_object_from_table
+        call activate_game_object
   +:
   ;
   ld ix,missile
