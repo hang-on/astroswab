@@ -242,6 +242,21 @@
       ld a,(gun_released)         ; 3rd test: Is gun released? (no autofire!)
       cp TRUE                     ;
       jp nz,activate_bullet_end   ; If not, skip...
+
+
+      ; ----------------------- WIP ---------------------------------------
+      ld a,(gun_delay)      ; Make gun wait a little (load time)!
+      ld (gun_timer),a      ;
+      ld a,FALSE            ; Lock gun (released on fire button release).
+      ld (gun_released),a   ;
+      SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+      ld c,SFX_CHANNEL2
+      ld hl,shot_1
+      call PSGSFXPlay           ; Play the swabby shot sound effect.
+  activate_bullet_end:            ; End of bullet activation code.
+
+
+        /*
         ld b,MAX_BULLETS          ; OK, if we come here, we are clear to fire
         ld ix,bullet_table        ; a new bullet (if not all MAX_BULLETS are
         -:                        ; already active).
@@ -272,7 +287,9 @@
           inc ix                  ;
           inc ix                  ;
         djnz -                    ; Process all bullets (MAX_BULLETS).
+
   activate_bullet_end:            ; End of bullet activation code.
+
   ;
   ld d,MAX_BULLETS                ; PROCESS ALL BULLETS IN TABLE.
   ld ix,bullet_table              ; Load loop counter and table pointer.
@@ -299,6 +316,11 @@
     inc ix                        ;
     dec d                         ;
   jp nz,-                         ; Loop back and process next bullet.
+  */
+  ; WIP area end....
+  ; -------------------------------------------------------------------------
+
+
   ; ---------------------------------------------------------------------------
   ld ix,asteroid
   ld b,ASTEROID_MAX
