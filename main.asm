@@ -232,59 +232,58 @@
   call set_game_object_speed
   call move_game_object
   call draw_game_object
-  ;
   ; ---------------------------------------------------------------------------
-  ; Handle gun and bullets:
-  call is_button_1_pressed        ; AUTO FIRE PREVENTION AND RND_SEED
+  ; Release gun if fire button is released.
+  call is_button_1_pressed        ;
   jp c,+                          ; Is the player pressing the fire button?
     ld a,TRUE                     ; No - then set gun flag (to prevent
     ld (gun_released),a           ; auto fire).
     add a,(hl)
     ld (hl),a
-  +:                              ; PROCESS GUN TIMER.
+  +:
+  ; Process gun timer.
   ld a,(gun_timer)                ; If gun_timer is not already zero then
   or a                            ; decrement it.
   jp z,+                          ;
     dec a                         ;
     ld (gun_timer),a              ;
-  +:                              ; ACTIVATE BULLET.
+  +:                              ;
+  ; Test for fire button press...
   call is_button_1_pressed        ; If the fire button is not pressed, skip...
   jp nc,activate_bullet_end       ; Else proceed to check gun timer.
-    call randomize                ; Re-seed random number generator!
+    call get_random_number        ; Re-seed random number generator!
     ld a,(gun_timer)              ; Check gun timer (delay between shots).
     or a                          ;
     jp nz,activate_bullet_end     ; If timer not set, skip...
       ld a,(gun_released)         ; 3rd test: Is gun released? (no autofire!)
       cp TRUE                     ;
       jp nz,activate_bullet_end   ; If not, skip...
+        ld a,(gun_delay)          ; Make gun wait a little (load time)!
+        ld (gun_timer),a          ;
+        ld a,FALSE                ; Lock gun (released on fire button release).
+        ld (gun_released),a       ;
+        ;
+        ld ix,bullet
+        ld a,BULLET_MAX
+        call get_inactive_game_object
+        jp c,activate_bullet_end   ; If no inactive objects are available now...
+          call activate_game_object
+          push ix
+          ld ix,swabby
+          call get_game_object_position
+          pop ix
+          sub BULLET_Y_OFFSET
+          ld c,a
+          ld a,b
+          add a,BULLET_X_OFFSET
+          ld b,a
+          ld a,c
+          call set_game_object_position
 
-
-      ; ----------------------- WIP ---------------------------------------
-      ld a,(gun_delay)      ; Make gun wait a little (load time)!
-      ld (gun_timer),a      ;
-      ld a,FALSE            ; Lock gun (released on fire button release).
-      ld (gun_released),a   ;
-      ld ix,bullet
-      ld a,BULLET_MAX
-      call get_inactive_game_object
-      jp c,activate_bullet_end   ; If no inactive objects are available now...
-        call activate_game_object
-        push ix
-        ld ix,swabby
-        call get_game_object_position
-        pop ix
-        sub BULLET_Y_OFFSET
-        ld c,a
-        ld a,b
-        add a,BULLET_X_OFFSET
-        ld b,a
-        ld a,c
-        call set_game_object_position
-
-        SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-        ld c,SFX_CHANNEL2
-        ld hl,shot_1
-        call PSGSFXPlay           ; Play the swabby shot sound effect.
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld c,SFX_CHANNEL2
+          ld hl,shot_1
+          call PSGSFXPlay           ; Play the swabby shot sound effect.
 
   activate_bullet_end:            ; End of bullet activation code.
   ld ix,bullet
@@ -295,17 +294,13 @@
     ld a,BULLET_DEACTIVATE_ZONE_START
     ld b,BULLET_DEACTIVATE_ZONE_END
     call horizontal_zone_deactivate_game_object
-
+    ;
     call draw_game_object
-
+    ;
     ld de,_sizeof_game_object
     add ix,de
     pop bc
   djnz -
-  ; WIP area end....
-  ; -------------------------------------------------------------------------
-
-
   ; ---------------------------------------------------------------------------
   ld ix,asteroid
   ld b,ASTEROID_MAX

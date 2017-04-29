@@ -43,28 +43,23 @@
   .equ SWABBY_RIGHT_SPRITE SPRITE_1
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
-  ;
+; Bullets and gun:
   .equ BULLET_MAX 7
   .equ BULLET_Y_OFFSET 1
   .equ BULLET_X_OFFSET 4
-  ;.equ BULLET_SLEEPING 0
-  ;.equ BULLET_ACTIVE 1
   .equ BULLET_Y_SPEED (-5)
   .equ BULLET_X_SPEED 0
-  ;.equ BULLET_SPRITE 169
   .equ BULLET_DEACTIVATE_ZONE_START INVISIBLE_AREA_TOP_BORDER
   .equ BULLET_DEACTIVATE_ZONE_END INVISIBLE_AREA_BOTTOM_BORDER
-
-
-  .equ GUN_DELAY_INIT 11;12
-
+  .equ GUN_DELAY_INIT 11
+; Asteroids:
   .equ ASTEROID_DEACTIVATE_ZONE_START 155
   .equ ASTEROID_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_START+8
   .equ ASTEROID_REACTIVATE_VALUE 2
   .equ ASTEROID_MAX 3
   .equ ASTEROID_SPEED_MODIFIER 1
   .equ ASTEROID_SPRITE_MASK %00000011
-
+; Shards:
   .equ SHARD_GENERATOR_CHANCE_INIT 130
   .equ SHARD_GENERATOR_INTERVAL 120
   .equ SHARD_MAX 2 + (ASTEROID_MAX*2)
@@ -73,20 +68,19 @@
   .equ SHARD_YELLOW_SPRITE SPRITE_45
   .equ SHARD_DEACTIVATE_ZONE_START 163
   .equ SHARD_DEACTIVATE_ZONE_END SHARD_DEACTIVATE_ZONE_START+8
-
+; Spinner:
   .equ SPINNER_TRIGGER_CHANCE_INIT 50
   .equ SPINNER_TRIGGER_INTERVAL_INIT 230
   .equ SPINNER_DEACTIVATE_ZONE_START ASTEROID_DEACTIVATE_ZONE_START-16
   .equ SPINNER_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_END-16
-
+; Danish:
   .equ DANISH_TRIGGER_CHANCE_INIT 190
   .equ DANISH_TRIGGER_INTERVAL_INIT 230
   .equ DANISH_SPRITE_MASK %00000011
-
+; Missile:
   .equ MISSILE_TRIGGER_CHANCE_INIT 190
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
 
-;
 ; Sound:
   .equ SOUND_BANK 5
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,12 +102,6 @@
   ;
   swabby instanceof game_object
   ;
-  ;
-  gun_timer db
-  gun_released db
-  gun_delay db
-  ;bullet_table dsb 3*MAX_BULLETS   ; 5 bullets, state,y,x,
-  ;
   rnd_seed dw
   ;
   asteroid instanceof game_object ASTEROID_MAX
@@ -132,5 +120,8 @@
   missile_trigger instanceof trigger
   ;
   bullet instanceof game_object BULLET_MAX
-
+  gun_timer db
+  gun_released db
+  gun_delay db
+  ;
 .ends
