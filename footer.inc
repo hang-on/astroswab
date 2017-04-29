@@ -72,11 +72,9 @@
     .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
   missile_trigger_init_table:
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
-
   ;
-  swabby_init_table:
-    .db SWABBY_Y_INIT, SWABBY_X_INIT, SPRITE_3
-    .db SWABBY_Y_SPEED_INIT, SWABBY_X_SPEED_INIT, PLAYER_OBJECT_ACTIVE
+  swabby_setup_table:
+    .db SPRITE_3,0,0, GAME_OBJECT_SHAPE_REGULAR
   ;
   ; Menu item strings:
   menu_title:

@@ -96,7 +96,8 @@
   ;
   level db
   ;
-  swabby instanceof player_object
+  ;swabby instanceof player_object
+  swabby instanceof game_object
   ;
   ;
   gun_timer db

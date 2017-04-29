@@ -86,9 +86,16 @@
     ld hl,dummy_text
     call print
     ; Initialize variables
+    ;ld ix,swabby
+    ;ld hl,swabby_init_table
+    ;call initialize_player_object
     ld ix,swabby
-    ld hl,swabby_init_table
-    call initialize_player_object
+    ld hl,swabby_setup_table
+    call set_game_object_from_table
+    ld a,SWABBY_Y_INIT
+    ld b,SWABBY_X_INIT
+    call set_game_object_position
+    call activate_game_object
     ;
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a
@@ -173,14 +180,14 @@
   ; Handle Swabby sprite and movement:
   ld ix,swabby
   ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
-  ld (ix+player_object.sprite),a
-  ;
+  call set_game_object_sprite
+
   call is_right_pressed             ; Check if player press right.
   ld a,0
   jp nc,+
     ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
-    ld (ix+player_object.sprite),a
-    ld a,(ix+player_object.xspeed)
+    call set_game_object_sprite
+    call get_game_object_xspeed
     cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
     jp z,++                         ; If we are already there, skip ahead...
       inc a                         ; If not, then accelerate a bit.
@@ -190,16 +197,17 @@
   ld a,0
   jp nc,++
     ld a,SWABBY_LEFT_SPRITE
-    ld (ix+player_object.sprite),a
-    ld a,(ix+player_object.xspeed)
+    call set_game_object_sprite
+    call get_game_object_xspeed
     cp -(SWABBY_X_SPEED_MAX)
     jp z,++
       dec a
   ++:
-  ld (ix+player_object.xspeed),a    ; Load new value into Swabby's xspeed.
-  ;
-  call move_player_object
-  call draw_player_object
+  ld b,a
+  xor a
+  call set_game_object_speed
+  call move_game_object
+  call draw_game_object
   ;
   ; ---------------------------------------------------------------------------
   ; Handle gun and bullets:

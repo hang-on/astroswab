@@ -345,6 +345,12 @@
     ld (ix+game_object.xspeed),b
   ret
   ;
+  get_game_object_xspeed:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A  game object xspeed.
+    ld a,(ix+game_object.xspeed)
+  ret
+  ;
   move_game_object:
     ; Apply yspeed to y and xspeed to x.
     ; Entry: IX = Pointer to instance of enemy object.
@@ -424,6 +430,14 @@
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A x of the enemy object.
     ld a,(ix+game_object.x)
+  ret
+  ;
+  ;
+  set_game_object_position:
+    ; Entry: IX = pointer to struct.
+    ;        A = Y, B = X.
+    ld (ix+game_object.y),a
+    ld (ix+game_object.x),b
   ret
 .ends
 
