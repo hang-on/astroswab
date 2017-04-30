@@ -72,6 +72,7 @@
     .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
   missile_trigger_init_table:
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
+    .db ENABLED
   ;
   swabby_setup_table:
     .db SPRITE_3,0,0, GAME_OBJECT_SHAPE_REGULAR

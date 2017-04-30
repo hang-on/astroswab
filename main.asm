@@ -85,7 +85,7 @@
     ld c,5
     ld hl,dummy_text
     call print
-    ; Initialize variables
+    ; Initialize Swabby
     ld ix,swabby
     ld hl,swabby_setup_table
     call set_game_object_from_table
@@ -93,22 +93,13 @@
     ld b,SWABBY_X_INIT
     call set_game_object_position
     call activate_game_object
-    ;
+    ; Initialize gun
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a
     xor a
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-
-; -------------- WIP Bullets -------------
-    ;ld ix,bullet_table
-    ;ld (ix+0),a     ; Sleeping bullets.
-    ;ld (ix+3),a
-    ;ld (ix+6),a
-    ;ld (ix+9),a
-    ;ld (ix+12),a
-
     ; Init (deactivate) all bullets:
     ld b,BULLET_MAX
     ld ix,bullet
@@ -119,9 +110,6 @@
       call deactivate_game_object
       add ix,de
     djnz -
-
-; ---------------------------------------
-
     ; Init (deactivate) all asteroids:
     ld b,ASTEROID_MAX
     ld ix,asteroid
@@ -205,7 +193,6 @@
   ld ix,swabby
   ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
   call set_game_object_sprite
-
   call is_right_pressed             ; Check if player press right.
   ld a,0
   jp nc,+
@@ -455,7 +442,7 @@
       add hl,de
       ld a,(hl)
       call set_game_object_sprite
-
+      ;
       call activate_game_object
   +:
   ;
@@ -466,19 +453,17 @@
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
   ; Handle missile and trigger. -----------------------------------------------
-  ; Disabled at the moment.
   ld ix,missile
   call get_game_object_state           ; If missile is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
-    ld ix,missile_trigger               ;
+    ld ix,missile_trigger              ; Only process trigger if it is enabled.
     call get_trigger_state
     cp ENABLED
     jp nz,+
       call process_trigger
       jp nc,+
-        ; If missile_generator_timer is up, do...
-        ; Activate a new missile.
+        ; If missile_generator_timer is up, activate a new missile.
         ld ix,missile
         call reset_game_object_position
         ld hl,missile_setup_table

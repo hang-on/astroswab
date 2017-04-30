@@ -4,7 +4,6 @@
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
 ;
-;
 ; Game states:
   .equ GS_PREPARE_DEVMENU 0
   .equ GS_RUN_DEVMENU 1
@@ -80,7 +79,6 @@
 ; Missile:
   .equ MISSILE_TRIGGER_CHANCE_INIT 190
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
-
 ; Sound:
   .equ SOUND_BANK 5
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

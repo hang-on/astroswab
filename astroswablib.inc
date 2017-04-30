@@ -219,28 +219,33 @@
     ld a,(hl)
     ld (ix+trigger.interval),a
     ld (ix+trigger.timer),a
-    ld a,DISABLED
+    inc hl
+    ld a,(hl)
     ld (ix+trigger.state),a
   ret
   ;
   process_trigger:
+    ; Decrement trigger internal timer. If time is up, then roll a dice against
+    ; the trigger chance. If successful, return with carry flag set to (time to
+    ; or otherwise act on timer event) - else reset carry flag.
     ; Entry: IX = Pointer to trigger struct.
+    ; Exit: Carry flag set or reset, depending on timer/trigger logic.
     ld a,(ix+trigger.timer)
     dec a
     ld (ix+trigger.timer),a
-    or a
-    jp nz,+
-      ld a,(ix+trigger.chance)
-      ld b,a
-      call get_random_number
-      cp b
-      jp nc,+
-        ld a,(ix+trigger.interval)
-        ld (ix+trigger.timer),a
-        scf
+    or a                              ; Clear carry and return.
+    ret nz                            ; Only action: Timer was decremented.
+      ld a,(ix+trigger.interval)      ; Reset timer to interval.
+      ld (ix+trigger.timer),a
+      ld a,(ix+trigger.chance)        ; Get trigger.chance.
+      ld b,a                          ; Store it.
+      call get_random_number          ; Roll dice.
+      cp b                            ; Compare dice roll to chance.
+      jp nc,+                         ;
+        scf                           ; Set carry flag!
         ret
     +:
-    or a
+    or a                              ; Clear carry flag.
   ret
 .ends
 
