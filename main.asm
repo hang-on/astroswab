@@ -303,7 +303,7 @@
         cp ASTEROID_REACTIVATE_VALUE
         jp nc,+
           ; Activate asteroid.
-          call reset_game_object_position
+          call spawn_game_object_in_invisible_area
           call get_random_number
           and ASTEROID_SPRITE_MASK
           ld hl,asteroid_sprite_table
@@ -350,7 +350,7 @@
         call get_game_object_state
         cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
         jp nz,+
-          call reset_game_object_position
+          call spawn_game_object_in_invisible_area
           ld a,SHARD_YELLOW_SPRITE
           ld b,a
           call get_random_number
@@ -404,7 +404,7 @@
       ; If spinner_generator_timer is up, do...
       ; Activate a new spinner.
       ld ix,spinner
-      call reset_game_object_position
+      call spawn_game_object_in_invisible_area
       ld hl,spinner_setup_table
       call set_game_object_from_table
       ld hl,spinner_anim_table
@@ -431,7 +431,7 @@
       ; If danish_generator_timer is up, do...
       ; Activate a new danish.
       ld ix,danish
-      call reset_game_object_position
+      call spawn_game_object_in_invisible_area
       ld hl,danish_setup_table
       call set_game_object_from_table
       call get_random_number
@@ -465,7 +465,7 @@
       jp nc,+
         ; If missile_generator_timer is up, activate a new missile.
         ld ix,missile
-        call reset_game_object_position
+        call spawn_game_object_in_invisible_area
         ld hl,missile_setup_table
         call set_game_object_from_table
         call activate_game_object

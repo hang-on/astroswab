@@ -78,7 +78,7 @@
 0000:0ad7 horizontal_zone_deactivate_game_object
 0000:0ae4 load_animation_game_object
 0000:0aeb move_game_object
-0000:0b02 reset_game_object_position
+0000:0b02 spawn_game_object_in_invisible_area
 0000:0b20 set_game_object_from_table
 0000:0b36 set_game_object_position
 0000:0b3d set_game_object_speed

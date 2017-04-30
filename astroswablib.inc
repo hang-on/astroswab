@@ -428,7 +428,7 @@
     ld (ix+game_object.x),a
   ret
   ;
-  reset_game_object_position:
+  spawn_game_object_in_invisible_area:
     ; In Astroswab, all enemy objects share the feature that they spawn
     ; in the bottom of the invisible area (at x = 8-229). Thus when an enemy
     ; object gets its position reset, y is fixed and x is randomized.
