@@ -78,8 +78,6 @@
   ;
   bullet_setup_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
-
-
   ; Menu item strings:
   menu_title:
     .asc "ASTROSWAB! debug menu#"

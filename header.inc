@@ -10,7 +10,7 @@
   .equ GS_RUN_DEVMENU 1
   .equ GS_PREPARE_LEVEL 2
   .equ GS_RUN_LEVEL 3
-
+  ;
   .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
 ;
 ; Sprites:

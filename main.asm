@@ -233,7 +233,7 @@
   call move_game_object
   call draw_game_object
   ; ---------------------------------------------------------------------------
-  ; Release gun if fire button is released.
+  ; Gun and bullets.
   call is_button_1_pressed        ;
   jp c,+                          ; Is the player pressing the fire button?
     ld a,TRUE                     ; No - then set gun flag (to prevent
@@ -248,25 +248,24 @@
     dec a                         ;
     ld (gun_timer),a              ;
   +:                              ;
-  ; Test for fire button press...
-  call is_button_1_pressed        ; If the fire button is not pressed, skip...
-  jp nc,activate_bullet_end       ; Else proceed to check gun timer.
+  call is_button_1_pressed        ; Test for fire button press...
+  jp nc,activate_bullet_end       ; If the fire button is not pressed, skip...
     call get_random_number        ; Re-seed random number generator!
     ld a,(gun_timer)              ; Check gun timer (delay between shots).
     or a                          ;
     jp nz,activate_bullet_end     ; If timer not set, skip...
-      ld a,(gun_released)         ; 3rd test: Is gun released? (no autofire!)
+      ld a,(gun_released)         ; Is gun released? (no autofire!)
       cp TRUE                     ;
       jp nz,activate_bullet_end   ; If not, skip...
+        ; If we get here, it is time to reset and activate a new bullet.
         ld a,(gun_delay)          ; Make gun wait a little (load time)!
         ld (gun_timer),a          ;
         ld a,FALSE                ; Lock gun (released on fire button release).
         ld (gun_released),a       ;
-        ;
         ld ix,bullet
         ld a,BULLET_MAX
-        call get_inactive_game_object
-        jp c,activate_bullet_end   ; If no inactive objects are available now...
+        call get_inactive_game_object ; Let IX point to first inactive bullet.
+        jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
           call activate_game_object
           push ix
           ld ix,swabby
@@ -279,13 +278,14 @@
           ld b,a
           ld a,c
           call set_game_object_position
-
+          ;
           SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
           ld c,SFX_CHANNEL2
           ld hl,shot_1
           call PSGSFXPlay           ; Play the swabby shot sound effect.
-
-  activate_bullet_end:            ; End of bullet activation code.
+          ;
+  activate_bullet_end:              ; End of bullet activation code.
+  ; Process all bullets.
   ld ix,bullet
   ld b,BULLET_MAX
   -:
@@ -309,8 +309,8 @@
     call get_game_object_state
     cp GAME_OBJECT_INACTIVE
     jp nz,+
-      ld hl,frame_counter
-      bit 0,(hl)
+      ld hl,frame_counter                   ; Only consider reactivation on
+      bit 0,(hl)                            ; even frames.
       jp nz,+
         call get_random_number
         cp ASTEROID_REACTIVATE_VALUE
@@ -344,7 +344,7 @@
     add ix,de
     pop bc
   djnz process_asteroids
-  ;
+  ; ---------------------------------------------------------------------------
   ; Shard generator
   ld a,(shard_generator_timer)
   dec a
@@ -406,7 +406,7 @@
     add ix,de
     pop bc
   djnz process_shards
-  ;
+  ; ---------------------------------------------------------------------------
   ld ix,spinner
   call get_game_object_state           ; If spinner is already out, skip!
   cp GAME_OBJECT_ACTIVE
@@ -432,6 +432,7 @@
   call horizontal_zone_deactivate_game_object
   call animate_game_object
   call draw_game_object              ; Put it in the SAT.
+  ; ---------------------------------------------------------------------------
   ; Handle danish and trigger.
   ld ix,danish
   call get_game_object_state           ; If danish is already out, skip!
@@ -494,9 +495,6 @@
   ld b,ASTEROID_DEACTIVATE_ZONE_END
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
-
-
-
   ; ---------------------------------------------------------------------------
   ld hl,frame_counter
   inc (hl)

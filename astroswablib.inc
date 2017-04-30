@@ -258,24 +258,26 @@
   anim_counter db
   anim_pointer dw
 .endst
-
+;
 .equ GAME_OBJECT_ACTIVE 1
 .equ GAME_OBJECT_INACTIVE 0
 .equ GAME_OBJECT_SHAPE_REGULAR 0
 .equ GAME_OBJECT_SHAPE_TALL 1
 .equ GAME_OBJECT_SHAPE_WIDE 2
 .equ GAME_OBJECT_SHAPE_SMALL 3
-
+; -----------------------------------------------------------------------------
 .section "Game objects" free
   ; Functions that work on the Astroswab game_object structure.
   ; What Astroswab game objects are assumed to have in common:
   ; 1. ...
   ; 2. ...
-  load_animation_game_object:
+  activate_game_object:
     ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to animation table.
-    ld (ix+game_object.anim_pointer),l
-    ld (ix+game_object.anim_pointer+1),h
+    ; Registers used: None.
+    push af
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+    pop af
   ret
   ;
   animate_game_object:
@@ -294,6 +296,94 @@
     RESTORE_REGISTERS
   ret
   ;
+  draw_game_object:
+    ; Entry: IX = Pointer to struct.
+    ; Registers used: None.
+    SAVE_REGISTERS                ; Because add_metasprite mess with registers!
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,draw_game_object_end
+      ; Put active objects in the SAT buffer.
+      ld a,(ix+game_object.sprite)
+      cp FIRST_8x8_SPRITE
+      jp nc,small_shape
+      ld a,(ix+game_object.shape)
+      cp GAME_OBJECT_SHAPE_REGULAR
+      jp z,regular_shape
+      cp GAME_OBJECT_SHAPE_TALL
+      jp z,tall_shape
+    draw_game_object_end:
+    RESTORE_REGISTERS
+  ret
+  small_shape:
+    ld c,(ix+game_object.x)
+    ld b,(ix+game_object.y)
+    ld a,(ix+game_object.sprite)
+    call add_sprite
+  jp draw_game_object_end
+  regular_shape:
+    call add_metasprite
+  jp draw_game_object_end
+  tall_shape:
+    call add_tall_metasprite
+  jp draw_game_object_end
+  ;
+  deactivate_game_object:
+    ; Entry: IX = Pointer to struct.
+    ; Registers used: None.
+    push af
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    pop af
+  ret
+  ;
+  get_game_object_position:
+    ; Entry: IX = pointer to struct.
+    ; Exit: A = object Y and B = object X.
+    ld a,(ix+game_object.y)
+    ld b,(ix+game_object.x)
+  ret
+  ;
+  get_game_object_state:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A state of the enemy object, which should be either
+    ; GAME_OBJECT_INACTIVE or GAME_OBJECT_ACTIVE.
+    ld a,(ix+game_object.state)
+  ret
+  ;
+  get_game_object_x:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A x of the enemy object.
+    ld a,(ix+game_object.x)
+  ret
+  ;
+  get_game_object_xspeed:
+    ; Entry: IX = pointer to struct.
+    ; Exit: Returns in A  game object xspeed.
+    ld a,(ix+game_object.xspeed)
+  ret
+  ;
+  get_inactive_game_object:
+    ; Entry: IX = Pointer to first instance of struct.
+    ;        A = Instances of this struct.
+    ; Exit:  If no inactive object is found, then carry is set.
+    ;        Else: IX = Pointer to inactive game object and carry is cleared.
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      call get_game_object_state
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+      add ix,de
+    djnz -
+    ; Here we come if no inactive objects are found...
+    ; Set carry to indicate error and return.
+    scf
+    ret
+    +:
+      or a        ; Clear carry.
+  ret             ; Return with ix pointing...
+  ;
   horizontal_zone_deactivate_game_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.
@@ -308,6 +398,29 @@
     cp c
     ret nc
     call deactivate_game_object
+  ret
+  ;
+  load_animation_game_object:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to animation table.
+    ld (ix+game_object.anim_pointer),l
+    ld (ix+game_object.anim_pointer+1),h
+  ret
+  ;
+  move_game_object:
+    ; Apply yspeed to y and xspeed to x.
+    ; Entry: IX = Pointer to instance of enemy object.
+    ld a,(ix+game_object.yspeed)
+    ld b,a
+    ld a,(ix+game_object.y)
+    add a,b
+    ld (ix+game_object.y),a
+    ;
+    ld a,(ix+game_object.xspeed)
+    ld b,a
+    ld a,(ix+game_object.x)
+    add a,b
+    ld (ix+game_object.x),a
   ret
   ;
   reset_game_object_position:
@@ -350,12 +463,12 @@
     pop hl
   ret
   ;
-  set_game_object_sprite:
-    ; Entry: IX = Pointer to enemy object.
-    ;        A = Sprite index.
-    ld (ix+game_object.sprite),a
+  set_game_object_position:
+    ; Entry: IX = pointer to struct.
+    ;        A = Y, B = X.
+    ld (ix+game_object.y),a
+    ld (ix+game_object.x),b
   ret
-  ;
   set_game_object_speed:
     ; IX = Pointer to enemy object.
     ; A = Yspeed, B = Xspeed.
@@ -363,204 +476,10 @@
     ld (ix+game_object.xspeed),b
   ret
   ;
-  get_game_object_xspeed:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A  game object xspeed.
-    ld a,(ix+game_object.xspeed)
+  set_game_object_sprite:
+    ; Entry: IX = Pointer to enemy object.
+    ;        A = Sprite index.
+    ld (ix+game_object.sprite),a
   ret
   ;
-  move_game_object:
-    ; Apply yspeed to y and xspeed to x.
-    ; Entry: IX = Pointer to instance of enemy object.
-    ld a,(ix+game_object.yspeed)
-    ld b,a
-    ld a,(ix+game_object.y)
-    add a,b
-    ld (ix+game_object.y),a
-    ;
-    ld a,(ix+game_object.xspeed)
-    ld b,a
-    ld a,(ix+game_object.x)
-    add a,b
-    ld (ix+game_object.x),a
-  ret
-  ;
-  draw_game_object:
-    ; Entry: IX = Pointer to struct.
-    ; Registers used: None.
-    SAVE_REGISTERS                ; Because add_metasprite mess with registers!
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    jp nz,draw_game_object_end
-      ; Put active objects in the SAT buffer.
-      ld a,(ix+game_object.sprite)
-      cp FIRST_8x8_SPRITE
-      jp nc,small_shape
-      ld a,(ix+game_object.shape)
-      cp GAME_OBJECT_SHAPE_REGULAR
-      jp z,regular_shape
-      cp GAME_OBJECT_SHAPE_TALL
-      jp z,tall_shape
-    draw_game_object_end:
-    RESTORE_REGISTERS
-  ret
-  small_shape:
-    ld c,(ix+game_object.x)
-    ld b,(ix+game_object.y)
-    ld a,(ix+game_object.sprite)
-    call add_sprite
-  jp draw_game_object_end
-  regular_shape:
-    call add_metasprite
-  jp draw_game_object_end
-  tall_shape:
-    call add_tall_metasprite
-  jp draw_game_object_end
-
-
-  ;
-  activate_game_object:
-    ; Entry: IX = Pointer to struct.
-    ; Registers used: None.
-    push af
-    ld a,GAME_OBJECT_ACTIVE
-    ld (ix+game_object.state),a
-    pop af
-  ret
-  ;
-  deactivate_game_object:
-    ; Entry: IX = Pointer to struct.
-    ; Registers used: None.
-    push af
-    ld a,GAME_OBJECT_INACTIVE
-    ld (ix+game_object.state),a
-    pop af
-  ret
-  ;
-  get_inactive_game_object:
-    ; Entry: IX = Pointer to first instance of struct.
-    ;        A = Instances of this struct.
-    ; Exit:  If no inactive object is found, then carry is set.
-    ;        Else: IX = Pointer to inactive game object and carry is cleared.
-    ld b,a
-    ld de,_sizeof_game_object
-    -:
-      call get_game_object_state
-      cp GAME_OBJECT_INACTIVE
-      jp z,+
-      add ix,de
-    djnz -
-    ; Here we come if no inactive objects are found...
-    ; Set carry to indicate error and return.
-    scf
-    ret
-    +:
-      or a        ; Clear carry.
-  ret             ; Return with ix pointing...
-  ;
-  get_game_object_state:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A state of the enemy object, which should be either
-    ; GAME_OBJECT_INACTIVE or GAME_OBJECT_ACTIVE.
-    ld a,(ix+game_object.state)
-  ret
-  ;
-  get_game_object_x:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A x of the enemy object.
-    ld a,(ix+game_object.x)
-  ret
-  ;
-  get_game_object_position:
-    ; Entry: IX = pointer to struct.
-    ; Exit: A = object Y and B = object X.
-    ld a,(ix+game_object.y)
-    ld b,(ix+game_object.x)
-  ret
-  ;
-  ;
-  set_game_object_position:
-    ; Entry: IX = pointer to struct.
-    ;        A = Y, B = X.
-    ld (ix+game_object.y),a
-    ld (ix+game_object.x),b
-  ret
-.ends
-
-; -----------------------------------------------------------------------------
-; PLAYER OBJECTS
-; -----------------------------------------------------------------------------
-.struct player_object
-  y db
-  x db
-  sprite db
-  yspeed db
-  xspeed db
-  state db
-.endst
-
-.equ PLAYER_OBJECT_ACTIVE 1
-.equ PLAYER_OBJECT_INACTIVE 0
-
-.section "Player objects" free
-  ; Functions that work on the player_object structure.
-  ;
-  initialize_player_object:
-    ; Entry: HL = Pointer to init table that matches the player object struct.
-    ;        IX = Pointer to instance of player object.
-    ld bc,_sizeof_player_object
-    push ix
-    pop de
-    ldir
-  ret
-  ;
-  move_player_object:
-    ; Apply yspeed to y and xspeed to x.
-    ; Entry: IX = Pointer to instance of player object.
-    ld a,(ix+player_object.yspeed)
-    ld b,a
-    ld a,(ix+player_object.y)
-    add a,b
-    ld (ix+player_object.y),a
-    ;
-    ld a,(ix+player_object.xspeed)
-    ld b,a
-    ld a,(ix+player_object.x)
-    add a,b
-    ld (ix+player_object.x),a
-  ret
-  ;
-  draw_player_object:
-    ; Put a 16x16 metasprite representing the player into the SAT.
-    ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-    ;             and IX+2 is the character code.
-    ; Uses: AF, BC, DE, HL
-    ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-    ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-    ld d,4
-    ld hl,player_object_table
-    -:
-      ld a,(ix+0)
-      add a,(hl)
-      ld b,a
-      inc hl
-      ld a,(ix+1)
-      add a,(hl)
-      ld c,a
-      inc hl
-      ld a,(hl)
-      ld e,a
-      ld a,(ix+2)
-      add a,e
-      inc hl
-      call add_sprite
-      dec d
-    jp nz,-
-  ret
-  player_object_table:
-    .db 0, 0, 0
-    .db 0, 8, 1
-    .db 8, 0, 4
-    .db 8, 8, 5
-
 .ends
