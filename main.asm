@@ -380,9 +380,7 @@
   ld b,SHARD_MAX
   process_shards:
     push bc
-    ;call get_game_object_state
     call move_game_object              ; Move shard.
-    ; Deactivate shard if it is within the deactivate zone.
     ld a,SHARD_DEACTIVATE_ZONE_START
     ld b,SHARD_DEACTIVATE_ZONE_END
     call horizontal_zone_deactivate_game_object
@@ -428,8 +426,7 @@
     ld ix,danish_trigger               ;
     call process_trigger
     jp nc,+
-      ; If danish_generator_timer is up, do...
-      ; Activate a new danish.
+      ; If danish_generator_timer is up then activate a new danish.
       ld ix,danish
       call spawn_game_object_in_invisible_area
       ld hl,danish_setup_table
@@ -442,7 +439,6 @@
       add hl,de
       ld a,(hl)
       call set_game_object_sprite
-      ;
       call activate_game_object
   +:
   ;
