@@ -9,6 +9,10 @@
   dummy_text:
     .asc "Score: 00000   Lives: 8#"
   ;
+  game_state_jump_table:
+    ; Check the game state constants in header.inc!
+    .dw prepare_devmenu, run_devmenu, prepare_level, run_level
+  ;
   background_table:
     ; level 1:
     .dw NON_ASCII_AREA_START,

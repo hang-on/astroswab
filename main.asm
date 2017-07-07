@@ -1,8 +1,8 @@
 .include "bluelib.inc"
 .include "astroswablib.inc"
-.include "header.inc"
-
 .include "psglib.inc"
+;
+.include "header.inc"
 ;
 .bank 0 slot 0
 ; -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@
     call load_vram_from_table
     ;
     call PSGInit
-    ;
+    ; Go to the initial game state specified in the header.
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
   jp main_loop
@@ -34,25 +34,23 @@
   ; ---------------------------------------------------------------------------
   main_loop:
     ; Note: This loop can begin on any line - wait for vblank in the states!
-    ld a,(game_state)
-    add a,a
-    ld h,0
+    ld a,(game_state)   ; Get current game state - it will serve as JT offset.
+    add a,a             ; Double it up because jump table is word-sized.
+    ld h,0              ; Set up HL as the jump table offset.
     ld l,a
-    ld de,jump_table
-    add hl,de
-    ld a,(hl)
-    inc hl
-    ld h,(hl)
-    ld l,a
-    jp (hl)
+    ld de,game_state_jump_table ; Point to JT base address (see footer.inc).
+    add hl,de           ; Apply offset to base address.
+    ld a,(hl)           ; Get LSB from table.
+    inc hl              ; Increment pointer.
+    ld h,(hl)           ; Get MSB from table.
+    ld l,a              ; HL now contains the address of the state handler.
+    jp (hl)             ; Jump to this handler - note, not call!
     ;
-  jump_table:
-    ; Check the game state constants.
-    .dw prepare_devmenu, run_devmenu, prepare_level, run_level
-  ;
   ; ---------------------------------------------------------------------------
   ; L E V E L                                                        (gameplay)
   ; ---------------------------------------------------------------------------
+  ; This section contains code for two different game states that handles
+  ; preparing and running a level.
   prepare_level:
     di
     ; Turn off display and frame interrupts.
@@ -72,6 +70,11 @@
     add hl,de
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
+    ; Print the dummy text under the playfield.
+    ld b,DUMMY_TEXT_ROW
+    ld c,DUMMY_TEXT_COLUMN
+    ld hl,dummy_text
+    call print
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
@@ -80,11 +83,6 @@
     call load_vram
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
-    ;
-    ld b,22
-    ld c,5
-    ld hl,dummy_text
-    call print
     ; Initialize Swabby
     ld ix,swabby
     ld hl,swabby_setup_table
@@ -175,17 +173,19 @@
   run_level:
   call await_frame_interrupt
   call load_sat
-  ; Set debug meter:
-  in a,(V_COUNTER_PORT)
-  ld b,a
-  ld a,(vblank_update_finished_line)
-  cp b
-  jp nc,+
-    ld a,b
-    ld (vblank_update_finished_line),a
-  +:
-  ; End of VDP-updating.
-  ; update()
+  ; End of VDP-updating...
+  ; Set debug meter for profiling the amount of lines consumed by functions
+  ; operating on the graphics and expecting to work with the screen blanked.
+  ; Make sure this meter shows a line number within the vblank period!
+  in a,(V_COUNTER_PORT)                   ; Get current line number.
+  ld b,a                                  ; Store it in B.
+  ld a,(vblank_update_finished_line)      ; Get highest line number yet.
+  cp b                                    ; Is the current line higher?
+  jp nc,+                                 ; No, skip forward.
+    ld a,b                                ; Yes, save current line number as
+    ld (vblank_update_finished_line),a    ; the new 'high score'.
+  +:                                      ;
+  ;
   call get_input_ports
   call begin_sprites
   ; ---------------------------------------------------------------------------
@@ -426,7 +426,7 @@
     ld ix,danish_trigger               ;
     call process_trigger
     jp nc,+
-      ; If danish_generator_timer is up then activate a new danish.
+      ; If danish_trigger generates a trigger event - activate a new danish.
       ld ix,danish
       call spawn_game_object_in_invisible_area
       ld hl,danish_setup_table
@@ -477,6 +477,9 @@
   call horizontal_zone_deactivate_game_object
   call draw_game_object              ; Put it in the SAT.
   ; ---------------------------------------------------------------------------
+  call PSGSFXFrame
+  call PSGFrame
+  ;
   ld hl,frame_counter
   inc (hl)
   call is_reset_pressed
@@ -485,9 +488,6 @@
     ld a,GS_PREPARE_DEVMENU
     ld (game_state),a
   +:
-  call PSGSFXFrame
-  call PSGFrame
-  ;
   ; Set debug meter:
   in a,(V_COUNTER_PORT)
   ld b,a

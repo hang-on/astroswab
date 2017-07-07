@@ -170,6 +170,7 @@
   ret              ; return random number in a
   ;
   randomize:
+    ; FIXME: Randomize based on player input instead!
     ld hl,randomizer_table
     ld a,(rnd_seed)
     add a,(hl)

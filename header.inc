@@ -5,6 +5,7 @@
   .equ PICO8_PALETTE_SIZE 16
 ;
 ; Game states:
+; Note - these must correspond to the addresses in the game state jump table.
   .equ GS_PREPARE_DEVMENU 0
   .equ GS_RUN_DEVMENU 1
   .equ GS_PREPARE_LEVEL 2
@@ -26,6 +27,8 @@
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
+  .equ DUMMY_TEXT_ROW 22
+  .equ DUMMY_TEXT_COLUMN 5
 ;
 ; Levels:
   .equ LEVEL_1 0
