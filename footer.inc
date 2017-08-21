@@ -12,6 +12,7 @@
   game_state_jump_table:
     ; Check the game state constants in header.inc!
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level
+    .dw prepare_sandbox, run_sandbox
   ;
   background_table:
     ; level 1:
