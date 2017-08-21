@@ -88,12 +88,15 @@
 ; -----------------------------------------------------------------------------
 .macro log
 ; -----------------------------------------------------------------------------
+  ld a,(logger_current_row)
+  ld b,a
   ld hl,logData\@
-  ld b,3
-  ld c,1
   call print
+  ld hl,logger_current_row
+  inc (hl)
   jp logDataEnd\@
   logData\@:
+    .asc "> "
     .asc \1
     .asc "#"
   logDataEnd\@:
@@ -109,3 +112,35 @@
       nop
     jp -
 .endm
+
+; -----------------------------------------------------------------------------
+.ramsection "testlib variables" slot 3
+; -----------------------------------------------------------------------------
+  logger_first_row db
+  logger_current_row db
+  ;
+.ends
+
+; -----------------------------------------------------------------------------
+.section "reset_logger" free
+; -----------------------------------------------------------------------------
+  ; Reset logger.
+  ; Entry: B = logger start row
+  ; Exit: None.
+  ; Uses: AF, BC, HL
+  ;       logger_current_row, logger_first_row
+  reset_logger:
+    ; Save initial row data.
+    ld a,b
+    inc a
+    ld (logger_first_row),a
+    ld (logger_current_row),a
+    ; Make divider.
+    ld c,0
+    ld hl,logger_reset_msg
+    call print
+  ret
+  ;
+  logger_reset_msg:
+    .asc "--------------------------------#"
+.ends

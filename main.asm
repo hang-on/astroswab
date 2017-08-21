@@ -682,11 +682,6 @@
     ld de,SPRITE_BANK_START
     ld hl,sprite_tiles
     call load_vram
-    ; Set menu state
-    ld b,1
-    ld c,1
-      ld hl,sandbox_msg
-      call print
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -694,7 +689,11 @@
     call PSGSFXStop
     call PSGStop
     ;
-    log "Kenshiro!"
+    ld b,SANDBOX_LOGGER_START_ROW
+    call reset_logger
+    log "Hello World!#"
+    log "Kenshiro#"
+    ;
     ; Turn on screen and frame interrupts.
     ld a,DISPLAY_1_FRAME_1_SIZE_0
     ld b,1

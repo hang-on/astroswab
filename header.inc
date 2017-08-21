@@ -26,6 +26,9 @@
   .equ TILE_BANK_1 1
   .equ TILE_BANK_2 2
 ;
+; Sandbox:
+  .equ SANDBOX_LOGGER_START_ROW 12
+;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
