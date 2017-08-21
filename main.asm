@@ -1,7 +1,8 @@
 .include "bluelib.inc"
-.include "astroswablib.inc"
 .include "psglib.inc"
-;
+.include "testlib.inc"
+
+.include "astroswablib.inc";
 .include "header.inc"
 ;
 .bank 0 slot 0
@@ -692,6 +693,8 @@
     ; Stop music and sound effects.
     call PSGSFXStop
     call PSGStop
+    ;
+    log "Kenshiro!"
     ; Turn on screen and frame interrupts.
     ld a,DISPLAY_1_FRAME_1_SIZE_0
     ld b,1
