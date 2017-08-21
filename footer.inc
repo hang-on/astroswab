@@ -131,6 +131,9 @@
     .asc "TV type: PAL#"
   ntsc_msg:
     .asc "TV type: NTSC#"
+  ; ---------------------------------------------------------------------------
+  sandbox_msg:
+    .asc "Entering sandbox state...#"
 .ends
 ;
 .bank FONT_BANK slot 2
