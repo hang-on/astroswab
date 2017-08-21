@@ -1,6 +1,12 @@
 ; testlib.inc
 ; Macros, functions and data for testing library.
-
+;
+; -----------------------------------------------------------------------------
+; DEFINITIONS
+; -----------------------------------------------------------------------------
+.equ LAST_VISIBLE_ROW 23
+.equ FIRST_COLUMN 0
+;
 ; -----------------------------------------------------------------------------
 ;                         M A C R O S
 ; -----------------------------------------------------------------------------
@@ -9,7 +15,7 @@
 ; -----------------------------------------------------------------------------
   cp \1
   jp z,+
-    fail \2
+    log \2
   +:
 .endm
 
@@ -18,7 +24,7 @@
 ; -----------------------------------------------------------------------------
   cp \1
   jp nz,+
-  fail \2
+  log \2
   +:
 .endm
 
@@ -33,7 +39,7 @@
   cp l
   jp z,++
   +:
-    fail \2
+    log \2
   ++:
 .endm
 
@@ -44,7 +50,7 @@
   ld b,\2
   cp b
   jp z,+
-    fail \3
+    log \3
   +:
   log "."
 .endm
@@ -56,7 +62,7 @@
   ld de,\2
   sbc hl,de
   jp z,+
-    fail \3
+    log \3
   +:
 .endm
 
@@ -65,7 +71,7 @@
 .macro assertCarrySet ; (fail string)
 ; -----------------------------------------------------------------------------
   jp c,+
-    fail \1
+    log \1
   +:
 .endm
 
@@ -73,22 +79,19 @@
 .macro assertCarryReset ; (fail string)
 ; -----------------------------------------------------------------------------
   jp nc,+
-    fail \1
+    log \1
   +:
-.endm
-
-; -----------------------------------------------------------------------------
-.macro fail ; (fail string)
-; -----------------------------------------------------------------------------
-  log "Assertion failed:               --> "
-  log \1
-  abort
 .endm
 
 ; -----------------------------------------------------------------------------
 .macro log
 ; -----------------------------------------------------------------------------
   ld a,(logger_current_row)
+  cp 24
+  jp nz,+
+    call crash_logger
+    jp logDataEnd\@
+  +:
   ld b,a
   ld hl,logData\@
   call print
@@ -103,24 +106,27 @@
 .endm
 
 ; -----------------------------------------------------------------------------
-.macro abort
-; -----------------------------------------------------------------------------
-    .if nargs == 1
-      log \1
-    .endif
-    -:
-      nop
-    jp -
-.endm
-
-; -----------------------------------------------------------------------------
 .ramsection "testlib variables" slot 3
 ; -----------------------------------------------------------------------------
-  logger_first_row db
   logger_current_row db
   ;
 .ends
 
+; -----------------------------------------------------------------------------
+.section "crash_logger" free
+; -----------------------------------------------------------------------------
+  ; Crash the logger.
+  crash_logger:
+    ld b,LAST_VISIBLE_ROW
+    ld c,FIRST_COLUMN
+    ld hl,logger_error_msg
+    call print
+  ret
+  ;
+  logger_error_msg:
+    .asc "! Log overflow error#"
+.ends
+;
 ; -----------------------------------------------------------------------------
 .section "reset_logger" free
 ; -----------------------------------------------------------------------------
@@ -128,12 +134,11 @@
   ; Entry: B = logger start row
   ; Exit: None.
   ; Uses: AF, BC, HL
-  ;       logger_current_row, logger_first_row
+  ;       logger_current_row
   reset_logger:
     ; Save initial row data.
     ld a,b
     inc a
-    ld (logger_first_row),a
     ld (logger_current_row),a
     ; Make divider.
     ld c,0

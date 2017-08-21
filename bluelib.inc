@@ -102,6 +102,7 @@
 .equ STRING_TERMINATOR 3        ; Terminate strings with #
 .equ ASCII_ZERO 16        ; Where in the tilebank is the ASCII zero?
 .equ ASCII_SPACE 0
+.equ ASCII_EXCLAMATION 1
 .asciitable
   map " " to "z" = 0
 .enda

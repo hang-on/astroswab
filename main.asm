@@ -688,12 +688,18 @@
     ; Stop music and sound effects.
     call PSGSFXStop
     call PSGStop
-    ;
+    ; ----------------------------------------------------------
     ld b,SANDBOX_LOGGER_START_ROW
     call reset_logger
-    log "Hello World!#"
-    log "Kenshiro#"
     ;
+    call test_gutter_game
+    ; TODO: test_xy_match
+    ; test_xy_mismatch
+    ; test_y_overlap
+    ; test_x_overlap
+    ; (tests for the game objects)
+
+    ; ----------------------------------------------------------
     ; Turn on screen and frame interrupts.
     ld a,DISPLAY_1_FRAME_1_SIZE_0
     ld b,1
