@@ -131,6 +131,12 @@
     .asc "TV type: PAL#"
   ntsc_msg:
     .asc "TV type: NTSC#"
+  ;
+  sandbox_bullet_setup_table:
+    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+  sandbox_asteroid_setup_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR  
+
   ; ---------------------------------------------------------------------------
 .ends
 ;

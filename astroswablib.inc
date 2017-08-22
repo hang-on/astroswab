@@ -488,11 +488,28 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
-.section "Unit tests" free
+.section "Sandbox functions" free
 ; -----------------------------------------------------------------------------
-  test_gutter_game:
-    ld a,125
-    assertEqualsA 124, "test_gutter_game failed!#"
+  place_bullet:
+    ld ix,bullet
+    ld hl,sandbox_bullet_setup_table
+    ld de,_sizeof_game_object
+    call set_game_object_from_table
+    call set_game_object_position
+    call activate_game_object
+    call draw_game_object
+  ret
+  place_asteroid:
+    ld ix,asteroid
+    ld hl,sandbox_asteroid_setup_table
+    ld de,_sizeof_game_object
+    call set_game_object_from_table
+    call set_game_object_position
+    call activate_game_object
+    call draw_game_object
+  ret
+  are_objects_on_the_same_coordinates:
+    scf
   ret
 
 .ends

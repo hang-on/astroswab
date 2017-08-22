@@ -88,10 +88,10 @@
 ; -----------------------------------------------------------------------------
   ld a,(logger_current_row)   ; Get current row.
   cp LAST_VISIBLE_ROW+1       ; Is it outside the visible screen?
-  jp nz,+                     ; If not then proceed to print message.
+  jp nz,++                    ; If not then proceed to print message.
     call crash_logger         ; Else, print error message.
     jp logDataEnd\@           ; Skip to end of macro.
-  +:
+  ++:
   ld b,a
   ld c,FIRST_COLUMN
   ld hl,logData\@

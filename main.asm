@@ -692,13 +692,7 @@
     ld b,SANDBOX_LOGGER_START_ROW
     call reset_logger
     ;
-    call test_gutter_game
-    ; TODO: test_xy_match
-    ; test_xy_mismatch
-    ; test_y_overlap
-    ; test_x_overlap
-    ; (tests for the game objects)
-
+    ;
     ; ----------------------------------------------------------
     ; Turn on screen and frame interrupts.
     ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -713,8 +707,29 @@
   ; ---------------------------------------------------------------------------
   run_sandbox:
     ;
+    call await_frame_interrupt
+    call load_sat
+    ; End of VDP-updating...
+    call get_input_ports
+    call begin_sprites
+    ;
+    ; Tests below:
+    call test_same_coordinates
+    ;
   jp main_loop
-
+  ; Tests for the sandbox:
+  test_same_coordinates:
+    ld a,10
+    ld b,10
+    call place_bullet
+    ld a,10
+    ld b,10
+    call place_asteroid
+    ld ix,bullet
+    ld iy,asteroid
+    call are_objects_on_the_same_coordinates
+    assertCarrySet "Assert failed - carry reset!#"
+  ret
 .ends
 ;
 .include "footer.inc"

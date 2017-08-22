@@ -28,6 +28,7 @@
 ;
 ; Sandbox:
   .equ SANDBOX_LOGGER_START_ROW 12
+  .equ NOT_MOVING 0
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
