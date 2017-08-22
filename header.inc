@@ -29,6 +29,8 @@
 ; Sandbox:
   .equ SANDBOX_LOGGER_START_ROW 12
   .equ NOT_MOVING 0
+  .equ BULLET_HITBOX_WIDTH 8
+  .equ ASTEROID_HITBOX_WIDTH 16
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4

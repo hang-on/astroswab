@@ -501,7 +501,6 @@
     pop af
     call set_game_object_position
     call activate_game_object
-    call draw_game_object
   ret
   place_asteroid:
     push af
@@ -514,7 +513,6 @@
     pop af
     call set_game_object_position
     call activate_game_object
-    call draw_game_object
   ret
   are_objects_on_the_same_coordinates:
     call get_game_object_position
@@ -536,5 +534,31 @@
     ;fail
     or a
   ret
-
+  are_objects_overlapping_horizontally:
+    call obj1_overlaps_obj2
+    ret c
+    call obj2_overlaps_obj1
+  ret
+  obj1_overlaps_obj2:
+    call get_game_object_x
+    add a,BULLET_HITBOX_WIDTH
+    ld b,a
+    push ix
+    push iy
+    pop ix
+    call get_game_object_x
+    sub b; sets carry
+    pop ix
+  ret
+  obj2_overlaps_obj1:
+    call get_game_object_x
+    ld b,a
+    push ix
+    push iy
+    pop ix
+    call get_game_object_x
+    add a,ASTEROID_HITBOX_WIDTH
+    sub b; sets carry
+    pop ix
+  ret
 .ends

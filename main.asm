@@ -714,6 +714,8 @@
     call reset_logger
     call test_same_coordinates
     call test_different_coordinates
+    call test_horizontal_overlap
+    call test_no_horizontal_overlap
     ;
   jp main_loop
   ; Tests for the sandbox:
@@ -733,13 +735,43 @@
     ld a,40
     ld b,40
     call place_bullet
+    ;call draw_game_object
     ld a,10
     ld b,10
     call place_asteroid
+    ;call draw_game_object
     ld ix,bullet
     ld iy,asteroid
     call are_objects_on_the_same_coordinates
     assertCarryReset "Failed: test_different_coordinates#"
+  ret
+  test_horizontal_overlap:
+    ld a,10
+    ld b,10
+    call place_bullet
+    call draw_game_object
+    ld a,10
+    ld b,12
+    call place_asteroid
+    call draw_game_object
+    ld ix,bullet
+    ld iy,asteroid
+    call are_objects_overlapping_horizontally
+    assertCarrySet "Failed: test_horizontal_overlap#"
+  ret
+  test_no_horizontal_overlap:
+    ld a,10
+    ld b,10
+    call place_bullet
+    ;call draw_game_object
+    ld a,50
+    ld b,50
+    call place_asteroid
+    ;call draw_game_object
+    ld ix,bullet
+    ld iy,asteroid
+    call are_objects_overlapping_horizontally
+    assertCarryReset "Fail: test_no_horizontal_overlap#"
   ret
 .ends
 ;
