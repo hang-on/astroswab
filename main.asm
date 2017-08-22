@@ -689,10 +689,6 @@
     call PSGSFXStop
     call PSGStop
     ; ----------------------------------------------------------
-    ld b,SANDBOX_LOGGER_START_ROW
-    call reset_logger
-    ;
-    ;
     ; ----------------------------------------------------------
     ; Turn on screen and frame interrupts.
     ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -713,8 +709,11 @@
     call get_input_ports
     call begin_sprites
     ;
-    ; Tests below:
+    ; Bullet vs. asteroid tests below:
+    ld b,SANDBOX_LOGGER_START_ROW
+    call reset_logger
     call test_same_coordinates
+    call test_different_coordinates
     ;
   jp main_loop
   ; Tests for the sandbox:
@@ -728,7 +727,19 @@
     ld ix,bullet
     ld iy,asteroid
     call are_objects_on_the_same_coordinates
-    assertCarrySet "Assert failed - carry reset!#"
+    assertCarrySet "Failed: test_same_coordinates#"
+  ret
+  test_different_coordinates:
+    ld a,40
+    ld b,40
+    call place_bullet
+    ld a,10
+    ld b,10
+    call place_asteroid
+    ld ix,bullet
+    ld iy,asteroid
+    call are_objects_on_the_same_coordinates
+    assertCarryReset "Failed: test_different_coordinates#"
   ret
 .ends
 ;

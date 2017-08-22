@@ -491,25 +491,50 @@
 .section "Sandbox functions" free
 ; -----------------------------------------------------------------------------
   place_bullet:
+    push af
+    push bc
     ld ix,bullet
     ld hl,sandbox_bullet_setup_table
     ld de,_sizeof_game_object
     call set_game_object_from_table
+    pop bc
+    pop af
     call set_game_object_position
     call activate_game_object
     call draw_game_object
   ret
   place_asteroid:
+    push af
+    push bc
     ld ix,asteroid
     ld hl,sandbox_asteroid_setup_table
     ld de,_sizeof_game_object
     call set_game_object_from_table
+    pop bc
+    pop af
     call set_game_object_position
     call activate_game_object
     call draw_game_object
   ret
   are_objects_on_the_same_coordinates:
+    call get_game_object_position
+    ld d,a
+    ld e,b
+    push iy
+    pop ix
+    call get_game_object_position
+    cp d
+    jp nz,+
+    ld a,b
+    cp e
+    jp nz,+
+    ; succes:
     scf
+    ret
+
+    +:
+    ;fail
+    or a
   ret
 
 .ends
