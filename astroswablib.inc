@@ -343,6 +343,17 @@
     pop af
   ret
   ;
+  get_game_object_hitbox:
+    ; Entry: IX = pointer to struct.
+    ld a,(ix+game_object.shape)
+    cp GAME_OBJECT_SHAPE_SMALL
+    jp nz,+
+      ld a,8
+      ret
+    +:
+    ld a,16
+  ret
+  ;
   get_game_object_position:
     ; Entry: IX = pointer to struct.
     ; Exit: A = object Y and B = object X.
@@ -490,75 +501,6 @@
 ; -----------------------------------------------------------------------------
 .section "Sandbox functions" free
 ; -----------------------------------------------------------------------------
-  place_bullet:
-    push af
-    push bc
-    ld ix,bullet
-    ld hl,sandbox_bullet_setup_table
-    ld de,_sizeof_game_object
-    call set_game_object_from_table
-    pop bc
-    pop af
-    call set_game_object_position
-    call activate_game_object
-  ret
-  place_asteroid:
-    push af
-    push bc
-    ld ix,asteroid
-    ld hl,sandbox_asteroid_setup_table
-    ld de,_sizeof_game_object
-    call set_game_object_from_table
-    pop bc
-    pop af
-    call set_game_object_position
-    call activate_game_object
-  ret
-  are_objects_on_the_same_coordinates:
-    call get_game_object_position
-    ld d,a
-    ld e,b
-    push iy
-    pop ix
-    call get_game_object_position
-    cp d
-    jp nz,+
-    ld a,b
-    cp e
-    jp nz,+
-    ; succes:
-    scf
-    ret
 
-    +:
-    ;fail
-    or a
-  ret
-  are_objects_overlapping_horizontally:
-    call obj1_overlaps_obj2
-    ret c
-    call obj2_overlaps_obj1
-  ret
-  obj1_overlaps_obj2:
-    call get_game_object_x
-    add a,BULLET_HITBOX_WIDTH
-    ld b,a
-    push ix
-    push iy
-    pop ix
-    call get_game_object_x
-    sub b; sets carry
-    pop ix
-  ret
-  obj2_overlaps_obj1:
-    call get_game_object_x
-    ld b,a
-    push ix
-    push iy
-    pop ix
-    call get_game_object_x
-    add a,ASTEROID_HITBOX_WIDTH
-    sub b; sets carry
-    pop ix
-  ret
+  
 .ends

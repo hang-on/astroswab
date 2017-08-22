@@ -673,9 +673,6 @@
     ld a,ASCII_SPACE
     ld b,TILE_BANK_1
     call reset_name_table
-    ;ld ix,batch_print_table
-    ;ld a,(batch_print_table_end-batch_print_table)/4
-    ;call batch_print
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
@@ -712,67 +709,9 @@
     ; Bullet vs. asteroid tests below:
     ld b,SANDBOX_LOGGER_START_ROW
     call reset_logger
-    call test_same_coordinates
-    call test_different_coordinates
-    call test_horizontal_overlap
-    call test_no_horizontal_overlap
     ;
   jp main_loop
   ; Tests for the sandbox:
-  test_same_coordinates:
-    ld a,10
-    ld b,10
-    call place_bullet
-    ld a,10
-    ld b,10
-    call place_asteroid
-    ld ix,bullet
-    ld iy,asteroid
-    call are_objects_on_the_same_coordinates
-    assertCarrySet "Failed: test_same_coordinates#"
-  ret
-  test_different_coordinates:
-    ld a,40
-    ld b,40
-    call place_bullet
-    ;call draw_game_object
-    ld a,10
-    ld b,10
-    call place_asteroid
-    ;call draw_game_object
-    ld ix,bullet
-    ld iy,asteroid
-    call are_objects_on_the_same_coordinates
-    assertCarryReset "Failed: test_different_coordinates#"
-  ret
-  test_horizontal_overlap:
-    ld a,10
-    ld b,10
-    call place_bullet
-    call draw_game_object
-    ld a,10
-    ld b,12
-    call place_asteroid
-    call draw_game_object
-    ld ix,bullet
-    ld iy,asteroid
-    call are_objects_overlapping_horizontally
-    assertCarrySet "Failed: test_horizontal_overlap#"
-  ret
-  test_no_horizontal_overlap:
-    ld a,10
-    ld b,10
-    call place_bullet
-    ;call draw_game_object
-    ld a,50
-    ld b,50
-    call place_asteroid
-    ;call draw_game_object
-    ld ix,bullet
-    ld iy,asteroid
-    call are_objects_overlapping_horizontally
-    assertCarryReset "Fail: test_no_horizontal_overlap#"
-  ret
 .ends
 ;
 .include "footer.inc"
