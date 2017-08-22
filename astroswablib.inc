@@ -501,6 +501,26 @@
 ; -----------------------------------------------------------------------------
 .section "Sandbox functions" free
 ; -----------------------------------------------------------------------------
-
-  
+  detect_collision:
+    scf
+  ret
+  init_rect:
+    ; ix = rect, HL = init data
+  ret
+  rect1_init_data:
+    .db 0, 0, 8, 8
+  rect2_init_data:
+    .db 4, 0, 8, 8
+.ends
+;
+.struct rect
+  x db
+  y db
+  width db
+  height db
+.endst
+;
+.ramsection "Sandbox variables" slot 3
+  rect1 instanceof rect
+  rect2 instanceof rect
 .ends

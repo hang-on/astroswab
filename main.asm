@@ -710,8 +710,20 @@
     ld b,SANDBOX_LOGGER_START_ROW
     call reset_logger
     ;
+    call rect1_overlaps_rect2
   jp main_loop
   ; Tests for the sandbox:
+  rect1_overlaps_rect2:
+    ld ix,rect1
+    ld hl,rect1_init_data
+    call init_rect
+    ld ix,rect2
+    ld hl,rect2_init_data
+    call init_rect
+    ld iy,rect2
+    call detect_collision
+    assertCarrySet "Test 1 failed"
+  ret
 .ends
 ;
 .include "footer.inc"
