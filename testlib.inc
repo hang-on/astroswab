@@ -1,5 +1,5 @@
 ; testlib.inc
-; Macros, functions and data for testing library.
+; Macros, functions and data for test library.
 ;
 ; -----------------------------------------------------------------------------
 ; DEFINITIONS
@@ -86,13 +86,14 @@
 ; -----------------------------------------------------------------------------
 .macro log
 ; -----------------------------------------------------------------------------
-  ld a,(logger_current_row)
-  cp 24
-  jp nz,+
-    call crash_logger
-    jp logDataEnd\@
+  ld a,(logger_current_row)   ; Get current row.
+  cp LAST_VISIBLE_ROW+1       ; Is it outside the visible screen?
+  jp nz,+                     ; If not then proceed to print message.
+    call crash_logger         ; Else, print error message.
+    jp logDataEnd\@           ; Skip to end of macro.
   +:
   ld b,a
+  ld c,FIRST_COLUMN
   ld hl,logData\@
   call print
   ld hl,logger_current_row
