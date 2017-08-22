@@ -714,6 +714,8 @@
     call test_rect1_separate_from_rect2
     call test_rect2_under_rect1
     call test_rect2_overlaps_rect1
+    call test_rect1_overlaps_rect2_version2
+    call test_rect1_separate_from_rect2_version2
 
   jp main_loop
   ; Tests for the sandbox:
@@ -764,6 +766,18 @@
     ld iy,rect2
     call detect_collision
     assertCarrySet "Test 4 failed"
+  ret
+  test_rect1_overlaps_rect2_version2:
+    ld hl,test5_data
+    call load_buffer
+    call detect_collision_using_buffer
+    assertCarrySet "Test 5 failed"
+  ret
+  test_rect1_separate_from_rect2_version2:
+    ld hl,test6_data
+    call load_buffer
+    call detect_collision_using_buffer
+    assertCarryReset "Test 6 failed"
   ret
 .ends
 ;

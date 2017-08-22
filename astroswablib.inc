@@ -564,6 +564,63 @@
     ld (ix+3),a
     inc hl
   ret
+  ;
+  load_buffer:
+    ; hl = pointer to buffer
+    ld de,collision_buffer
+    ld bc,8
+    ldir
+  ret
+  ;
+  detect_collision_using_buffer:
+    ld ix,collision_buffer
+    call coll1_2
+    ret nc
+    call coll2_2
+    ret nc
+    call coll3_2
+    ret nc
+    call coll4_2
+    ret nc
+    ; return with carry set.
+  ret
+    coll1_2:
+      ; rect1.x < rect2.x + rect2.width
+      ld a,(ix+4)
+      ld b,(ix+6)
+      add a,b
+      ld b,a
+      ld a,(ix+0)
+      cp b
+    ret
+    coll2_2:
+      ; rect1.x + rect1.width > rect2.x
+      ld a,(ix+0)
+      ld b,(ix+2)
+      add a,b
+      ld b,a
+      ld a,(ix+4)
+      sub b
+    ret
+    coll3_2:
+      ; rect1.y < rect2.y + rect2.height
+      ld a,(ix+5)
+      ld b,(ix+7)
+      add a,b
+      ld b,a
+      ld a,(ix+1)
+      cp b
+    ret
+    coll4_2:
+      ; rect1.height + rect1.y > rect2.y
+      ld a,(ix+3)
+      ld b,(ix+1)
+      add a,b
+      ld b,a
+      ld a,(ix+5)
+      cp b
+    ret
+
   rect1_init_data:
     .db 0, 0, 8, 8
   rect2_init_data:
@@ -580,6 +637,13 @@
     .db 4, 4, 8, 8
   rect2_init_data_4:
     .db 0, 0, 8, 8
+  test5_data:
+    .db 0, 0, 8, 8
+    .db 4, 0, 8, 8
+  test6_data:
+    .db 0, 0, 8, 8
+    .db 9, 0, 8, 8
+
 .ends
 ;
 .struct rect
@@ -592,4 +656,5 @@
 .ramsection "Sandbox variables" slot 3
   rect1 instanceof rect
   rect2 instanceof rect
+  collision_buffer dsb 8
 .ends
