@@ -261,7 +261,9 @@
   xspeed db
   state db
   shape db
-  hitbox db
+  hitbox_offset db  ;xxxx yyyy
+  hitbox_width db
+  hitbox_height db
   anim_counter db
   anim_pointer dw
 .endst
@@ -461,7 +463,8 @@
   ;
   set_game_object_from_table:
     ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to table (sprite, yspeed, xspeed, shape).
+    ;        HL = Pointer to table (sprite, yspeed, xspeed, shape,
+    ;             hitbox_offset, hitbox_width, hitbox_height).
     ; Uses: A - but HL is preserved.
     push hl
     ld a,(hl)
@@ -475,6 +478,16 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.shape),a
+    ;
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_offset),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_width),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_height),a
     pop hl
   ret
   ;
@@ -511,33 +524,35 @@
     ; todo: function gameobjects2buffer.
     ld hl,collision_buffer
     ld a,(ix+game_object.x)
+    ld b,a
+    ld a,(ix+game_object.hitbox_offset) ; apply x-offset
+    and %11110000
+    rra
+    rra
+    rra
+    rra
+    add a,b
     ld (hl),a
     inc hl
-    ld a,(ix+game_object.y)
+    ;
+    ld b,(ix+game_object.y)
+    ld a,(ix+game_object.hitbox_offset) ; apply y-offset
+    and %00001111
+    add a,b
     ld (hl),a
     inc hl
-    ; shape > width and height
-    ld a,(ix+game_object.shape)
-    cp GAME_OBJECT_SHAPE_SMALL
-    jp nz,+
-      ; small object 8x8
-      ld a,8
-      ld (hl),a
-      inc hl
-      ld (hl),a
-      inc hl
-      jp ++
-    +:
-      ; all other objects treated as  16x16 FIXME!
-      ld a,16
-      ld (hl),a
-      inc hl
-      ld (hl),a
-      inc hl
-    ++:
+    ; hitbox width and height
+    ld a,(ix+game_object.hitbox_width)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.hitbox_height)
+    ld (hl),a
+    inc hl
+    ;
     ; and now for the second object...
     push iy
     pop ix
+    ; fixme - DRY
     ld a,(ix+game_object.x)
     ld (hl),a
     inc hl
@@ -564,6 +579,7 @@
       inc hl
     ++:
   ret
+  ;
   ;
   detect_collision_using_buffer:
     ld ix,collision_buffer
@@ -618,9 +634,9 @@
   .equ SANDBOX_BULLET_Y 0
   .equ SANDBOX_BULLET_X 0
   .equ SANDBOX_ASTEROID_Y 0
-  .equ SANDBOX_ASTEROID_X 4
+  .equ SANDBOX_ASTEROID_X 5
   .equ SANDBOX_ASTEROID_Y_2 0
-  .equ SANDBOX_ASTEROID_X_2 8
+  .equ SANDBOX_ASTEROID_X_2 6
   ;
 .ends
 ;

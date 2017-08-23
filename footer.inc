@@ -134,8 +134,10 @@
   ;
   sandbox_bullet_setup_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db %00100000, 4, 8
   sandbox_asteroid_setup_table:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR  
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db %00000000, 16, 16
 
   ; ---------------------------------------------------------------------------
 .ends
