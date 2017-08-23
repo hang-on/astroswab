@@ -711,26 +711,13 @@
     call reset_logger
     ;
     call test_rect1_overlaps_rect2
-    call test_rect1_overlaps_rect2_using_game_objects
-    call test_rect1_separate_from_rect2_using_game_objects
+    call test_rect1_separate_from_rect2
 
 
 
   jp main_loop
   ; Tests for the sandbox:
   test_rect1_overlaps_rect2:
-    ld ix,rect1
-    ld hl,rect1_init_data
-    call init_rect
-    ld ix,rect2
-    ld hl,rect2_init_data
-    call init_rect
-    ld ix,rect1
-    ld iy,rect2
-    call detect_collision
-    assertCarrySet "Test 1 failed"
-  ret
-  test_rect1_overlaps_rect2_using_game_objects:
     ld ix,bullet
     ld hl,sandbox_bullet_setup_table
     call set_game_object_from_table
@@ -751,10 +738,11 @@
 
     ld ix,bullet
     ld iy,asteroid
-    call detect_collision_using_game_objects
-    assertCarrySet "Test 2 failed"
+    call detect_collision
+    assertCarrySet "Test 1 failed"
   ret
-  test_rect1_separate_from_rect2_using_game_objects:
+  ;
+  test_rect1_separate_from_rect2:
     ld ix,bullet
     ld hl,sandbox_bullet_setup_table
     call set_game_object_from_table
@@ -775,8 +763,8 @@
 
     ld ix,bullet
     ld iy,asteroid
-    call detect_collision_using_game_objects
-    assertCarryReset "Test 3 failed"
+    call detect_collision
+    assertCarryReset "Test 2 failed"
   ret
 .ends
 ;
