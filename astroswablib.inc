@@ -621,6 +621,87 @@
       cp b
     ret
 
+  place_game_object:
+
+  ret
+  ;
+  detect_collision_using_game_objects:
+    ; todo: function gameobjects2buffer.
+    ld hl,collision_buffer
+    ld a,(ix+game_object.x)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.y)
+    ld (hl),a
+    inc hl
+    ; shape > width and height
+    ld a,(ix+game_object.shape)
+    cp GAME_OBJECT_SHAPE_SMALL
+    jp nz,+
+      ; small object 8x8
+      ld a,8
+      ld (hl),a
+      inc hl
+      ld (hl),a
+      inc hl
+      jp ++
+    +:
+      ; all other objects treated as  16x16 FIXME!
+      ld a,16
+      ld (hl),a
+      inc hl
+      ld (hl),a
+      inc hl
+    ++:
+    ; and now for the second object...
+    push iy
+    pop ix
+    ld a,(ix+game_object.x)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.y)
+    ld (hl),a
+    inc hl
+    ; shape > width and height
+    ld a,(ix+game_object.shape)
+    cp GAME_OBJECT_SHAPE_SMALL
+    jp nz,+
+      ; small object 8x8
+      ld a,8
+      ld (hl),a
+      inc hl
+      ld (hl),a
+      inc hl
+      jp ++
+    +:
+      ; all other objects treated as  16x16 FIXME!
+      ld a,16
+      ld (hl),a
+      inc hl
+      ld (hl),a
+      inc hl
+    ++:
+    ; and now buffer is populated
+    call detect_collision_using_buffer
+
+  ret
+  ;
+  bullet_init_data:
+    .db 0, 0
+  asteroid_init_data:
+    .db 4, 0
+  bullet_init_data_2:
+    .db 0, 0
+  asteroid_init_data_2:
+    .db 9, 0
+  ;
+  .equ SANDBOX_BULLET_Y 0
+  .equ SANDBOX_BULLET_X 0
+  .equ SANDBOX_ASTEROID_Y 0
+  .equ SANDBOX_ASTEROID_X 4
+  .equ SANDBOX_ASTEROID_Y_2 0
+  .equ SANDBOX_ASTEROID_X_2 8
+
   rect1_init_data:
     .db 0, 0, 8, 8
   rect2_init_data:
