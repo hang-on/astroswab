@@ -516,119 +516,98 @@
 .section "Sandbox functions" free
 ; -----------------------------------------------------------------------------
   detect_collision:
-    call load_buffer_from_game_objects
-    call detect_collision_using_buffer
-  ret
-  ;
-  load_buffer_from_game_objects:
-    ; todo: function gameobjects2buffer.
-    ld hl,collision_buffer
-    ld a,(ix+game_object.x)
-    ld b,a
-    ld a,(ix+game_object.hitbox_offset) ; apply x-offset
-    and %11110000
-    rra
-    rra
-    rra
-    rra
-    add a,b
-    ld (hl),a
-    inc hl
-    ;
-    ld b,(ix+game_object.y)
-    ld a,(ix+game_object.hitbox_offset) ; apply y-offset
-    and %00001111
-    add a,b
-    ld (hl),a
-    inc hl
-    ; hitbox width and height
-    ld a,(ix+game_object.hitbox_width)
-    ld (hl),a
-    inc hl
-    ld a,(ix+game_object.hitbox_height)
-    ld (hl),a
-    inc hl
-    ;
-    ; and now for the second object...
-    push iy
+    push ix
+      call load_buffer_from_game_objects
+      call detect_collision_using_buffer
     pop ix
-    ; fixme - DRY
-    ld a,(ix+game_object.x)
-    ld (hl),a
-    inc hl
-    ld a,(ix+game_object.y)
-    ld (hl),a
-    inc hl
-    ; shape > width and height
-    ld a,(ix+game_object.shape)
-    cp GAME_OBJECT_SHAPE_SMALL
-    jp nz,+
-      ; small object 8x8
-      ld a,8
-      ld (hl),a
-      inc hl
-      ld (hl),a
-      inc hl
-      jp ++
-    +:
-      ; all other objects treated as  16x16 FIXME!
-      ld a,16
-      ld (hl),a
-      inc hl
-      ld (hl),a
-      inc hl
-    ++:
   ret
   ;
-  ;
-  detect_collision_using_buffer:
-    ld ix,collision_buffer
-    call coll1
-    ret nc
-    call coll2
-    ret nc
-    call coll3
-    ret nc
-    call coll4
-    ret nc
-    ; return with carry set.
-  ret
-    coll1:
-      ; rect1.x < rect2.x + rect2.width
-      ld a,(ix+4)
-      ld b,(ix+6)
-      add a,b
-      ld b,a
-      ld a,(ix+0)
-      cp b
+    load_buffer_from_game_objects:
+      ; todo: function gameobjects2buffer.
+      ld hl,collision_buffer
+      call load_one_object
+      push iy
+      pop ix
+      call load_one_object
     ret
-    coll2:
-      ; rect1.x + rect1.width > rect2.x
-      ld a,(ix+0)
-      ld b,(ix+2)
-      add a,b
-      ld b,a
-      ld a,(ix+4)
-      sub b
+      load_one_object:
+        ld a,(ix+game_object.x)
+        ld b,a
+        ld a,(ix+game_object.hitbox_offset) ; apply x-offset
+        and %11110000
+        rra
+        rra
+        rra
+        rra
+        add a,b
+        ld (hl),a
+        inc hl
+        ;
+        ld b,(ix+game_object.y)
+        ld a,(ix+game_object.hitbox_offset) ; apply y-offset
+        and %00001111
+        add a,b
+        ld (hl),a
+        inc hl
+        ; hitbox width and height
+        ld a,(ix+game_object.hitbox_width)
+        ld (hl),a
+        inc hl
+        ld a,(ix+game_object.hitbox_height)
+        ld (hl),a
+        inc hl
+      ret
+      ;
+    ;
+    ;
+    detect_collision_using_buffer:
+      ld ix,collision_buffer
+      call coll1
+      ret nc
+      call coll2
+      ret nc
+      call coll3
+      ret nc
+      call coll4
+      ret nc
+      ; return with carry set.
     ret
-    coll3:
-      ; rect1.y < rect2.y + rect2.height
-      ld a,(ix+5)
-      ld b,(ix+7)
-      add a,b
-      ld b,a
-      ld a,(ix+1)
-      cp b
-    ret
-    coll4:
-      ; rect1.height + rect1.y > rect2.y
-      ld a,(ix+3)
-      ld b,(ix+1)
-      add a,b
-      ld b,a
-      ld a,(ix+5)
-      cp b
-    ret
+      coll1:
+        ; rect1.x < rect2.x + rect2.width
+        ld a,(ix+4)
+        ld b,(ix+6)
+        add a,b
+        ld b,a
+        ld a,(ix+0)
+        cp b
+      ret
+      coll2:
+        ; rect1.x + rect1.width > rect2.x
+        ld a,(ix+0)
+        ld b,(ix+2)
+        add a,b
+        ld b,a
+        ld a,(ix+4)
+        sub b
+      ret
+      coll3:
+        ; rect1.y < rect2.y + rect2.height
+        ld a,(ix+5)
+        ld b,(ix+7)
+        add a,b
+        ld b,a
+        ld a,(ix+1)
+        cp b
+      ret
+      coll4:
+        ; rect1.height + rect1.y > rect2.y
+        ld a,(ix+3)
+        ld b,(ix+1)
+        add a,b
+        ld b,a
+        ld a,(ix+5)
+        cp b
+      ret
   ;
   ;
   .equ SANDBOX_BULLET_Y 0
