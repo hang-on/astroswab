@@ -40,6 +40,9 @@
     .dw background_3_tilemap
     .dw $0000, $0000
   ;
+  asteroid_setup_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db %00000000, 16, 16
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
@@ -84,6 +87,8 @@
   ;
   bullet_setup_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
+    .db %00100000, 4, 8
+
   ; Menu item strings:
   menu_title:
     .asc "ASTROSWAB! debug menu#"

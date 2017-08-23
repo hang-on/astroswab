@@ -99,7 +99,7 @@
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ; Init (deactivate) all bullets:
+    ; Init and deactivate all bullets:
     ld b,BULLET_MAX
     ld ix,bullet
     ld hl,bullet_setup_table
@@ -109,12 +109,14 @@
       call deactivate_game_object
       add ix,de
     djnz -
-    ; Init (deactivate) all asteroids:
+    ; Init and deactivate all asteroids:
     ld b,ASTEROID_MAX
     ld ix,asteroid
+    ld hl,asteroid_setup_table
+    ld de,_sizeof_game_object
     -:
+      call set_game_object_from_table
       call deactivate_game_object
-      ld de,_sizeof_game_object
       add ix,de
     djnz -
     ; Init (deactivate) all shards:

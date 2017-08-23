@@ -13,8 +13,8 @@
   .equ GS_PREPARE_SANDBOX 4
   .equ GS_RUN_SANDBOX 5
   ;
-  ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
-  .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
+  .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
+  ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
 ;
 ; Sprites:
   .equ SPRITE_BANK 3
