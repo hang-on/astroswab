@@ -281,6 +281,25 @@
   -:
     push bc
     call move_game_object
+    ;
+    ; ------------------------------------
+    ld iy,asteroid
+    .rept ASTEROID_MAX
+      ld a,(iy+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+        call detect_collision
+        jp nc,+
+          ld a,GAME_OBJECT_INACTIVE
+          ld (ix+game_object.state),a
+          ld (iy+game_object.state),a
+          jp ++
+        +:
+      ld de,_sizeof_game_object
+      add iy,de
+    .endr
+    ++:
+    ; ---------------------
     ld a,BULLET_DEACTIVATE_ZONE_START
     ld b,BULLET_DEACTIVATE_ZONE_END
     call horizontal_zone_deactivate_game_object
