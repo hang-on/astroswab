@@ -190,6 +190,47 @@
   call get_input_ports
   call begin_sprites
   ; ---------------------------------------------------------------------------
+  ; Resolve current state of objects before moving etc.
+  ; Bullets vs. asteroids collision.
+  ; TODO: Expand this to bullet vs. everything - in one loop?
+  ld ix,bullet
+  ld bc,BULLET_MAX
+  bullet_collision_loop:
+    push bc
+    ; Bullet 'collides' with deactivate zone.
+    ld a,BULLET_DEACTIVATE_ZONE_START
+    ld b,BULLET_DEACTIVATE_ZONE_END
+    call horizontal_zone_deactivate_game_object
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_INACTIVE
+    jp z,++
+      ld iy,asteroid
+      .rept ASTEROID_MAX
+        ld a,(iy+game_object.state)
+        cp GAME_OBJECT_INACTIVE
+        jp z,+
+          call detect_collision
+          jp nc,+
+            ld a,GAME_OBJECT_INACTIVE
+            ld (ix+game_object.state),a
+            ld (ix+game_object.x),a
+            ld (iy+game_object.state),a
+          +:
+        ld de,_sizeof_game_object
+        add iy,de
+      .endr
+    ++:
+    ld de,_sizeof_game_object
+    add ix,de
+    pop bc
+    dec bc
+    ld a,b
+    or c
+  jp nz,bullet_collision_loop
+
+
+
+  ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
   ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
@@ -275,28 +316,20 @@
   activate_bullet_end:              ; End of bullet activation code.
   ; Process all bullets.
   ld ix,bullet
-  ld b,BULLET_MAX
-  -:
+  ld bc,BULLET_MAX
+  bullet_loop:
     push bc
+    ;
     call move_game_object
-    ;
-    ; ------------------------------------
-    ld iy,asteroid
-    .rept ASTEROID_MAX
-      call bullet_vs_asteroid
-    .endr
-    ++:
-    ; ---------------------
-    ld a,BULLET_DEACTIVATE_ZONE_START
-    ld b,BULLET_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
-    ;
     call draw_game_object
     ;
     ld de,_sizeof_game_object
     add ix,de
     pop bc
-  djnz -
+    dec bc
+    ld a,b
+    or c
+  jp nz,bullet_loop
   ; ---------------------------------------------------------------------------
   ld ix,asteroid
   ld b,ASTEROID_MAX
