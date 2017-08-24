@@ -43,6 +43,8 @@
   asteroid_setup_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db %00000000, 16, 16
+;   .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+;   .db 0, 0, GAME_OBJECT_INACTIVE, %00000000, 16, 16
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
@@ -84,6 +86,10 @@
   ;
   swabby_setup_table:
     .db SPRITE_3,0,0, GAME_OBJECT_SHAPE_REGULAR
+  swabby_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
+    .db %00000001, 15, 14, 16
   ;
   bullet_setup_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL

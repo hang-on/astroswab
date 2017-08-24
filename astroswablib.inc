@@ -420,6 +420,50 @@
     call deactivate_game_object
   ret
   ;
+  initialize_game_object:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to game object init data:
+    ;        (sprite, yspeed, xspeed, shape, y, x, state
+    ;        hitbox_offset, hitbox_width, hitbox_height).
+    ; Example: asteroid_setup_table:
+    ;         .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    ;         .db 0, 0, GAME_OBJECT_INACTIVE, %00000000, 16, 16
+    ; Uses: A - but HL is preserved.
+    push hl
+    ld a,(hl)
+    ld (ix+game_object.sprite),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.yspeed),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.xspeed),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.shape),a
+    ;
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.y),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.x),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.state),a
+    ;
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_offset),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_width),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_height),a
+    pop hl
+  ret
+  ;
   load_animation_game_object:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to animation table.

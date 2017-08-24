@@ -86,12 +86,9 @@
     call randomize  ; FIXME! Base on player input (titlescreen).
     ; Initialize Swabby
     ld ix,swabby
-    ld hl,swabby_setup_table
-    call set_game_object_from_table
-    ld a,SWABBY_Y_INIT
-    ld b,SWABBY_X_INIT
-    call set_game_object_position
-    call activate_game_object
+    ld hl,swabby_init_table
+    call initialize_game_object
+    ; --
     ; Initialize gun
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a
@@ -292,6 +289,7 @@
         jp nc,+
           ld a,GAME_OBJECT_INACTIVE
           ld (ix+game_object.state),a
+          ld (ix+game_object.x),a
           ld (iy+game_object.state),a
           jp ++
         +:
