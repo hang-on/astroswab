@@ -557,8 +557,14 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
-.section "Sandbox functions" free
+; COLLISION DETECTION
 ; -----------------------------------------------------------------------------
+.ramsection "Collision detection variables" slot 3
+  collision_buffer dsb 8
+.ends
+; -----------------------------------------------------------------------------
+.section "Collision detection" free
+  ; Description here...
   detect_collision:
     push ix
       call load_buffer_from_game_objects
@@ -652,20 +658,29 @@
         ld a,(ix+5)
         cp b
       ret
-  ;
-  ;
-  .equ SANDBOX_BULLET_Y 0
-  .equ SANDBOX_BULLET_X 0
-  .equ SANDBOX_BULLET_X_2 19
-  .equ SANDBOX_ASTEROID_Y 0
-  .equ SANDBOX_ASTEROID_X 5
-  .equ SANDBOX_ASTEROID_Y_2 0
-  .equ SANDBOX_ASTEROID_X_2 6
-  ;
+      ;
 .ends
 ;
-
-;
+; -----------------------------------------------------------------------------
+; SANDBOX
+; -----------------------------------------------------------------------------
+; Work- and testbench.
+.equ SANDBOX_BULLET_Y 0
+.equ SANDBOX_BULLET_X 0
+.equ SANDBOX_BULLET_X_2 19
+.equ SANDBOX_ASTEROID_Y 0
+.equ SANDBOX_ASTEROID_X 5
+.equ SANDBOX_ASTEROID_Y_2 0
+.equ SANDBOX_ASTEROID_X_2 6
+; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
-  collision_buffer dsb 8
+  ;
 .ends
+; -----------------------------------------------------------------------------
+.section "Sandbox functions" free
+  ; Short text here...
+  sandbox_function_1:
+    ; ...
+  ret
+.ends
+;

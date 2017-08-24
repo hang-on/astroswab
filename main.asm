@@ -197,13 +197,18 @@
   ld bc,BULLET_MAX
   bullet_collision_loop:
     push bc
-    ; Bullet 'collides' with deactivate zone.
-    ld a,BULLET_DEACTIVATE_ZONE_START
-    ld b,BULLET_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_INACTIVE
     jp z,++
+      ; Bullet 'collides' with deactivate zone?
+      ld a,BULLET_DEACTIVATE_ZONE_START
+      ld b,BULLET_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,++
+      ;
+      ; Bullet collides with one of the active asteroids?
       ld iy,asteroid
       .rept ASTEROID_MAX
         ld a,(iy+game_object.state)
@@ -213,8 +218,8 @@
           jp nc,+
             ld a,GAME_OBJECT_INACTIVE
             ld (ix+game_object.state),a
-            ld (ix+game_object.x),a
             ld (iy+game_object.state),a
+            jp ++
           +:
         ld de,_sizeof_game_object
         add iy,de
