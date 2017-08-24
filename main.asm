@@ -84,10 +84,21 @@
     call load_vram
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
-    ; Initialize Swabby
+    ; Initialize the various game objects.
+    ; Swabby
     ld ix,swabby
     ld hl,swabby_init_table
     call initialize_game_object
+    ; Bullets:
+    ld b,BULLET_MAX
+    ld ix,bullet
+    ld de,_sizeof_game_object
+    -:
+      ld hl,bullet_init_table
+      call initialize_game_object
+      add ix,de
+    djnz -
+
     ; --
     ; Initialize gun
     ld a,GUN_DELAY_INIT
@@ -96,16 +107,6 @@
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ; Init and deactivate all bullets:
-    ld b,BULLET_MAX
-    ld ix,bullet
-    ld hl,bullet_setup_table
-    ld de,_sizeof_game_object
-    -:
-      call set_game_object_from_table
-      call deactivate_game_object
-      add ix,de
-    djnz -
     ; Init and deactivate all asteroids:
     ld b,ASTEROID_MAX
     ld ix,asteroid
@@ -282,19 +283,7 @@
     ; ------------------------------------
     ld iy,asteroid
     .rept ASTEROID_MAX
-      ld a,(iy+game_object.state)
-      cp GAME_OBJECT_INACTIVE
-      jp z,+
-        call detect_collision
-        jp nc,+
-          ld a,GAME_OBJECT_INACTIVE
-          ld (ix+game_object.state),a
-          ld (ix+game_object.x),a
-          ld (iy+game_object.state),a
-          jp ++
-        +:
-      ld de,_sizeof_game_object
-      add iy,de
+      call bullet_vs_asteroid
     .endr
     ++:
     ; ---------------------

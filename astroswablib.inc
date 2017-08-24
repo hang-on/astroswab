@@ -662,6 +662,20 @@
   .equ SANDBOX_ASTEROID_Y_2 0
   .equ SANDBOX_ASTEROID_X_2 6
   ;
+  bullet_vs_asteroid:
+    ld a,(iy+game_object.state)
+    cp GAME_OBJECT_INACTIVE
+    jp z,+
+      call detect_collision
+      jp nc,+
+        ld a,GAME_OBJECT_INACTIVE
+        ld (ix+game_object.state),a
+        ld (ix+game_object.x),a
+        ld (iy+game_object.state),a
+      +:
+    ld de,_sizeof_game_object
+    add iy,de
+  ret
 .ends
 ;
 

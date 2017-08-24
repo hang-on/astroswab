@@ -84,15 +84,14 @@
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
     .db ENABLED
   ;
-  swabby_setup_table:
-    .db SPRITE_3,0,0, GAME_OBJECT_SHAPE_REGULAR
   swabby_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16
   ;
-  bullet_setup_table:
+  bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00100000, 4, 8
 
   ; Menu item strings:
