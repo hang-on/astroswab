@@ -40,11 +40,10 @@
     .dw background_3_tilemap
     .dw $0000, $0000
   ;
-  asteroid_setup_table:
+  asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 16, 16
-;   .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-;   .db 0, 0, GAME_OBJECT_INACTIVE, %00000000, 16, 16
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11

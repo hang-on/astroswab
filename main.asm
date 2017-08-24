@@ -84,6 +84,7 @@
     call load_vram
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
+    ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ; Swabby
     ld ix,swabby
@@ -98,6 +99,15 @@
       call initialize_game_object
       add ix,de
     djnz -
+    ; Asteroids:
+    ld b,ASTEROID_MAX
+    ld ix,asteroid
+    ld de,_sizeof_game_object
+    -:
+      ld hl,asteroid_init_table
+      call initialize_game_object
+      add ix,de
+    djnz -
 
     ; --
     ; Initialize gun
@@ -107,16 +117,6 @@
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ; Init and deactivate all asteroids:
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    ld hl,asteroid_setup_table
-    ld de,_sizeof_game_object
-    -:
-      call set_game_object_from_table
-      call deactivate_game_object
-      add ix,de
-    djnz -
     ; Init (deactivate) all shards:
     ld b,SHARD_MAX
     ld ix,shard
