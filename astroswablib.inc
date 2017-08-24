@@ -564,8 +564,13 @@
 .ends
 ; -----------------------------------------------------------------------------
 .section "Collision detection" free
-  ; Description here...
+  ; Functions for detecting collisions between game objects.
   detect_collision:
+    ; Entry: IX = Pointer to game object 1
+    ;        IY = Pointer to game object 2
+    ; Exit: Carry flag is set or reset depending on overlap between the
+    ;       hitboxes of the two game objects.
+    ; Uses: Everything but IX.
     push ix
       call load_buffer_from_game_objects
       call detect_collision_using_buffer
@@ -573,34 +578,41 @@
   ret
   ;
     load_buffer_from_game_objects:
-      ; todo: function gameobjects2buffer.
+      ; Load the collision buffer with hitbox data from the two game objects.
+      ; Entry: IX & IY = Pointer to game objects.
+      ;        HL = Pointer to collision buffer.
+      ; Exit:
+      ; Uses:
       ld hl,collision_buffer
-      call load_one_object
-      push iy
+      call load_one_object    ; Load x, y, width and height from first object.
+      push iy                 ; Load pointer to second object into IX.
       pop ix
-      call load_one_object
+      call load_one_object    ; Load hitbox data from second object.
     ret
+    ;
       load_one_object:
-        ld a,(ix+game_object.x)
+        ; Load 4 bytes of hitbox data from object ram structure to buffer.
+        ld a,(ix+game_object.x)               ; Get object's x-position.
         ld b,a
-        ld a,(ix+game_object.hitbox_offset) ; apply x-offset
-        and %11110000
+        ; Calculate and load hitbox x.
+        ld a,(ix+game_object.hitbox_offset)   ; Get hitbox x-offset.
+        and %11110000                         ; Apply mask to eliminate
+        rra                                   ; y-offset (offset is 4 bits!).
+        rra                                   ; Rotate x-offset bits into
+        rra                                   ; position.
         rra
-        rra
-        rra
-        rra
-        add a,b
-        ld (hl),a
-        inc hl
-        ;
-        ld b,(ix+game_object.y)
-        ld a,(ix+game_object.hitbox_offset) ; apply y-offset
+        add a,b                               ; Add offset to object's x-pos.
+        ld (hl),a                             ; Load value into buffer.
+        inc hl                                ; Advance buffer pointer.
+        ; Calculate and load hitbox y.
+        ld b,(ix+game_object.y)               ; Get and apply y-offset in a
+        ld a,(ix+game_object.hitbox_offset)   ; similar way...
         and %00001111
         add a,b
         ld (hl),a
         inc hl
-        ; hitbox width and height
-        ld a,(ix+game_object.hitbox_width)
+        ; Load hitbox width and height.
+        ld a,(ix+game_object.hitbox_width)    ; Just copy to the buffer.
         ld (hl),a
         inc hl
         ld a,(ix+game_object.hitbox_height)
@@ -609,8 +621,16 @@
       ret
       ;
     ;
-    ;
     detect_collision_using_buffer:
+      ; Simple form of collision detection: Axis-aligned bounding box.
+      ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
+      ; rect1.x + rect1.width > rect2.x &&      (coll2)
+      ; rect1.y < rect2.y + rect2.height &&     (coll3)
+      ; rect1.height + rect1.y > rect2.y)       (coll4)
+      ;  --> collision detected!
+      ; We perform these four tests on at a time. If any one test fails,
+      ; there is no collision, and we return with carry reset. If no test fails
+      ; then we have collision, and return with carry set.
       ld ix,collision_buffer
       call coll1
       ret nc
@@ -620,7 +640,7 @@
       ret nc
       call coll4
       ret nc
-      ; return with carry set.
+      ; Collision! Return with carry set.
     ret
       coll1:
         ; rect1.x < rect2.x + rect2.width
