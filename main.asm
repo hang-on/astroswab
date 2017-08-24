@@ -90,6 +90,10 @@
     ld ix,swabby
     ld hl,swabby_init_table
     call initialize_game_object
+    ; Spinner:
+    ld ix,spinner
+    ld hl,spinner_init_table
+    call initialize_game_object
     ; Bullets:
     ld b,BULLET_MAX
     ld ix,bullet
@@ -129,9 +133,7 @@
     ld a,SHARD_GENERATOR_CHANCE_INIT
     ld (shard_generator_chance),a
     ;
-    ; Init spinner and generator:
-    ld ix,spinner
-    call deactivate_game_object
+    ; Init spinner trigger:
     ld ix,spinner_trigger
     ld hl,spinner_trigger_init_table
     call initialize_trigger
@@ -448,11 +450,8 @@
       ; Activate a new spinner.
       ld ix,spinner
       call spawn_game_object_in_invisible_area
-      ld hl,spinner_setup_table
-      call set_game_object_from_table
       ld hl,spinner_anim_table
       call load_animation_game_object
-      call activate_game_object
   +:
   ;
   ld ix,spinner

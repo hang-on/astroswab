@@ -49,8 +49,12 @@
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
   shard_sprite_table:
     .db SPRITE_45
-  spinner_setup_table:
+  ;spinner_setup_table:
+  ;  .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
+  spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
+    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db %00000000, 16, 24
   spinner_trigger_init_table:
     .db SPINNER_TRIGGER_CHANCE_INIT, SPINNER_TRIGGER_INTERVAL_INIT
   spinner_anim_table:

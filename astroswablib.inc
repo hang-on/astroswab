@@ -489,6 +489,7 @@
   ;
   spawn_game_object_in_invisible_area:
     ; Entry: IX = Pointer to enemy object.
+    ; Object gets a random position and is activated!
     ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
     ld (ix+game_object.y),a
     call get_random_number
@@ -503,6 +504,7 @@
     add a,b
     add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
     ld (ix+game_object.x),a  ; x = 8 - 229.
+    call activate_game_object
   ret
   ;
   set_game_object_from_table:
@@ -560,7 +562,7 @@
 ; COLLISION DETECTION
 ; -----------------------------------------------------------------------------
 .ramsection "Collision detection variables" slot 3
-  collision_buffer dsb 8 
+  collision_buffer dsb 8
 .ends
 ; -----------------------------------------------------------------------------
 .section "Collision detection" free
