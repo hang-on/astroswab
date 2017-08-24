@@ -560,7 +560,7 @@
 ; COLLISION DETECTION
 ; -----------------------------------------------------------------------------
 .ramsection "Collision detection variables" slot 3
-  collision_buffer dsb 8
+  collision_buffer dsb 8 
 .ends
 ; -----------------------------------------------------------------------------
 .section "Collision detection" free
@@ -580,9 +580,9 @@
     load_buffer_from_game_objects:
       ; Load the collision buffer with hitbox data from the two game objects.
       ; Entry: IX & IY = Pointer to game objects.
-      ;        HL = Pointer to collision buffer.
+      ;
       ; Exit:
-      ; Uses:
+      ; Uses: All registers, including IX & IY, collision_buffer.
       ld hl,collision_buffer
       call load_one_object    ; Load x, y, width and height from first object.
       push iy                 ; Load pointer to second object into IX.
@@ -631,6 +631,7 @@
       ; We perform these four tests on at a time. If any one test fails,
       ; there is no collision, and we return with carry reset. If no test fails
       ; then we have collision, and return with carry set.
+      ; Uses: AF, B, collision_buffer
       ld ix,collision_buffer
       call coll1
       ret nc

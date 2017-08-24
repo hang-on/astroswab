@@ -232,9 +232,7 @@
     ld a,b
     or c
   jp nz,bullet_collision_loop
-
-
-
+  ;
   ; ---------------------------------------------------------------------------
   ; Handle Swabby sprite and movement:
   ld ix,swabby
