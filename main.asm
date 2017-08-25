@@ -98,6 +98,10 @@
     ld ix,danish
     ld hl,danish_init_table
     call initialize_game_object
+    ; Missile:
+    ld ix,missile
+    ld hl,missile_init_table
+    call initialize_game_object
     ; Bullets:
     ld b,BULLET_MAX
     ld ix,bullet
@@ -133,14 +137,6 @@
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ; Init (deactivate) all shards:
-;    ld b,SHARD_MAX
-;    ld ix,shard
-;    -:
-;      call deactivate_game_object
-;      ld de,_sizeof_game_object
-;      add ix,de
-;    djnz -
     ; Init shard generator:
     ld a,SHARD_GENERATOR_CHANCE_INIT
     ld (shard_generator_chance),a
@@ -149,17 +145,13 @@
     ld ix,spinner_trigger
     ld hl,spinner_trigger_init_table
     call initialize_trigger
-    ; --------------
-    ; Init danish trigger:
-    ;ld ix,danish
-    ;call deactivate_game_object
-    ; ------------------
+    ; danish trigger:
     ld ix,danish_trigger
     ld hl,danish_trigger_init_table
     call initialize_trigger
-    ; Init missile and generator:
-    ld ix,missile
-    call deactivate_game_object
+    ; Init missile trigger:
+;    ld ix,missile
+;    call deactivate_game_object
     ld ix,missile_trigger
     ld hl,missile_trigger_init_table
     call initialize_trigger
@@ -518,8 +510,8 @@
         ; If missile_generator_timer is up, activate a new missile.
         ld ix,missile
         call spawn_game_object_in_invisible_area
-        ld hl,missile_setup_table
-        call set_game_object_from_table
+        ;ld hl,missile_setup_table
+        ;call set_game_object_from_table
         call activate_game_object
   +:
   ;

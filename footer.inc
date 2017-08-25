@@ -88,8 +88,13 @@
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
-  missile_setup_table:
-    .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
+  ;missile_setup_table:
+  ;  .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
+  missile_init_table:
+    .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db %00010001, 14, 14     ; Might need adjustment!
+
   missile_trigger_init_table:
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
     .db ENABLED
