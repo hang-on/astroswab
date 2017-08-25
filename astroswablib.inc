@@ -1,7 +1,7 @@
 ; astroswablib.inc
 ; Functions related specifically to astroswab, or with significant dependencies
 ; on local/contextual design choices.
-
+;
 ; Definitions for referencing the sprites on the spritesheet.
 ; Used by functions drawing objects.
 .equ SPRITE_1 0
@@ -26,7 +26,6 @@
 .equ SPRITE_20 74
 .equ SPRITE_21 80
 .equ SPRITE_22 82
-
 ; . . .
 .equ FIRST_8x8_SPRITE 168
 .equ SPRITE_43 FIRST_8x8_SPRITE
@@ -34,14 +33,17 @@
 .equ SPRITE_45 170
 .equ SPRITE_46 171
 .equ SPRITE_47 172
-
-
-
+;
+.ramsection "astroswablib variables" slot 3
+  ;
+  rnd_seed dw
+  ;
+  collision_buffer dsb 8
+  ;
+.ends
 ; -----------------------------------------------------------------------------
 .section "astroswablib" free
 ; -----------------------------------------------------------------------------
-
-
   batch_print:
     ; Batch print strings at different screen positions. Handy for making a
     ; menu, or for setting up text in various places. Strings and positions are
@@ -65,7 +67,7 @@
       dec a
     jp nz,-
   ret
-
+  ; ---------------------------------------------------------------------------
   add_metasprite:
     ; Put a 16x16 metasprite in the SAT.
     ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
@@ -136,15 +138,17 @@
     .db 16, 8, 7
     .db 24, 0, 10
     .db 24, 8, 11
-  ;
+  ; ---------------------------------------------------------------------------
   profile_vblank:
     in a,(V_COUNTER_PORT)                   ; Get current line number.
-    cp 185                                  ; Failsafe, go into an endless
-    jp nc,+                                 ; loop if we are in the active
-      -:                                    ; display (both NTSC and PAL)
-        nop
-      jp -
-    +:                                      ; We are somewhere in vblank...
+    .ifdef DEVELOPER_MODE
+      cp 185                                  ; Failsafe, go into an endless
+      jp nc,+                                 ; loop if we are in the active
+        -:                                    ; display (both NTSC and PAL)
+          nop
+        jp -
+      +:                                      ; We are somewhere in vblank...
+    .endif
     ld b,a                                  ; Store line number in B.
     ld a,(vblank_update_finished_line)      ; Get highest line number yet.
     cp b                                    ; Is the current line higher?
@@ -171,11 +175,7 @@
     xor a
     ld (loop_finished_line),a
   ret
-.ends
-
-; -----------------------------------------------------------------------------
-.section "Random number generation" free
-; -----------------------------------------------------------------------------
+  ; ---------------------------------------------------------------------------
   get_random_number:
     ; SMS-Power!
     ; Returns an 8-bit pseudo-random number in a
@@ -217,9 +217,124 @@
   ;
   randomizer_table:
     .dbrnd 2,1,254
+  ; -----------------------------------------------------------------------------
+  detect_collision:
+    ; Entry: IX = Pointer to game object 1
+    ;        IY = Pointer to game object 2
+    ; Exit: Carry flag is set or reset depending on overlap between the
+    ;       hitboxes of the two game objects.
+    ; Uses: Everything but IX.
+    push ix
+      call load_buffer_from_game_objects
+      call detect_collision_using_buffer
+    pop ix
+  ret
+  ;
+    load_buffer_from_game_objects:
+      ; Load the collision buffer with hitbox data from the two game objects.
+      ; Entry: IX & IY = Pointer to game objects.
+      ;
+      ; Exit:
+      ; Uses: All registers, including IX & IY, collision_buffer.
+      ld hl,collision_buffer
+      call load_one_object    ; Load x, y, width and height from first object.
+      push iy                 ; Load pointer to second object into IX.
+      pop ix
+      call load_one_object    ; Load hitbox data from second object.
+    ret
+    ;
+      load_one_object:
+        ; Load 4 bytes of hitbox data from object ram structure to buffer.
+        ld a,(ix+game_object.x)               ; Get object's x-position.
+        ld b,a
+        ; Calculate and load hitbox x.
+        ld a,(ix+game_object.hitbox_offset)   ; Get hitbox x-offset.
+        and %11110000                         ; Apply mask to eliminate
+        rra                                   ; y-offset (offset is 4 bits!).
+        rra                                   ; Rotate x-offset bits into
+        rra                                   ; position.
+        rra
+        add a,b                               ; Add offset to object's x-pos.
+        ld (hl),a                             ; Load value into buffer.
+        inc hl                                ; Advance buffer pointer.
+        ; Calculate and load hitbox y.
+        ld b,(ix+game_object.y)               ; Get and apply y-offset in a
+        ld a,(ix+game_object.hitbox_offset)   ; similar way...
+        and %00001111
+        add a,b
+        ld (hl),a
+        inc hl
+        ; Load hitbox width and height.
+        ld a,(ix+game_object.hitbox_width)    ; Just copy to the buffer.
+        ld (hl),a
+        inc hl
+        ld a,(ix+game_object.hitbox_height)
+        ld (hl),a
+        inc hl
+      ret
+      ;
+    ;
+    detect_collision_using_buffer:
+      ; Simple form of collision detection: Axis-aligned bounding box.
+      ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
+      ; rect1.x + rect1.width > rect2.x &&      (coll2)
+      ; rect1.y < rect2.y + rect2.height &&     (coll3)
+      ; rect1.height + rect1.y > rect2.y)       (coll4)
+      ;  --> collision detected!
+      ; We perform these four tests on at a time. If any one test fails,
+      ; there is no collision, and we return with carry reset. If no test fails
+      ; then we have collision, and return with carry set.
+      ; Uses: AF, B, collision_buffer
+      ld ix,collision_buffer
+      call coll1
+      ret nc
+      call coll2
+      ret nc
+      call coll3
+      ret nc
+      call coll4
+      ret nc
+      ; Collision! Return with carry set.
+    ret
+      coll1:
+        ; rect1.x < rect2.x + rect2.width
+        ld a,(ix+4)
+        ld b,(ix+6)
+        add a,b
+        ld b,a
+        ld a,(ix+0)
+        cp b
+      ret
+      coll2:
+        ; rect1.x + rect1.width > rect2.x
+        ld a,(ix+0)
+        ld b,(ix+2)
+        add a,b
+        ld b,a
+        ld a,(ix+4)
+        sub b
+      ret
+      coll3:
+        ; rect1.y < rect2.y + rect2.height
+        ld a,(ix+5)
+        ld b,(ix+7)
+        add a,b
+        ld b,a
+        ld a,(ix+1)
+        cp b
+      ret
+      coll4:
+        ; rect1.height + rect1.y > rect2.y
+        ld a,(ix+3)
+        ld b,(ix+1)
+        add a,b
+        ld b,a
+        ld a,(ix+5)
+        cp b
+      ret
+      ;
 .ends
-
-
+;
 ; -----------------------------------------------------------------------------
 ; TRIGGERS
 ; -----------------------------------------------------------------------------
@@ -231,7 +346,7 @@
   state db
   ; add interval modifier here...?
 .endst
-
+;
 .section "Trigger functions" free
   enable_trigger:
     ; Entry: IX = Pointer to trigger struct.
@@ -283,7 +398,7 @@
     or a                              ; Clear carry flag.
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 ; GAME OBJECTS
 ; -----------------------------------------------------------------------------
@@ -592,131 +707,6 @@
   ;
 .ends
 ;
-; -----------------------------------------------------------------------------
-; COLLISION DETECTION
-; -----------------------------------------------------------------------------
-.ramsection "Collision detection variables" slot 3
-  collision_buffer dsb 8
-.ends
-; -----------------------------------------------------------------------------
-.section "Collision detection" free
-  ; Functions for detecting collisions between game objects.
-  detect_collision:
-    ; Entry: IX = Pointer to game object 1
-    ;        IY = Pointer to game object 2
-    ; Exit: Carry flag is set or reset depending on overlap between the
-    ;       hitboxes of the two game objects.
-    ; Uses: Everything but IX.
-    push ix
-      call load_buffer_from_game_objects
-      call detect_collision_using_buffer
-    pop ix
-  ret
-  ;
-    load_buffer_from_game_objects:
-      ; Load the collision buffer with hitbox data from the two game objects.
-      ; Entry: IX & IY = Pointer to game objects.
-      ;
-      ; Exit:
-      ; Uses: All registers, including IX & IY, collision_buffer.
-      ld hl,collision_buffer
-      call load_one_object    ; Load x, y, width and height from first object.
-      push iy                 ; Load pointer to second object into IX.
-      pop ix
-      call load_one_object    ; Load hitbox data from second object.
-    ret
-    ;
-      load_one_object:
-        ; Load 4 bytes of hitbox data from object ram structure to buffer.
-        ld a,(ix+game_object.x)               ; Get object's x-position.
-        ld b,a
-        ; Calculate and load hitbox x.
-        ld a,(ix+game_object.hitbox_offset)   ; Get hitbox x-offset.
-        and %11110000                         ; Apply mask to eliminate
-        rra                                   ; y-offset (offset is 4 bits!).
-        rra                                   ; Rotate x-offset bits into
-        rra                                   ; position.
-        rra
-        add a,b                               ; Add offset to object's x-pos.
-        ld (hl),a                             ; Load value into buffer.
-        inc hl                                ; Advance buffer pointer.
-        ; Calculate and load hitbox y.
-        ld b,(ix+game_object.y)               ; Get and apply y-offset in a
-        ld a,(ix+game_object.hitbox_offset)   ; similar way...
-        and %00001111
-        add a,b
-        ld (hl),a
-        inc hl
-        ; Load hitbox width and height.
-        ld a,(ix+game_object.hitbox_width)    ; Just copy to the buffer.
-        ld (hl),a
-        inc hl
-        ld a,(ix+game_object.hitbox_height)
-        ld (hl),a
-        inc hl
-      ret
-      ;
-    ;
-    detect_collision_using_buffer:
-      ; Simple form of collision detection: Axis-aligned bounding box.
-      ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
-      ; rect1.x + rect1.width > rect2.x &&      (coll2)
-      ; rect1.y < rect2.y + rect2.height &&     (coll3)
-      ; rect1.height + rect1.y > rect2.y)       (coll4)
-      ;  --> collision detected!
-      ; We perform these four tests on at a time. If any one test fails,
-      ; there is no collision, and we return with carry reset. If no test fails
-      ; then we have collision, and return with carry set.
-      ; Uses: AF, B, collision_buffer
-      ld ix,collision_buffer
-      call coll1
-      ret nc
-      call coll2
-      ret nc
-      call coll3
-      ret nc
-      call coll4
-      ret nc
-      ; Collision! Return with carry set.
-    ret
-      coll1:
-        ; rect1.x < rect2.x + rect2.width
-        ld a,(ix+4)
-        ld b,(ix+6)
-        add a,b
-        ld b,a
-        ld a,(ix+0)
-        cp b
-      ret
-      coll2:
-        ; rect1.x + rect1.width > rect2.x
-        ld a,(ix+0)
-        ld b,(ix+2)
-        add a,b
-        ld b,a
-        ld a,(ix+4)
-        sub b
-      ret
-      coll3:
-        ; rect1.y < rect2.y + rect2.height
-        ld a,(ix+5)
-        ld b,(ix+7)
-        add a,b
-        ld b,a
-        ld a,(ix+1)
-        cp b
-      ret
-      coll4:
-        ; rect1.height + rect1.y > rect2.y
-        ld a,(ix+3)
-        ld b,(ix+1)
-        add a,b
-        ld b,a
-        ld a,(ix+5)
-        cp b
-      ret
-      ;
-.ends
 ;
 ; -----------------------------------------------------------------------------
 ; SANDBOX

@@ -53,6 +53,7 @@
     .db %00010001, 7, 7           ; TODO: Might need adjustment!
   shard_sprite_table:
     .db SPRITE_45
+  ;
   spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
@@ -75,26 +76,20 @@
     .endr
   .endr
   ;
-;  danish_setup_table:
-;    .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
   danish_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 16, 16           ; TODO: Might need adjustment!
-  ;
   danish_trigger_init_table:
     .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
   danish_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
-  ;missile_setup_table:
-  ;  .db SPRITE_4, 2, 0, GAME_OBJECT_SHAPE_REGULAR
   missile_init_table:
     .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 14, 14     ; Might need adjustment!
-
   missile_trigger_init_table:
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
     .db ENABLED
