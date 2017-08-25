@@ -150,8 +150,6 @@
     ld hl,danish_trigger_init_table
     call initialize_trigger
     ; Init missile trigger:
-;    ld ix,missile
-;    call deactivate_game_object
     ld ix,missile_trigger
     ld hl,missile_trigger_init_table
     call initialize_trigger
@@ -191,8 +189,7 @@
   call begin_sprites
   ; ---------------------------------------------------------------------------
   ; Resolve current state of objects before moving etc.
-  ; Bullets vs. asteroids collision.
-  ; TODO: Expand this to bullet vs. everything - in one loop?
+  ; Bullets vs. other game objects collision tests:
   ld ix,bullet
   ld bc,BULLET_MAX
   bullet_collision_loop:
@@ -242,6 +239,7 @@
         ld de,_sizeof_game_object
         add iy,de
       .endr
+      ; Bullet collides with spinner?
       ld iy,spinner
       ld a,(iy+game_object.state)
       cp GAME_OBJECT_INACTIVE
@@ -253,6 +251,31 @@
           ld (iy+game_object.state),a
           jp ++
       +:
+      ; Bullet collides with danish?
+      ld iy,danish
+      ld a,(iy+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+        call detect_collision
+        jp nc,+
+          ld a,GAME_OBJECT_INACTIVE
+          ld (ix+game_object.state),a
+          ld (iy+game_object.state),a
+          jp ++
+      +:
+      ; Bullet collides with missile?
+      ld iy,missile
+      ld a,(iy+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+        call detect_collision
+        jp nc,+
+          ld a,GAME_OBJECT_INACTIVE
+          ld (ix+game_object.state),a
+          ld (iy+game_object.state),a
+          jp ++
+      +:
+    ; -------------------------------------
     ++:
     ld de,_sizeof_game_object
     add ix,de
