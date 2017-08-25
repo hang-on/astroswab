@@ -21,6 +21,8 @@
 .equ SAT_Y_START $3f00
 .equ SAT_XC_START SAT_Y_START+64+64
 .equ SPRITE_TERMINATOR $d0
+.equ NTSC 0
+.equ PAL 1
 
 
 ; Memory map and initialization:

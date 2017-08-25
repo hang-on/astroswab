@@ -3,6 +3,8 @@
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
+  .equ FIRST_LINE_OF_VBLANK 192
+  .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
@@ -107,7 +109,7 @@
   menu_state db
   ;
   vblank_update_finished_line db
-  main_loop_finished_line db
+  loop_finished_line db
   ;
   level db
   ;

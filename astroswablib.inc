@@ -136,7 +136,41 @@
     .db 16, 8, 7
     .db 24, 0, 10
     .db 24, 8, 11
-
+  ;
+  profile_vblank:
+    in a,(V_COUNTER_PORT)                   ; Get current line number.
+    cp 185                                  ; Failsafe, go into an endless
+    jp nc,+                                 ; loop if we are in the active
+      -:                                    ; display (both NTSC and PAL)
+        nop
+      jp -
+    +:                                      ; We are somewhere in vblank...
+    ld b,a                                  ; Store line number in B.
+    ld a,(vblank_update_finished_line)      ; Get highest line number yet.
+    cp b                                    ; Is the current line higher?
+    ret nc                                  ; No, skip forward.
+    ld a,b                                  ; Yes, save current line number as
+    ld (vblank_update_finished_line),a      ; the new 'high score'.
+  ret                                       ;
+  ;
+  profile_loop:
+    in a,(V_COUNTER_PORT)
+    cp PROFILER_MAX_LINE
+    ret nc
+    ld b,a                                  ; Store line number in B.
+    ld a,(loop_finished_line)               ; Get highest line number yet.
+    cp b                                    ; Is the current line higher?
+    ret nc                                  ; No, skip forward.
+    ld a,b                                  ; Yes, save current line number as
+    ld (loop_finished_line),a               ; the new 'high score'.
+  ret                                       ;
+  ;
+  reset_profilers:
+    ld a,FIRST_LINE_OF_VBLANK
+    ld (vblank_update_finished_line),a
+    xor a
+    ld (loop_finished_line),a
+  ret
 .ends
 
 ; -----------------------------------------------------------------------------

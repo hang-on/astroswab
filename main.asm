@@ -156,9 +156,7 @@
     ld hl,missile_trigger_init_table
     call initialize_trigger
     ; Reset debug meters:
-    xor a
-    ld (vblank_update_finished_line),a
-    ld (main_loop_finished_line),a
+    call reset_profilers
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -176,6 +174,7 @@
     ; When all is set, change the game state.
     ld a,GS_RUN_LEVEL
     ld (game_state),a
+    call await_frame_interrupt                ; To avoid profiler failsafe!
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
@@ -186,14 +185,7 @@
   ; Set debug meter for profiling the amount of lines consumed by functions
   ; operating on the graphics and expecting to work with the screen blanked.
   ; Make sure this meter shows a line number within the vblank period!
-  in a,(V_COUNTER_PORT)                   ; Get current line number.
-  ld b,a                                  ; Store it in B.
-  ld a,(vblank_update_finished_line)      ; Get highest line number yet.
-  cp b                                    ; Is the current line higher?
-  jp nc,+                                 ; No, skip forward.
-    ld a,b                                ; Yes, save current line number as
-    ld (vblank_update_finished_line),a    ; the new 'high score'.
-  +:                                      ;
+  call profile_vblank
   ;
   call get_input_ports
   call begin_sprites
@@ -232,6 +224,35 @@
         ld de,_sizeof_game_object
         add iy,de
       .endr
+      ;
+      ; DRY - fixme
+      ; Bullet collides with one of the active shards?
+      ld iy,shard
+      .rept SHARD_MAX
+        ld a,(iy+game_object.state)
+        cp GAME_OBJECT_INACTIVE
+        jp z,+
+          call detect_collision
+          jp nc,+
+            ld a,GAME_OBJECT_INACTIVE
+            ld (ix+game_object.state),a
+            ld (iy+game_object.state),a
+            jp ++
+        +:
+        ld de,_sizeof_game_object
+        add iy,de
+      .endr
+      ld iy,spinner
+      ld a,(iy+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+        call detect_collision
+        jp nc,+
+          ld a,GAME_OBJECT_INACTIVE
+          ld (ix+game_object.state),a
+          ld (iy+game_object.state),a
+          jp ++
+      +:
     ++:
     ld de,_sizeof_game_object
     add ix,de
@@ -537,14 +558,10 @@
     ld (game_state),a
   +:
   ; Set debug meter:
-  in a,(V_COUNTER_PORT)
-  ld b,a
-  ld a,(main_loop_finished_line)
-  cp b
-  jp nc,+
-    ld a,b
-    ld (main_loop_finished_line),a
-  +:
+  ; ------------- FIXME!! -------------
+  call profile_loop
+
+  ; ---------------------- MAKE function!! DRY
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; D E V E L O P M E N T  M E N U
@@ -577,7 +594,7 @@
     ld b,20
     ld c,5
     or a
-    jp z,+
+    jp z,+            ; NTSC = 0, PAL = 1
       ld hl,pal_msg
       call print
       jp ++
@@ -604,7 +621,7 @@
     ld a,17
     ld b,21
     call set_cursor
-    ld a,(main_loop_finished_line)
+    ld a,(loop_finished_line)
     call print_register_a
     ; Wipe sprites.
     call begin_sprites
