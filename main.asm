@@ -94,6 +94,10 @@
     ld ix,spinner
     ld hl,spinner_init_table
     call initialize_game_object
+    ; Danish:
+    ld ix,danish
+    ld hl,danish_init_table
+    call initialize_game_object
     ; Bullets:
     ld b,BULLET_MAX
     ld ix,bullet
@@ -137,9 +141,11 @@
     ld ix,spinner_trigger
     ld hl,spinner_trigger_init_table
     call initialize_trigger
-    ; Init danish and generator:
-    ld ix,danish
-    call deactivate_game_object
+    ; --------------
+    ; Init danish trigger:
+    ;ld ix,danish
+    ;call deactivate_game_object
+    ; ------------------
     ld ix,danish_trigger
     ld hl,danish_trigger_init_table
     call initialize_trigger
@@ -473,10 +479,11 @@
       ; If danish_trigger generates a trigger event - activate a new danish.
       ld ix,danish
       call spawn_game_object_in_invisible_area
-      ld hl,danish_setup_table
-      call set_game_object_from_table
+      ; Taken out while refactoring to init tables...
+      ;ld hl,danish_setup_table
+      ;call set_game_object_from_table
       call get_random_number
-      and DANISH_SPRITE_MASK
+      and DANISH_SPRITE_MASK 
       ld hl,danish_sprite_table
       ld d,0
       ld e,a

@@ -73,8 +73,13 @@
     .endr
   .endr
   ;
-  danish_setup_table:
+;  danish_setup_table:
+;    .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
+  danish_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db %00000000, 16, 16           ; TODO: Might need adjustment!
+  ;
   danish_trigger_init_table:
     .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
   danish_sprite_table:
