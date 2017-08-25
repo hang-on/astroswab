@@ -47,10 +47,12 @@
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
+  shard_init_table:
+    .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db %00010001, 7, 7           ; TODO: Might need adjustment!
   shard_sprite_table:
     .db SPRITE_45
-  ;spinner_setup_table:
-  ;  .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
   spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
