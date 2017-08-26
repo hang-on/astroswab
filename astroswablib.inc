@@ -350,6 +350,33 @@
 .endst
 ;
 .section "Trigger functions" free
+  batch_initialize_triggers:
+    ; Initialize a batch of triggers using a table.
+    ; HL = Pointer to batch init table
+    ; A = number of triggers to initialize.
+    ; The table is 2 words: trigger struct, init table.
+    ld b,a
+    -:
+      ; Point IX to ram structure.
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      push de
+      pop ix
+      ; Point HL to init table.
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      push hl
+        push de
+        pop hl
+          call initialize_trigger
+      pop hl
+    djnz -
+  ret
+  ;
   enable_trigger:
     ; Entry: IX = Pointer to trigger struct.
     ld a,ENABLED
@@ -782,6 +809,13 @@
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_BULLET_Y 0
+
+.macro INITIALIZE_TRIGGERS
+  .rept NARGS
+    ld ix,\1
+  .endr
+.endm
+
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
   ;
@@ -792,5 +826,6 @@
   sandbox_function_1:
     ; ...
   ret
+
 .ends
 ;

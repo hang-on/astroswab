@@ -65,6 +65,12 @@
   shard_sprite_table:
     .db SPRITE_45
   ;
+  trigger_batch_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table
+    .dw danish_trigger, danish_trigger_init_table
+    .dw missile_trigger, missile_trigger_init_table
+  trigger_batch_init_table_end:
+  ;
   spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
@@ -163,7 +169,6 @@
   ntsc_msg:
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
-
 
   ; ---------------------------------------------------------------------------
 .ends

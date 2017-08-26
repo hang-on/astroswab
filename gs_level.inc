@@ -39,10 +39,14 @@ prepare_level:
   call randomize  ; FIXME! Base on player input (titlescreen).
   ; -------------------------------------------------------------------------
   ; Initialize the various game objects.
-  ;
   ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
   ld hl,batch_game_object_init_table
   call batch_initialize_game_objects
+  ;
+  ; Initialize the triggers.
+  ld a,(trigger_batch_init_table_end-trigger_batch_init_table)/4
+  ld hl,trigger_batch_init_table
+  call batch_initialize_triggers
   ;
   ; Initialize gun
   ld a,GUN_DELAY_INIT
@@ -55,18 +59,6 @@ prepare_level:
   ld a,SHARD_GENERATOR_CHANCE_INIT
   ld (shard_generator_chance),a
   ;
-  ; Init spinner trigger:
-  ld ix,spinner_trigger
-  ld hl,spinner_trigger_init_table
-  call initialize_trigger
-  ; danish trigger:
-  ld ix,danish_trigger
-  ld hl,danish_trigger_init_table
-  call initialize_trigger
-  ; Init missile trigger:
-  ld ix,missile_trigger
-  ld hl,missile_trigger_init_table
-  call initialize_trigger
   ; Reset debug meters:
   call reset_profilers
   ; Wipe sprites.
