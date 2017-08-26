@@ -58,10 +58,8 @@ test_batch_initialize_game_objects:
   ld a,(sandbox_batch_init_table_end-sandbox_batch_init_table)/4
   ld hl,sandbox_batch_init_table
   call batch_initialize_game_objects
+  ld a,(sandbox_batch_draw_table_end-sandbox_batch_draw_table)/2
   ld hl,sandbox_batch_draw_table
   call batch_draw_game_objects
 
-  ld ix,swabby
-  ld a,(ix+game_object.y)
-  assertEqualsA 30, "Test 1 failed"
 ret
