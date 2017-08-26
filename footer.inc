@@ -64,11 +64,14 @@
     .db %00010001, 7, 7           ; TODO: Might need adjustment!
   shard_sprite_table:
     .db SPRITE_45
+  shard_trigger_init_table:
+    .db SHARD_TRIGGER_CHANCE_INIT, SHARD_TRIGGER_INTERVAL_INIT
   ;
   trigger_batch_init_table:
     .dw spinner_trigger, spinner_trigger_init_table
     .dw danish_trigger, danish_trigger_init_table
     .dw missile_trigger, missile_trigger_init_table
+    .dw shard_trigger, shard_trigger_init_table
   trigger_batch_init_table_end:
   ;
   spinner_init_table:

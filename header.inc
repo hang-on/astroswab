@@ -81,14 +81,14 @@
   .equ ASTEROID_SPEED_MODIFIER 1
   .equ ASTEROID_SPRITE_MASK %00000011
 ; Shards:
-  .equ SHARD_GENERATOR_CHANCE_INIT 130  ; 130, 1 to turn off
-  .equ SHARD_GENERATOR_INTERVAL 120
   .equ SHARD_MAX 2 + (ASTEROID_MAX*2)
   .equ SHARD_SPEED_MODIFIER 1
   .equ SHARD_FREEFALLING_XSPEED 0
   .equ SHARD_YELLOW_SPRITE SPRITE_45
   .equ SHARD_DEACTIVATE_ZONE_START 163
   .equ SHARD_DEACTIVATE_ZONE_END SHARD_DEACTIVATE_ZONE_START+8
+  .equ SHARD_TRIGGER_CHANCE_INIT 50 ; 50
+  .equ SHARD_TRIGGER_INTERVAL_INIT 50 ;230
 ; Spinner:
   .equ SPINNER_TRIGGER_CHANCE_INIT 50 ; 50
   .equ SPINNER_TRIGGER_INTERVAL_INIT 50 ;230
@@ -127,6 +127,8 @@
   shard_generator_timer db
   shard_generator_chance db
   shard instanceof game_object SHARD_MAX
+  ; ---
+  shard_trigger instanceof trigger
   ;
   spinner instanceof game_object
   spinner_trigger instanceof trigger

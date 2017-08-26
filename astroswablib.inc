@@ -810,12 +810,6 @@
 ; Work- and testbench.
   .equ SANDBOX_BULLET_Y 0
 
-.macro INITIALIZE_TRIGGERS
-  .rept NARGS
-    ld ix,\1
-  .endr
-.endm
-
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
   ;
