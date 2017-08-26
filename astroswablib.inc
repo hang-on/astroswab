@@ -34,6 +34,8 @@
 .equ SPRITE_46 171
 .equ SPRITE_47 172
 ;
+.equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
+;
 .ramsection "astroswablib variables" slot 3
   ;
   rnd_seed dw
@@ -454,6 +456,73 @@
     RESTORE_REGISTERS
   ret
   ;
+  batch_initialize_game_objects:
+    ; Initialize a batch of game objects using a table.
+    ; HL = Pointer to batch init table
+    ; A = number of objects to initialize.
+    ; Example of 6 byte wide batch init table:
+    ;     .dw swabby, swabby_init_table, 1
+    ;     .dw bullet, bullet_init_table, BULLET_MAX
+    ; Uses: AF, BC, DE, HL, IX
+    ld b,a
+    --:
+      push bc
+        ; Point IX to ram structure.
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        push de
+        pop ix
+        ; Point HL to init table.
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        ld a,(hl)
+        ld b,a
+        inc hl
+        inc hl
+        push hl
+          push de
+          pop hl
+          ld de,_sizeof_game_object
+            -:
+            call initialize_game_object
+            add ix,de
+            djnz -
+        pop hl
+      pop bc
+    djnz --
+  ret
+  batch_draw_game_objects:
+    ; Batch draw a number of game objects.
+    ; HL = table with game objects.
+    ; A = number of game objects to draw.
+    ;       Example of batch draw table:
+    ;       .dw asteroid, 3, swabby, 1
+    ;       The number makes it possible to draw arrayed objects, i.e. bullets.
+    ; Uses: AF, BC, DE, HL, IX
+    ld b,a
+    --:
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      push de
+      pop ix
+      ld b,(hl)
+      inc hl
+      inc hl
+      ld de,_sizeof_game_object
+      -:
+        push bc
+          call draw_game_object
+          add ix,de
+        pop bc
+    djnz --
+  ret
+  ;
   draw_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
@@ -712,13 +781,7 @@
 ; SANDBOX
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
-.equ SANDBOX_BULLET_Y 0
-.equ SANDBOX_BULLET_X 0
-.equ SANDBOX_BULLET_X_2 19
-.equ SANDBOX_ASTEROID_Y 0
-.equ SANDBOX_ASTEROID_X 5
-.equ SANDBOX_ASTEROID_Y_2 0
-.equ SANDBOX_ASTEROID_X_2 6
+  .equ SANDBOX_BULLET_Y 0
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
   ;
@@ -728,62 +791,6 @@
   ; Short text here...
   sandbox_function_1:
     ; ...
-  ret
-  batch_initialize_game_objects:
-    ; HL = Pointer to batch init table: [object], [init_table]
-    ; A = number of objects to initialize.
-    ld b,a
-    --:
-      push bc
-        ; Point IX to ram structure.
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        push de
-        pop ix
-        ; Point HL to init table.
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        ld a,(hl)
-        ld b,a
-        inc hl
-        inc hl
-        push hl
-          push de
-          pop hl
-          ld de,_sizeof_game_object
-            -:
-            call initialize_game_object
-            add ix,de
-            djnz -
-        pop hl
-      pop bc
-    djnz --
-  ret
-  batch_draw_game_objects:
-    ; HL = table with game objects.
-    ; A = number of game objects to draw.
-    ld b,a
-    --:
-      ld e,(hl)
-      inc hl
-      ld d,(hl)
-      inc hl
-      push de
-      pop ix
-      ld b,(hl)
-      inc hl
-      inc hl
-      ld de,_sizeof_game_object
-      -:
-        push bc
-          call draw_game_object
-          add ix,de
-        pop bc
-    djnz --
   ret
 .ends
 ;

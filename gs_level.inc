@@ -40,7 +40,7 @@ prepare_level:
   ; -------------------------------------------------------------------------
   ; Initialize the various game objects.
   ;
-  ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/6
+  ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
   ld hl,batch_game_object_init_table
   call batch_initialize_game_objects
   ;

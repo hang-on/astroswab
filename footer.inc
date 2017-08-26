@@ -40,6 +40,16 @@
     .dw background_3_tilemap
     .dw $0000, $0000
   ;
+  batch_game_object_init_table:
+    .dw swabby, swabby_init_table, 1
+    .dw spinner, spinner_init_table, 1
+    .dw danish, danish_init_table, 1
+    .dw missile, missile_init_table, 1
+    .dw bullet, bullet_init_table, BULLET_MAX
+    .dw asteroid, asteroid_init_table, ASTEROID_MAX
+    .dw shard, shard_init_table, SHARD_MAX
+  batch_game_object_init_table_end:
+  ;
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
@@ -153,38 +163,7 @@
   ntsc_msg:
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
-  sandbox_bullet_setup_table:
-    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db %00100000, 4, 8
-  sandbox_asteroid_setup_table:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db %00000000, 16, 16
-  ;
-  sandbox_asteroid_init_table:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 10, 10, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16
-  sandbox_swabby_init_table:
-    .db SWABBY_RIGHT_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 30, 10, GAME_OBJECT_ACTIVE
-    .db %00000001, 15, 14, 16
-  sandbox_batch_init_table:
-    .dw asteroid, sandbox_asteroid_init_table, 3
-    .dw swabby, sandbox_swabby_init_table, 1
-  sandbox_batch_init_table_end:
-  sandbox_batch_draw_table:
-    .dw asteroid, 3, swabby, 1
-  sandbox_batch_draw_table_end:
 
-  batch_game_object_init_table:
-    .dw swabby, swabby_init_table, 1
-    .dw spinner, spinner_init_table, 1
-    .dw danish, danish_init_table, 1
-    .dw missile, missile_init_table, 1
-    .dw bullet, bullet_init_table, BULLET_MAX
-    .dw asteroid, asteroid_init_table, ASTEROID_MAX
-    .dw shard, shard_init_table, SHARD_MAX
-  batch_game_object_init_table_end:
 
   ; ---------------------------------------------------------------------------
 .ends

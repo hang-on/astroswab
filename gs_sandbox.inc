@@ -49,20 +49,8 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_batch_initialize_game_objects
+  ; call test_batch_initialize_game_objects
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
-test_batch_initialize_game_objects:
-  ld a,20
-  ld b,1
-  call set_cursor
-  ld a,(sandbox_batch_init_table_end-sandbox_batch_init_table)/6
-  ld hl,sandbox_batch_init_table
-  call batch_initialize_game_objects
-  ld a,(sandbox_batch_draw_table_end-sandbox_batch_draw_table)/4
-  ld hl,sandbox_batch_draw_table
-  call batch_draw_game_objects
-
-ret
