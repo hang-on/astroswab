@@ -116,9 +116,7 @@
           jp z,+
             call detect_collision
             jp nc,+
-              ld a,GAME_OBJECT_INACTIVE
-              ld (ix+game_object.state),a
-              ld (iy+game_object.state),a
+              call handle_bullet_collision
               jp ++
             +:
           ld de,_sizeof_game_object
@@ -134,9 +132,7 @@
           jp z,+
             call detect_collision
             jp nc,+
-              ld a,GAME_OBJECT_INACTIVE
-              ld (ix+game_object.state),a
-              ld (iy+game_object.state),a
+              call handle_bullet_collision
               jp ++
           +:
           ld de,_sizeof_game_object
@@ -149,9 +145,7 @@
         jp z,+
           call detect_collision
           jp nc,+
-            ld a,GAME_OBJECT_INACTIVE
-            ld (ix+game_object.state),a
-            ld (iy+game_object.state),a
+            call handle_bullet_collision
             jp ++
         +:
         ; Bullet collides with danish?
@@ -161,9 +155,7 @@
         jp z,+
           call detect_collision
           jp nc,+
-            ld a,GAME_OBJECT_INACTIVE
-            ld (ix+game_object.state),a
-            ld (iy+game_object.state),a
+            call handle_bullet_collision
             jp ++
         +:
         ; Bullet collides with missile?
@@ -173,9 +165,7 @@
         jp z,+
           call detect_collision
           jp nc,+
-            ld a,GAME_OBJECT_INACTIVE
-            ld (ix+game_object.state),a
-            ld (iy+game_object.state),a
+            call handle_bullet_collision
             jp ++
         +:
       ; Finished testing this bullet. Proceed to next...
