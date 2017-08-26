@@ -729,5 +729,32 @@
   sandbox_function_1:
     ; ...
   ret
+  batch_initialize_game_objects:
+    ; HL = Pointer to batch init table: [object], [init_table]
+    ; A = number of objects to initialize.
+    ld b,a
+    -:
+      ; Point IX to ram structure.
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      push de
+      pop ix
+      ; Point HL to init table.
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      push hl
+        push de
+        pop hl
+        call initialize_game_object
+      pop hl
+    djnz -
+  ret
+  batch_draw_game_objects:
+    ;
+  ret
 .ends
 ;

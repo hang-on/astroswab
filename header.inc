@@ -1,6 +1,6 @@
 ; -----------------------------------------------------------------------------
-; Enabling debugging features and more... Comment out for consumer mode.
-  .equ DEVELOPER_MODE
+; Enable debugging features and more:
+  .equ DEVELOPER_MODE ; Comment out for consumer mode.
 ; -----------------------------------------------------------------------------
 ; Font:
   .equ FONT_BANK 2
@@ -20,8 +20,8 @@
   .equ GS_RUN_SANDBOX 5
   ;
   .ifdef DEVELOPER_MODE
-    .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
-    ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
+    ; .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
     .; equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
   .endif

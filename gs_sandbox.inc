@@ -45,88 +45,23 @@ run_sandbox:
   call get_input_ports
   call begin_sprites
   ;
-  ; Bullet vs. asteroid tests below:
   ld b,SANDBOX_LOGGER_START_ROW
   call reset_logger
   ;
-  call test_rect1_overlaps_rect2
-  call test_rect1_separate_from_rect2
-  call test_rect2_separate_from_rect1
+  ; Tests below:
+  call test_batch_initialize_game_objects
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
-test_rect1_overlaps_rect2:
-  ld ix,bullet
-  ld hl,sandbox_bullet_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_BULLET_Y
-  ld b,SANDBOX_BULLET_X
-  call set_game_object_position
-  call activate_game_object
-  ;call draw_game_object
+test_batch_initialize_game_objects:
+  ld a,(sandbox_batch_init_table_end-sandbox_batch_init_table)/4
+  ld hl,sandbox_batch_init_table
+  call batch_initialize_game_objects
+  ld hl,sandbox_batch_draw_table
+  call batch_draw_game_objects
 
-  ld ix,asteroid
-  ld hl,sandbox_asteroid_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_ASTEROID_Y
-  ld b,SANDBOX_ASTEROID_X
-  call set_game_object_position
-  call activate_game_object
-  ;call draw_game_object
-
-  ld ix,bullet
-  ld iy,asteroid
-  call detect_collision
-  assertCarrySet "Test 1 failed"
-ret
-;
-test_rect1_separate_from_rect2:
-  ld ix,bullet
-  ld hl,sandbox_bullet_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_BULLET_Y
-  ld b,SANDBOX_BULLET_X
-  call set_game_object_position
-  call activate_game_object
-  ;call draw_game_object
-
-  ld ix,asteroid
-  ld hl,sandbox_asteroid_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_ASTEROID_Y_2
-  ld b,SANDBOX_ASTEROID_X_2
-  call set_game_object_position
-  call activate_game_object
-  ;call draw_game_object
-
-  ld ix,bullet
-  ld iy,asteroid
-  call detect_collision
-  assertCarryReset "Test 2 failed"
-ret
-;
-test_rect2_separate_from_rect1:
-  ld ix,bullet
-  ld hl,sandbox_bullet_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_BULLET_Y
-  ld b,SANDBOX_BULLET_X_2
-  call set_game_object_position
-  call activate_game_object
-  call draw_game_object
-
-  ld ix,asteroid
-  ld hl,sandbox_asteroid_setup_table
-  call set_game_object_from_table
-  ld a,SANDBOX_ASTEROID_Y
-  ld b,SANDBOX_ASTEROID_X
-  call set_game_object_position
-  call activate_game_object
-  call draw_game_object
-
-  ld ix,bullet
-  ld iy,asteroid
-  call detect_collision
-  assertCarryReset "Test 3 failed"
+  ld ix,swabby
+  ld a,(ix+game_object.y)
+  assertEqualsA 30, "Test 1 failed"
 ret

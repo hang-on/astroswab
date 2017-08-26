@@ -59,6 +59,82 @@ test_rect1_overlaps_rect2:
   assertCarrySet "Test 1 failed"
 ret
 
+test_rect1_overlaps_rect2:
+  ld ix,bullet
+  ld hl,sandbox_bullet_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_BULLET_Y
+  ld b,SANDBOX_BULLET_X
+  call set_game_object_position
+  call activate_game_object
+  ;call draw_game_object
+
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_ASTEROID_Y
+  ld b,SANDBOX_ASTEROID_X
+  call set_game_object_position
+  call activate_game_object
+  ;call draw_game_object
+
+  ld ix,bullet
+  ld iy,asteroid
+  call detect_collision
+  assertCarrySet "Test 1 failed"
+ret
+;
+test_rect1_separate_from_rect2:
+  ld ix,bullet
+  ld hl,sandbox_bullet_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_BULLET_Y
+  ld b,SANDBOX_BULLET_X
+  call set_game_object_position
+  call activate_game_object
+  ;call draw_game_object
+
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_ASTEROID_Y_2
+  ld b,SANDBOX_ASTEROID_X_2
+  call set_game_object_position
+  call activate_game_object
+  ;call draw_game_object
+
+  ld ix,bullet
+  ld iy,asteroid
+  call detect_collision
+  assertCarryReset "Test 2 failed"
+ret
+;
+test_rect2_separate_from_rect1:
+  ld ix,bullet
+  ld hl,sandbox_bullet_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_BULLET_Y
+  ld b,SANDBOX_BULLET_X_2
+  call set_game_object_position
+  call activate_game_object
+  call draw_game_object
+
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_setup_table
+  call set_game_object_from_table
+  ld a,SANDBOX_ASTEROID_Y
+  ld b,SANDBOX_ASTEROID_X
+  call set_game_object_position
+  call activate_game_object
+  call draw_game_object
+
+  ld ix,bullet
+  ld iy,asteroid
+  call detect_collision
+  assertCarryReset "Test 3 failed"
+ret
+
+
 rect1_init_data:
   .db 0, 0, 8, 8
 rect2_init_data:

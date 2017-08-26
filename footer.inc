@@ -159,6 +159,22 @@
   sandbox_asteroid_setup_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db %00000000, 16, 16
+  ;
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 10, 10, GAME_OBJECT_INACTIVE
+    .db %00000000, 16, 16
+  sandbox_swabby_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 30, 10, GAME_OBJECT_ACTIVE
+    .db %00000001, 15, 14, 16
+  sandbox_batch_init_table:
+    .dw asteroid, sandbox_asteroid_init_table
+    .dw swabby, sandbox_swabby_init_table
+  sandbox_batch_init_table_end:
+  sandbox_batch_draw_table:
+    .dw asteroid, swabby
+  sandbox_batch_draw_table_end:
 
   ; ---------------------------------------------------------------------------
 .ends
