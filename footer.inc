@@ -169,8 +169,8 @@
     .db 30, 10, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16
   sandbox_batch_init_table:
-    .dw asteroid, sandbox_asteroid_init_table
-    .dw swabby, sandbox_swabby_init_table
+    .dw asteroid, sandbox_asteroid_init_table, 3
+    .dw swabby, sandbox_swabby_init_table, 1
   sandbox_batch_init_table_end:
   sandbox_batch_draw_table:
     .dw asteroid, swabby
