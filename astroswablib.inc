@@ -766,7 +766,6 @@
   batch_draw_game_objects:
     ; HL = table with game objects.
     ; A = number of game objects to draw.
-    ; Point IX to ram structure.
     ld b,a
     --:
       ld e,(hl)

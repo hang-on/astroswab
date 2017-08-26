@@ -39,6 +39,12 @@ prepare_level:
   call randomize  ; FIXME! Base on player input (titlescreen).
   ; -------------------------------------------------------------------------
   ; Initialize the various game objects.
+  ; ---
+  ld a,(batch_init_table_end-batch_init_table)/6
+  ld hl,batch_init_table
+  call batch_initialize_game_objects
+  ; ----
+  /*
   ; Swabby
   ld ix,swabby
   ld hl,swabby_init_table
@@ -47,6 +53,8 @@ prepare_level:
   ld ix,spinner
   ld hl,spinner_init_table
   call initialize_game_object
+  */
+
   ; Danish:
   ld ix,danish
   ld hl,danish_init_table

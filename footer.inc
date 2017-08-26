@@ -176,6 +176,11 @@
     .dw asteroid, 3, swabby, 1
   sandbox_batch_draw_table_end:
 
+  batch_init_table:
+    .dw swabby, swabby_init_table, 1
+    .dw spinner, spinner_init_table, 1
+  batch_init_table_end:
+
   ; ---------------------------------------------------------------------------
 .ends
 ;
