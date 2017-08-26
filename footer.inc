@@ -176,10 +176,15 @@
     .dw asteroid, 3, swabby, 1
   sandbox_batch_draw_table_end:
 
-  batch_init_table:
+  batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1
     .dw spinner, spinner_init_table, 1
-  batch_init_table_end:
+    .dw danish, danish_init_table, 1
+    .dw missile, missile_init_table, 1
+    .dw bullet, bullet_init_table, BULLET_MAX
+    .dw asteroid, asteroid_init_table, ASTEROID_MAX
+    .dw shard, shard_init_table, SHARD_MAX
+  batch_game_object_init_table_end:
 
   ; ---------------------------------------------------------------------------
 .ends

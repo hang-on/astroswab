@@ -39,58 +39,11 @@ prepare_level:
   call randomize  ; FIXME! Base on player input (titlescreen).
   ; -------------------------------------------------------------------------
   ; Initialize the various game objects.
-  ; ---
-  ld a,(batch_init_table_end-batch_init_table)/6
-  ld hl,batch_init_table
+  ;
+  ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/6
+  ld hl,batch_game_object_init_table
   call batch_initialize_game_objects
-  ; ----
-  /*
-  ; Swabby
-  ld ix,swabby
-  ld hl,swabby_init_table
-  call initialize_game_object
-  ; Spinner:
-  ld ix,spinner
-  ld hl,spinner_init_table
-  call initialize_game_object
-  */
-
-  ; Danish:
-  ld ix,danish
-  ld hl,danish_init_table
-  call initialize_game_object
-  ; Missile:
-  ld ix,missile
-  ld hl,missile_init_table
-  call initialize_game_object
-  ; Bullets:
-  ld b,BULLET_MAX
-  ld ix,bullet
-  ld de,_sizeof_game_object
-  -:
-    ld hl,bullet_init_table
-    call initialize_game_object
-    add ix,de
-  djnz -
-  ; Asteroids:
-  ld b,ASTEROID_MAX
-  ld ix,asteroid
-  ld de,_sizeof_game_object
-  -:
-    ld hl,asteroid_init_table
-    call initialize_game_object
-    add ix,de
-  djnz -
-  ; Shards:
-  ld b,SHARD_MAX
-  ld ix,shard
-  ld de,_sizeof_game_object
-  -:
-    ld hl,shard_init_table
-    call initialize_game_object
-    add ix,de
-  djnz -
-  ; --
+  ;
   ; Initialize gun
   ld a,GUN_DELAY_INIT
   ld (gun_delay),a
