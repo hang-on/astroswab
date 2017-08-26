@@ -47,6 +47,7 @@
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
+  ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
@@ -103,7 +104,7 @@
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00100000, 4, 8
-
+  ; ---------------------------------------------------------------------------
   ; Menu item strings:
   menu_title:
     .asc "ASTROSWAB! debug menu#"
@@ -151,7 +152,7 @@
     .asc "TV type: PAL#"
   ntsc_msg:
     .asc "TV type: NTSC#"
-  ;
+  ; ---------------------------------------------------------------------------
   sandbox_bullet_setup_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db %00100000, 4, 8

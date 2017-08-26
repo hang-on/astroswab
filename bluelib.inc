@@ -734,7 +734,6 @@
 ; *****************************************************************************
 ;                           SPRITE LIBRARY
 ; *****************************************************************************
-; Note: Spritelib depends on constants from bluelib.inc.
 
 .equ PLAYER_SIZE 4          ; Number of tiles not part of asc/desc flicker.
 .equ ASCENDING 0
@@ -1069,6 +1068,19 @@
   ;      map " " to "z" = 0
   ;    .enda
   ;
+  ; Assumes ASCII character set loaded into vram, like this:
+  ;   SELECT_BANK FONT_BANK
+  ;   ld hl,font_table
+  ;   call load_vram_from_table
+  ;   .... in footer:
+  ;   font_table:
+  ;  .dw BACKGROUND_BANK_START
+  ;  .dw CHARS_IN_ASCII_SET*BYTES_PER_TILE
+  ;  .dw dd_revolution_tiles
+  ;   ....
+  ;   dd_revolution_tiles:
+  ;  .include "bank_2\dd_revolution_tiles.inc"
+
   print:
     ; Print a string to the name table. Terminate with # (ascii).
     ; N.B. Make sure that this function is not interrupted!
