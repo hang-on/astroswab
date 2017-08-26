@@ -47,7 +47,7 @@
   .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
   .equ DUMMY_TEXT_ROW 22
-  .equ DUMMY_TEXT_COLUMN 5
+  .equ DUMMY_TEXT_COLUMN 1
 ;
 ; Levels:
   .equ LEVEL_1 0

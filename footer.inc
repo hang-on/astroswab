@@ -7,7 +7,7 @@
     .db $00 $10 $12 $18 $06 $15 $3F $3F $13 $0B $0F $0C $38 $26 $27 $2F
   ;
   dummy_text:
-    .asc "Score: 00000   Lives: 8#"
+    .asc "Score: 00000*00000#"
   ;
   game_state_jump_table:
     ; Check the game state constants in header.inc!
