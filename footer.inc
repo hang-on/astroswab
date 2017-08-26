@@ -173,7 +173,7 @@
     .dw swabby, sandbox_swabby_init_table, 1
   sandbox_batch_init_table_end:
   sandbox_batch_draw_table:
-    .dw asteroid, swabby
+    .dw asteroid, 3, swabby, 1
   sandbox_batch_draw_table_end:
 
   ; ---------------------------------------------------------------------------
