@@ -820,6 +820,12 @@
   sandbox_function_1:
     ; ...
   ret
-
+  ;
+  handle_bullet_collision:
+    ; IX = bullet, IY other object..
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    ld (iy+game_object.state),a
+  ret
 .ends
 ;
