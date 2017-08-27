@@ -50,7 +50,8 @@ run_sandbox:
   ;
   ; Tests below:
   ;call test_batch_collision_dectection
-  call test_2_no_collision
+  ;call test_2_no_collision
+  call test_3_multiple_asteroids_no_collision
   ;
 jp main_loop
 ;
@@ -84,4 +85,25 @@ test_2_no_collision:
   ld a,1
   call batch_collision_detect
   assertCarryReset "Test 2.1 failed"
+ret
+
+test_3_multiple_asteroids_no_collision:
+  ld hl,sandbox_game_object_init_table_3
+  ld a,2
+  call batch_initialize_game_objects
+
+  ld hl,sandbox_position_table_3
+  ld a,3 ; check!
+  ld ix,asteroid
+  call position_multiple_game_object_instances
+
+  ld a,2 ; check!
+  ld hl,sandbox_batch_draw_table_3
+  call batch_draw_game_objects
+
+  ld ix,bullet
+  ld hl,sandbox_batch_collision_test_table_3
+  ld a,1
+  call batch_collision_detect
+  assertCarryReset "Test 3.1 failed"
 ret

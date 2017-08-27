@@ -835,7 +835,7 @@
     ; Entry: HL = batch collision test table
     ;        A = number of objects in collision test table.
     ;
-     
+
     ; Exit: carry set on collision, and iy pointer to object of collision
     ld b,a
     --:
@@ -866,7 +866,21 @@
         djnz -
       pop bc
     djnz --
+  ret
 
+  position_multiple_game_object_instances:
+    ; ix, hl, a
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      ld a,(hl)
+      ld (ix+game_object.y),a
+      inc hl
+      ld a,(hl)
+      ld (ix+game_object.x),a
+      inc hl
+      add ix,de
+    djnz -
   ret
 .ends
 ;
