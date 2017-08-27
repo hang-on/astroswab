@@ -128,7 +128,6 @@ test_4_multiple_asteroids_and_collision:
   ld hl,sandbox_batch_collision_test_table_3
   ld a,1
   call batch_collision_detect
-  push iy
-  pop hl
   assertCarrySet "Test 4.1 failed"
+  assertEqualsA ASTEROID, "Test 4.2 failed"
 ret

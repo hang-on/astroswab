@@ -53,7 +53,7 @@
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 16, 16
+    .db %00000000, 16, 16, ASTEROID
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
@@ -61,7 +61,7 @@
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 7, 7           ; TODO: Might need adjustment!
+    .db %00010001, 7, 7, SHARD           ; TODO: Might need adjustment!
   shard_sprite_table:
     .db SPRITE_45
   shard_trigger_init_table:
@@ -77,7 +77,7 @@
   spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 16, 24
+    .db %00000000, 16, 24, SPINNER
   spinner_trigger_init_table:
     .db SPINNER_TRIGGER_CHANCE_INIT, SPINNER_TRIGGER_INTERVAL_INIT
   spinner_anim_table:
@@ -99,7 +99,7 @@
   danish_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 16, 16           ; TODO: Might need adjustment!
+    .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
   danish_trigger_init_table:
     .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
   danish_sprite_table:
@@ -109,7 +109,7 @@
   missile_init_table:
     .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 14, 14     ; Might need adjustment!
+    .db %00010001, 14, 14, MISSILE     ; Might need adjustment!
   missile_trigger_init_table:
     .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
     .db ENABLED
@@ -117,12 +117,12 @@
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
-    .db %00000001, 15, 14, 16
+    .db %00000001, 15, 14, 16, SWABBY
   ;
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00100000, 4, 8
+    .db %00100000, 4, 8, BULLET
   ; ---------------------------------------------------------------------------
   ; Menu item strings:
   menu_title:
@@ -200,12 +200,12 @@ sandbox_batch_collision_test_table_2:
   .dw asteroid, 1
 sandbox_bullet_init_table_2:
   .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-  .db 7, 7, GAME_OBJECT_ACTIVE
+  .db 7, 7, GAME_OBJECT_ACTIVE, BULLET
   .db %00100000, 4, 8
 sandbox_asteroid_init_table_2:
   .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
   .db 24, 24, GAME_OBJECT_ACTIVE
-  .db %00000000, 16, 16
+  .db %00000000, 16, 16, ASTEROID
 
 
   sandbox_game_object_init_table_3:
@@ -216,14 +216,6 @@ sandbox_asteroid_init_table_2:
     .dw asteroid, 3
   sandbox_batch_collision_test_table_3:
     .dw asteroid, 3
-  sandbox_bullet_init_table_3:
-    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 7, 7, GAME_OBJECT_ACTIVE
-    .db %00100000, 4, 8
-  sandbox_asteroid_init_table_3:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 0, 0, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16
   sandbox_position_table_3:
     .db 20, 10, 20, 30, 20, 50
   sandbox_position_table_4:

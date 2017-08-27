@@ -444,6 +444,7 @@
   hitbox_height db
   anim_counter db
   anim_pointer dw
+  id db
 .endst
 ;
 .equ GAME_OBJECT_ACTIVE 1
@@ -709,6 +710,9 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.hitbox_height),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.id),a
     pop hl
   ret
   ;
@@ -755,35 +759,6 @@
     call activate_game_object
   ret
   ;
-  set_game_object_from_table:
-    ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to table (sprite, yspeed, xspeed, shape,
-    ;             hitbox_offset, hitbox_width, hitbox_height).
-    ; Uses: A - but HL is preserved.
-    push hl
-    ld a,(hl)
-    ld (ix+game_object.sprite),a
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.yspeed),a
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.xspeed),a
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.shape),a
-    ;
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.hitbox_offset),a
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.hitbox_width),a
-    inc hl
-    ld a,(hl)
-    ld (ix+game_object.hitbox_height),a
-    pop hl
-  ret
   ;
   set_game_object_position:
     ; Entry: IX = pointer to struct.
@@ -835,8 +810,9 @@
     ; Entry: HL = batch collision test table
     ;        A = number of objects in collision test table.
     ;
-
-    ; Exit: carry set on collision, and iy pointer to object of collision
+    ; Exit: 1) Carry set on collision, and (in case of collision):
+    ;       2) IY points to object of collision.
+    ;       3) Holds ID of the object (same as iy+game_object.id).
     ld b,a
     --:
       push bc
@@ -854,8 +830,9 @@
             push iy
               call detect_collision
               jp nc,+
-                pop iy
-                pop bc
+                ld a,(iy+game_object.id)  ; Load ID into A...
+                pop iy                    ; Restore IY to point to obj.
+                pop bc                    ; Align the stack.
                 pop bc
                 ret
               +:
@@ -869,7 +846,9 @@
   ret
 
   position_multiple_game_object_instances:
-    ; ix, hl, a
+    ; Entry: IX = Pointer to game object with multiple instances.
+    ;        A = number of instances to position.
+    ;        HL = pointer to position table, containing Y,X pairs.
     ld b,a
     ld de,_sizeof_game_object
     -:

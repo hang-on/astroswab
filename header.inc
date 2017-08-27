@@ -23,7 +23,7 @@
      ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
-    .; equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
   .endif
 ; Sprites:
   .equ SPRITE_BANK 3
@@ -41,7 +41,15 @@
   .equ NOT_MOVING 0
   .equ BULLET_HITBOX_WIDTH 8
   .equ ASTEROID_HITBOX_WIDTH 16
-
+;
+; Game object ID's:
+  .equ SWABBY 1
+  .equ BULLET 2
+  .equ ASTEROID 3
+  .equ SHARD 4
+  .equ SPINNER 5
+  .equ MISSILE 6
+  .equ DANISH 7
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
