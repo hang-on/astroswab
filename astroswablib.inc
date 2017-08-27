@@ -532,21 +532,24 @@
     ; Uses: AF, BC, DE, HL, IX
     ld b,a
     --:
-      ld e,(hl)
-      inc hl
-      ld d,(hl)
-      inc hl
-      push de
-      pop ix
-      ld b,(hl)
-      inc hl
-      inc hl
-      ld de,_sizeof_game_object
-      -:
-        push bc
-          call draw_game_object
-          add ix,de
-        pop bc
+      push bc
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        push de
+        pop ix
+        ld b,(hl)
+        inc hl
+        inc hl
+        ld de,_sizeof_game_object
+        -:
+          push bc
+            call draw_game_object
+            add ix,de
+          pop bc
+        djnz -
+      pop bc
     djnz --
   ret
   ;
@@ -826,6 +829,10 @@
     ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
     ld (iy+game_object.state),a
+  ret
+  ;
+  batch_collision_detect:
+    ; return carry seton collision, and iy pointer to object of collision
   ret
 .ends
 ;

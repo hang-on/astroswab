@@ -172,6 +172,25 @@
   ntsc_msg:
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
+  ; Sandbox stuff:
+  sandbox_game_object_init_table:
+    .dw bullet, sandbox_bullet_init_table, 1
+    .dw asteroid, sandbox_asteroid_init_table, 1
+  sandbox_batch_draw_table:
+    .dw bullet, 1
+    .dw asteroid, 1
+  sandbox_batch_collision_test_table:
+    .dw asteroid, 1
+  sandbox_bullet_init_table:
+    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db 10, 10, GAME_OBJECT_ACTIVE
+    .db %00100000, 4, 8
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 20, 20, GAME_OBJECT_ACTIVE
+    .db %00000000, 16, 16
+
+
 
   ; ---------------------------------------------------------------------------
 .ends
