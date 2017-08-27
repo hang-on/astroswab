@@ -189,7 +189,23 @@
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 4, 4, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 16
-
+;
+sandbox_game_object_init_table_2:
+  .dw bullet, sandbox_bullet_init_table_2, 1
+  .dw asteroid, sandbox_asteroid_init_table_2, 1
+sandbox_batch_draw_table_2:
+  .dw bullet, 1
+  .dw asteroid, 1
+sandbox_batch_collision_test_table_2:
+  .dw asteroid, 1
+sandbox_bullet_init_table_2:
+  .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+  .db 7, 7, GAME_OBJECT_ACTIVE
+  .db %00100000, 4, 8
+sandbox_asteroid_init_table_2:
+  .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+  .db 24, 24, GAME_OBJECT_ACTIVE
+  .db %00000000, 16, 16
 
 
   ; ---------------------------------------------------------------------------

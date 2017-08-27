@@ -832,9 +832,41 @@
   ret
   ;
   batch_collision_detect:
-    ; return carry set on collision, and iy pointer to object of collision
-    ld iy,asteroid
-    scf
+    ; Entry: HL = batch collision test table
+    ;        A = number of objects in collision test table.
+    ;
+     
+    ; Exit: carry set on collision, and iy pointer to object of collision
+    ld b,a
+    --:
+      push bc
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        push de
+        pop iy
+        ld b,(hl)
+        inc hl
+        inc hl
+        -:
+          push bc
+            push iy
+              call detect_collision
+              jp nc,+
+                pop iy
+                pop bc
+                pop bc
+                ret
+              +:
+            pop iy
+            ld de,_sizeof_game_object
+            add iy,de
+          pop bc
+        djnz -
+      pop bc
+    djnz --
+
   ret
 .ends
 ;
