@@ -183,11 +183,11 @@
     .dw asteroid, 1
   sandbox_bullet_init_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 10, 10, GAME_OBJECT_ACTIVE
+    .db 7, 7, GAME_OBJECT_ACTIVE
     .db %00100000, 4, 8
   sandbox_asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 20, 20, GAME_OBJECT_ACTIVE
+    .db 4, 4, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 16
 
 

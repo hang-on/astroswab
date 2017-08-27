@@ -64,5 +64,8 @@ test_batch_collision_dectection:
   ld ix,bullet
   ld hl,sandbox_batch_collision_test_table
   call batch_collision_detect
-  assertCarryReset "Test 1 failed"
+  push iy
+  pop hl
+  assertCarrySet "Test 1.1 failed"
+  assertEqualsHL asteroid, "Test 1.2 failed"
 ret

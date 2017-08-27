@@ -832,7 +832,9 @@
   ret
   ;
   batch_collision_detect:
-    ; return carry seton collision, and iy pointer to object of collision
+    ; return carry set on collision, and iy pointer to object of collision
+    ld iy,asteroid
+    scf
   ret
 .ends
 ;
