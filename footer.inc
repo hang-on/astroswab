@@ -226,6 +226,8 @@ sandbox_asteroid_init_table_2:
     .db %00000000, 16, 16
   sandbox_position_table_3:
     .db 20, 10, 20, 30, 20, 50
+  sandbox_position_table_4:
+    .db 20, 10, 5, 5, 20, 50
 
 
   ; ---------------------------------------------------------------------------
