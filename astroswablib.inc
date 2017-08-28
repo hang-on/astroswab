@@ -701,6 +701,16 @@
       or a        ; Clear carry.
   ret             ; Return with ix pointing...
   ;
+  handle_bullet_collision:
+    ; Placeholder function for handling what happens when bullet collides with
+    ; other objects.
+    ; TODO: Increment score depending on other object's id.
+    ; IX = bullet, IY other object..
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    ld (iy+game_object.state),a
+  ret
+  ;
   horizontal_zone_deactivate_game_object:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.
@@ -865,12 +875,6 @@
     ; ...
   ret
   ;
-  handle_bullet_collision:
-    ; IX = bullet, IY other object..
-    ld a,GAME_OBJECT_INACTIVE
-    ld (ix+game_object.state),a
-    ld (iy+game_object.state),a
-  ret
   ;
 
 .ends

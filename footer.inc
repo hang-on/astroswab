@@ -182,54 +182,6 @@
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
   ; Sandbox stuff:
-  sandbox_game_object_init_table:
-    .dw bullet, sandbox_bullet_init_table, 1
-    .dw asteroid, sandbox_asteroid_init_table, 1
-  sandbox_batch_draw_table:
-    .dw bullet, 1
-    .dw asteroid, 1
-  sandbox_batch_collision_test_table:
-    .dw asteroid, 1
-  sandbox_bullet_init_table:
-    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 7, 7, GAME_OBJECT_ACTIVE
-    .db %00100000, 4, 8
-  sandbox_asteroid_init_table:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 4, 4, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16
-;
-sandbox_game_object_init_table_2:
-  .dw bullet, sandbox_bullet_init_table_2, 1
-  .dw asteroid, sandbox_asteroid_init_table_2, 1
-sandbox_batch_draw_table_2:
-  .dw bullet, 1
-  .dw asteroid, 1
-sandbox_batch_collision_test_table_2:
-  .dw asteroid, 1
-sandbox_bullet_init_table_2:
-  .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-  .db 7, 7, GAME_OBJECT_ACTIVE, BULLET
-  .db %00100000, 4, 8
-sandbox_asteroid_init_table_2:
-  .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-  .db 24, 24, GAME_OBJECT_ACTIVE
-  .db %00000000, 16, 16, ASTEROID
-
-
-  sandbox_game_object_init_table_3:
-    .dw bullet, sandbox_bullet_init_table_2, 1
-    .dw asteroid, sandbox_asteroid_init_table_2, 3
-  sandbox_batch_draw_table_3:
-    .dw bullet, 1
-    .dw asteroid, 3
-  sandbox_batch_collision_test_table_3:
-    .dw asteroid, 3
-  sandbox_position_table_3:
-    .db 20, 10, 20, 30, 20, 50
-  sandbox_position_table_4:
-    .db 20, 10, 5, 5, 20, 50
-
 
   ; ---------------------------------------------------------------------------
 .ends
