@@ -189,6 +189,16 @@
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
   ; Sandbox stuff:
+  sandbox_bullet_init_table:
+    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 0, GAME_OBJECT_ACTIVE, BULLET
+    .db %00100000, 4, 8
+  sandbox_game_object_init_table:
+    .dw bullet, sandbox_bullet_init_table, 5
+  sandbox_batch_draw_table:
+    .dw bullet, 5
+  sandbox_position_table:
+    .db 0, 10, 0, 20, 0, 30, 0, 40, 0, 50
 
   ; ---------------------------------------------------------------------------
 .ends
