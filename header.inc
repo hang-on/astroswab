@@ -7,7 +7,7 @@
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
-  .equ FIRST_LINE_OF_VBLANK 193
+  .equ FIRST_LINE_OF_VBLANK 192
   .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
 ;
 ; Game states:
