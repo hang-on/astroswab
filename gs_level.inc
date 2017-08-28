@@ -108,6 +108,14 @@
         cp GAME_OBJECT_INACTIVE
         jp z,++
         ;
+        ld hl,bullet_collision_table
+        ld a,2
+        call batch_collision_detect
+        jp nc,+
+          call handle_bullet_collision
+          jp ++
+        +:
+        /*
         ; Bullet collides with one of the active asteroids?
         ld iy,asteroid
         .rept ASTEROID_MAX
@@ -168,6 +176,7 @@
             call handle_bullet_collision
             jp ++
         +:
+        */
       ; Finished testing this bullet. Proceed to next...
       ++:
       ld de,_sizeof_game_object

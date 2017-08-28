@@ -510,13 +510,18 @@
         -:                                ; For each instance, do...
           push bc                         ; Save counter.
             push iy                       ; Save pointer to object.
-              call detect_collision       ; Perform the collision test.
-              jp nc,+                     ; Returns carry on collision.
-                ld a,(iy+game_object.id)  ; Load object id into A.
-                pop iy                    ; Restore IY to point to obj.
-                pop bc                    ; Align the stack...
-                pop bc
-                ret                       ; Exit func with carry set.
+              ld a,(iy+game_object.state)
+              cp GAME_OBJECT_ACTIVE
+              jp nz,+
+                push hl
+                call detect_collision     ; Perform the collision test.
+                pop hl
+                jp nc,+                   ; Returns carry on collision.
+                  ld a,(iy+game_object.id); Load object id into A.
+                  pop iy                  ; Restore IY to point to obj.
+                  pop bc                  ; Align the stack...
+                  pop bc
+                  ret                       ; Exit func with carry set.
               +:                          ; Else - no collision here...
             pop iy                        ; Restore pointer to object.
             ld de,_sizeof_game_object     ; Point to next instance.
