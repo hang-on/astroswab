@@ -112,6 +112,10 @@
         cp GAME_OBJECT_INACTIVE
         jp z,+
         ;
+        ld a,(frame_counter)
+        and %00000001
+        jp nz,+
+        ; >>
         ld hl,bullet_collision_table
         ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
         call batch_collision_detect
@@ -125,13 +129,17 @@
       ld a,b
       or c
     jp nz,bullet_collision_loop
-    ; Swabby vs. relevant other game objects.
-    ld ix,swabby
-    ld hl,swabby_collision_table
-    ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
-    call batch_collision_detect
-    call c,handle_swabby_collision
-
+    ;
+    ld a,(frame_counter)
+    and %00000001
+    jp z,+
+      ; Swabby vs. relevant other game objects.
+      ld ix,swabby
+      ld hl,swabby_collision_table
+      ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
+      call batch_collision_detect
+      call c,handle_swabby_collision
+    +:
     ;
     ; ---------------------------------------------------------------------------
     ; Handle Swabby sprite and movement:
