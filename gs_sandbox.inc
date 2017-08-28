@@ -51,8 +51,8 @@ run_sandbox:
   ; Tests below:
   ;call test_batch_collision_dectection
   ;call test_2_no_collision
-  ;call test_3_multiple_asteroids_no_collision
-  call test_4_multiple_asteroids_and_collision
+  call test_3_multiple_asteroids_no_collision
+  ;call test_4_multiple_asteroids_and_collision
   ;
 jp main_loop
 ;

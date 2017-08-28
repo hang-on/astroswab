@@ -484,6 +484,49 @@
     RESTORE_REGISTERS
   ret
   ;
+  batch_collision_detect:
+    ; Collision test a game object, pointed to by IX, against a table of other
+    ; game objects in a table pointed to by HL. Return relevant info in
+    ; registers that allows for further processing in case of a collision.
+    ; Entry: HL = Batch collision test table
+    ;        A  = Number of objects in collision test table.
+    ;        IX = Pointer to game object
+    ;
+    ; Exit: 1) Carry set on collision, and (in case of collision):
+    ;       2) IY points to object of collision.
+    ;       3) Holds ID of the object (same as iy+game_object.id).
+    ld b,a                                ; For each object in collision table.
+    --:
+      push bc                             ; Save loop counter.
+        ld e,(hl)                         ; Get object pointer from table and
+        inc hl                            ; save it in IY...
+        ld d,(hl)
+        inc hl
+        push de
+        pop iy
+        ld b,(hl)                         ; How many instances of this object
+        inc hl                            ; to test?
+        inc hl                            ; Skip 1 byte in the collision table.
+        -:                                ; For each instance, do...
+          push bc                         ; Save counter.
+            push iy                       ; Save pointer to object.
+              call detect_collision       ; Perform the collision test.
+              jp nc,+                     ; Returns carry on collision.
+                ld a,(iy+game_object.id)  ; Load object id into A.
+                pop iy                    ; Restore IY to point to obj.
+                pop bc                    ; Align the stack...
+                pop bc
+                ret                       ; Exit func with carry set.
+              +:                          ; Else - no collision here...
+            pop iy                        ; Restore pointer to object.
+            ld de,_sizeof_game_object     ; Point to next instance.
+            add iy,de
+          pop bc                          ; Restore instance loop counter.
+        djnz -                            ; Loop through all instances...
+      pop bc                              ; Restore object counter.
+    djnz --                               ; Loop through all listed objects.
+  ret
+  ;
   batch_initialize_game_objects:
     ; Initialize a batch of game objects using a table.
     ; HL = Pointer to batch init table
@@ -739,6 +782,24 @@
     ld (ix+game_object.x),a
   ret
   ;
+  position_multiple_game_object_instances:
+    ; Entry: IX = Pointer to game object with multiple instances.
+    ;        A = number of instances to position.
+    ;        HL = pointer to position table, containing Y,X pairs.
+    ; Uses: AF, B, DE, HL, IX
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      ld a,(hl)
+      ld (ix+game_object.y),a
+      inc hl
+      ld a,(hl)
+      ld (ix+game_object.x),a
+      inc hl
+      add ix,de
+    djnz -
+  ret
+  ;
   spawn_game_object_in_invisible_area:
     ; Entry: IX = Pointer to enemy object.
     ; Object gets a random position and is activated!
@@ -806,60 +867,6 @@
     ld (iy+game_object.state),a
   ret
   ;
-  batch_collision_detect:
-    ; Entry: HL = batch collision test table
-    ;        A = number of objects in collision test table.
-    ;
-    ; Exit: 1) Carry set on collision, and (in case of collision):
-    ;       2) IY points to object of collision.
-    ;       3) Holds ID of the object (same as iy+game_object.id).
-    ld b,a
-    --:
-      push bc
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        push de
-        pop iy
-        ld b,(hl)
-        inc hl
-        inc hl
-        -:
-          push bc
-            push iy
-              call detect_collision
-              jp nc,+
-                ld a,(iy+game_object.id)  ; Load ID into A...
-                pop iy                    ; Restore IY to point to obj.
-                pop bc                    ; Align the stack.
-                pop bc
-                ret
-              +:
-            pop iy
-            ld de,_sizeof_game_object
-            add iy,de
-          pop bc
-        djnz -
-      pop bc
-    djnz --
-  ret
 
-  position_multiple_game_object_instances:
-    ; Entry: IX = Pointer to game object with multiple instances.
-    ;        A = number of instances to position.
-    ;        HL = pointer to position table, containing Y,X pairs.
-    ld b,a
-    ld de,_sizeof_game_object
-    -:
-      ld a,(hl)
-      ld (ix+game_object.y),a
-      inc hl
-      ld a,(hl)
-      ld (ix+game_object.x),a
-      inc hl
-      add ix,de
-    djnz -
-  ret
 .ends
 ;
