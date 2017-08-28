@@ -213,7 +213,6 @@
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 60, 30, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16, SWABBY
-
   sandbox_game_object_init_table:
     .dw bullet, sandbox_bullet_init_table, 5
     .dw shard, sandbox_shard_init_table, 8
@@ -232,6 +231,8 @@
     .db 0, 10, 0, 20, 0, 30, 0, 40, 0, 50
   sandbox_shard_position_table:
     .db 10, 10, 10, 20, 10, 30, 10, 40, 10, 50, 10, 60, 10, 70, 10, 80
+  sandbox_batch_collision_test_table:
+    .dw shard, 8, missile, 1, danish, 1, spinner, 1
 
   ; ---------------------------------------------------------------------------
 .ends

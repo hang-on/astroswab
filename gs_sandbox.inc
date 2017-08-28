@@ -39,8 +39,18 @@ jp main_loop
 ; ---------------------------------------------------------------------------
 run_sandbox:
   ;
-  call await_frame_interrupt
+  -:
+    call await_frame_interrupt
+    in a,(V_COUNTER_PORT)
+    cp FIRST_LINE_OF_VBLANK+1
+  jp nz,-
+
   call load_sat
+  ld a,21
+  ld b,1
+  call set_cursor
+  ld a,(temp_byte)
+  call print_register_a
   ; End of VDP-updating...
   call get_input_ports
   call begin_sprites
@@ -73,6 +83,27 @@ test_1:
   ld hl,sandbox_batch_draw_table
   ld a,6 ; check!
   call batch_draw_game_objects
+
+  in a,(V_COUNTER_PORT)
+  ld b,a
+  ld ix,bullet
+  push bc
+    ld b,3
+    -:
+      push bc
+        ld hl,sandbox_batch_collision_test_table
+        ld a,4
+        call batch_collision_detect
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz -
+    assertCarryReset "Test_1 failed"
+  pop bc
+  in a,(V_COUNTER_PORT)
+  sub b
+  ld (temp_byte),a
+
 
 
 ret
