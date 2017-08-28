@@ -193,12 +193,20 @@
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_ACTIVE, BULLET
     .db %00100000, 4, 8
+  sandbox_shard_init_table:
+    .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 0, GAME_OBJECT_ACTIVE
+    .db %00010001, 7, 7, SHARD           ; TODO: Might need adjustment!
   sandbox_game_object_init_table:
     .dw bullet, sandbox_bullet_init_table, 5
+    .dw shard, sandbox_shard_init_table, 8
   sandbox_batch_draw_table:
     .dw bullet, 5
-  sandbox_position_table:
+    .dw shard, 8
+  sandbox_bullet_position_table:
     .db 0, 10, 0, 20, 0, 30, 0, 40, 0, 50
+  sandbox_shard_position_table:
+    .db 10, 10, 10, 20, 10, 30, 10, 40, 10, 50, 10, 60, 10, 70, 10, 80
 
   ; ---------------------------------------------------------------------------
 .ends

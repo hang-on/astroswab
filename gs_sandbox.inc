@@ -57,15 +57,20 @@ jp main_loop
 ; Tests for the sandbox:
 test_1:
   ld hl,sandbox_game_object_init_table
-  ld a,1
+  ld a,2
   call batch_initialize_game_objects
 
-  ld hl,sandbox_position_table
+  ld hl,sandbox_bullet_position_table
   ld a,5 ; check!
   ld ix,bullet
   call position_multiple_game_object_instances
 
-  ld a,1 ; check!
+  ld hl,sandbox_shard_position_table
+  ld a,8 ; check!
+  ld ix,shard
+  call position_multiple_game_object_instances
+
+  ld a,2 ; check!
   ld hl,sandbox_batch_draw_table
   call batch_draw_game_objects
 
