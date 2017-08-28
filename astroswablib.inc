@@ -161,6 +161,9 @@
     .db 24, 8, 11
   ; ---------------------------------------------------------------------------
   profile_vblank:
+    ; Set debug meter for profiling the amount of lines consumed by functions
+    ; operating on the graphics and expecting to work with the screen blanked.
+    ; Make sure this meter shows a line number within the vblank period!
     in a,(V_COUNTER_PORT)                   ; Get current line number.
     .ifdef DEVELOPER_MODE
       cp 185                                  ; Failsafe, go into an endless

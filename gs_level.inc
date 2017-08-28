@@ -87,10 +87,9 @@
     jp nz,-
     call load_sat
     ; End of VDP-updating...
-    ; Set debug meter for profiling the amount of lines consumed by functions
-    ; operating on the graphics and expecting to work with the screen blanked.
-    ; Make sure this meter shows a line number within the vblank period!
-    call profile_vblank
+    .ifdef DEVELOPER_MODE
+      call profile_vblank
+    .endif
     ;
     call get_input_ports
     call begin_sprites
