@@ -124,8 +124,12 @@
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00100000, 4, 8, BULLET
   bullet_collision_table:
-      .dw missile, 1
-      .dw asteroid, ASTEROID_MAX
+    .dw missile, 1
+    .dw asteroid, ASTEROID_MAX
+    .dw shard, SHARD_MAX
+    .dw spinner, 1
+    .dw danish, 1
+  bullet_collision_table_end:
   ;
   ;
   ; ---------------------------------------------------------------------------

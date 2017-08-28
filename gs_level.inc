@@ -99,86 +99,22 @@
       push bc
       ld a,(ix+game_object.state)
       cp GAME_OBJECT_INACTIVE
-      jp z,++
+      jp z,+
+        ; Test this bullet instance.
         ; Bullet 'collides' with deactivate zone?
         ld a,BULLET_DEACTIVATE_ZONE_START
         ld b,BULLET_DEACTIVATE_ZONE_END
         call horizontal_zone_deactivate_game_object
         ld a,(ix+game_object.state)
         cp GAME_OBJECT_INACTIVE
-        jp z,++
+        jp z,+
         ;
         ld hl,bullet_collision_table
-        ld a,2
+        ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
         call batch_collision_detect
-        jp nc,+
-          call handle_bullet_collision
-          jp ++
-        +:
-        /*
-        ; Bullet collides with one of the active asteroids?
-        ld iy,asteroid
-        .rept ASTEROID_MAX
-          ld a,(iy+game_object.state)
-          cp GAME_OBJECT_INACTIVE
-          jp z,+
-            call detect_collision
-            jp nc,+
-              call handle_bullet_collision
-              jp ++
-            +:
-          ld de,_sizeof_game_object
-          add iy,de
-        .endr
-        ;
-        ; DRY - fixme
-        ; Bullet collides with one of the active shards?
-        ld iy,shard
-        .rept SHARD_MAX
-          ld a,(iy+game_object.state)
-          cp GAME_OBJECT_INACTIVE
-          jp z,+
-            call detect_collision
-            jp nc,+
-              call handle_bullet_collision
-              jp ++
-          +:
-          ld de,_sizeof_game_object
-          add iy,de
-        .endr
-        ; Bullet collides with spinner?
-        ld iy,spinner
-        ld a,(iy+game_object.state)
-        cp GAME_OBJECT_INACTIVE
-        jp z,+
-          call detect_collision
-          jp nc,+
-            call handle_bullet_collision
-            jp ++
-        +:
-        ; Bullet collides with danish?
-        ld iy,danish
-        ld a,(iy+game_object.state)
-        cp GAME_OBJECT_INACTIVE
-        jp z,+
-          call detect_collision
-          jp nc,+
-            call handle_bullet_collision
-            jp ++
-        +:
-        ; Bullet collides with missile?
-        ld iy,missile
-        ld a,(iy+game_object.state)
-        cp GAME_OBJECT_INACTIVE
-        jp z,+
-          call detect_collision
-          jp nc,+
-            call handle_bullet_collision
-            jp ++
-        +:
-        */
+        call c,handle_bullet_collision
       ; Finished testing this bullet. Proceed to next...
-      ++:
+      +:
       ld de,_sizeof_game_object
       add ix,de
       pop bc
