@@ -205,17 +205,23 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db 20, 30, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
+  sandbox_spinner_init_table:
+    .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
+    .db 20, 50, GAME_OBJECT_ACTIVE
+    .db %00000000, 16, 24, SPINNER
 
   sandbox_game_object_init_table:
     .dw bullet, sandbox_bullet_init_table, 5
     .dw shard, sandbox_shard_init_table, 8
     .dw missile, sandbox_missile_init_table, 1
     .dw danish, sandbox_danish_init_table, 1
+    .dw spinner, sandbox_spinner_init_table, 1
   sandbox_batch_draw_table:
     .dw bullet, 5
     .dw shard, 8
     .dw missile, 1
     .dw danish, 1
+    .dw spinner, 1
   sandbox_bullet_position_table:
     .db 0, 10, 0, 20, 0, 30, 0, 40, 0, 50
   sandbox_shard_position_table:
