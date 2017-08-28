@@ -590,10 +590,11 @@
 0001:42c3 ntsc_msg
 0001:42d1 sandbox_bullet_init_table
 0001:42dc sandbox_shard_init_table
-0001:42e7 sandbox_game_object_init_table
-0001:42f3 sandbox_batch_draw_table
-0001:42fb sandbox_bullet_position_table
-0001:4305 sandbox_shard_position_table
+0001:42e7 sandbox_missile_init_table
+0001:42f2 sandbox_game_object_init_table
+0001:4304 sandbox_batch_draw_table
+0001:4310 sandbox_bullet_position_table
+0001:431a sandbox_shard_position_table
 0002:8000 font_table
 0002:8006 dd_revolution_tiles
 0003:8000 sprite_tiles
