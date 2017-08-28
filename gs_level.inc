@@ -80,7 +80,11 @@
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
   run_level:
-    call await_frame_interrupt
+    -:
+      call await_frame_interrupt
+      in a,(V_COUNTER_PORT)
+      cp FIRST_LINE_OF_VBLANK
+    jp nz,-
     call load_sat
     ; End of VDP-updating...
     ; Set debug meter for profiling the amount of lines consumed by functions
