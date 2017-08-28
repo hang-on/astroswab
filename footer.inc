@@ -118,6 +118,13 @@
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16, SWABBY
+  swabby_collision_table:
+    .dw missile, 1
+    .dw asteroid, ASTEROID_MAX
+    .dw shard, SHARD_MAX
+    .dw spinner, 1
+    .dw danish, 1
+  swabby_collision_table_end:
   ;
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL

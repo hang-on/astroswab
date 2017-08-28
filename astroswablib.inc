@@ -46,6 +46,25 @@
 ; -----------------------------------------------------------------------------
 .section "astroswablib" free
 ; -----------------------------------------------------------------------------
+  handle_bullet_collision:
+    ; Placeholder function for handling what happens when bullet collides with
+    ; other objects.
+    ; TODO: Increment score depending on other object's id.
+    ; IX = bullet, IY other object..
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    ld (iy+game_object.state),a
+  ret
+  handle_swabby_collision:
+    ; Placeholder function for handling what happens when swabby collides with
+    ; other objects.
+    ; TODO: Implement DEATH!
+    ; IX = bullet, IY other object..
+    ld a,GAME_OBJECT_INACTIVE
+    ld (iy+game_object.state),a
+  ret
+  ; ---------------------------------------------------------------------------
+  ;
   batch_print:
     ; Batch print strings at different screen positions. Handy for making a
     ; menu, or for setting up text in various places. Strings and positions are
@@ -428,6 +447,7 @@
   ret
 .ends
 ;
+
 ; -----------------------------------------------------------------------------
 ; GAME OBJECTS
 ; -----------------------------------------------------------------------------
@@ -701,15 +721,6 @@
       or a        ; Clear carry.
   ret             ; Return with ix pointing...
   ;
-  handle_bullet_collision:
-    ; Placeholder function for handling what happens when bullet collides with
-    ; other objects.
-    ; TODO: Increment score depending on other object's id.
-    ; IX = bullet, IY other object..
-    ld a,GAME_OBJECT_INACTIVE
-    ld (ix+game_object.state),a
-    ld (iy+game_object.state),a
-  ret
   ;
   horizontal_zone_deactivate_game_object:
     ; Test enemy object y to see if it is within the horizontal zone defined

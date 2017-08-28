@@ -122,6 +122,13 @@
       ld a,b
       or c
     jp nz,bullet_collision_loop
+    ; Swabby vs. relevant other game objects.
+    ld ix,swabby
+    ld hl,swabby_collision_table
+    ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
+    call batch_collision_detect
+    call c,handle_swabby_collision
+
     ;
     ; ---------------------------------------------------------------------------
     ; Handle Swabby sprite and movement:

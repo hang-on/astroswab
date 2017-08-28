@@ -38,11 +38,8 @@
 ;
 ; Sandbox:
   .equ SANDBOX_LOGGER_START_ROW 12
-  .equ NOT_MOVING 0
-  .equ BULLET_HITBOX_WIDTH 8
-  .equ ASTEROID_HITBOX_WIDTH 16
 ;
-; Game object ID's:
+; Game objects:
   .equ SWABBY 1
   .equ BULLET 2
   .equ ASTEROID 3
@@ -50,6 +47,7 @@
   .equ SPINNER 5
   .equ MISSILE 6
   .equ DANISH 7
+  .equ NOT_MOVING 0
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
