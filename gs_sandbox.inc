@@ -58,6 +58,12 @@ run_sandbox:
   ld b,SANDBOX_LOGGER_START_ROW
   call reset_logger
   ;
+
+  -:
+    in a,(V_COUNTER_PORT)
+    cp 1
+  jp nz,-
+
   ; Tests below:
   call test_1
 
@@ -67,25 +73,30 @@ jp main_loop
 ; Tests for the sandbox:
 test_1:
   ld hl,sandbox_game_object_init_table
-  ld a,6
+  ld a,3
   call batch_initialize_game_objects
 
   ld hl,sandbox_bullet_position_table
-  ld a,5 ; check!
+  ld a,2 ; check!
   ld ix,bullet
   call position_multiple_game_object_instances
 
+
+
   ld hl,sandbox_shard_position_table
-  ld a,8 ; check!
+  ld a,4 ; check!
   ld ix,shard
   call position_multiple_game_object_instances
 
   ld hl,sandbox_batch_draw_table
-  ld a,6 ; check!
+  ld a,3 ; check!
   call batch_draw_game_objects
 
+
+
   in a,(V_COUNTER_PORT)
-  ld b,a
+  ld (temp_byte),a
+
   ld ix,bullet
   push bc
     ld b,3
@@ -100,10 +111,7 @@ test_1:
     djnz -
     assertCarryReset "Test_1 failed"
   pop bc
-  in a,(V_COUNTER_PORT)
-  sub b
-  ld (temp_byte),a
-
+; --- 92 lines
 
 
 ret

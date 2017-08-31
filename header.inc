@@ -37,7 +37,7 @@
   .equ TILE_BANK_2 2
 ;
 ; Sandbox:
-  .equ SANDBOX_LOGGER_START_ROW 12
+  .equ SANDBOX_LOGGER_START_ROW 19
 ;
 ; Game objects:
   .equ SWABBY 1

@@ -203,36 +203,30 @@
     .db %00010001, 14, 14, MISSILE     ; Might need adjustment!
   sandbox_danish_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
-    .db 20, 30, GAME_OBJECT_ACTIVE
+    .db 110, 90, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
   sandbox_spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
-    .db 20, 50, GAME_OBJECT_ACTIVE
+    .db 120, 180, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 24, SPINNER
   sandbox_swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 60, 30, GAME_OBJECT_ACTIVE
+    .db 135, 80, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16, SWABBY
   sandbox_game_object_init_table:
-    .dw bullet, sandbox_bullet_init_table, 5
-    .dw shard, sandbox_shard_init_table, 8
-    .dw missile, sandbox_missile_init_table, 1
-    .dw danish, sandbox_danish_init_table, 1
-    .dw spinner, sandbox_spinner_init_table, 1
+    .dw bullet, sandbox_bullet_init_table, 2
+    .dw shard, sandbox_shard_init_table, 4
     .dw swabby, sandbox_swabby_init_table, 1
   sandbox_batch_draw_table:
-    .dw bullet, 5
-    .dw shard, 8
-    .dw missile, 1
-    .dw danish, 1
-    .dw spinner, 1
+    .dw bullet, 2
+    .dw shard, 4
     .dw swabby, 1
   sandbox_bullet_position_table:
-    .db 0, 10, 0, 20, 0, 30, 0, 40, 0, 50
+    .db 60, 80, 90, 130
   sandbox_shard_position_table:
-    .db 10, 10, 10, 20, 10, 30, 10, 40, 10, 50, 10, 60, 10, 70, 10, 80
+    .db 50, 70, 50, 90, 100, 100, 100, 140
   sandbox_batch_collision_test_table:
-    .dw shard, 8, missile, 1, danish, 1, spinner, 1
+    .dw shard, 4
 
   ; ---------------------------------------------------------------------------
 .ends
