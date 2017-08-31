@@ -218,13 +218,13 @@
     .dw shard, sandbox_shard_init_table, 4
     .dw swabby, sandbox_swabby_init_table, 1
   sandbox_batch_draw_table:
-    .dw bullet, 2
-    .dw shard, 4
+    .dw bullet, 1
+    .dw shard, 2
     .dw swabby, 1
   sandbox_bullet_position_table:
-    .db 60, 80, 90, 130
+    .db 50, 80, 90, 130
   sandbox_shard_position_table:
-    .db 50, 70, 50, 90, 100, 100, 100, 140
+    .db 40, 70, 40, 90, 100, 100, 100, 140
   sandbox_batch_collision_test_table:
     .dw shard, 4
 
