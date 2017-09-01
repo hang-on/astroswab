@@ -898,6 +898,13 @@
     ;ld bc,4
     ;ldir
     ld hl,top_collision_table
+    ld a,(objects_in_top_collision_table)
+    add a,a
+    add a,a
+    ld d,0
+    ld e,a
+    add hl,de
+    ;
     ld a,(ix+game_object.y)
     ld (hl),a
     inc hl
@@ -910,9 +917,16 @@
     ld a,(ix+game_object.hitbox_height)
     ld (hl),a
     inc hl
-
+    ;
+    ld hl,objects_in_top_collision_table
+    inc (hl)
   ret
-  stub_data:
-  .db 40, 40, 16, 16
+  ;stub_data:
+  ;.db 40, 40, 16, 16
+  begin_collision_table:
+    xor a
+    ld (objects_in_top_collision_table),a
+    ;
+  ret
 .ends
 ;
