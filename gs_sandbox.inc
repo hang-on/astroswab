@@ -63,7 +63,7 @@ jp main_loop
 
 test_3_bullet_collides:
   ld hl,sandbox_game_object_init_table_2
-  ld a,3
+  ld a,4
   call batch_initialize_game_objects
 
   ld ix,swabby
@@ -71,12 +71,24 @@ test_3_bullet_collides:
   ;
   ld ix,bullet
   call draw_game_object
+  ld ix,danish
+  call draw_game_object
   ;
   call begin_collision_tables
   ;
   ld ix,asteroid
   call draw_game_object
   call add_object_to_collision_table
+  ;
+  ld ix,bullet
+  ld hl,bottom_collision_table
+  call test_game_object_against_collision_table
+  assertCarrySet "Test 3.1 failed"
+  ;
+  ld ix,danish
+  ld hl,bottom_collision_table
+  call test_game_object_against_collision_table
+  assertCarryReset "Test 3.2 failed"
   ;
   ;
 ret

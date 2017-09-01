@@ -199,7 +199,7 @@
     .db %00010001, 14, 14, MISSILE     ; Might need adjustment!
   sandbox_danish_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
-    .db 110, 90, GAME_OBJECT_ACTIVE
+    .db 30, 90, GAME_OBJECT_ACTIVE
     .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
   sandbox_spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
@@ -224,6 +224,7 @@
     .dw asteroid, sandbox_asteroid_init_table_2, 1
     .dw bullet, sandbox_bullet_init_table, 1
     .dw swabby, sandbox_swabby_init_table, 1
+    .dw danish, sandbox_danish_init_table, 1
   sandbox_bullet_init_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db 90, 40, GAME_OBJECT_ACTIVE, BULLET

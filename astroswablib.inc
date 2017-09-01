@@ -930,5 +930,8 @@
     ld (objects_in_bottom_collision_table),a
     ;
   ret
+  test_game_object_against_collision_table:
+    scf
+  ret
 .ends
 ;
