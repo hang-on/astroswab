@@ -893,10 +893,24 @@
     ; Adds a falling object (asteroid, shard, spinner, missile, danish) to
     ; the collision table.
     ; IX = Pointer to object.
-    ld hl,stub_data
-    ld de,top_collision_table
-    ld bc,4
-    ldir
+    ;ld hl,stub_data
+    ;ld de,top_collision_table
+    ;ld bc,4
+    ;ldir
+    ld hl,top_collision_table
+    ld a,(ix+game_object.y)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.x)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.hitbox_width)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.hitbox_height)
+    ld (hl),a
+    inc hl
+
   ret
   stub_data:
   .db 40, 40, 16, 16
