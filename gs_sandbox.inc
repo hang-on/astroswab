@@ -54,53 +54,29 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_1_asteroid_in_top_table
-  call test_2_asteroid_in_bottom_table
+  call test_3_bullet_collides
 
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
-test_1_asteroid_in_top_table:
-  ld hl,sandbox_game_object_init_table
-  ld a,1
-  call batch_initialize_game_objects
 
-  ld ix,asteroid
-  ;call draw_game_object
-  ;
-  call begin_collision_tables
-  ld a,(objects_in_top_collision_table)
-  assertEqualsA 0, "Test 1.0 failed"
-  ;
-  call add_object_to_collision_table
-  ;
-  ;
-  call await_frame_interrupt
-  ld a,(top_collision_table)
-  assertEqualsA 40, "Test 1.1 failed"
-  ld a,(top_collision_table+2)
-  assertEqualsA 16, "Test 1.2 failed"
-
-ret
-
-test_2_asteroid_in_bottom_table:
+test_3_bullet_collides:
   ld hl,sandbox_game_object_init_table_2
-  ld a,1
+  ld a,3
   call batch_initialize_game_objects
 
-  ld ix,asteroid
+  ld ix,swabby
+  call draw_game_object
+  ;
+  ld ix,bullet
   call draw_game_object
   ;
   call begin_collision_tables
-  ld a,(objects_in_bottom_collision_table)
-  assertEqualsA 0, "Test 2.0 failed"
   ;
+  ld ix,asteroid
+  call draw_game_object
   call add_object_to_collision_table
   ;
   ;
-  call await_frame_interrupt
-  ld a,(bottom_collision_table)
-  assertEqualsA 90, "Test 2.1 failed"
-  ld a,(bottom_collision_table+2)
-  assertEqualsA 16, "Test 2.2 failed"
+ret

@@ -1,4 +1,50 @@
 ; 2017-09-01
+test_1_asteroid_in_top_table:
+  ld hl,sandbox_game_object_init_table
+  ld a,1
+  call batch_initialize_game_objects
+
+  ld ix,asteroid
+  ;call draw_game_object
+  ;
+  call begin_collision_tables
+  ld a,(objects_in_top_collision_table)
+  assertEqualsA 0, "Test 1.0 failed"
+  ;
+  call add_object_to_collision_table
+  ;
+  ;
+  call await_frame_interrupt
+  ld a,(top_collision_table)
+  assertEqualsA 40, "Test 1.1 failed"
+  ld a,(top_collision_table+2)
+  assertEqualsA 16, "Test 1.2 failed"
+
+ret
+
+test_2_asteroid_in_bottom_table:
+  ld hl,sandbox_game_object_init_table_2
+  ld a,1
+  call batch_initialize_game_objects
+
+  ld ix,asteroid
+  call draw_game_object
+  ;
+  call begin_collision_tables
+  ld a,(objects_in_bottom_collision_table)
+  assertEqualsA 0, "Test 2.0 failed"
+  ;
+  call add_object_to_collision_table
+  ;
+  ;
+  call await_frame_interrupt
+  ld a,(bottom_collision_table)
+  assertEqualsA 90, "Test 2.1 failed"
+  ld a,(bottom_collision_table+2)
+  assertEqualsA 16, "Test 2.2 failed"
+ret
+
+
 ld hl,sandbox_bullet_position_table
 ld a,2 ; check!
 ld ix,bullet
