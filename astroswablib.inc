@@ -889,16 +889,19 @@
     ; ...
   ret
   ;
-  add_falling_object_to_collision_table:
-    ; Adds a falling object (asteroid, shard, spinner, missile, danish) to
-    ; the collision table.
+  add_object_to_collision_table:
     ; IX = Pointer to object.
-    ;ld hl,stub_data
-    ;ld de,top_collision_table
-    ;ld bc,4
-    ;ldir
-    ld hl,top_collision_table
-    ld a,(objects_in_top_collision_table)
+    ld a,(ix+game_object.y)
+    cp (192-50)/2 ; adjust to real playfield half!
+    jp nc,+
+      ld hl,top_collision_table
+      ld a,(objects_in_top_collision_table)
+      jp ++
+    +:
+      ld hl,bottom_collision_table
+      ld a,(objects_in_bottom_collision_table)
+    ++:
+    ;
     add a,a
     add a,a
     ld d,0
@@ -921,11 +924,10 @@
     ld hl,objects_in_top_collision_table
     inc (hl)
   ret
-  ;stub_data:
-  ;.db 40, 40, 16, 16
-  begin_collision_table:
+  begin_collision_tables:
     xor a
     ld (objects_in_top_collision_table),a
+    ld (objects_in_bottom_collision_table),a
     ;
   ret
 .ends

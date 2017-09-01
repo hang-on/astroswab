@@ -68,11 +68,11 @@ test_1:
   ld ix,asteroid
   call draw_game_object
   ;
-  call begin_collision_table
+  call begin_collision_tables
   ld a,(objects_in_top_collision_table)
   assertEqualsA 0, "Test 1.0 failed"
   ;
-  call add_falling_object_to_collision_table
+  call add_object_to_collision_table
   ;
   ;
   call await_frame_interrupt

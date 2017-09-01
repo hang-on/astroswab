@@ -153,4 +153,5 @@
   top_collision_table dsb 16*4
   objects_in_top_collision_table db
   bottom_collision_table dsb 16*4
+  objects_in_bottom_collision_table db
 .ends
