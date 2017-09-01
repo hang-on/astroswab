@@ -46,11 +46,6 @@ run_sandbox:
   jp nz,-
 
   call load_sat
-  ld a,21
-  ld b,1
-  call set_cursor
-  ld a,(temp_byte)
-  call print_register_a
   ; End of VDP-updating...
   call get_input_ports
   call begin_sprites
@@ -58,12 +53,6 @@ run_sandbox:
   ld b,SANDBOX_LOGGER_START_ROW
   call reset_logger
   ;
-
-  -:
-    in a,(V_COUNTER_PORT)
-    cp 1
-  jp nz,-
-
   ; Tests below:
   call test_1
 
@@ -78,6 +67,14 @@ test_1:
 
   ld ix,asteroid
   call draw_game_object
+  ;
+  call add_falling_object_to_collision_table
+
+  call await_frame_interrupt
+  ld a,(top_collision_table)
+  assertEqualsA 40, "Test 1.1 failed"
+  ld a,(top_collision_table+2)
+  assertEqualsA 16, "Test 1.2 failed"
 
 
 
