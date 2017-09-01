@@ -81,8 +81,6 @@ test_1:
   ld ix,bullet
   call position_multiple_game_object_instances
 
-
-
   ld hl,sandbox_shard_position_table
   ld a,4 ; check!
   ld ix,shard
@@ -96,22 +94,6 @@ test_1:
 
   in a,(V_COUNTER_PORT)
   ld (temp_byte),a
-
-  ld ix,bullet
-  push bc
-    ld b,3
-    -:
-      push bc
-        ld hl,sandbox_batch_collision_test_table
-        ld a,4
-        call batch_collision_detect
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-    assertCarryReset "Test_1 failed"
-  pop bc
-; --- 92 lines
 
 
 ret

@@ -150,4 +150,6 @@
   gun_released db
   gun_delay db
   ;
+  top_collision_table dsb 16*4
+  bottom_collision_table dsb 16*4
 .ends
