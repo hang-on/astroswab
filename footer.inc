@@ -213,10 +213,14 @@
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 135, 80, GAME_OBJECT_ACTIVE
     .db %00000001, 15, 14, 16, SWABBY
+  ;
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 40, 40, GAME_OBJECT_ACTIVE
+    .db %00000000, 16, 16, ASTEROID
   sandbox_game_object_init_table:
-    .dw bullet, sandbox_bullet_init_table, 2
-    .dw shard, sandbox_shard_init_table, 4
-    .dw swabby, sandbox_swabby_init_table, 1
+    .dw asteroid, sandbox_asteroid_init_table, 1
+  ;
   sandbox_batch_draw_table:
     .dw bullet, 1
     .dw shard, 2

@@ -889,7 +889,12 @@
     ; ...
   ret
   ;
-  ;
+  add_falling_object_to_collision_table:
+    ; Adds a falling object (asteroid, shard, spinner, missile, danish) to
+    ; the collision table.
+    ; IX = Pointer to object.
+
+  ret
 
 .ends
 ;

@@ -73,22 +73,11 @@ jp main_loop
 ; Tests for the sandbox:
 test_1:
   ld hl,sandbox_game_object_init_table
-  ld a,3
+  ld a,1
   call batch_initialize_game_objects
 
-  ld hl,sandbox_bullet_position_table
-  ld a,2 ; check!
-  ld ix,bullet
-  call position_multiple_game_object_instances
-
-  ld hl,sandbox_shard_position_table
-  ld a,4 ; check!
-  ld ix,shard
-  call position_multiple_game_object_instances
-
-  ld hl,sandbox_batch_draw_table
-  ld a,3 ; check!
-  call batch_draw_game_objects
+  ld ix,asteroid
+  call draw_game_object
 
 
 
