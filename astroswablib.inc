@@ -1106,8 +1106,7 @@
     coll1_3:
       ; rect1.x < rect2.x + rect2.width
       ld a,(iy+1) ;
-      ld b,(iy+2) ; ! ADD (II+n)! Optimize
-      add a,b
+      add a,(iy+2)
       ld b,a
       ld a,(ix+game_object.hitbox_offset_x)
       add a,(ix+game_object.x)
@@ -1119,8 +1118,8 @@
       add a,(ix+game_object.hitbox_offset_x)
       add a,(ix+game_object.hitbox_width)
       ld b,a
-      ld a,(iy+1) ; optimize here - something with cp (ii+n)
-      sub b
+      ld a,(iy+1)
+      cp b
     ret
     coll3_3:
       ; rect1.y < rect2.y + rect2.height
