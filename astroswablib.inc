@@ -933,7 +933,15 @@
     inc hl
     ld a,(ix+game_object.hitbox_height)
     ld (hl),a
+    inc hl
     ;
+    ; Add pointer to object
+    push ix
+    pop de
+    ld (hl),e
+    inc hl
+    ld (hl),d
+
   ret
   begin_collision_tables:
     xor a
@@ -977,8 +985,12 @@
     ret nc
     call coll4_2
     ret nc
-    ; Collision! Return with carry set.
-    ld iy,asteroid ; FIXME: Remove duplication!
+    ; Collision! Return with carry set, and with pointer to object in table
+    ; passed in IY:
+    ld l,(iy+4)
+    ld h,(iy+5)
+    push hl
+    pop iy
   ret
     coll1_2:
       ; rect1.x < rect2.x + rect2.width
