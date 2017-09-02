@@ -142,8 +142,9 @@
   ;    call batch_collision_detect
   ;    call c,handle_swabby_collision
   ;  +:
-    ;
-    ; ---------------------------------------------------------------------------
+    ; --- END COLLISION TESTS FOR THIS FRAME ----------------------------------
+    call begin_collision_tables       ; Restart filling the coll.tables.
+    ; -------------------------------------------------------------------------
     ; Handle Swabby sprite and movement:
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
@@ -281,6 +282,7 @@
       call horizontal_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
+      call add_object_to_collision_table
       ;
       ld de,_sizeof_game_object
       add ix,de

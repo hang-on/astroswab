@@ -901,6 +901,7 @@
   ;
   add_object_to_collision_table:
     ; IX = Pointer to object.
+    ; Uses: AF, BC, DE, HL
     ld a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
     jp nc,+
