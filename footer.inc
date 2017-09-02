@@ -195,11 +195,11 @@
     .db %00000001, 15, 14, SWABBY
   sandbox_asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 0, 1, GAME_OBJECT_ACTIVE
-    .db %00010000, 15, 15, ASTEROID
+    .db 20, 20, GAME_OBJECT_ACTIVE
+    .db %00000000, 16, 16, ASTEROID
   sandbox_bullet_init_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 3, 16, GAME_OBJECT_ACTIVE
+    .db 25, 15+16+3, GAME_OBJECT_ACTIVE
     .db %00100000, 4, 8, BULLET
 
   ; ---------------------------------------------------------------------------

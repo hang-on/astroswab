@@ -965,7 +965,14 @@
       ld b,(iy+2)
       add a,b
       ld b,a
-      ld a,(ix+game_object.x)
+      ld a, (ix+game_object.hitbox_offset)
+      and %11110000
+      rra
+      rra
+      rra
+      rra
+      ld c,(ix+game_object.x)
+      add a,c
       cp b
     ret
     coll2_2:
