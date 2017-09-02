@@ -1,5 +1,78 @@
 ; 2017-09-02
 
+test_4:
+
+  ld ix,swabby
+  ld hl,sandbox_swabby_init_table
+  call initialize_game_object
+  call draw_game_object
+  ;
+  ld ix,bullet
+  ld hl,sandbox_bullet_init_table
+  call initialize_game_object
+  call draw_game_object
+  ;
+  call begin_collision_tables
+  ;
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_init_table
+  call initialize_game_object
+  call draw_game_object
+  ld ix,asteroid
+  call add_object_to_collision_table
+  ;
+  ld ix,bullet
+  call detect_collision_using_collision_table
+  push iy
+  pop hl
+  assertCarrySet "Test 4.1 failed"
+  assertEqualsHL asteroid, "Test 4.2 failed"
+ret
+
+
+test_5:
+  ld ix,swabby
+  ld hl,sandbox_swabby_init_table
+  call initialize_game_object
+  call draw_game_object
+  ;
+  ;
+  ld hl,sandbox_game_object_init_table
+  ld a,1
+  call batch_initialize_game_objects
+  ld hl,sandbox_position_table
+  ld a,5
+  ld ix,bullet
+  call position_multiple_game_object_instances
+  ld a,5
+  ld hl,sandbox_batch_draw_table
+  call batch_draw_game_objects
+  ;
+  call begin_collision_tables
+  ;
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_init_table
+  call initialize_game_object
+  call draw_game_object
+  ld ix,asteroid
+  call add_object_to_collision_table
+  ;
+  ld ix,bullet
+  ld b,BULLET_MAX
+  -:
+    ; Only do this for active bullets!
+    push bc
+    call detect_collision_using_collision_table
+    call c,handle_collision
+    pop bc
+    ld de,_sizeof_game_object
+    add ix,de
+  djnz -
+  assertEqualsByte temp_byte, TRUE, "Test 5.1 failed"
+  assertEqualsWord temp_word, asteroid, "Test 5.2 failed"
+ret
+
+
 sandbox_shard_init_table:
   .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
   .db 0, 0, GAME_OBJECT_ACTIVE

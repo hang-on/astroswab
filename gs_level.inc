@@ -121,6 +121,8 @@
           ;ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
           ;call batch_collision_detect
           ;call c,handle_bullet_collision
+          call v3_detect_collision_using_collision_table
+          call c,handle_bullet_collision
         ; Finished testing this bullet. Proceed to next...
         +:
         ld de,_sizeof_game_object

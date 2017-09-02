@@ -62,77 +62,6 @@ run_sandbox:
 jp main_loop
 ;
 ; Tests for the sandbox:
-test_4:
-
-  ld ix,swabby
-  ld hl,sandbox_swabby_init_table
-  call initialize_game_object
-  call draw_game_object
-  ;
-  ld ix,bullet
-  ld hl,sandbox_bullet_init_table
-  call initialize_game_object
-  call draw_game_object
-  ;
-  call begin_collision_tables
-  ;
-  ld ix,asteroid
-  ld hl,sandbox_asteroid_init_table
-  call initialize_game_object
-  call draw_game_object
-  ld ix,asteroid
-  call add_object_to_collision_table
-  ;
-  ld ix,bullet
-  call detect_collision_using_collision_table
-  push iy
-  pop hl
-  assertCarrySet "Test 4.1 failed"
-  assertEqualsHL asteroid, "Test 4.2 failed"
-ret
-
-
-test_5:
-  ld ix,swabby
-  ld hl,sandbox_swabby_init_table
-  call initialize_game_object
-  call draw_game_object
-  ;
-  ;
-  ld hl,sandbox_game_object_init_table
-  ld a,1
-  call batch_initialize_game_objects
-  ld hl,sandbox_position_table
-  ld a,5
-  ld ix,bullet
-  call position_multiple_game_object_instances
-  ld a,5
-  ld hl,sandbox_batch_draw_table
-  call batch_draw_game_objects
-  ;
-  call begin_collision_tables
-  ;
-  ld ix,asteroid
-  ld hl,sandbox_asteroid_init_table
-  call initialize_game_object
-  call draw_game_object
-  ld ix,asteroid
-  call add_object_to_collision_table
-  ;
-  ld ix,bullet
-  ld b,BULLET_MAX
-  -:
-    ; Only do this for active bullets!
-    push bc
-    call detect_collision_using_collision_table
-    call c,handle_collision
-    pop bc
-    ld de,_sizeof_game_object
-    add ix,de
-  djnz -
-  assertEqualsByte temp_byte, TRUE, "Test 5.1 failed"
-  assertEqualsWord temp_word, asteroid, "Test 5.2 failed"
-ret
     handle_collision:
       ld a,TRUE
       ld (temp_byte),a
@@ -155,10 +84,14 @@ ret
     .db %00100000, 2, 0, 4, 8, BULLET
 sandbox_game_object_init_table:
   .dw bullet, sandbox_bullet_init_table, 5
+  .dw asteroid, sandbox_asteroid_init_table, 3
 sandbox_batch_draw_table:
   .dw bullet, 5
-sandbox_position_table:
+  .dw asteroid, 3
+sandbox_bullet_position_table:
   .db 10, 10, 30, 20, 50, 30, 70, 40, 90, 50
+sandbox_asteroid_position_table:
+  .db 20, 20, 100, 20, 100, 50
 
   test_6:
     ; Test 6 is a clone of test 5, testing new coll.detect function.
@@ -169,24 +102,28 @@ sandbox_position_table:
     ;
     ;
     ld hl,sandbox_game_object_init_table
-    ld a,1
+    ld a,2
     call batch_initialize_game_objects
-    ld hl,sandbox_position_table
+    ;
+    ld hl,sandbox_bullet_position_table
     ld a,5
     ld ix,bullet
     call position_multiple_game_object_instances
-    ld a,5
-    ld hl,sandbox_batch_draw_table
-    call batch_draw_game_objects
     ;
     call begin_collision_tables
     ;
+    ld hl,sandbox_asteroid_position_table
+    ld a,3
     ld ix,asteroid
-    ld hl,sandbox_asteroid_init_table
-    call initialize_game_object
-    call draw_game_object
+    call position_multiple_game_object_instances
+    ld a,3
     ld ix,asteroid
-    call add_object_to_collision_table
+    call add_multiple_game_object_instances_to_colliaion_table
+
+    ld a,2
+    ld hl,sandbox_batch_draw_table
+    call batch_draw_game_objects
+
     ;
     ld ix,bullet
     ld b,BULLET_MAX

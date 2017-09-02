@@ -899,9 +899,22 @@
     ; ...
   ret
   ;
+  add_multiple_game_object_instances_to_colliaion_table:
+    ; Entry: IX = Pointer to game object with multiple instances.
+    ;        A = number of instances to position.
+    ; Uses: AF, B, DE, HL, IX
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      call add_object_to_collision_table
+      add ix,de
+    djnz -
+  ret
+
   add_object_to_collision_table:
     ; IX = Pointer to object.
     ; Uses: AF, BC, DE, HL
+    SAVE_REGISTERS
     ld a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
     jp nc,+
@@ -917,26 +930,23 @@
       ld hl,bottom_collision_table
     ++:
     ;
-    add a,a
-    add a,a
+    cp 0
+    jp z,+
+    ld b,a
+    -:
+      add a,COLLISION_TABLE_ELEMENT_SIZE ; Table element size here!
+    djnz -
     ld d,0
     ld e,a
     add hl,de
+    +:
     ;
-    ld b,(ix+game_object.y) ; Apply hitbox offset.
-    ld a,(ix+game_object.hitbox_offset)
-    and %00001111
-    add a,b
+    ld a,(ix+game_object.y) ; Apply hitbox offset.
+    add a,(ix+game_object.hitbox_offset_y)
     ld (hl),a
     inc hl
-    ld b,(ix+game_object.x)
-    ld a,(ix+game_object.hitbox_offset)
-    and %11110000
-    rra
-    rra
-    rra
-    rra
-    add a,b
+    ld a,(ix+game_object.x)
+    add a,(ix+game_object.hitbox_offset_x)
     ld (hl),a
     inc hl
     ld a,(ix+game_object.hitbox_width)
@@ -952,7 +962,7 @@
     ld (hl),e
     inc hl
     ld (hl),d
-
+    RESTORE_REGISTERS
   ret
   begin_collision_tables:
     xor a
@@ -1082,27 +1092,40 @@
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
       ld hl,top_collision_table
+      ld a,(objects_in_top_collision_table)
       jp ++
     +:
       ld hl,bottom_collision_table
+      ld a,(objects_in_bottom_collision_table)
     ++:
     push hl
     pop iy
-    ;
-    call coll1_3
-    ret nc
-    call coll2_3
-    ret nc
-    call coll3_3
-    ret nc
-    call coll4_3
-    ret nc
-    ; Fall through: Collision!
-    ; Return with carry set, and with pointer in IY.
-    ld l,(iy+4)
-    ld h,(iy+5)
-    push hl
-    pop iy
+    ld b,a
+    -:
+      push bc
+        ;
+        call coll1_3
+        jp nc,+
+        call coll2_3
+        jp nc,+
+        call coll3_3
+        jp nc,+
+        call coll4_3
+        jp nc,+
+          ; Fall through: Collision!
+          ; Return with carry set, and with pointer in IY.
+          ld l,(iy+4)
+          ld h,(iy+5)
+          push hl
+          pop iy
+          pop bc ; clean stack
+          ret
+        +:
+        ld de,COLLISION_TABLE_ELEMENT_SIZE
+        add iy,de
+      pop bc
+    djnz -
+
   ret
     coll1_3:
       ; rect1.x < rect2.x + rect2.width
