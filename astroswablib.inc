@@ -961,8 +961,8 @@
   ret
     coll1_2:
       ; rect1.x < rect2.x + rect2.width
-      ld a,(iy+1)
-      ld b,(iy+2)
+      ld a,(iy+1) ; also apply hitbox offset here!
+      ld b,(iy+2) ; and here!
       add a,b
       ld b,a
       ld a, (ix+game_object.hitbox_offset)
