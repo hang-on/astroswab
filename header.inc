@@ -111,8 +111,9 @@
 ; Sound:
   .equ SOUND_BANK 5
 ; Collision:
-  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)    
-
+  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
+  .equ COLLISION_TABLE_MAX_OBJECTS 12
+  .equ COLLISION_TABLE_ELEMENT_SIZE 6             ; y,x,w,h,pointer (word).
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.
@@ -154,8 +155,8 @@
   gun_released db
   gun_delay db
   ;
-  top_collision_table dsb 16*4
+  top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_top_collision_table db
-  bottom_collision_table dsb 16*4
+  bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_bottom_collision_table db
 .ends
