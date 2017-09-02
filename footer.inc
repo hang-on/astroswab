@@ -199,7 +199,7 @@
     .db %00000000, 16, 16, ASTEROID
   sandbox_bullet_init_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 25+20, 24, GAME_OBJECT_ACTIVE
+    .db 25, 24, GAME_OBJECT_ACTIVE
     .db %00100000, 4, 8, BULLET
 
   ; ---------------------------------------------------------------------------
