@@ -9,6 +9,7 @@
   .equ PICO8_PALETTE_SIZE 16
   .equ FIRST_LINE_OF_VBLANK 192
   .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
+
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
@@ -109,6 +110,9 @@
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
 ; Sound:
   .equ SOUND_BANK 5
+; Collision:
+  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)    
+
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.

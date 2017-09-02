@@ -892,7 +892,7 @@
   add_object_to_collision_table:
     ; IX = Pointer to object.
     ld a,(ix+game_object.y)
-    cp (192-50)/2 ; adjust to real playfield half!
+    cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
     jp nc,+
       ld hl,objects_in_top_collision_table
       ld a,(hl)
