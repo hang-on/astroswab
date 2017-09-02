@@ -96,50 +96,52 @@
     ; ---------------------------------------------------------------------------
     ; Resolve current state of objects before moving etc.
     ; Bullets vs. other game objects collision tests:
-    ld ix,bullet
-    ld bc,BULLET_MAX
-    bullet_collision_loop:
-      push bc
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_INACTIVE
-      jp z,+
-        ; Test this bullet instance.
-        ; Bullet 'collides' with deactivate zone?
-        ld a,BULLET_DEACTIVATE_ZONE_START
-        ld b,BULLET_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
+    ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
+    and %00000001
+    jp nz,bullet_collision_loop_end
+      ;
+      ld ix,bullet
+      ld bc,BULLET_MAX
+      bullet_collision_loop:
+        push bc
         ld a,(ix+game_object.state)
         cp GAME_OBJECT_INACTIVE
         jp z,+
-        ;
-        ld a,(frame_counter)
-        and %00000001
-        jp nz,+
-        ; >>
-        ld hl,bullet_collision_table
-        ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
-        call batch_collision_detect
-        call c,handle_bullet_collision
-      ; Finished testing this bullet. Proceed to next...
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-      dec bc
-      ld a,b
-      or c
-    jp nz,bullet_collision_loop
+          ; Test this bullet instance.
+          ; Bullet 'collides' with deactivate zone?
+          ld a,BULLET_DEACTIVATE_ZONE_START
+          ld b,BULLET_DEACTIVATE_ZONE_END
+          call horizontal_zone_deactivate_game_object
+          ld a,(ix+game_object.state)
+          cp GAME_OBJECT_INACTIVE
+          jp z,+
+          ;
+          ; >>
+          ;ld hl,bullet_collision_table
+          ;ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
+          ;call batch_collision_detect
+          ;call c,handle_bullet_collision
+        ; Finished testing this bullet. Proceed to next...
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+        pop bc
+        dec bc
+        ld a,b
+        or c
+      jp nz,bullet_collision_loop
+    bullet_collision_loop_end:
     ;
-    ld a,(frame_counter)
-    and %00000001
-    jp z,+
+    ;ld a,(frame_counter)
+    ;and %00000001
+    ;jp z,+
       ; Swabby vs. relevant other game objects.
-      ld ix,swabby
-      ld hl,swabby_collision_table
-      ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
-      call batch_collision_detect
-      call c,handle_swabby_collision
-    +:
+    ;  ld ix,swabby
+  ;    ld hl,swabby_collision_table
+  ;    ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
+  ;    call batch_collision_detect
+  ;    call c,handle_swabby_collision
+  ;  +:
     ;
     ; ---------------------------------------------------------------------------
     ; Handle Swabby sprite and movement:
