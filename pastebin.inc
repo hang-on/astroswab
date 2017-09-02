@@ -1,3 +1,82 @@
+; 2017-09-02
+
+sandbox_shard_init_table:
+  .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
+  .db 0, 0, GAME_OBJECT_ACTIVE
+  .db %00010001, 7, 7, SHARD           ; TODO: Might need adjustment!
+sandbox_missile_init_table:
+  .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+  .db 20, 10, GAME_OBJECT_ACTIVE
+  .db %00010001, 14, 14, MISSILE     ; Might need adjustment!
+sandbox_danish_init_table:
+  .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
+  .db 30, 90, GAME_OBJECT_ACTIVE
+  .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
+sandbox_spinner_init_table:
+  .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
+  .db 120, 180, GAME_OBJECT_ACTIVE
+  .db %00000000, 16, 24, SPINNER
+
+  sandbox_game_object_init_table:
+    .dw asteroid, sandbox_asteroid_init_table, 1
+  sandbox_asteroid_init_table_2:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 90, 40, GAME_OBJECT_ACTIVE
+    .db %00000000, 16, 16, ASTEROID
+  sandbox_game_object_init_table_2:
+    .dw asteroid, sandbox_asteroid_init_table_2, 1
+    .dw bullet, sandbox_bullet_init_table, 1
+    .dw swabby, sandbox_swabby_init_table, 1
+    .dw danish, sandbox_danish_init_table, 1
+
+    ;
+    sandbox_batch_draw_table:
+      .dw bullet, 1
+      .dw shard, 2
+      .dw swabby, 1
+    sandbox_bullet_position_table:
+      .db 50, 80, 90, 130
+    sandbox_shard_position_table:
+      .db 40, 70, 40, 90, 100, 100, 100, 140
+    sandbox_batch_collision_test_table:
+      .dw shard, 4
+    ;
+    sandbox_game_object_init_table_3:
+      .dw asteroid, sandbox_asteroid_init_table_3, 1
+      .dw bullet, sandbox_bullet_init_table, 1
+      .dw swabby, sandbox_swabby_init_table, 1
+    sandbox_asteroid_init_table_3:
+      .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+      .db 0, 0, GAME_OBJECT_ACTIVE
+      .db %00000000, 15, 15, ASTEROID
+
+
+test_3_bullet_collides:
+  ld hl,sandbox_game_object_init_table_2
+  ld a,3
+  call batch_initialize_game_objects
+
+  ld ix,swabby
+  call draw_game_object
+  ;
+  ld ix,bullet
+  call draw_game_object
+  ;
+  call begin_collision_tables
+  ;
+  ld ix,asteroid
+  call draw_game_object
+  call add_object_to_collision_table
+  ;
+  ld ix,bullet
+  ld hl,bottom_collision_table
+  call test_game_object_against_collision_table
+  assertCarrySet "Test 3.1 failed"
+  ;
+  ;
+  ;
+ret
+
 ; 2017-09-01
 test_1_asteroid_in_top_table:
   ld hl,sandbox_game_object_init_table

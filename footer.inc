@@ -117,7 +117,7 @@
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
-    .db %00000001, 15, 14, 16, SWABBY
+    .db %00000001, 15, 14, SWABBY
   swabby_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX
@@ -189,57 +189,18 @@
     .asc "TV type: NTSC#"
   ; ---------------------------------------------------------------------------
   ; Sandbox stuff:
-  sandbox_shard_init_table:
-    .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
-    .db 0, 0, GAME_OBJECT_ACTIVE
-    .db %00010001, 7, 7, SHARD           ; TODO: Might need adjustment!
-  sandbox_missile_init_table:
-    .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 20, 10, GAME_OBJECT_ACTIVE
-    .db %00010001, 14, 14, MISSILE     ; Might need adjustment!
-  sandbox_danish_init_table:
-    .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
-    .db 30, 90, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16, DANISH           ; TODO: Might need adjustment!
-  sandbox_spinner_init_table:
-    .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
-    .db 120, 180, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 24, SPINNER
   sandbox_swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 135, 80, GAME_OBJECT_ACTIVE
-    .db %00000001, 15, 14, 16, SWABBY
-  ;
+    .db %00000001, 15, 14, SWABBY
   sandbox_asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 40, 40, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16, ASTEROID
-  sandbox_game_object_init_table:
-    .dw asteroid, sandbox_asteroid_init_table, 1
-  sandbox_asteroid_init_table_2:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 90, 40, GAME_OBJECT_ACTIVE
-    .db %00000000, 16, 16, ASTEROID
-  sandbox_game_object_init_table_2:
-    .dw asteroid, sandbox_asteroid_init_table_2, 1
-    .dw bullet, sandbox_bullet_init_table, 1
-    .dw swabby, sandbox_swabby_init_table, 1
-    .dw danish, sandbox_danish_init_table, 1
+    .db 0, 1, GAME_OBJECT_ACTIVE
+    .db %00010000, 15, 15, ASTEROID
   sandbox_bullet_init_table:
     .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-    .db 90, 40, GAME_OBJECT_ACTIVE, BULLET
-    .db %00100000, 4, 8
-  ;
-  sandbox_batch_draw_table:
-    .dw bullet, 1
-    .dw shard, 2
-    .dw swabby, 1
-  sandbox_bullet_position_table:
-    .db 50, 80, 90, 130
-  sandbox_shard_position_table:
-    .db 40, 70, 40, 90, 100, 100, 100, 140
-  sandbox_batch_collision_test_table:
-    .dw shard, 4
+    .db 3, 16, GAME_OBJECT_ACTIVE
+    .db %00100000, 4, 8, BULLET
 
   ; ---------------------------------------------------------------------------
 .ends

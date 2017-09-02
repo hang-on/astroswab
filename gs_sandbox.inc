@@ -54,41 +54,38 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_3_bullet_collides
-
+  ; call test_3_bullet_collides
+  call test_4
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
 
-test_3_bullet_collides:
-  ld hl,sandbox_game_object_init_table_2
-  ld a,4
-  call batch_initialize_game_objects
+
+
+test_4:
 
   ld ix,swabby
+  ld hl,sandbox_swabby_init_table
+  call initialize_game_object
   call draw_game_object
   ;
   ld ix,bullet
-  call draw_game_object
-  ld ix,danish
+  ld hl,sandbox_bullet_init_table
+  call initialize_game_object
   call draw_game_object
   ;
   call begin_collision_tables
   ;
   ld ix,asteroid
+  ld hl,sandbox_asteroid_init_table
+  call initialize_game_object
   call draw_game_object
+  ld ix,asteroid
   call add_object_to_collision_table
   ;
   ld ix,bullet
-  ld hl,bottom_collision_table
-  call test_game_object_against_collision_table
-  assertCarrySet "Test 3.1 failed"
-  ;
-  ld ix,danish
-  ld hl,bottom_collision_table
-  call test_game_object_against_collision_table
-  assertCarryReset "Test 3.2 failed"
-  ;
-  ;
+  ld hl,top_collision_table ;!!!!!!!!! !!!!!
+  call detect_collision_using_collision_table
+  assertCarryReset "Test 4.1 failed"
 ret
