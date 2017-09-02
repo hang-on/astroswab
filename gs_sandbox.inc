@@ -55,14 +55,12 @@ run_sandbox:
   ;
   ; Tests below:
   ; call test_3_bullet_collides
-  call test_4
+  ;call test_4
+  call test_5
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
-
-
-
 test_4:
 
   ld ix,swabby
@@ -91,3 +89,49 @@ test_4:
   assertCarrySet "Test 4.1 failed"
   assertEqualsHL asteroid, "Test 4.2 failed"
 ret
+
+
+test_5:
+  ld ix,swabby
+  ld hl,sandbox_swabby_init_table
+  call initialize_game_object
+  call draw_game_object
+  ;
+  ;ld ix,bullet
+  ;ld hl,sandbox_bullet_init_table
+  ;call initialize_game_object
+  ;call draw_game_object
+  ;
+  ld hl,sandbox_game_object_init_table
+  ld a,1
+  call batch_initialize_game_objects
+  ld hl,sandbox_position_table
+  ld a,5
+  ld ix,bullet
+  call position_multiple_game_object_instances
+  ld a,5
+  ld hl,sandbox_batch_draw_table
+  call batch_draw_game_objects
+  ;
+  call begin_collision_tables
+  ;
+  ld ix,asteroid
+  ld hl,sandbox_asteroid_init_table
+  call initialize_game_object
+  call draw_game_object
+  ld ix,asteroid
+  call add_object_to_collision_table
+  ;
+  ;ld ix,bullet
+  ;call detect_collision_using_collision_table
+  ;push iy
+  ;pop hl
+  ;assertCarrySet "Test 4.1 failed"
+  ;assertEqualsHL asteroid, "Test 4.2 failed"
+ret
+sandbox_game_object_init_table:
+  .dw bullet, sandbox_bullet_init_table, 5
+sandbox_batch_draw_table:
+  .dw bullet, 5
+sandbox_position_table:
+  .db 10, 10, 30, 20, 50, 30, 70, 40, 90, 50
