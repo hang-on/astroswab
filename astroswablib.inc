@@ -912,10 +912,20 @@
     ld e,a
     add hl,de
     ;
-    ld a,(ix+game_object.y)
+    ld b,(ix+game_object.y) ; Apply hitbox offset.
+    ld a,(ix+game_object.hitbox_offset)
+    and %00001111
+    add a,b
     ld (hl),a
     inc hl
-    ld a,(ix+game_object.x)
+    ld b,(ix+game_object.x)
+    ld a,(ix+game_object.hitbox_offset)
+    and %11110000
+    rra
+    rra
+    rra
+    rra
+    add a,b
     ld (hl),a
     inc hl
     ld a,(ix+game_object.hitbox_width)
@@ -961,8 +971,8 @@
   ret
     coll1_2:
       ; rect1.x < rect2.x + rect2.width
-      ld a,(iy+1) ; also apply hitbox offset here!
-      ld b,(iy+2) ; and here!
+      ld a,(iy+1) ;
+      ld b,(iy+2) ; !
       add a,b
       ld b,a
       ld a, (ix+game_object.hitbox_offset)
@@ -977,7 +987,14 @@
     ret
     coll2_2:
       ; rect1.x + rect1.width > rect2.x
-      ld a,(ix+game_object.x)
+      ld c,(ix+game_object.x)
+      ld a,(ix+game_object.hitbox_offset)
+      and %11110000
+      rra
+      rra
+      rra
+      rra
+      add a,c
       ld b,(ix+game_object.hitbox_width)
       add a,b
       ld b,a
@@ -990,13 +1007,19 @@
       ld b,(iy+3)
       add a,b
       ld b,a
-      ld a,(ix+game_object.y)
+      ld c,(ix+game_object.y)
+      ld a,(ix+game_object.hitbox_offset)
+      and %00001111
+      add a,c
       cp b
     ret
     coll4_2:
       ; rect1.height + rect1.y > rect2.y
-      ld a,(ix+game_object.hitbox_height)
-      ld b,(ix+game_object.y)
+      ld c,(ix+game_object.y)
+      ld a,(ix+game_object.hitbox_offset)
+      and %00001111
+      add a,c
+      ld b,(ix+game_object.hitbox_height)
       add a,b
       ld b,a
       ld a,(iy+0)
