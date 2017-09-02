@@ -86,7 +86,7 @@ test_4:
   ;
   ld ix,bullet
   call detect_collision_using_collision_table
-  push ix
+  push iy
   pop hl
   assertCarrySet "Test 4.1 failed"
   assertEqualsHL asteroid, "Test 4.2 failed"

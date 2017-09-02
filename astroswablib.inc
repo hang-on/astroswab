@@ -978,6 +978,7 @@
     call coll4_2
     ret nc
     ; Collision! Return with carry set.
+    ld iy,asteroid ; FIXME: Remove duplication!
   ret
     coll1_2:
       ; rect1.x < rect2.x + rect2.width
