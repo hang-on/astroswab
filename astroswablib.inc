@@ -1061,6 +1061,10 @@
     ;
   ;
   v3_detect_collision_using_collision_table:
+    ; Version 3 notes:
+    ; Assumes game objects to be initialized with
+    ; separate bytes for y and x hitbox offset.
+    ;
     ; Simple form of collision detection: Axis-aligned bounding box.
     ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
     ; rect1.x + rect1.width > rect2.x &&      (coll2)
@@ -1073,10 +1077,7 @@
     ; Uses: AF, B, IY
     ;
     ; Determine relevant collision table.
-    ld a,(ix+game_object.hitbox_offset)
-    and %00001111
-    ld b,(ix+game_object.y)
-    add a,b
+    ld a,(ix+game_object.hitbox_offset_y)
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
       ld hl,top_collision_table
@@ -1095,8 +1096,8 @@
     ret nc
     call coll4_3
     ret nc
-    ; Collision! Return with carry set, and with pointer to object in table
-    ; passed in IY:
+    ; Fall through: Collision!
+    ; Return with carry set, and with pointer in IY.
     ld l,(iy+4)
     ld h,(iy+5)
     push hl
@@ -1105,33 +1106,20 @@
     coll1_3:
       ; rect1.x < rect2.x + rect2.width
       ld a,(iy+1) ;
-      ld b,(iy+2) ; !
+      ld b,(iy+2) ; ! ADD (II+n)! Optimize
       add a,b
       ld b,a
-      ld a, (ix+game_object.hitbox_offset)
-      and %11110000
-      rra
-      rra
-      rra
-      rra
-      ld c,(ix+game_object.x)
-      add a,c
+      ld a,(ix+game_object.hitbox_offset_x)
+      add a,(ix+game_object.x)
       cp b
     ret
     coll2_3:
       ; rect1.x + rect1.width > rect2.x
-      ld c,(ix+game_object.x)
-      ld a,(ix+game_object.hitbox_offset)
-      and %11110000
-      rra
-      rra
-      rra
-      rra
-      add a,c
-      ld b,(ix+game_object.hitbox_width)
-      add a,b
+      ld a,(ix+game_object.x)
+      add a,(ix+game_object.hitbox_offset_x)
+      add a,(ix+game_object.hitbox_width)
       ld b,a
-      ld a,(iy+1)
+      ld a,(iy+1) ; optimize here - something with cp (ii+n)
       sub b
     ret
     coll3_3:
@@ -1140,20 +1128,15 @@
       ld b,(iy+3)
       add a,b
       ld b,a
-      ld c,(ix+game_object.y)
-      ld a,(ix+game_object.hitbox_offset)
-      and %00001111
-      add a,c
+      ld a,(ix+game_object.y)
+      add a,(ix+game_object.hitbox_offset_y)
       cp b
     ret
     coll4_3:
       ; rect1.height + rect1.y > rect2.y
-      ld c,(ix+game_object.y)
-      ld a,(ix+game_object.hitbox_offset)
-      and %00001111
-      add a,c
-      ld b,(ix+game_object.hitbox_height)
-      add a,b
+      ld a,(ix+game_object.y)
+      add a,(ix+game_object.hitbox_offset_y)
+      add a,(ix+game_object.hitbox_height)
       ld b,a
       ld a,(iy+0)
       cp b

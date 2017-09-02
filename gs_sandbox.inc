@@ -56,7 +56,8 @@ run_sandbox:
   ; Tests below:
   ; call test_3_bullet_collides
   ;call test_4
-  call test_5
+  ;call test_5
+  call test_6
   ;
 jp main_loop
 ;
@@ -158,3 +159,46 @@ sandbox_batch_draw_table:
   .dw bullet, 5
 sandbox_position_table:
   .db 10, 10, 30, 20, 50, 30, 70, 40, 90, 50
+
+  test_6:
+    ; Test 6 is a clone of test 5, testing new coll.detect function.
+    ld ix,swabby
+    ld hl,sandbox_swabby_init_table
+    call initialize_game_object
+    call draw_game_object
+    ;
+    ;
+    ld hl,sandbox_game_object_init_table
+    ld a,1
+    call batch_initialize_game_objects
+    ld hl,sandbox_position_table
+    ld a,5
+    ld ix,bullet
+    call position_multiple_game_object_instances
+    ld a,5
+    ld hl,sandbox_batch_draw_table
+    call batch_draw_game_objects
+    ;
+    call begin_collision_tables
+    ;
+    ld ix,asteroid
+    ld hl,sandbox_asteroid_init_table
+    call initialize_game_object
+    call draw_game_object
+    ld ix,asteroid
+    call add_object_to_collision_table
+    ;
+    ld ix,bullet
+    ld b,BULLET_MAX
+    -:
+      ; Only do this for active bullets!
+      push bc
+      call v3_detect_collision_using_collision_table
+      call c,handle_collision
+      pop bc
+      ld de,_sizeof_game_object
+      add ix,de
+    djnz -
+    assertEqualsByte temp_byte, TRUE, "Test 6.1 failed"
+    assertEqualsWord temp_word, asteroid, "Test 6.2 failed"
+  ret
