@@ -899,7 +899,7 @@
     ; ...
   ret
   ;
-  add_multiple_game_object_instances_to_colliaion_table:
+  add_multiple_game_object_instances_to_collision_table:
     ; Entry: IX = Pointer to game object with multiple instances.
     ;        A = number of instances to position.
     ; Uses: AF, B, DE, HL, IX
@@ -1089,14 +1089,19 @@
     ;
     ; Determine relevant collision table.
     ld a,(ix+game_object.hitbox_offset_y)
+    add a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
       ld hl,top_collision_table
       ld a,(objects_in_top_collision_table)
+      or a
+      ret z
       jp ++
     +:
       ld hl,bottom_collision_table
       ld a,(objects_in_bottom_collision_table)
+      or a
+      ret z
     ++:
     push hl
     pop iy

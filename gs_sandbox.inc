@@ -91,7 +91,7 @@ sandbox_batch_draw_table:
 sandbox_bullet_position_table:
   .db 10, 10, 30, 20, 50, 30, 70, 40, 90, 50
 sandbox_asteroid_position_table:
-  .db 20, 20, 100, 20, 100, 50
+  .db 150, 20, 100, 20, 100, 50
 
   test_6:
     ; Test 6 is a clone of test 5, testing new coll.detect function.
@@ -118,7 +118,7 @@ sandbox_asteroid_position_table:
     call position_multiple_game_object_instances
     ld a,3
     ld ix,asteroid
-    call add_multiple_game_object_instances_to_colliaion_table
+    call add_multiple_game_object_instances_to_collision_table
 
     ld a,2
     ld hl,sandbox_batch_draw_table
