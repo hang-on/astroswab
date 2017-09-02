@@ -97,10 +97,6 @@ test_5:
   call initialize_game_object
   call draw_game_object
   ;
-  ;ld ix,bullet
-  ;ld hl,sandbox_bullet_init_table
-  ;call initialize_game_object
-  ;call draw_game_object
   ;
   ld hl,sandbox_game_object_init_table
   ld a,1
@@ -122,13 +118,28 @@ test_5:
   ld ix,asteroid
   call add_object_to_collision_table
   ;
-  ;ld ix,bullet
-  ;call detect_collision_using_collision_table
-  ;push iy
-  ;pop hl
-  ;assertCarrySet "Test 4.1 failed"
-  ;assertEqualsHL asteroid, "Test 4.2 failed"
+  ld ix,bullet
+  ld b,BULLET_MAX
+  -:
+    ; Only do this for active bullets!
+    push bc
+    call detect_collision_using_collision_table
+    call c,handle_collision
+    pop bc
+    ld de,_sizeof_game_object
+    add ix,de
+  djnz -
+  assertEqualsByte temp_byte, TRUE, "Test 5.1 failed"
+  assertEqualsWord temp_word, asteroid, "Test 5.2 failed"
 ret
+    handle_collision:
+      ld a,TRUE
+      ld (temp_byte),a
+      push iy
+      pop hl
+      ld (temp_word),hl
+    ret
+
 sandbox_game_object_init_table:
   .dw bullet, sandbox_bullet_init_table, 5
 sandbox_batch_draw_table:
