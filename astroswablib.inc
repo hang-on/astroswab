@@ -462,7 +462,9 @@
   xspeed db
   state db
   shape db
-  hitbox_offset db  ;xxxx yyyy
+  hitbox_offset db  ;xxxx yyyy DEPRECATED - treat as dead byte
+  hitbox_offset_y db
+  hitbox_offset_x db
   hitbox_width db
   hitbox_height db
   anim_counter db
@@ -777,6 +779,14 @@
     ld a,(hl)
     ld (ix+game_object.hitbox_offset),a
     inc hl
+    ;
+    ld a,(hl)
+    ld (ix+game_object.hitbox_offset_y),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.hitbox_offset_x),a
+    inc hl
+    ;
     ld a,(hl)
     ld (ix+game_object.hitbox_width),a
     inc hl

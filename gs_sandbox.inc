@@ -140,6 +140,18 @@ ret
       ld (temp_word),hl
     ret
 
+  sandbox_swabby_init_table:
+    .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 135, 80, GAME_OBJECT_ACTIVE
+    .db %00000001, 0, 1, 15, 14, SWABBY
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 20, 20, GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 16, 16, ASTEROID
+  sandbox_bullet_init_table:
+    .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db 25, 24, GAME_OBJECT_ACTIVE
+    .db %00100000, 2, 0, 4, 8, BULLET
 sandbox_game_object_init_table:
   .dw bullet, sandbox_bullet_init_table, 5
 sandbox_batch_draw_table:
