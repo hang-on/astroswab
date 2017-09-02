@@ -85,7 +85,6 @@ test_4:
   call add_object_to_collision_table
   ;
   ld ix,bullet
-  ld hl,top_collision_table ;!!!!!!!!! !!!!!
   call detect_collision_using_collision_table
-  assertCarryReset "Test 4.1 failed"
+  assertCarrySet "Test 4.1 failed"
 ret

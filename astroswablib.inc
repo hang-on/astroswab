@@ -941,9 +941,6 @@
     ld (objects_in_bottom_collision_table),a
     ;
   ret
-  test_game_object_against_collision_table:
-    scf
-  ret
 ;
   detect_collision_using_collision_table:
     ; Simple form of collision detection: Axis-aligned bounding box.
@@ -956,9 +953,22 @@
     ; there is no collision, and we return with carry reset. If no test fails
     ; then we have collision, and return with carry set.
     ; Uses: AF, B, IY
+    ;
+    ; Determine relevant collision table.
+    ld a,(ix+game_object.hitbox_offset)
+    and %00001111
+    ld b,(ix+game_object.y)
+    add a,b
+    cp COLLISION_TABLE_DIVIDER
+    jp nc,+
+      ld hl,top_collision_table
+      jp ++
+    +:
+      ld hl,bottom_collision_table
+    ++:
     push hl
     pop iy
-
+    ;
     call coll1_2
     ret nc
     call coll2_2
