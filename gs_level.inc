@@ -76,6 +76,7 @@
     ld a,GS_RUN_LEVEL
     ld (game_state),a
     call await_frame_interrupt                ; To avoid profiler failsafe!
+    
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
@@ -93,14 +94,12 @@
     ;
     call get_input_ports
     call begin_sprites
-
+    ;
     ; ---------------------------------------------------------------------------
-    ; Resolve current state of objects before moving etc.
-    ; Bullets vs. other game objects collision tests:
-    ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
+    ; Resolve possible bullet collisions on even frames:
+    ld a,(frame_counter)
     and %00000001
-    jp nz,bullet_collision_loop_end
-      ;
+    jp nz,++
       ld ix,bullet
       ld b,BULLET_MAX
       bullet_collision_loop:
@@ -109,35 +108,25 @@
         cp GAME_OBJECT_INACTIVE
         jp z,+
           ; Test this bullet instance.
-          ; Bullet 'collides' with deactivate zone?
-          ld a,BULLET_DEACTIVATE_ZONE_START
-          ld b,BULLET_DEACTIVATE_ZONE_END
-          call horizontal_zone_deactivate_game_object
-          ld a,(ix+game_object.state)
-          cp GAME_OBJECT_INACTIVE
-          jp z,+
-          ;
           call v3_detect_collision_using_collision_table
           call c,handle_bullet_collision
-        ; Finished testing this bullet. Proceed to next...
         +:
         ld de,_sizeof_game_object
         add ix,de
         pop bc
       djnz bullet_collision_loop
-    bullet_collision_loop_end:
-
-    ;
+    ++:
+    ; Resolve possible swabby collisions on odd frames:
     ld a,(frame_counter)
-    and %00000001 ; test swabby on odd frames.
+    and %00000001
     jp z,+
-      ; Swabby vs. relevant other game objects.
       ld ix,swabby
       call v3_detect_collision_using_collision_table
     +:
-    ; --- END COLLISION TESTS FOR THIS FRAME ----------------------------------
-    call begin_collision_tables       ; Restart filling the coll.tables.
+    ; End of collision tests for this frame.
     ; -------------------------------------------------------------------------
+    call begin_collision_tables       ; Restart filling the coll.tables.
+    ;
     ; Handle Swabby sprite and movement:
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
@@ -223,20 +212,25 @@
     activate_bullet_end:              ; End of bullet activation code.
     ; Process all bullets.
     ld ix,bullet
-    ld bc,BULLET_MAX
-    bullet_loop:
+    ld b,BULLET_MAX
+    -:
       push bc
       ;
-      call move_game_object
-      call draw_game_object
-      ;
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        ; Bullet 'collides' with deactivate zone?
+        ld a,BULLET_DEACTIVATE_ZONE_START
+        ld b,BULLET_DEACTIVATE_ZONE_END
+        call horizontal_zone_deactivate_game_object
+        call move_game_object
+        call draw_game_object
+        ;
+      +:
       ld de,_sizeof_game_object
       add ix,de
       pop bc
-      dec bc
-      ld a,b
-      or c
-    jp nz,bullet_loop
+    djnz -
     ; ---------------------------------------------------------------------------
     ld ix,asteroid
     ld b,ASTEROID_MAX
@@ -269,14 +263,12 @@
             call activate_game_object
       +: ; Here we process the active asteroids.
       call move_game_object              ; Move asteroid downwards.
-      ; Deactivate asteroid if it is within the deactivate zone.
-      ; FIXME?! Do this in the beginning?!
       ld a,ASTEROID_DEACTIVATE_ZONE_START
       ld b,ASTEROID_DEACTIVATE_ZONE_END
       call horizontal_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table ; call z
+      call add_object_to_collision_table
       ;
       asteroid_loop_end:
       ld de,_sizeof_game_object
