@@ -113,11 +113,6 @@ tall_meta_sprite_table:
   .db 24, 8, 11
 .ends
 ;
-.ramsection "astroswablib variables" slot 3
-  ;
-  rnd_seed dw
-  ;
-.ends
 ; -----------------------------------------------------------------------------
 .section "swabby and bullet functions" free
 ; -----------------------------------------------------------------------------
@@ -168,6 +163,7 @@ tall_meta_sprite_table:
     jp nz,-
   ret
 .ends
+;
 ; ---------------------------------------------------------------------------
 .section "profilers" free
 ; ---------------------------------------------------------------------------
@@ -211,10 +207,14 @@ tall_meta_sprite_table:
     ld (loop_finished_line),a
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
-.section "random number generation" free
+.ramsection "random number generation" slot 3
 ; -----------------------------------------------------------------------------
+  rnd_seed dw
+.ends
+; -----------------------------------------------------------------------------
+.section "random number generation functions" free
   get_random_number:
     ; SMS-Power!
     ; Returns an 8-bit pseudo-random number in a
