@@ -37,9 +37,6 @@
   .equ TILE_BANK_1 1
   .equ TILE_BANK_2 2
 ;
-; Sandbox:
-  .equ SANDBOX_LOGGER_START_ROW 19
-;
 ; Game objects:
   .equ SWABBY 1
   .equ BULLET 2

@@ -261,7 +261,7 @@ tall_meta_sprite_table:
 ; SANDBOX
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
-;
+  .equ SANDBOX_LOGGER_START_ROW 19
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
