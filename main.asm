@@ -4,6 +4,7 @@
 
 .include "astroswablib.inc";
 .include "objectlib.inc"
+.include "triggerlib.inc"
 .include "header.inc"
 ;
 .bank 0 slot 0
