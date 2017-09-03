@@ -121,8 +121,7 @@ tall_meta_sprite_table:
   ;
   rnd_seed dw
   ;
-  collision_buffer dsb 8
-  ;
+
 .ends
 ; -----------------------------------------------------------------------------
 .section "astroswablib" free
