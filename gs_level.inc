@@ -192,17 +192,16 @@
           call get_inactive_game_object ; Let IX point to first inactive bullet.
           jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
             call activate_game_object
-            push ix
+            push ix                     ; Save pointer to bullet.
               ld ix,swabby
-              ld a,(ix+game_object.y)
-              sub BULLET_Y_OFFSET
-              ld c,a
-              ld a,(ix+game_object.x)
-              add a,BULLET_X_OFFSET
+              ld a,(ix+game_object.y)   ; Get Swabby y.
+              sub BULLET_Y_OFFSET       ; Apply bullet offset.
               ld b,a
-              ld a,c
-            pop ix
-            call set_game_object_position
+              ld a,(ix+game_object.x)   ; Get Swabby x.
+              add a,BULLET_X_OFFSET     ; Apply offset.
+            pop ix                      ; Restore pointer to bullet.
+            ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
+            ld (ix+game_object.x),a
             ;
             SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
             ld c,SFX_CHANNEL2

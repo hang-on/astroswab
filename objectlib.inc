@@ -171,13 +171,6 @@
     pop af
   ret
   ;
-;  get_game_object_position:
-    ; Entry: IX = pointer to struct.
-    ; Exit: A = object Y and B = object X.
-    ld a,(ix+game_object.y)
-    ld b,(ix+game_object.x)
-  ret
-  ;
   get_game_object_state:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A state of the enemy object, which should be either
@@ -351,13 +344,6 @@
     call activate_game_object
   ret
   ;
-  ;
-  set_game_object_position:
-    ; Entry: IX = pointer to struct.
-    ;        A = Y, B = X.
-    ld (ix+game_object.y),a
-    ld (ix+game_object.x),b
-  ret
   set_game_object_speed:
     ; IX = Pointer to enemy object.
     ; A = Yspeed, B = Xspeed.
