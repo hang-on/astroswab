@@ -112,14 +112,14 @@ tall_meta_sprite_table:
   .db 24, 0, 10
   .db 24, 8, 11
 .ends
+;
 .ramsection "astroswablib variables" slot 3
   ;
   rnd_seed dw
   ;
-
 .ends
 ; -----------------------------------------------------------------------------
-.section "astroswablib" free
+.section "swabby and bullet functions" free
 ; -----------------------------------------------------------------------------
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
@@ -138,7 +138,11 @@ tall_meta_sprite_table:
     ld a,GAME_OBJECT_INACTIVE
     ld (iy+game_object.state),a
   ret
-  ; ---------------------------------------------------------------------------
+.ends
+
+; -----------------------------------------------------------------------------
+.section "Misc functions" free
+; -----------------------------------------------------------------------------
   ;
   batch_print:
     ; Batch print strings at different screen positions. Handy for making a
@@ -163,7 +167,10 @@ tall_meta_sprite_table:
       dec a
     jp nz,-
   ret
-  ; ---------------------------------------------------------------------------
+.ends
+; ---------------------------------------------------------------------------
+.section "profilers" free
+; ---------------------------------------------------------------------------
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
     ; operating on the graphics and expecting to work with the screen blanked.
@@ -203,7 +210,11 @@ tall_meta_sprite_table:
     xor a
     ld (loop_finished_line),a
   ret
-  ; ---------------------------------------------------------------------------
+.ends
+
+; -----------------------------------------------------------------------------
+.section "random number generation" free
+; -----------------------------------------------------------------------------
   get_random_number:
     ; SMS-Power!
     ; Returns an 8-bit pseudo-random number in a
@@ -245,12 +256,7 @@ tall_meta_sprite_table:
   ;
   randomizer_table:
     .dbrnd 2,1,254
-
 .ends
-;
-
-;
-;
 ; -----------------------------------------------------------------------------
 ; SANDBOX
 ; -----------------------------------------------------------------------------
