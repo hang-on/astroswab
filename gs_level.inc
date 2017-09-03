@@ -323,13 +323,18 @@
     ld b,SHARD_MAX
     process_shards:
       push bc
-      call move_game_object              ; Move shard.
-      ld a,SHARD_DEACTIVATE_ZONE_START
-      ld b,SHARD_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        call move_game_object              ; Move shard.
+        ld a,SHARD_DEACTIVATE_ZONE_START
+        ld b,SHARD_DEACTIVATE_ZONE_END
+        call horizontal_zone_deactivate_game_object
+        ;
+        call draw_game_object              ; Put it in the SAT.
+        call add_object_to_collision_table
       ;
-      call draw_game_object              ; Put it in the SAT.
-      ;
+      +:
       ld de,_sizeof_game_object
       add ix,de
       pop bc
