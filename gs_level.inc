@@ -96,9 +96,9 @@
     ; ---------------------------------------------------------------------------
     ; Resolve current state of objects before moving etc.
     ; Bullets vs. other game objects collision tests:
-    ;ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
-    ;and %00000001
-    ;jp nz,bullet_collision_loop_end
+    ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
+    and %00000001
+    jp nz,bullet_collision_loop_end
       ;
       ld ix,bullet
       ld bc,BULLET_MAX
@@ -116,11 +116,6 @@
           cp GAME_OBJECT_INACTIVE
           jp z,+
           ;
-          ; >>
-          ;ld hl,bullet_collision_table
-          ;ld a,(bullet_collision_table_end-bullet_collision_table)/(2*2)
-          ;call batch_collision_detect
-          ;call c,handle_bullet_collision
           call v3_detect_collision_using_collision_table
           call c,handle_bullet_collision
         ; Finished testing this bullet. Proceed to next...
