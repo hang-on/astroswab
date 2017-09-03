@@ -468,13 +468,13 @@
     -:
       push bc
         ;
-        call coll1_3
+        call collision_subtest_1
         jp nc,+
-        call coll2_3
+        call collision_subtest_2
         jp nc,+
-        call coll3_3
+        call collision_subtest_3
         jp nc,+
-        call coll4_3
+        call collision_subtest_4
         jp nc,+
           ; Fall through: Collision!
           ; Return with carry set, and with pointer in IY.
@@ -491,7 +491,7 @@
     djnz -
 
   ret
-    coll1_3:
+    collision_subtest_1:
       ; rect1.x < rect2.x + rect2.width
       ld a,(iy+1) ;
       add a,(iy+2)
@@ -500,7 +500,7 @@
       add a,(ix+game_object.x)
       cp b
     ret
-    coll2_3:
+    collision_subtest_2:
       ; rect1.x + rect1.width > rect2.x
       ld a,(ix+game_object.x)
       add a,(ix+game_object.hitbox_offset_x)
@@ -509,7 +509,7 @@
       ld a,(iy+1)
       cp b
     ret
-    coll3_3:
+    collision_subtest_3:
       ; rect1.y < rect2.y + rect2.height
       ld a,(iy+0)
       ld b,(iy+3)
@@ -519,7 +519,7 @@
       add a,(ix+game_object.hitbox_offset_y)
       cp b
     ret
-    coll4_3:
+    collision_subtest_4:
       ; rect1.height + rect1.y > rect2.y
       ld a,(ix+game_object.y)
       add a,(ix+game_object.hitbox_offset_y)

@@ -143,10 +143,10 @@
 0000:0bf5 add_object_to_collision_table
 0000:0c43 begin_collision_tables
 0000:0c4b detect_collision_using_collision_table
-0000:0c9a coll1_3
-0000:0ca9 coll2_3
-0000:0cb8 coll3_3
-0000:0cc8 coll4_3
+0000:0c9a collision_subtest_1
+0000:0ca9 collision_subtest_2
+0000:0cb8 collision_subtest_3
+0000:0cc8 collision_subtest_4
 0000:0937 activate_game_object
 0000:093f animate_game_object
 0000:095d batch_initialize_game_objects
