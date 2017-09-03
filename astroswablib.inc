@@ -921,7 +921,7 @@
     ;ret nc
 
     cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
-    jp + ;nc
+    jp nc,+
       ld hl,objects_in_top_collision_table
       ld a,(hl)
       inc (hl)
@@ -990,7 +990,7 @@
     ; rect1.y < rect2.y + rect2.height &&     (coll3)
     ; rect1.height + rect1.y > rect2.y)       (coll4)
     ;  --> collision detected!
-    ; We perform these four tests on at a time. If any one test fails,
+    ; We perform these four tests one at a time. If any one test fails,
     ; there is no collision, and we return with carry reset. If no test fails
     ; then we have collision, and return with carry set.
     ; Uses: AF, B, IY
@@ -999,7 +999,7 @@
     ld a,(ix+game_object.hitbox_offset_y)
     add a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
-    jp + ;nc
+    jp nc,+
       ld hl,top_collision_table
       ld a,(objects_in_top_collision_table)
       or a

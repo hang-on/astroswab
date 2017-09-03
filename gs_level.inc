@@ -256,10 +256,10 @@
       jp nz,+
         ld hl,frame_counter                   ; Only consider reactivation on
         bit 0,(hl)                            ; even frames.
-        jp nz,+
+        jp nz,asteroid_loop_end
           call get_random_number
           cp ASTEROID_REACTIVATE_VALUE
-          jp nc,+
+          jp nc,asteroid_loop_end
             ; Activate asteroid.
             call spawn_game_object_in_invisible_area
             call get_random_number
@@ -276,7 +276,7 @@
             ld b,0
             call set_game_object_speed
             call activate_game_object
-      +:
+      +: ; Here we process the active asteroids.
       call move_game_object              ; Move asteroid downwards.
       ; Deactivate asteroid if it is within the deactivate zone.
       ; FIXME?! Do this in the beginning?!
@@ -285,11 +285,9 @@
       call horizontal_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
-      ; fixme?! (below)
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      call z,add_object_to_collision_table ; call z
+      call add_object_to_collision_table ; call z
       ;
+      asteroid_loop_end:
       ld de,_sizeof_game_object
       add ix,de
       pop bc
