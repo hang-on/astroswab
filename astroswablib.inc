@@ -112,11 +112,6 @@ tall_meta_sprite_table:
   .db 24, 0, 10
   .db 24, 8, 11
 .ends
-
-
-
-.equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
-;
 .ramsection "astroswablib variables" slot 3
   ;
   rnd_seed dw
