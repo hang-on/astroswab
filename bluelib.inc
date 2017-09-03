@@ -281,7 +281,7 @@
     pop af
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "clear_extram" free
 ; -----------------------------------------------------------------------------
@@ -302,7 +302,7 @@
     SELECT_ROM
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "ClearRam" free
 ; -----------------------------------------------------------------------------
@@ -327,7 +327,7 @@
     ldir
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "ClearVRam" free
 ; -----------------------------------------------------------------------------
@@ -348,7 +348,7 @@
     jp nz,-
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "cp_word" free
 ; -----------------------------------------------------------------------------
@@ -396,7 +396,7 @@
     ld a,1
     ret            ; if more or equal, return a=1
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "get_input_ports" free
 ; -----------------------------------------------------------------------------
@@ -409,8 +409,7 @@
     ld (input_ports+1),a
   ret
 .ends
-
-
+;
 ; -----------------------------------------------------------------------------
 .section "InitializeVDPRegisters" free
 ; -----------------------------------------------------------------------------
@@ -436,7 +435,7 @@
       inc b
     jr -
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_dpad_pressed" free
 ; -----------------------------------------------------------------------------
@@ -450,7 +449,7 @@
     scf             ; Yes, then set carry flag and...
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_button_1_pressed" free
 ; -----------------------------------------------------------------------------
@@ -461,7 +460,7 @@
     scf
   ret                 ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_button_2_pressed" free
 ; -----------------------------------------------------------------------------
@@ -472,6 +471,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
+;
 ; -----------------------------------------------------------------------------
 .section "is_down_pressed" free
 ; -----------------------------------------------------------------------------
@@ -482,7 +482,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_left_pressed" free
 ; -----------------------------------------------------------------------------
@@ -493,7 +493,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_reset_pressed" free
 ; -----------------------------------------------------------------------------
@@ -504,7 +504,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_right_pressed" free
 ; -----------------------------------------------------------------------------
@@ -515,7 +515,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_up_pressed" free
 ; -----------------------------------------------------------------------------
@@ -526,8 +526,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
-
+;
 ; -----------------------------------------------------------------------------
 .section "is_start_pressed" free
 ; -----------------------------------------------------------------------------
@@ -538,7 +537,7 @@
     scf
   ret               ; Return with carry flag set.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "kill_psg" free
 ; -----------------------------------------------------------------------------
@@ -556,7 +555,7 @@
     pop af
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_cram" free
 ; -----------------------------------------------------------------------------
@@ -577,7 +576,7 @@
     djnz -
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_cram_gg" free
 ; -----------------------------------------------------------------------------
@@ -602,7 +601,7 @@
     djnz -
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_vdp_registers" free
 ; -----------------------------------------------------------------------------
@@ -623,7 +622,7 @@
     jr -
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_vram" free
 ; -----------------------------------------------------------------------------
@@ -649,7 +648,7 @@
     jp nz,-
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_vram_from_table" free
 ; -----------------------------------------------------------------------------
@@ -690,7 +689,7 @@
     add hl,de
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "ReadVRam" free
 ; -----------------------------------------------------------------------------
@@ -715,7 +714,7 @@
     jp nz,-
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "Set register (vdp)" free
 ; -----------------------------------------------------------------------------
@@ -732,20 +731,20 @@
 .ends
 ;
 ; *****************************************************************************
-;                           SPRITE LIBRARY
+; B L U E L I B  S P R I T E  R O U T I N E S
 ; *****************************************************************************
-
+;
 .equ PLAYER_SIZE 4          ; Number of tiles not part of asc/desc flicker.
 .equ ASCENDING 0
 .equ DESCENDING $ff
-
+;
 .ramsection "Spritelib Variables" slot 3
   SpriteBufferY dsb 64
   SpriteBufferXC dsb 128
   NextFreeSprite db
   SATLoadMode db             ; Ascending or descending - for flickering.
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "add_sprite" free
 ; -----------------------------------------------------------------------------
@@ -789,8 +788,7 @@
     ld a,0
     adc a,d
     ld d,a
-
-
+    ;
     ld a,c                ; Get the x-pos.
     ld (de),a             ; Write it to the buffer.
     inc de
@@ -804,7 +802,7 @@
     RESTORE_REGISTERS
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "begin_sprites" free
 ; -----------------------------------------------------------------------------
@@ -830,7 +828,7 @@
     ldir
   ret
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "load_sat" free
 ; -----------------------------------------------------------------------------
@@ -918,10 +916,9 @@
 ; -----------------------------------------------------------------------------
 .ramsection "extended functions variables" slot 3
 ; -----------------------------------------------------------------------------
-  cursor_y db
-  cursor_x db
+  ;
 .ends
-
+;
 ; -----------------------------------------------------------------------------
 .section "tilemap / name table editing" free
 ; -----------------------------------------------------------------------------
@@ -1058,16 +1055,21 @@
     jp nz,-
   ret
 .ends
-
+;
+; -----------------------------------------------------------------------------
+.ramsection "bluelib printing variables" slot 3
+; -----------------------------------------------------------------------------
+  cursor_y db
+  cursor_x db
+.ends
 ; -----------------------------------------------------------------------------
 .section "Printing" free
-; -----------------------------------------------------------------------------
   ; Functions for printing ascii chars.
   ; Put this ascii map in header:
   ;   .asciitable
   ;      map " " to "z" = 0
   ;    .enda
-  ;
+  ; ---------------------------------------------------------------------------
   ; Assumes ASCII character set loaded into vram, like this:
   ;   SELECT_BANK FONT_BANK
   ;   ld hl,font_table
@@ -1080,7 +1082,31 @@
   ;   ....
   ;   dd_revolution_tiles:
   ;  .include "bank_2\dd_revolution_tiles.inc"
-
+  ; ---------------------------------------------------------------------------
+  batch_print:
+    ; Batch print strings at different screen positions. Handy for making a
+    ; menu, or for setting up text in various places. Strings and positions are
+    ; stored in a table in the following format:
+    ; pointer to string (word), row (byte), column (byte).
+    ; Entry: IX = pointer to table.
+    ;        A = number of strings to print.
+    ; Uses: AF, BC, HL.
+    ; Depends on print (in bluelib.inc), and on #-terminated strings.
+    -:
+      push af
+      ld l,(ix+0)
+      ld h,(ix+1)
+      ld b,(ix+2)
+      ld c,(ix+3)
+      call print
+      .rept 4
+        inc ix
+      .endr
+      pop af
+      dec a
+    jp nz,-
+  ret
+  ;
   print:
     ; Print a string to the name table. Terminate with # (ascii).
     ; N.B. Make sure that this function is not interrupted!
@@ -1129,7 +1155,7 @@
       inc hl                        ; Point to next char.
     djnz -
   ret
-
+  ;
   set_cursor:
     ; Set cursor used by put_char.
     ; Entry: A = cursor_y / row, B = cursor_x / column.
@@ -1137,7 +1163,7 @@
     ld a,b
     ld (cursor_x),a
   ret
-
+  ;
   put_char:
     ; Put char at cursor y,x and move cursor right.
     ; N.B. Make sure that this function is not interrupted!
@@ -1180,7 +1206,7 @@
     out (DATA_PORT),a             ; Write 2nd byte to name table.
   RESTORE_REGISTERS
   ret
-
+  ;
   print_register_hl:
     ; Print the contents of register HL as 5 ascii digits using put_char at
     ; position cursor (y,x).
@@ -1204,7 +1230,7 @@
   	sbc	hl,bc
   	call put_char
   ret
-
+  ;
   print_register_a:
     ; Print the contents of register A as 3 ascii digits using put_char at
     ; position cursor (y,x).
