@@ -3,6 +3,7 @@
 .include "testlib.inc"
 
 .include "astroswablib.inc";
+.include "objectlib.inc"
 .include "header.inc"
 ;
 .bank 0 slot 0
