@@ -102,7 +102,7 @@
     jp nz,bullet_collision_loop_end
       ;
       ld ix,bullet
-      ld bc,BULLET_MAX
+      ld b,BULLET_MAX
       bullet_collision_loop:
         push bc
         ld a,(ix+game_object.state)
@@ -124,10 +124,7 @@
         ld de,_sizeof_game_object
         add ix,de
         pop bc
-        dec bc
-        ld a,b
-        or c
-      jp nz,bullet_collision_loop
+      djnz bullet_collision_loop
     bullet_collision_loop_end:
 
     ;
