@@ -193,15 +193,15 @@
           jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
             call activate_game_object
             push ix
-            ld ix,swabby
-            call get_game_object_position
+              ld ix,swabby
+              ld a,(ix+game_object.y)
+              sub BULLET_Y_OFFSET
+              ld c,a
+              ld a,(ix+game_object.x)
+              add a,BULLET_X_OFFSET
+              ld b,a
+              ld a,c
             pop ix
-            sub BULLET_Y_OFFSET
-            ld c,a
-            ld a,b
-            add a,BULLET_X_OFFSET
-            ld b,a
-            ld a,c
             call set_game_object_position
             ;
             SELECT_BANK SOUND_BANK    ; Select the sound assets bank.

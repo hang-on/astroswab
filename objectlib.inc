@@ -171,18 +171,7 @@
     pop af
   ret
   ;
-  get_game_object_hitbox:
-    ; Entry: IX = pointer to struct.
-    ld a,(ix+game_object.shape)
-    cp GAME_OBJECT_SHAPE_SMALL
-    jp nz,+
-      ld a,8
-      ret
-    +:
-    ld a,16
-  ret
-  ;
-  get_game_object_position:
+;  get_game_object_position:
     ; Entry: IX = pointer to struct.
     ; Exit: A = object Y and B = object X.
     ld a,(ix+game_object.y)
