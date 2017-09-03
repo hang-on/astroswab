@@ -1,0 +1,9 @@
+# Misc files
+*.sms
+*.sym
+*.sav
+*.exe
+
+binaries/astroswab.sms
+binaries/astroswab.sym
+binaries/astroswab.sav
