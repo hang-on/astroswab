@@ -2,8 +2,13 @@
 ; Functions related specifically to astroswab, or with significant dependencies
 ; on local/contextual design choices.
 ;
+; -----------------------------------------------------------------------------
+; Metasprites
+; -----------------------------------------------------------------------------
 ; Definitions for referencing the sprites on the spritesheet.
-; Used by functions drawing objects.
+; The astroswablib meta sprite code builds on the sprite routines in bluelib
+; and assumes that metasprites are drawn using the specific astroswab approach
+; with small, regular, tall and wide sizes.
 .equ SPRITE_1 0
 .equ SPRITE_2 2
 .equ SPRITE_3 8
@@ -33,7 +38,83 @@
 .equ SPRITE_45 170
 .equ SPRITE_46 171
 .equ SPRITE_47 172
+; . . . .
+.section "metasprites" free
+; ---------------------------------------------------------------------------
+add_metasprite:
+  ; Put a 16x16 metasprite in the SAT.
+  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+  ;             and IX+2 is the character code.
+  ; Uses: AF, BC, DE, HL
+  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+  ld d,4
+  ld hl,meta_sprite_table
+  -:
+    ld a,(ix+0)
+    add a,(hl)
+    ld b,a
+    inc hl
+    ld a,(ix+1)
+    add a,(hl)
+    ld c,a
+    inc hl
+    ld a,(hl)
+    ld e,a
+    ld a,(ix+2)
+    add a,e
+    inc hl
+    call add_sprite
+    dec d
+  jp nz,-
+ret
+meta_sprite_table:
+  .db 0, 0, 0
+  .db 0, 8, 1
+  .db 8, 0, 4
+  .db 8, 8, 5
 ;
+add_tall_metasprite:
+  ; Put a 16x32 metasprite in the SAT.
+  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+  ;             and IX+2 is the character code.
+  ; Uses: AF, BC, DE, HL
+  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+  ld d,8
+  ld hl,tall_meta_sprite_table
+  -:
+    ld a,(ix+0)
+    add a,(hl)
+    ld b,a
+    inc hl
+    ld a,(ix+1)
+    add a,(hl)
+    ld c,a
+    inc hl
+    ld a,(hl)
+    ld e,a
+    ld a,(ix+2)
+    add a,e
+    inc hl
+    call add_sprite
+    dec d
+  jp nz,-
+ret
+tall_meta_sprite_table:
+  .db 0, 0, 0
+  .db 0, 8, 1
+  .db 8, 0, 4
+  .db 8, 8, 5
+  ;
+  .db 16, 0, 6
+  .db 16, 8, 7
+  .db 24, 0, 10
+  .db 24, 8, 11
+.ends
+
+
+
 .equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
 ;
 .ramsection "astroswablib variables" slot 3
@@ -88,77 +169,6 @@
       dec a
     jp nz,-
   ret
-  ; ---------------------------------------------------------------------------
-  add_metasprite:
-    ; Put a 16x16 metasprite in the SAT.
-    ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-    ;             and IX+2 is the character code.
-    ; Uses: AF, BC, DE, HL
-    ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-    ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-    ld d,4
-    ld hl,meta_sprite_table
-    -:
-      ld a,(ix+0)
-      add a,(hl)
-      ld b,a
-      inc hl
-      ld a,(ix+1)
-      add a,(hl)
-      ld c,a
-      inc hl
-      ld a,(hl)
-      ld e,a
-      ld a,(ix+2)
-      add a,e
-      inc hl
-      call add_sprite
-      dec d
-    jp nz,-
-  ret
-  meta_sprite_table:
-    .db 0, 0, 0
-    .db 0, 8, 1
-    .db 8, 0, 4
-    .db 8, 8, 5
-
-  add_tall_metasprite:
-    ; Put a 16x32 metasprite in the SAT.
-    ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-    ;             and IX+2 is the character code.
-    ; Uses: AF, BC, DE, HL
-    ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-    ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-    ld d,8
-    ld hl,tall_meta_sprite_table
-    -:
-      ld a,(ix+0)
-      add a,(hl)
-      ld b,a
-      inc hl
-      ld a,(ix+1)
-      add a,(hl)
-      ld c,a
-      inc hl
-      ld a,(hl)
-      ld e,a
-      ld a,(ix+2)
-      add a,e
-      inc hl
-      call add_sprite
-      dec d
-    jp nz,-
-  ret
-  tall_meta_sprite_table:
-    .db 0, 0, 0
-    .db 0, 8, 1
-    .db 8, 0, 4
-    .db 8, 8, 5
-    ;
-    .db 16, 0, 6
-    .db 16, 8, 7
-    .db 24, 0, 10
-    .db 24, 8, 11
   ; ---------------------------------------------------------------------------
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
