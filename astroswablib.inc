@@ -3,6 +3,35 @@
 ; on local/contextual design choices.
 ;
 ; -----------------------------------------------------------------------------
+.section "Misc functions" free
+; -----------------------------------------------------------------------------
+  ;
+  batch_print:
+    ; Batch print strings at different screen positions. Handy for making a
+    ; menu, or for setting up text in various places. Strings and positions are
+    ; stored in a table in the following format:
+    ; pointer to string (word), row (byte), column (byte).
+    ; Entry: IX = pointer to table.
+    ;        A = number of strings to print.
+    ; Uses: AF, BC, HL.
+    ; Depends on print (in bluelib.inc), and on #-terminated strings.
+    -:
+      push af
+      ld l,(ix+0)
+      ld h,(ix+1)
+      ld b,(ix+2)
+      ld c,(ix+3)
+      call print
+      .rept 4
+        inc ix
+      .endr
+      pop af
+      dec a
+    jp nz,-
+  ret
+.ends
+;
+; -----------------------------------------------------------------------------
 ; Metasprites
 ; -----------------------------------------------------------------------------
 ; Definitions for referencing the sprites on the spritesheet.
@@ -134,35 +163,6 @@ tall_meta_sprite_table:
     ld (iy+game_object.state),a
   ret
 .ends
-
-; -----------------------------------------------------------------------------
-.section "Misc functions" free
-; -----------------------------------------------------------------------------
-  ;
-  batch_print:
-    ; Batch print strings at different screen positions. Handy for making a
-    ; menu, or for setting up text in various places. Strings and positions are
-    ; stored in a table in the following format:
-    ; pointer to string (word), row (byte), column (byte).
-    ; Entry: IX = pointer to table.
-    ;        A = number of strings to print.
-    ; Uses: AF, BC, HL.
-    ; Depends on print (in bluelib.inc), and on #-terminated strings.
-    -:
-      push af
-      ld l,(ix+0)
-      ld h,(ix+1)
-      ld b,(ix+2)
-      ld c,(ix+3)
-      call print
-      .rept 4
-        inc ix
-      .endr
-      pop af
-      dec a
-    jp nz,-
-  ret
-.ends
 ;
 ; ---------------------------------------------------------------------------
 .section "profilers" free
@@ -261,20 +261,17 @@ tall_meta_sprite_table:
 ; SANDBOX
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
-
-
+;
+;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
+; -----------------------------------------------------------------------------
   ;
 .ends
-; -----------------------------------------------------------------------------
 .section "Sandbox functions" free
   ; Short text here...
   sandbox_function_1:
     ; ...
   ret
   ;
-    ;
-
 .ends
-;
