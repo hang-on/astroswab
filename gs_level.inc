@@ -108,7 +108,7 @@
         cp GAME_OBJECT_INACTIVE
         jp z,+
           ; Test this bullet instance.
-          call v3_detect_collision_using_collision_table
+          call detect_collision_using_collision_table
           call c,handle_bullet_collision
         +:
         ld de,_sizeof_game_object
@@ -121,7 +121,7 @@
     and %00000001
     jp z,+
       ld ix,swabby
-      call v3_detect_collision_using_collision_table
+      call detect_collision_using_collision_table
     +:
     ; End of collision tests for this frame.
     ; -------------------------------------------------------------------------

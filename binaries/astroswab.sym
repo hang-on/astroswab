@@ -142,7 +142,7 @@
 0000:0be7 add_multiple_game_object_instances_to_collision_table
 0000:0bf5 add_object_to_collision_table
 0000:0c43 begin_collision_tables
-0000:0c4b v3_detect_collision_using_collision_table
+0000:0c4b detect_collision_using_collision_table
 0000:0c9a coll1_3
 0000:0ca9 coll2_3
 0000:0cb8 coll3_3

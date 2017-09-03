@@ -430,7 +430,7 @@
   ret
 ;
   ;
-  v3_detect_collision_using_collision_table:
+  detect_collision_using_collision_table:
     ; Version 3 notes:
     ; Assumes game objects to be initialized with
     ; separate bytes for y and x hitbox offset.

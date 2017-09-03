@@ -68,7 +68,7 @@ ld b,BULLET_MAX
 -:
   ; Only do this for active bullets!
   push bc
-  call v3_detect_collision_using_collision_table
+  call detect_collision_using_collision_table
   call c,handle_collision
   pop bc
   ld de,_sizeof_game_object
