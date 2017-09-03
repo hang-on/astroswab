@@ -129,7 +129,7 @@
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00100000, 4, 8, BULLET
+    .db %00100000, 2, 0, 4, 8, BULLET
   bullet_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX

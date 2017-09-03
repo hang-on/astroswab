@@ -916,8 +916,12 @@
     ; Uses: AF, BC, DE, HL
     SAVE_REGISTERS
     ld a,(ix+game_object.y)
+    add a,(ix+game_object.hitbox_offset_y)
+    ;cp ASTEROID_DEACTIVATE_ZONE_START
+    ;ret nc
+
     cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
-    jp nc,+
+    jp + ;nc
       ld hl,objects_in_top_collision_table
       ld a,(hl)
       inc (hl)
@@ -933,6 +937,7 @@
     cp 0
     jp z,+
     ld b,a
+    xor a
     -:
       add a,COLLISION_TABLE_ELEMENT_SIZE ; Table element size here!
     djnz -
@@ -962,6 +967,8 @@
     ld (hl),e
     inc hl
     ld (hl),d
+
+
     RESTORE_REGISTERS
   ret
   begin_collision_tables:
@@ -971,105 +978,6 @@
     ;
   ret
 ;
-  detect_collision_using_collision_table:
-    ; Simple form of collision detection: Axis-aligned bounding box.
-    ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
-    ; rect1.x + rect1.width > rect2.x &&      (coll2)
-    ; rect1.y < rect2.y + rect2.height &&     (coll3)
-    ; rect1.height + rect1.y > rect2.y)       (coll4)
-    ;  --> collision detected!
-    ; We perform these four tests on at a time. If any one test fails,
-    ; there is no collision, and we return with carry reset. If no test fails
-    ; then we have collision, and return with carry set.
-    ; Uses: AF, B, IY
-    ;
-    ; Determine relevant collision table.
-    ld a,(ix+game_object.hitbox_offset)
-    and %00001111
-    ld b,(ix+game_object.y)
-    add a,b
-    cp COLLISION_TABLE_DIVIDER
-    jp nc,+
-      ld hl,top_collision_table
-      jp ++
-    +:
-      ld hl,bottom_collision_table
-    ++:
-    push hl
-    pop iy
-    ;
-    call coll1_2
-    ret nc
-    call coll2_2
-    ret nc
-    call coll3_2
-    ret nc
-    call coll4_2
-    ret nc
-    ; Collision! Return with carry set, and with pointer to object in table
-    ; passed in IY:
-    ld l,(iy+4)
-    ld h,(iy+5)
-    push hl
-    pop iy
-  ret
-    coll1_2:
-      ; rect1.x < rect2.x + rect2.width
-      ld a,(iy+1) ;
-      ld b,(iy+2) ; !
-      add a,b
-      ld b,a
-      ld a, (ix+game_object.hitbox_offset)
-      and %11110000
-      rra
-      rra
-      rra
-      rra
-      ld c,(ix+game_object.x)
-      add a,c
-      cp b
-    ret
-    coll2_2:
-      ; rect1.x + rect1.width > rect2.x
-      ld c,(ix+game_object.x)
-      ld a,(ix+game_object.hitbox_offset)
-      and %11110000
-      rra
-      rra
-      rra
-      rra
-      add a,c
-      ld b,(ix+game_object.hitbox_width)
-      add a,b
-      ld b,a
-      ld a,(iy+1)
-      sub b
-    ret
-    coll3_2:
-      ; rect1.y < rect2.y + rect2.height
-      ld a,(iy+0)
-      ld b,(iy+3)
-      add a,b
-      ld b,a
-      ld c,(ix+game_object.y)
-      ld a,(ix+game_object.hitbox_offset)
-      and %00001111
-      add a,c
-      cp b
-    ret
-    coll4_2:
-      ; rect1.height + rect1.y > rect2.y
-      ld c,(ix+game_object.y)
-      ld a,(ix+game_object.hitbox_offset)
-      and %00001111
-      add a,c
-      ld b,(ix+game_object.hitbox_height)
-      add a,b
-      ld b,a
-      ld a,(iy+0)
-      cp b
-    ret
-    ;
   ;
   v3_detect_collision_using_collision_table:
     ; Version 3 notes:
@@ -1091,7 +999,7 @@
     ld a,(ix+game_object.hitbox_offset_y)
     add a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
-    jp nc,+
+    jp + ;nc
       ld hl,top_collision_table
       ld a,(objects_in_top_collision_table)
       or a

@@ -96,9 +96,9 @@
     ; ---------------------------------------------------------------------------
     ; Resolve current state of objects before moving etc.
     ; Bullets vs. other game objects collision tests:
-    ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
-    and %00000001
-    jp nz,bullet_collision_loop_end
+    ;ld a,(frame_counter)              ; Only coll.detect bullets on odd frames.
+    ;and %00000001
+    ;jp nz,bullet_collision_loop_end
       ;
       ld ix,bullet
       ld bc,BULLET_MAX
@@ -279,12 +279,16 @@
       +:
       call move_game_object              ; Move asteroid downwards.
       ; Deactivate asteroid if it is within the deactivate zone.
+      ; FIXME?! Do this in the beginning?!
       ld a,ASTEROID_DEACTIVATE_ZONE_START
       ld b,ASTEROID_DEACTIVATE_ZONE_END
       call horizontal_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table
+      ; fixme?! (below)
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      call z,add_object_to_collision_table ; call z
       ;
       ld de,_sizeof_game_object
       add ix,de
