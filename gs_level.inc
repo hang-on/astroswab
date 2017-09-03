@@ -93,6 +93,7 @@
     ;
     call get_input_ports
     call begin_sprites
+
     ; ---------------------------------------------------------------------------
     ; Resolve current state of objects before moving etc.
     ; Bullets vs. other game objects collision tests:
@@ -128,17 +129,15 @@
         or c
       jp nz,bullet_collision_loop
     bullet_collision_loop_end:
+
     ;
-    ;ld a,(frame_counter)
-    ;and %00000001
-    ;jp z,+
+    ld a,(frame_counter)
+    and %00000001 ; test swabby on odd frames.
+    jp z,+
       ; Swabby vs. relevant other game objects.
-    ;  ld ix,swabby
-  ;    ld hl,swabby_collision_table
-  ;    ld a,(swabby_collision_table_end-swabby_collision_table)/(2*2)
-  ;    call batch_collision_detect
-  ;    call c,handle_swabby_collision
-  ;  +:
+      ld ix,swabby
+      call v3_detect_collision_using_collision_table
+    +:
     ; --- END COLLISION TESTS FOR THIS FRAME ----------------------------------
     call begin_collision_tables       ; Restart filling the coll.tables.
     ; -------------------------------------------------------------------------
@@ -356,12 +355,17 @@
     +:
     ;
     ld ix,spinner
-    call move_game_object              ; Move
-    ld a,SPINNER_DEACTIVATE_ZONE_START
-    ld b,SPINNER_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
-    call animate_game_object
-    call draw_game_object              ; Put it in the SAT.
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      call move_game_object              ; Move
+      ld a,SPINNER_DEACTIVATE_ZONE_START
+      ld b,SPINNER_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      call animate_game_object
+      call draw_game_object              ; Put it in the SAT.
+      call add_object_to_collision_table
+    +:
     ; ---------------------------------------------------------------------------
     ; Handle danish and trigger.
     ld ix,danish
@@ -386,11 +390,16 @@
     +:
     ;
     ld ix,danish
-    call move_game_object              ; Move
-    ld a,ASTEROID_DEACTIVATE_ZONE_START
-    ld b,ASTEROID_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
-    call draw_game_object              ; Put it in the SAT.
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      call move_game_object              ; Move
+      ld a,ASTEROID_DEACTIVATE_ZONE_START
+      ld b,ASTEROID_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      call draw_game_object              ; Put it in the SAT.
+      call add_object_to_collision_table
+    +:
     ; Handle missile and trigger. -----------------------------------------------
     ld ix,missile
     call get_game_object_state           ; If missile is already out, skip!
@@ -409,14 +418,17 @@
     +:
     ;
     ld ix,missile
-    ; TODO: Make missile track/follow Swabby.
-    call get_game_object_x
-    ; get player x, and then compare 1) somewhere above, 2) right 3) left
-    call move_game_object              ; Move
-    ld a,ASTEROID_DEACTIVATE_ZONE_START
-    ld b,ASTEROID_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
-    call draw_game_object              ; Put it in the SAT.
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      ; TODO: Make missile track/follow Swabby.
+      call move_game_object              ; Move
+      ld a,ASTEROID_DEACTIVATE_ZONE_START
+      ld b,ASTEROID_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      call draw_game_object              ; Put it in the SAT.
+      call add_object_to_collision_table
+    +:
     ; ---------------------------------------------------------------------------
     call PSGSFXFrame
     call PSGFrame
