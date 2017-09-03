@@ -39,7 +39,12 @@ jp main_loop
 ; ---------------------------------------------------------------------------
 run_sandbox:
   ;
-  call await_frame_interrupt
+  -:
+    call await_frame_interrupt
+    in a,(V_COUNTER_PORT)
+    cp FIRST_LINE_OF_VBLANK+1
+  jp nz,-
+
   call load_sat
   ; End of VDP-updating...
   call get_input_ports

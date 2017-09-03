@@ -1084,6 +1084,7 @@
   print:
     ; Print a string to the name table. Terminate with # (ascii).
     ; N.B. Make sure that this function is not interrupted!
+    ; Observes vram writing delays.
     ; Entry:
     ;        B = row, C = column.
     ;        HL = Pointer to string.
@@ -1119,8 +1120,12 @@
       cp STRING_TERMINATOR
       ret z
       out (DATA_PORT),a             ; Write it to name table.
+      push ix
+      pop ix
       ld a,%00000000                ; Select background palette for this char.
       out (DATA_PORT),a             ; Write 2nd byte to name table.
+      push ix
+      pop ix
       inc hl                        ; Point to next char.
     djnz -
   ret
@@ -1169,6 +1174,8 @@
     ;
     pop af                        ; Get tile.
     out (DATA_PORT),a             ; Write it to name table.
+    push ix
+    pop ix
     ld a,%00000000                ; Select background palette for this char.
     out (DATA_PORT),a             ; Write 2nd byte to name table.
   RESTORE_REGISTERS

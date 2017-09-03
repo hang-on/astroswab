@@ -9,6 +9,7 @@
   .equ PICO8_PALETTE_SIZE 16
   .equ FIRST_LINE_OF_VBLANK 192
   .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
+
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
@@ -37,7 +38,7 @@
   .equ TILE_BANK_2 2
 ;
 ; Sandbox:
-  .equ SANDBOX_LOGGER_START_ROW 12
+  .equ SANDBOX_LOGGER_START_ROW 19
 ;
 ; Game objects:
   .equ SWABBY 1
@@ -109,6 +110,10 @@
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
 ; Sound:
   .equ SOUND_BANK 5
+; Collision:
+  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
+  .equ COLLISION_TABLE_MAX_OBJECTS 12
+  .equ COLLISION_TABLE_ELEMENT_SIZE 6             ; y,x,w,h,pointer (word).
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   game_state db                   ; Contains game state.
@@ -150,4 +155,8 @@
   gun_released db
   gun_delay db
   ;
+  top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
+  objects_in_top_collision_table db
+  bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
+  objects_in_bottom_collision_table db
 .ends
