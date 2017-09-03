@@ -76,7 +76,7 @@
     ld a,GS_RUN_LEVEL
     ld (game_state),a
     call await_frame_interrupt                ; To avoid profiler failsafe!
-    
+
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------

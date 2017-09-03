@@ -906,21 +906,20 @@
     ld b,a
     ld de,_sizeof_game_object
     -:
+      push bc
       call add_object_to_collision_table
       add ix,de
+      pop bc
     djnz -
   ret
 
   add_object_to_collision_table:
     ; IX = Pointer to object.
     ; Uses: AF, BC, DE, HL
-    SAVE_REGISTERS
     ld a,(ix+game_object.y)
     add a,(ix+game_object.hitbox_offset_y)
-    ;cp ASTEROID_DEACTIVATE_ZONE_START
-    ;ret nc
 
-    cp COLLISION_TABLE_DIVIDER ; adjust to real playfield half!
+    cp COLLISION_TABLE_DIVIDER
     jp nc,+
       ld hl,objects_in_top_collision_table
       ld a,(hl)
@@ -967,9 +966,6 @@
     ld (hl),e
     inc hl
     ld (hl),d
-
-
-    RESTORE_REGISTERS
   ret
   begin_collision_tables:
     xor a
