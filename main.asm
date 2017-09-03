@@ -1,3 +1,5 @@
+; main.asm
+; Main code for astroswab.
 .include "bluelib.inc"
 .include "psglib.inc"
 .include "testlib.inc"
