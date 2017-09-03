@@ -1,11 +1,8 @@
 ; objectlib.inc
+; ...
 ; -----------------------------------------------------------------------------
 ; GAME OBJECTS
 ; -----------------------------------------------------------------------------
-; Functions that work on the Astroswab game_object structure.
-; What Astroswab game objects are assumed to have in common:
-; 1. ...
-; 2. ...
 .struct game_object
   y db
   x db
@@ -14,7 +11,7 @@
   xspeed db
   state db
   shape db
-  hitbox_offset db  ;xxxx yyyy DEPRECATED - treat as dead byte
+  hitbox_offset db  ;xxxx yyyy (deprecated)
   hitbox_offset_y db
   hitbox_offset_x db
   hitbox_width db
@@ -30,8 +27,14 @@
 .equ GAME_OBJECT_SHAPE_TALL 1
 .equ GAME_OBJECT_SHAPE_WIDE 2
 .equ GAME_OBJECT_SHAPE_SMALL 3
+;
+.equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
 ; -----------------------------------------------------------------------------
 .section "Game objects" free
+  ; Functions that work on the Astroswab game_object structure.
+  ; What Astroswab game objects are assumed to have in common:
+  ; 1. ...
+  ; 2. ...
   activate_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
@@ -56,7 +59,6 @@
     ld (ix+game_object.sprite),a
     RESTORE_REGISTERS
   ret
-  ;
   ;
   batch_initialize_game_objects:
     ; Initialize a batch of game objects using a table.
@@ -380,4 +382,181 @@
     ld (ix+game_object.sprite),a
   ret
   ;
+  ; Collision. FIXME - better layotu.
+  add_multiple_game_object_instances_to_collision_table:
+    ; Entry: IX = Pointer to game object with multiple instances.
+    ;        A = number of instances to position.
+    ; Uses: AF, B, DE, HL, IX
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      push bc
+      call add_object_to_collision_table
+      add ix,de
+      pop bc
+    djnz -
+  ret
+
+  add_object_to_collision_table:
+    ; IX = Pointer to object.
+    ; Uses: AF, BC, DE, HL
+    ld a,(ix+game_object.y)
+    add a,(ix+game_object.hitbox_offset_y)
+
+    cp COLLISION_TABLE_DIVIDER
+    jp nc,+
+      ld hl,objects_in_top_collision_table
+      ld a,(hl)
+      inc (hl)
+      ld hl,top_collision_table
+      jp ++
+    +:
+      ld hl,objects_in_bottom_collision_table
+      ld a,(hl)
+      inc (hl)
+      ld hl,bottom_collision_table
+    ++:
+    ;
+    cp 0
+    jp z,+
+    ld b,a
+    xor a
+    -:
+      add a,COLLISION_TABLE_ELEMENT_SIZE ; Table element size here!
+    djnz -
+    ld d,0
+    ld e,a
+    add hl,de
+    +:
+    ;
+    ld a,(ix+game_object.y) ; Apply hitbox offset.
+    add a,(ix+game_object.hitbox_offset_y)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.x)
+    add a,(ix+game_object.hitbox_offset_x)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.hitbox_width)
+    ld (hl),a
+    inc hl
+    ld a,(ix+game_object.hitbox_height)
+    ld (hl),a
+    inc hl
+    ;
+    ; Add pointer to object
+    push ix
+    pop de
+    ld (hl),e
+    inc hl
+    ld (hl),d
+  ret
+  begin_collision_tables:
+    xor a
+    ld (objects_in_top_collision_table),a
+    ld (objects_in_bottom_collision_table),a
+    ;
+  ret
+;
+  ;
+  detect_collision_using_collision_table:
+    ; Version 3 notes:
+    ; Assumes game objects to be initialized with
+    ; separate bytes for y and x hitbox offset.
+    ;
+    ; Simple form of collision detection: Axis-aligned bounding box.
+    ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
+    ; rect1.x + rect1.width > rect2.x &&      (coll2)
+    ; rect1.y < rect2.y + rect2.height &&     (coll3)
+    ; rect1.height + rect1.y > rect2.y)       (coll4)
+    ;  --> collision detected!
+    ; We perform these four tests one at a time. If any one test fails,
+    ; there is no collision, and we return with carry reset. If no test fails
+    ; then we have collision, and return with carry set.
+    ; Uses: AF, B, IY
+    ;
+    ; Determine relevant collision table.
+    ld a,(ix+game_object.hitbox_offset_y)
+    add a,(ix+game_object.y)
+    cp COLLISION_TABLE_DIVIDER
+    jp nc,+
+      ld hl,top_collision_table
+      ld a,(objects_in_top_collision_table)
+      or a
+      ret z
+      jp ++
+    +:
+      ld hl,bottom_collision_table
+      ld a,(objects_in_bottom_collision_table)
+      or a
+      ret z
+    ++:
+    push hl
+    pop iy
+    ld b,a
+    -:
+      push bc
+        ;
+        call collision_subtest_1
+        jp nc,+
+        call collision_subtest_2
+        jp nc,+
+        call collision_subtest_3
+        jp nc,+
+        call collision_subtest_4
+        jp nc,+
+          ; Fall through: Collision!
+          ; Return with carry set, and with pointer in IY.
+          ld l,(iy+4)
+          ld h,(iy+5)
+          push hl
+          pop iy
+          pop bc ; clean stack
+          ret
+        +:
+        ld de,COLLISION_TABLE_ELEMENT_SIZE
+        add iy,de
+      pop bc
+    djnz -
+
+  ret
+    collision_subtest_1:
+      ; rect1.x < rect2.x + rect2.width
+      ld a,(iy+1) ;
+      add a,(iy+2)
+      ld b,a
+      ld a,(ix+game_object.hitbox_offset_x)
+      add a,(ix+game_object.x)
+      cp b
+    ret
+    collision_subtest_2:
+      ; rect1.x + rect1.width > rect2.x
+      ld a,(ix+game_object.x)
+      add a,(ix+game_object.hitbox_offset_x)
+      add a,(ix+game_object.hitbox_width)
+      ld b,a
+      ld a,(iy+1)
+      cp b
+    ret
+    collision_subtest_3:
+      ; rect1.y < rect2.y + rect2.height
+      ld a,(iy+0)
+      ld b,(iy+3)
+      add a,b
+      ld b,a
+      ld a,(ix+game_object.y)
+      add a,(ix+game_object.hitbox_offset_y)
+      cp b
+    ret
+    collision_subtest_4:
+      ; rect1.height + rect1.y > rect2.y
+      ld a,(ix+game_object.y)
+      add a,(ix+game_object.hitbox_offset_y)
+      add a,(ix+game_object.hitbox_height)
+      ld b,a
+      ld a,(iy+0)
+      cp b
+    ret
+    ;
+
 .ends
