@@ -29,6 +29,9 @@
 .equ GAME_OBJECT_SHAPE_SMALL 3
 ;
 .equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
+;
+.equ COLLISION_TABLE_MAX_OBJECTS 12
+.equ COLLISION_TABLE_ELEMENT_SIZE 6             ; y,x,w,h,pointer (word).
 ; -----------------------------------------------------------------------------
 .section "Game objects" free
   ; Functions that work on the Astroswab game_object structure.
@@ -188,6 +191,26 @@
     djnz --
   ret
   ;
+  spawn_game_object_in_invisible_area:
+    ; Entry: IX = Pointer to enemy object.
+    ; Object gets a random position and is activated!
+    ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
+    ld (ix+game_object.y),a
+    call get_random_number
+    and %01111111             ; rnd(128).
+    ld b,a
+    call get_random_number
+    and %00111111             ; rnd(64).
+    add a,b
+    ld b,a
+    call get_random_number
+    and %00011111             ; rnd(32).
+    add a,b
+    add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
+    ld (ix+game_object.x),a  ; x = 8 - 229.
+    call activate_game_object
+  ret
+  ;
   ; ---------------------------------------------------------------------------
   ; DRAWING AND ANIMATING.
   animate_game_object:
@@ -315,26 +338,6 @@
     djnz -
   ret
   ;
-  spawn_game_object_in_invisible_area:
-    ; Entry: IX = Pointer to enemy object.
-    ; Object gets a random position and is activated!
-    ld a,INVISIBLE_AREA_BOTTOM_BORDER-8
-    ld (ix+game_object.y),a
-    call get_random_number
-    and %01111111             ; rnd(128).
-    ld b,a
-    call get_random_number
-    and %00111111             ; rnd(64).
-    add a,b
-    ld b,a
-    call get_random_number
-    and %00011111             ; rnd(32).
-    add a,b
-    add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
-    ld (ix+game_object.x),a  ; x = 8 - 229.
-    call activate_game_object
-  ret
-  ;
   ; ---------------------------------------------------------------------------
   ; COLLISION DETECTION
   add_game_object_to_collision_table:
@@ -417,7 +420,6 @@
     ld (objects_in_bottom_collision_table),a
     ;
   ret
-;
   ;
   detect_collision_using_collision_table:
     ; Assumes game objects to be initialized with separate bytes for y and x
