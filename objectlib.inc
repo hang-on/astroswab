@@ -171,12 +171,6 @@
     pop af
   ret
   ;
-  get_game_object_xspeed:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A  game object xspeed.
-    ld a,(ix+game_object.xspeed)
-  ret
-  ;
   get_inactive_game_object:
     ; Entry: IX = Pointer to first instance of struct.
     ;        A = Instances of this struct.
@@ -331,18 +325,6 @@
     call activate_game_object
   ret
   ;
-  set_game_object_speed:
-    ; IX = Pointer to enemy object.
-    ; A = Yspeed, B = Xspeed.
-    ld (ix+game_object.yspeed),a
-    ld (ix+game_object.xspeed),b
-  ret
-  ;
-  set_game_object_sprite:
-    ; Entry: IX = Pointer to enemy object.
-    ;        A = Sprite index.
-    ld (ix+game_object.sprite),a
-  ret
   ; ---------------------------------------------------------------------------
   ; COLLISION DETECTION
   add_game_object_to_collision_table:

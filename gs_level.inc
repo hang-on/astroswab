@@ -130,13 +130,13 @@
     ; Handle Swabby sprite and movement:
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
-    call set_game_object_sprite
+    ld (ix+game_object.sprite),a
     call is_right_pressed             ; Check if player press right.
     ld a,0
     jp nc,+
       ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
-      call set_game_object_sprite
-      call get_game_object_xspeed
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
       cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
       jp z,++                         ; If we are already there, skip ahead...
         inc a                         ; If not, then accelerate a bit.
@@ -146,15 +146,14 @@
     ld a,0
     jp nc,++
       ld a,SWABBY_LEFT_SPRITE
-      call set_game_object_sprite
-      call get_game_object_xspeed
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
       cp -(SWABBY_X_SPEED_MAX)
       jp z,++
         dec a
     ++:
-    ld b,a
-    xor a
-    call set_game_object_speed
+    ld (ix+game_object.xspeed),a
+    ;call set_game_object_speed
     call move_game_object
     call draw_game_object
     ; ---------------------------------------------------------------------------
@@ -253,12 +252,11 @@
             ld e,a
             add hl,de
             ld a,(hl)
-            call set_game_object_sprite
+            ld (ix+game_object.sprite),a
             call get_random_number
             and ASTEROID_SPEED_MODIFIER
             inc a
-            ld b,0
-            call set_game_object_speed
+            ld (ix+game_object.yspeed),a
             call activate_game_object
       +: ; Here we process the active asteroids.
       call move_game_object              ; Move asteroid downwards.
@@ -292,12 +290,13 @@
             call get_random_number
             and %00000011
             add a,b
-            call set_game_object_sprite
+            ld (ix+game_object.sprite),a
             call get_random_number
             and SHARD_SPEED_MODIFIER
             inc a
             ld b,SHARD_FREEFALLING_XSPEED
-            call set_game_object_speed
+            ld (ix+game_object.yspeed),a
+            ld (ix+game_object.xspeed),b
             call activate_game_object
             jp ++                        ; Jump out of loop.
           +:
@@ -373,7 +372,7 @@
         ld e,a
         add hl,de
         ld a,(hl)
-        call set_game_object_sprite
+        ld (ix+game_object.sprite),a
         call activate_game_object
     +:
     ;
