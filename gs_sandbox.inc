@@ -55,26 +55,8 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_1
+  ;call test_1
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
-test_1:
-  ld ix,bee
-  ld hl,bee_init_table
-  call initialize_game_object
-  ;
-  ld a,COLLISION_TABLE_DIVIDER
-  call wait_for_scanline
-  in a,(V_COUNTER_PORT)
-  assertEqualsA COLLISION_TABLE_DIVIDER, "Test 1 failed"
-  ;
-  ld ix,bee
-  call mark_scanline
-ret
-;
-bee_init_table:
-  .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
-  .db 0, 0, GAME_OBJECT_ACTIVE
-  .db %00000000, 0, 0, 1, 1, BEE

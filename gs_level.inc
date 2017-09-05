@@ -156,7 +156,7 @@
     ;call set_game_object_speed
     call move_game_object
     call draw_game_object
-    ; ---------------------------------------------------------------------------
+    ; -------------------------------------------------------------------------
     ; Gun and bullets.
     call is_button_1_pressed        ;
     jp c,+                          ; Is the player pressing the fire button?
@@ -416,7 +416,8 @@
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
     +:
-    ; ---------------------------------------------------------------------------
+    ; -------------------------------------------------------------------------
+    ;
     call PSGSFXFrame
     call PSGFrame
     ;
@@ -429,6 +430,7 @@
         ld a,GS_PREPARE_DEVMENU
         ld (game_state),a
       +:
-      call profile_loop
+      ld ix,bee
+      call mark_scanline_with_game_object
     .endif
   jp main_loop

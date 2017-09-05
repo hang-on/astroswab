@@ -139,6 +139,11 @@
     .dw danish, 1
   bullet_collision_table_end:
   ;
+  bee_init_table:
+    .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 8, GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 1, 1, BEE
+  ;
   ;
   ; ---------------------------------------------------------------------------
   ; Menu item strings:
