@@ -48,6 +48,7 @@
     .dw bullet, bullet_init_table, BULLET_MAX
     .dw asteroid, asteroid_init_table, ASTEROID_MAX
     .dw shard, shard_init_table, SHARD_MAX
+    .dw bee, bee_init_table, 1
   batch_game_object_init_table_end:
   ;
   asteroid_init_table:
