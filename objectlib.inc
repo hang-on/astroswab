@@ -363,33 +363,32 @@
     ; included in collision tests by "detect_collision_using_collision_table".
     ; Entry: IX = Pointer to game object.
     ; Uses: AF, BC, DE, HL
-    ld a,(ix+game_object.y)
-    add a,(ix+game_object.hitbox_offset_y)
-
-    cp COLLISION_TABLE_DIVIDER
-    jp nc,+
-      ld hl,objects_in_top_collision_table
-      ld a,(hl)
-      inc (hl)
-      ld hl,top_collision_table
+    ld a,(ix+game_object.y)                   ; Get game object's y-position.
+    add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
+    cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
+    jp nc,+                                   ; On carry, game object must be
+      ld hl,objects_in_top_collision_table    ; above the divider (top half of
+      ld a,(hl)                               ; screen). Increment top coll.
+      inc (hl)                                ; table index and point HL to
+      ld hl,top_collision_table               ; top collision table.
       jp ++
     +:
-      ld hl,objects_in_bottom_collision_table
+      ld hl,objects_in_bottom_collision_table ; Same with bottom coll. table.
       ld a,(hl)
       inc (hl)
       ld hl,bottom_collision_table
     ++:
-    ;
-    cp 0
-    jp z,+
-    ld b,a
-    xor a
-    -:
-      add a,COLLISION_TABLE_ELEMENT_SIZE ; Table element size here!
-    djnz -
-    ld d,0
-    ld e,a
-    add hl,de
+    ;                                         ; Prepare to calculate offset...
+    cp 0                                      ; Special case first game object,
+    jp z,+                                    ; don't apply offset.
+      ld b,a
+      xor a
+      -:
+        add a,COLLISION_TABLE_ELEMENT_SIZE
+      djnz -
+      ld d,0
+      ld e,a
+      add hl,de
     +:
     ;
     ld a,(ix+game_object.y) ; Apply hitbox offset.
@@ -429,7 +428,12 @@
       pop bc
     djnz -
   ret
+  ;
   begin_collision_tables:
+    ; Place before the first call to "add_game_object_to_collision_table". The
+    ; top and bottom collision table indexes are reset.
+    ; Entry: None.
+    ; Uses: AF.
     xor a
     ld (objects_in_top_collision_table),a
     ld (objects_in_bottom_collision_table),a
