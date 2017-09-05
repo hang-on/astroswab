@@ -171,12 +171,6 @@
     pop af
   ret
   ;
-  get_game_object_x:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A x of the enemy object.
-    ld a,(ix+game_object.x)
-  ret
-  ;
   get_game_object_xspeed:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A  game object xspeed.
