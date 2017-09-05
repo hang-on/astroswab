@@ -274,6 +274,7 @@ tall_meta_sprite_table:
   ;
   wait_for_scanline:
     ; Entry: A = Scanline to wait for.
+    ; Uses: AF, B
     ld b,a
     -:
       in a,(V_COUNTER_PORT)
@@ -281,18 +282,14 @@ tall_meta_sprite_table:
     jp nz,-
   ret
   mark_scanline:
-    ;
-    in a,(V_COUNTER_PORT)
-    ld ix,bee
-    ld (ix+game_object.y),a
-    call draw_game_object
-    ; ...
+    ; Mark scanline by drawing a game object on it.
+    ; Entry: IX = Pointer to game object to use as marker.
+    ; Uses: None.
+    push af
+      in a,(V_COUNTER_PORT)
+      ld (ix+game_object.y),a
+      call draw_game_object
+    pop af
   ret
   ;
-  initialize_scanline_marker:
-    ;
-    ld ix,bee
-    ld hl,bee_init_table
-    call initialize_game_object
-  ret
 .ends
