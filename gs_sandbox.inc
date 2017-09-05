@@ -55,7 +55,13 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
+  call test_1
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
+test_1:
+  ld a,100
+  call wait_for_scanline
+  call mark_scanline
+ret

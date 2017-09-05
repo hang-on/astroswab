@@ -251,4 +251,10 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  wait_for_scanline:
+    ;
+  ret
+  mark_scanline:
+    ;
+  ret
 .ends
