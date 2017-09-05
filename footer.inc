@@ -48,6 +48,7 @@
     .dw bullet, bullet_init_table, BULLET_MAX
     .dw asteroid, asteroid_init_table, ASTEROID_MAX
     .dw shard, shard_init_table, SHARD_MAX
+    .dw bee, bee_init_table, 1
   batch_game_object_init_table_end:
   ;
   asteroid_init_table:
@@ -138,6 +139,10 @@
     .dw danish, 1
   bullet_collision_table_end:
   ;
+  bee_init_table:
+    .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 8, GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 1, 1, BEE
   ;
   ; ---------------------------------------------------------------------------
   ; Menu item strings:

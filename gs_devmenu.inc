@@ -56,11 +56,6 @@ prepare_devmenu:
   call set_cursor
   ld a,(vblank_update_finished_line)
   call print_register_a
-  ld a,17
-  ld b,21
-  call set_cursor
-  ld a,(loop_finished_line)
-  call print_register_a
   ; Wipe sprites.
   call begin_sprites
   call load_sat

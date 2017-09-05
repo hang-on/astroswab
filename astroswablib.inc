@@ -44,6 +44,26 @@
 .equ SPRITE_45 170
 .equ SPRITE_46 171
 .equ SPRITE_47 172
+.equ SPRITE_48 173
+.equ SPRITE_49 174
+
+.equ SPRITE_50 175
+.equ SPRITE_51 176
+.equ SPRITE_52 177
+.equ SPRITE_53 178
+.equ SPRITE_54 179
+.equ SPRITE_55 180
+.equ SPRITE_56 181
+.equ SPRITE_57 182
+.equ SPRITE_58 183
+.equ SPRITE_59 184
+.equ SPRITE_60 185
+.equ SPRITE_61 186
+.equ SPRITE_62 187
+.equ SPRITE_63 188
+.equ SPRITE_64 189
+.equ SPRITE_65 190
+.equ SPRITE_66 191 ; Last 8x8 sprite
 ; . . . .
 .section "metasprites" free
 ; ---------------------------------------------------------------------------
@@ -142,7 +162,7 @@ tall_meta_sprite_table:
 .ends
 ;
 ; ---------------------------------------------------------------------------
-.section "profilers" free
+.section "vblank profiler" free
 ; ---------------------------------------------------------------------------
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
@@ -165,23 +185,9 @@ tall_meta_sprite_table:
     ld (vblank_update_finished_line),a      ; the new 'high score'.
   ret                                       ;
   ;
-  profile_loop:
-    in a,(V_COUNTER_PORT)
-    cp PROFILER_MAX_LINE
-    ret nc
-    ld b,a                                  ; Store line number in B.
-    ld a,(loop_finished_line)               ; Get highest line number yet.
-    cp b                                    ; Is the current line higher?
-    ret nc                                  ; No, skip forward.
-    ld a,b                                  ; Yes, save current line number as
-    ld (loop_finished_line),a               ; the new 'high score'.
-  ret                                       ;
-  ;
-  reset_profilers:
+  reset_vblank_profiler:
     ld a,FIRST_LINE_OF_VBLANK
     ld (vblank_update_finished_line),a
-    xor a
-    ld (loop_finished_line),a
   ret
 .ends
 ;
@@ -239,6 +245,7 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
+
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
@@ -251,4 +258,5 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+
 .ends

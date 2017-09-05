@@ -1,3 +1,18 @@
+;2017-09-05
+test_1:
+  ld ix,bee
+  ld hl,bee_init_table
+  call initialize_game_object
+  ;
+  ld a,COLLISION_TABLE_DIVIDER
+  call wait_for_scanline
+  in a,(V_COUNTER_PORT)
+  assertEqualsA COLLISION_TABLE_DIVIDER, "Test 1 failed"
+  ;
+  ld ix,bee
+  call mark_scanline
+ret
+
 ;2017-09-03
 ;
 handle_collision:
