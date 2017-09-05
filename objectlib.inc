@@ -462,7 +462,7 @@
     add a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
-      ld iy,top_collision_table                 ; Point HL to start of table.
+      ld iy,top_collision_table                 ; Point IY to start of table.
       ld a,(objects_in_top_collision_table)     ; Quick exit if table is empty.
       or a                                      ; (top collision table).
       ret z
@@ -472,35 +472,31 @@
       ld a,(objects_in_bottom_collision_table)
       or a
       ret z
-    ++:                                         ;
-    ;push hl
-    ;pop iy
-    ld b,a
-    -:
-      push bc
+    ++:                                         ; IX and IY are set up!
+    ld b,a                                      ; Loop through all game objects
+    -:                                          ; in the collision table.
+      push bc                                   ; Save loop counter.
         ;
-        call collision_subtest_1
-        jp nc,+
-        call collision_subtest_2
+        call collision_subtest_1                ; Perform the four tests...
+        jp nc,+                                 ; If any one fails, then skip
+        call collision_subtest_2                ; to next object in table.
         jp nc,+
         call collision_subtest_3
         jp nc,+
         call collision_subtest_4
         jp nc,+
           ; Fall through: Collision!
-          ; Return with carry set, and with pointer in IY.
-          ld l,(iy+4)
-          ld h,(iy+5)
+          ld l,(iy+4)                           ; Return with carry set, and
+          ld h,(iy+5)                           ; with pointer in IY...
           push hl
           pop iy
-          pop bc ; clean stack
+          pop bc                                ; Align the stack.
           ret
         +:
-        ld de,COLLISION_TABLE_ELEMENT_SIZE
-        add iy,de
-      pop bc
-    djnz -
-
+        ld de,COLLISION_TABLE_ELEMENT_SIZE      ; Apply offset to get next item
+        add iy,de                               ; in table.
+      pop bc                                    ; Restore loop counter.
+    djnz -                                      ; Loop back.
   ret
     collision_subtest_1:
       ; rect1.x < rect2.x + rect2.width
@@ -540,5 +536,4 @@
       cp b
     ret
     ;
-
 .ends
