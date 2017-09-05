@@ -252,7 +252,12 @@ tall_meta_sprite_table:
   ret
   ;
   wait_for_scanline:
-    ;
+    ; Entry: A = Scanline to wait for.
+    ld b,a
+    -:
+      in a,(V_COUNTER_PORT)
+      cp b
+    jp nz,-
   ret
   mark_scanline:
     ;

@@ -63,5 +63,7 @@ jp main_loop
 test_1:
   ld a,100
   call wait_for_scanline
+  in a,(V_COUNTER_PORT)
+    assertEqualsA 100, "Test 1 failed"
   call mark_scanline
 ret
