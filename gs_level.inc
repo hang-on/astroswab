@@ -429,8 +429,10 @@
         call PSGSFXStop
         ld a,GS_PREPARE_DEVMENU
         ld (game_state),a
+        jp ++
       +:
-      ld ix,bee
-      call mark_scanline_with_game_object
+        ld ix,bee
+        call mark_scanline_with_game_object
+      ++:
     .endif
   jp main_loop
