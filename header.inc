@@ -44,6 +44,7 @@
   .equ SPINNER 5
   .equ MISSILE 6
   .equ DANISH 7
+  .equ BEE 8
   .equ NOT_MOVING 0
 ;
 ; Background - nametable, tiles etc.:
@@ -162,4 +163,6 @@
   objects_in_top_collision_table db
   bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_bottom_collision_table db
+  ;
+  bee instanceof game_object
 .ends

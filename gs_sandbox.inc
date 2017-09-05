@@ -61,9 +61,15 @@ jp main_loop
 ;
 ; Tests for the sandbox:
 test_1:
+  call initialize_scanline_marker
   ld a,100
   call wait_for_scanline
   in a,(V_COUNTER_PORT)
     assertEqualsA 100, "Test 1 failed"
   call mark_scanline
 ret
+;
+bee_init_table:
+  .db SPRITE_44, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+  .db 0, 0, GAME_OBJECT_ACTIVE
+  .db %00000000, 0, 0, 1, 1, BEE

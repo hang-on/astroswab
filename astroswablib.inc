@@ -239,6 +239,7 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
+
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
@@ -261,5 +262,17 @@ tall_meta_sprite_table:
   ret
   mark_scanline:
     ;
+    in a,(V_COUNTER_PORT)
+    ld ix,bee
+    ld (ix+game_object.y),a
+    call draw_game_object
+    ; ...
+  ret
+  ;
+  initialize_scanline_marker:
+    ;
+    ld ix,bee
+    ld hl,bee_init_table
+    call initialize_game_object
   ret
 .ends
