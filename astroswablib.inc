@@ -162,7 +162,7 @@ tall_meta_sprite_table:
 .ends
 ;
 ; ---------------------------------------------------------------------------
-.section "profilers" free
+.section "vblank profiler" free
 ; ---------------------------------------------------------------------------
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
@@ -185,23 +185,9 @@ tall_meta_sprite_table:
     ld (vblank_update_finished_line),a      ; the new 'high score'.
   ret                                       ;
   ;
-  profile_loop:
-    in a,(V_COUNTER_PORT)
-    cp PROFILER_MAX_LINE
-    ret nc
-    ld b,a                                  ; Store line number in B.
-    ld a,(loop_finished_line)               ; Get highest line number yet.
-    cp b                                    ; Is the current line higher?
-    ret nc                                  ; No, skip forward.
-    ld a,b                                  ; Yes, save current line number as
-    ld (loop_finished_line),a               ; the new 'high score'.
-  ret                                       ;
-  ;
-  reset_profilers:
+  reset_vblank_profiler:
     ld a,FIRST_LINE_OF_VBLANK
     ld (vblank_update_finished_line),a
-    xor a
-    ld (loop_finished_line),a
   ret
 .ends
 ;
@@ -273,6 +259,4 @@ tall_meta_sprite_table:
   ret
   ;
 
-
-  ;
 .ends

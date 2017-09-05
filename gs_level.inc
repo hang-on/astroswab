@@ -57,7 +57,7 @@
     ld (gun_released),a
     ;
     ; Reset debug meters:
-    call reset_profilers
+    call reset_vblank_profiler
     ; Wipe sprites.
     call begin_sprites
     call load_sat
@@ -76,7 +76,7 @@
     ld a,GS_RUN_LEVEL
     ld (game_state),a
     call await_frame_interrupt                ; To avoid profiler failsafe!
-
+    ;
   jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------

@@ -131,7 +131,6 @@
   menu_state db
   ;
   vblank_update_finished_line db
-  loop_finished_line db
   ;
   level db
   ;
