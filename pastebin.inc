@@ -372,7 +372,7 @@ test_4:
   call initialize_game_object
   call draw_game_object
   ld ix,asteroid
-  call add_object_to_collision_table
+  call add_game_object_to_collision_table
   ;
   ld ix,bullet
   call detect_collision_using_collision_table
@@ -408,7 +408,7 @@ test_5:
   call initialize_game_object
   call draw_game_object
   ld ix,asteroid
-  call add_object_to_collision_table
+  call add_game_object_to_collision_table
   ;
   ld ix,bullet
   ld b,BULLET_MAX
@@ -492,7 +492,7 @@ test_3_bullet_collides:
   ;
   ld ix,asteroid
   call draw_game_object
-  call add_object_to_collision_table
+  call add_game_object_to_collision_table
   ;
   ld ix,bullet
   ld hl,bottom_collision_table
@@ -516,7 +516,7 @@ test_1_asteroid_in_top_table:
   ld a,(objects_in_top_collision_table)
   assertEqualsA 0, "Test 1.0 failed"
   ;
-  call add_object_to_collision_table
+  call add_game_object_to_collision_table
   ;
   ;
   call await_frame_interrupt
@@ -539,7 +539,7 @@ test_2_asteroid_in_bottom_table:
   ld a,(objects_in_bottom_collision_table)
   assertEqualsA 0, "Test 2.0 failed"
   ;
-  call add_object_to_collision_table
+  call add_game_object_to_collision_table
   ;
   ;
   call await_frame_interrupt

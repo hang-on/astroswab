@@ -356,24 +356,12 @@
     ;        A = Sprite index.
     ld (ix+game_object.sprite),a
   ret
-  ;
-  ; Collision. FIXME - better layotu.
-  add_multiple_game_object_instances_to_collision_table:
-    ; Entry: IX = Pointer to game object with multiple instances.
-    ;        A = number of instances to position.
-    ; Uses: AF, B, DE, HL, IX
-    ld b,a
-    ld de,_sizeof_game_object
-    -:
-      push bc
-      call add_object_to_collision_table
-      add ix,de
-      pop bc
-    djnz -
-  ret
-
-  add_object_to_collision_table:
-    ; IX = Pointer to object.
+  ; ---------------------------------------------------------------------------
+  ; COLLISION DETECTION
+  add_game_object_to_collision_table:
+    ; Add game object y,x and hitbox data to the collision table, so it is
+    ; included in collision tests by "detect_collision_using_collision_table".
+    ; Entry: IX = Pointer to game object.
     ; Uses: AF, BC, DE, HL
     ld a,(ix+game_object.y)
     add a,(ix+game_object.hitbox_offset_y)
@@ -425,6 +413,21 @@
     ld (hl),e
     inc hl
     ld (hl),d
+  ret
+  ;
+  add_multiple_game_object_instances_to_collision_table:
+    ; Batch version of add_game_object_to_collision_table.
+    ; Entry: IX = Pointer to game object with multiple instances.
+    ;        A = number of instances to position.
+    ; Uses: AF, B, DE, HL, IX
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      push bc
+      call add_game_object_to_collision_table
+      add ix,de
+      pop bc
+    djnz -
   ret
   begin_collision_tables:
     xor a

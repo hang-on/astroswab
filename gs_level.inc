@@ -267,7 +267,7 @@
       call horizontal_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table
+      call add_game_object_to_collision_table
       ;
       asteroid_loop_end:
       ld de,_sizeof_game_object
@@ -319,7 +319,7 @@
         call horizontal_zone_deactivate_game_object
         ;
         call draw_game_object              ; Put it in the SAT.
-        call add_object_to_collision_table
+        call add_game_object_to_collision_table
       ;
       +:
       ld de,_sizeof_game_object
@@ -352,7 +352,7 @@
       call horizontal_zone_deactivate_game_object
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table
+      call add_game_object_to_collision_table
     +:
     ; ---------------------------------------------------------------------------
     ; Handle danish and trigger.
@@ -386,7 +386,7 @@
       ld b,ASTEROID_DEACTIVATE_ZONE_END
       call horizontal_zone_deactivate_game_object
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table
+      call add_game_object_to_collision_table
     +:
     ; Handle missile and trigger. -----------------------------------------------
     ld ix,missile
@@ -415,7 +415,7 @@
       ld b,ASTEROID_DEACTIVATE_ZONE_END
       call horizontal_zone_deactivate_game_object
       call draw_game_object              ; Put it in the SAT.
-      call add_object_to_collision_table
+      call add_game_object_to_collision_table
     +:
     ; ---------------------------------------------------------------------------
     call PSGSFXFrame
