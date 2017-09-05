@@ -171,13 +171,6 @@
     pop af
   ret
   ;
-  get_game_object_state:
-    ; Entry: IX = pointer to struct.
-    ; Exit: Returns in A state of the enemy object, which should be either
-    ; GAME_OBJECT_INACTIVE or GAME_OBJECT_ACTIVE.
-    ld a,(ix+game_object.state)
-  ret
-  ;
   get_game_object_x:
     ; Entry: IX = pointer to struct.
     ; Exit: Returns in A x of the enemy object.
@@ -198,7 +191,7 @@
     ld b,a
     ld de,_sizeof_game_object
     -:
-      call get_game_object_state
+      ld a,(ix+game_object.state)
       cp GAME_OBJECT_INACTIVE
       jp z,+
       add ix,de

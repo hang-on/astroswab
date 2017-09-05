@@ -235,7 +235,7 @@
     ld b,ASTEROID_MAX
     process_asteroids:
       push bc
-      call get_game_object_state
+      ld a,(ix+game_object.state)
       cp GAME_OBJECT_INACTIVE
       jp nz,+
         ld hl,frame_counter                   ; Only consider reactivation on
@@ -283,7 +283,7 @@
         ld ix,shard
         -:
           push bc
-          call get_game_object_state
+          ld a,(ix+game_object.state)
           cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
           jp nz,+
             call spawn_game_object_in_invisible_area
@@ -328,7 +328,7 @@
     djnz process_shards
     ; ---------------------------------------------------------------------------
     ld ix,spinner
-    call get_game_object_state           ; If spinner is already out, skip!
+    ld a,(ix+game_object.state)           ; If spinner is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,spinner_trigger               ;
@@ -357,7 +357,7 @@
     ; ---------------------------------------------------------------------------
     ; Handle danish and trigger.
     ld ix,danish
-    call get_game_object_state           ; If danish is already out, skip!
+    ld a,(ix+game_object.state)          ; If danish is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,danish_trigger               ;
@@ -390,7 +390,7 @@
     +:
     ; Handle missile and trigger. -----------------------------------------------
     ld ix,missile
-    call get_game_object_state           ; If missile is already out, skip!
+    ld a,(ix+game_object.state)          ; If missile is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,missile_trigger              ; Only process trigger if it is enabled.
