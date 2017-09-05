@@ -730,6 +730,21 @@
   ret
 .ends
 ;
+; -----------------------------------------------------------------------------
+.section "Wait for scanline" free
+; -----------------------------------------------------------------------------
+  ; Wait for a specific scanline passed in A.
+  ; Entry: A = Scanline to wait for.
+  ; Uses: AF, B
+  wait_for_scanline:
+    ld b,a
+    -:
+      in a,(V_COUNTER_PORT)
+      cp b
+    jp nz,-
+  ret
+.ends
+;
 ; *****************************************************************************
 ; B L U E L I B  S P R I T E  R O U T I N E S
 ; *****************************************************************************
