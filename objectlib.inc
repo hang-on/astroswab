@@ -35,6 +35,8 @@
   ; What Astroswab game objects are assumed to have in common:
   ; 1. ...
   ; 2. ...
+  ; ---------------------------------------------------------------------------
+  ; ACTIVATION, DEACTIVATION AND INITIALIZATION OF GAME OBJECTS.
   activate_game_object:
     ; Entry: IX = Pointer to struct.
     ; Registers used: None.
@@ -43,124 +45,6 @@
     ld (ix+game_object.state),a
     pop af
   ret
-  ;
-  animate_game_object:
-    ; Entry: IX = Pointer to struct.
-    SAVE_REGISTERS
-    ld a,(ix+game_object.anim_counter)
-    inc a
-    ld (ix+game_object.anim_counter),a
-    ld d,0
-    ld e,a
-    ld l,(ix+game_object.anim_pointer)
-    ld h,(ix+game_object.anim_pointer+1)
-    add hl,de
-    ld a,(hl)
-    ld (ix+game_object.sprite),a
-    RESTORE_REGISTERS
-  ret
-  ;
-  batch_initialize_game_objects:
-    ; Initialize a batch of game objects using a table.
-    ; HL = Pointer to batch init table
-    ; A = number of objects to initialize.
-    ; Example of 6 byte wide batch init table:
-    ;     .dw swabby, swabby_init_table, 1
-    ;     .dw bullet, bullet_init_table, BULLET_MAX
-    ; Uses: AF, BC, DE, HL, IX
-    ld b,a
-    --:
-      push bc
-        ; Point IX to ram structure.
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        push de
-        pop ix
-        ; Point HL to init table.
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        ld a,(hl)
-        ld b,a
-        inc hl
-        inc hl
-        push hl
-          push de
-          pop hl
-          ld de,_sizeof_game_object
-            -:
-            call initialize_game_object
-            add ix,de
-            djnz -
-        pop hl
-      pop bc
-    djnz --
-  ret
-  batch_draw_game_objects:
-    ; Batch draw a number of game objects.
-    ; HL = table with game objects.
-    ; A = number of game objects to draw.
-    ;       Example of batch draw table:
-    ;       .dw asteroid, 3, swabby, 1
-    ;       The number makes it possible to draw arrayed objects, i.e. bullets.
-    ; Uses: AF, BC, DE, HL, IX
-    ld b,a
-    --:
-      push bc
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        push de
-        pop ix
-        ld b,(hl)
-        inc hl
-        inc hl
-        ld de,_sizeof_game_object
-        -:
-          push bc
-            call draw_game_object
-            add ix,de
-          pop bc
-        djnz -
-      pop bc
-    djnz --
-  ret
-  ;
-  draw_game_object:
-    ; Entry: IX = Pointer to struct.
-    ; Registers used: None.
-    SAVE_REGISTERS                ; Because add_metasprite mess with registers!
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    jp nz,draw_game_object_end
-      ; Put active objects in the SAT buffer.
-      ld a,(ix+game_object.sprite)
-      cp FIRST_8x8_SPRITE
-      jp nc,small_shape
-      ld a,(ix+game_object.shape)
-      cp GAME_OBJECT_SHAPE_REGULAR
-      jp z,regular_shape
-      cp GAME_OBJECT_SHAPE_TALL
-      jp z,tall_shape
-    draw_game_object_end:
-    RESTORE_REGISTERS
-  ret
-  small_shape:
-    ld c,(ix+game_object.x)
-    ld b,(ix+game_object.y)
-    ld a,(ix+game_object.sprite)
-    call add_sprite
-  jp draw_game_object_end
-  regular_shape:
-    call add_metasprite
-  jp draw_game_object_end
-  tall_shape:
-    call add_tall_metasprite
-  jp draw_game_object_end
   ;
   deactivate_game_object:
     ; Entry: IX = Pointer to struct.
@@ -264,6 +148,130 @@
     pop hl
   ret
   ;
+  batch_initialize_game_objects:
+    ; Initialize a batch of game objects using a table.
+    ; HL = Pointer to batch init table
+    ; A = number of objects to initialize.
+    ; Example of 6 byte wide batch init table:
+    ;     .dw swabby, swabby_init_table, 1
+    ;     .dw bullet, bullet_init_table, BULLET_MAX
+    ; Uses: AF, BC, DE, HL, IX
+    ld b,a
+    --:
+      push bc
+        ; Point IX to ram structure.
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        push de
+        pop ix
+        ; Point HL to init table.
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        ld a,(hl)
+        ld b,a
+        inc hl
+        inc hl
+        push hl
+          push de
+          pop hl
+          ld de,_sizeof_game_object
+            -:
+            call initialize_game_object
+            add ix,de
+            djnz -
+        pop hl
+      pop bc
+    djnz --
+  ret
+  ;
+  ; ---------------------------------------------------------------------------
+  ; DRAWING AND ANIMATING.
+  animate_game_object:
+    ; Entry: IX = Pointer to struct.
+    ; Assumes that the game object's animation pointer points to a 256 byte
+    ; table, where each byte is a SPRITE_X in the format expected by
+    ; draw_game_object.
+    SAVE_REGISTERS
+    ld a,(ix+game_object.anim_counter)
+    inc a
+    ld (ix+game_object.anim_counter),a
+    ld d,0
+    ld e,a
+    ld l,(ix+game_object.anim_pointer)
+    ld h,(ix+game_object.anim_pointer+1)
+    add hl,de
+    ld a,(hl)
+    ld (ix+game_object.sprite),a
+    RESTORE_REGISTERS
+  ret
+  ;
+  batch_draw_game_objects:
+    ; Batch draw a number of game objects.
+    ; HL = table with game objects.
+    ; A = number of game objects to draw.
+    ;       Example of batch draw table:
+    ;       .dw asteroid, 3, swabby, 1
+    ;       The number makes it possible to draw arrayed objects, i.e. bullets.
+    ; Uses: AF, BC, DE, HL, IX
+    ld b,a
+    --:
+      push bc
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        push de
+        pop ix
+        ld b,(hl)
+        inc hl
+        inc hl
+        ld de,_sizeof_game_object
+        -:
+          push bc
+            call draw_game_object
+            add ix,de
+          pop bc
+        djnz -
+      pop bc
+    djnz --
+  ret
+  ;
+  draw_game_object:
+    ; Entry: IX = Pointer to struct.
+    ; Registers used: None.
+    SAVE_REGISTERS                ; Because add_metasprite mess with registers!
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,draw_game_object_end
+      ; Put active objects in the SAT buffer.
+      ld a,(ix+game_object.sprite)
+      cp FIRST_8x8_SPRITE
+      jp nc,small_shape
+      ld a,(ix+game_object.shape)
+      cp GAME_OBJECT_SHAPE_REGULAR
+      jp z,regular_shape
+      cp GAME_OBJECT_SHAPE_TALL
+      jp z,tall_shape
+    draw_game_object_end:
+    RESTORE_REGISTERS
+  ret
+  small_shape:
+    ld c,(ix+game_object.x)
+    ld b,(ix+game_object.y)
+    ld a,(ix+game_object.sprite)
+    call add_sprite
+  jp draw_game_object_end
+  regular_shape:
+    call add_metasprite
+  jp draw_game_object_end
+  tall_shape:
+    call add_tall_metasprite
+  jp draw_game_object_end
+  ;
   load_animation_game_object:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to animation table.
@@ -271,6 +279,8 @@
     ld (ix+game_object.anim_pointer+1),h
   ret
   ;
+  ; ---------------------------------------------------------------------------
+  ; MOVING AND POSITIONING
   move_game_object:
     ; Apply yspeed to y and xspeed to x.
     ; Entry: IX = Pointer to instance of enemy object.
