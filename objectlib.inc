@@ -384,20 +384,20 @@
       ld b,a
       xor a
       -:
-        add a,COLLISION_TABLE_ELEMENT_SIZE
+        add a,COLLISION_TABLE_ELEMENT_SIZE    ; Multiply to calculate offset.
       djnz -
       ld d,0
       ld e,a
-      add hl,de
-    +:
-    ;
-    ld a,(ix+game_object.y) ; Apply hitbox offset.
-    add a,(ix+game_object.hitbox_offset_y)
-    ld (hl),a
-    inc hl
-    ld a,(ix+game_object.x)
-    add a,(ix+game_object.hitbox_offset_x)
-    ld (hl),a
+      add hl,de                               ; Classic offset calc. move.
+    +:                                        ; Now HL points to next 'empty'
+    ;                                         ; slot in coll. table.
+    ld a,(ix+game_object.y)                   ; Get game object y.
+    add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
+    ld (hl),a                                 ; Write it to coll. table.
+    inc hl                                    ;
+    ld a,(ix+game_object.x)                   ; Get game object x.
+    add a,(ix+game_object.hitbox_offset_x)    ; ... and write it, along with
+    ld (hl),a                                 ; hitbox data, to coll. table.
     inc hl
     ld a,(ix+game_object.hitbox_width)
     ld (hl),a
@@ -405,10 +405,9 @@
     ld a,(ix+game_object.hitbox_height)
     ld (hl),a
     inc hl
-    ;
-    ; Add pointer to object
-    push ix
-    pop de
+    ;                                         ; Last word in table element is
+    push ix                                   ; a pointer to the game object's
+    pop de                                    ; struct in ram.
     ld (hl),e
     inc hl
     ld (hl),d
@@ -442,39 +441,40 @@
 ;
   ;
   detect_collision_using_collision_table:
-    ; Version 3 notes:
-    ; Assumes game objects to be initialized with
-    ; separate bytes for y and x hitbox offset.
+    ; Assumes game objects to be initialized with separate bytes for y and x
+    ; hitbox offset. Test object passed in IX against all objects added to
+    ; the collision table (top or bottom table depending on object in IX's y
+    ; position).
     ;
     ; Simple form of collision detection: Axis-aligned bounding box.
-    ; If (rect1.x < rect2.x + rect2.width &&  (coll1)
-    ; rect1.x + rect1.width > rect2.x &&      (coll2)
-    ; rect1.y < rect2.y + rect2.height &&     (coll3)
-    ; rect1.height + rect1.y > rect2.y)       (coll4)
+    ; If (rect1.x < rect2.x + rect2.width &&  (collision_subtest_1)
+    ; rect1.x + rect1.width > rect2.x &&      (collision_subtest_2)
+    ; rect1.y < rect2.y + rect2.height &&     (collision_subtest_3)
+    ; rect1.height + rect1.y > rect2.y)       (collision_subtest_4)
     ;  --> collision detected!
     ; We perform these four tests one at a time. If any one test fails,
     ; there is no collision, and we return with carry reset. If no test fails
     ; then we have collision, and return with carry set.
-    ; Uses: AF, B, IY
     ;
-    ; Determine relevant collision table.
-    ld a,(ix+game_object.hitbox_offset_y)
+    ; Entry: IX = Pointer to game object.
+    ; Uses: AF, B, HL, IY.
+    ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
     add a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
-      ld hl,top_collision_table
-      ld a,(objects_in_top_collision_table)
-      or a
+      ld iy,top_collision_table                 ; Point HL to start of table.
+      ld a,(objects_in_top_collision_table)     ; Quick exit if table is empty.
+      or a                                      ; (top collision table).
       ret z
       jp ++
-    +:
-      ld hl,bottom_collision_table
+    +:                                          ; Do the same for the bottom
+      ld iy,bottom_collision_table              ; coll. table.
       ld a,(objects_in_bottom_collision_table)
       or a
       ret z
-    ++:
-    push hl
-    pop iy
+    ++:                                         ;
+    ;push hl
+    ;pop iy
     ld b,a
     -:
       push bc
