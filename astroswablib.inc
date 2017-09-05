@@ -44,6 +44,26 @@
 .equ SPRITE_45 170
 .equ SPRITE_46 171
 .equ SPRITE_47 172
+.equ SPRITE_48 173
+.equ SPRITE_49 174
+
+.equ SPRITE_50 175
+.equ SPRITE_51 176
+.equ SPRITE_52 177
+.equ SPRITE_53 178
+.equ SPRITE_54 179
+.equ SPRITE_55 180
+.equ SPRITE_56 181
+.equ SPRITE_57 182
+.equ SPRITE_58 183
+.equ SPRITE_59 184
+.equ SPRITE_60 185
+.equ SPRITE_61 186
+.equ SPRITE_62 187
+.equ SPRITE_63 188
+.equ SPRITE_64 189
+.equ SPRITE_65 190
+.equ SPRITE_66 191 ; Last 8x8 sprite
 ; . . . .
 .section "metasprites" free
 ; ---------------------------------------------------------------------------
