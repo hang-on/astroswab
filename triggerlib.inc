@@ -9,7 +9,6 @@
   interval db
   chance db
   state db
-  ; add interval modifier here...?
 .endst
 ;
 .section "Trigger functions" free
