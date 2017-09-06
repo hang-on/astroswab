@@ -357,23 +357,23 @@
       call add_game_object_to_collision_table
     +:
     ; ---------------------------------------------------------------------------
-    ; Handle danish and trigger.
-    ld ix,danish
-    ld a,(ix+game_object.state)          ; If danish is already out, skip!
+    ; Handle booster and trigger.
+    ld ix,booster
+    ld a,(ix+game_object.state)          ; If booster is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
-      ld ix,danish_trigger               ;
+      ld ix,booster_trigger               ;
       ld a,(ix+trigger.state)
       cp ENABLED
       jp nz,+
         call process_trigger
         jp nc,+
-          ; If danish_trigger generates a trigger event - activate a new danish.
-          ld ix,danish
+          ; If booster_trigger generates a trigger event - activate a new booster.
+          ld ix,booster
           call spawn_game_object_in_invisible_area
           call get_random_number
-          and DANISH_SPRITE_MASK
-          ld hl,danish_sprite_table
+          and BOOSTER_SPRITE_MASK
+          ld hl,booster_sprite_table
           ld d,0
           ld e,a
           add hl,de
@@ -382,7 +382,7 @@
           call activate_game_object
         +:
     ;
-    ld ix,danish
+    ld ix,booster
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
     jp nz,+
