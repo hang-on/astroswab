@@ -360,21 +360,24 @@
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,danish_trigger               ;
-      call process_trigger
-      jp nc,+
-        ; If danish_trigger generates a trigger event - activate a new danish.
-        ld ix,danish
-        call spawn_game_object_in_invisible_area
-        call get_random_number
-        and DANISH_SPRITE_MASK
-        ld hl,danish_sprite_table
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
-        ld (ix+game_object.sprite),a
-        call activate_game_object
-    +:
+      ld a,(ix+trigger.state)
+      cp ENABLED
+      jp nz,+
+        call process_trigger
+        jp nc,+
+          ; If danish_trigger generates a trigger event - activate a new danish.
+          ld ix,danish
+          call spawn_game_object_in_invisible_area
+          call get_random_number
+          and DANISH_SPRITE_MASK
+          ld hl,danish_sprite_table
+          ld d,0
+          ld e,a
+          add hl,de
+          ld a,(hl)
+          ld (ix+game_object.sprite),a
+          call activate_game_object
+        +:
     ;
     ld ix,danish
     ld a,(ix+game_object.state)
