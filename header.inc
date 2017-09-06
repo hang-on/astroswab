@@ -43,7 +43,7 @@
   .equ SHARD 4
   .equ SPINNER 5
   .equ MISSILE 6
-  .equ DANISH 7
+  .equ BOOSTER 7
   .equ BEE 8
   .equ NOT_MOVING 0
 ;
@@ -105,9 +105,9 @@
   .equ SPINNER_DEACTIVATE_ZONE_END ASTEROID_DEACTIVATE_ZONE_END-16
 ;
 ; Danish:
-  .equ DANISH_TRIGGER_CHANCE_INIT 190 ; 190  1 to turn off
-  .equ DANISH_TRIGGER_INTERVAL_INIT 230
-  .equ DANISH_SPRITE_MASK %00000011
+  .equ BOOSTER_TRIGGER_CHANCE_INIT 190 ; 190  1 to turn off
+  .equ BOOSTER_TRIGGER_INTERVAL_INIT 230
+  .equ BOOSTER_SPRITE_MASK %00000011
 ;
 ; Missile:
   .equ MISSILE_TRIGGER_CHANCE_INIT 190 ; 190 - 1 to almost disable
@@ -147,8 +147,8 @@
   spinner instanceof game_object
   spinner_trigger instanceof trigger
   ;
-  danish instanceof game_object
-  danish_trigger instanceof trigger
+  booster instanceof game_object
+  booster_trigger instanceof trigger
   ;
   missile instanceof game_object
   missile_trigger instanceof trigger

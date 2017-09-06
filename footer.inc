@@ -43,7 +43,7 @@
   batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1
     .dw spinner, spinner_init_table, 1
-    .dw danish, danish_init_table, 1
+    .dw booster, booster_init_table, 1
     .dw missile, missile_init_table, 1
     .dw bullet, bullet_init_table, BULLET_MAX
     .dw asteroid, asteroid_init_table, ASTEROID_MAX
@@ -70,7 +70,7 @@
   ;
   trigger_batch_init_table:
     .dw spinner_trigger, spinner_trigger_init_table
-    .dw danish_trigger, danish_trigger_init_table
+    .dw booster_trigger, booster_trigger_init_table
     .dw missile_trigger, missile_trigger_init_table
     .dw shard_trigger, shard_trigger_init_table
   trigger_batch_init_table_end:
@@ -98,14 +98,14 @@
     .endr
   .endr
   ;
-  danish_init_table:
+  booster_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 0, 0, 16, 16, DANISH           ; TODO: Might need adjustment!
-  danish_trigger_init_table:
-    .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
+    .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
+  booster_trigger_init_table:
+    .db BOOSTER_TRIGGER_CHANCE_INIT, BOOSTER_TRIGGER_INTERVAL_INIT
     .db ENABLED
-  danish_sprite_table:
+  booster_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
@@ -126,7 +126,7 @@
     .dw asteroid, ASTEROID_MAX
     .dw shard, SHARD_MAX
     .dw spinner, 1
-    .dw danish, 1
+    .dw booster, 1
   swabby_collision_table_end:
   ;
   bullet_init_table:
@@ -138,7 +138,7 @@
     .dw asteroid, ASTEROID_MAX
     .dw shard, SHARD_MAX
     .dw spinner, 1
-    .dw danish, 1
+    .dw booster, 1
   bullet_collision_table_end:
   ;
   bee_init_table:
