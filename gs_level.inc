@@ -142,6 +142,7 @@
         inc a                         ; If not, then accelerate a bit.
         jp ++                         ; Skip over the dpad-left check below.
     +:
+    ld a,0
     call is_left_pressed              ; Check if player press left.
     ld a,0
     jp nc,++
@@ -153,8 +154,19 @@
         dec a
     ++:
     ld (ix+game_object.xspeed),a
-    ;call set_game_object_speed
     call move_game_object
+    ld a,(ix+game_object.x)
+    cp SWABBY_X_MAX
+    jp c,+
+      ld a,SWABBY_X_MAX
+      ld (ix+game_object.x),a
+      jp ++
+    +:
+    cp SWABBY_X_MIN
+    jp nc,++
+      ld a,SWABBY_X_MIN
+      ld (ix+game_object.x),a
+    ++:
     call draw_game_object
     ; -------------------------------------------------------------------------
     ; Gun and bullets.
