@@ -155,19 +155,20 @@
     ++:
     ld (ix+game_object.xspeed),a
     call move_game_object
-    ld a,(ix+game_object.x)
-    cp SWABBY_X_MAX
-    jp c,+
-      ld a,SWABBY_X_MAX
+    ;
+    ld a,(ix+game_object.x)         ; Get Swabby X (after movement).
+    cp SWABBY_X_MAX                 ; Compare it to max X (right border)
+    jp c,+                          ; If Swabby has moved beyond this border,
+      ld a,SWABBY_X_MAX             ; set his X to max.
       ld (ix+game_object.x),a
       jp ++
     +:
-    cp SWABBY_X_MIN
+    cp SWABBY_X_MIN                 ; Do the same test for the left border...
     jp nc,++
       ld a,SWABBY_X_MIN
       ld (ix+game_object.x),a
     ++:
-    call draw_game_object
+    call draw_game_object           ; At last! Draw Swabby at final position.
     ; -------------------------------------------------------------------------
     ; Gun and bullets.
     call is_button_1_pressed        ;
