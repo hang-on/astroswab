@@ -331,14 +331,17 @@
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,spinner_trigger               ;
-      call process_trigger
-      jp nc,+
-        ; If spinner_generator_timer is up, do...
-        ; Activate a new spinner.
-        ld ix,spinner
-        call spawn_game_object_in_invisible_area
-        ld hl,spinner_anim_table
-        call load_animation_game_object
+      ld a,(ix+trigger.state)
+      cp ENABLED
+      jp nz,+
+        call process_trigger
+        jp nc,+
+          ; If spinner_generator_timer is up, do...
+          ; Activate a new spinner.
+          ld ix,spinner
+          call spawn_game_object_in_invisible_area
+          ld hl,spinner_anim_table
+          call load_animation_game_object
     +:
     ;
     ld ix,spinner

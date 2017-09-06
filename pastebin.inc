@@ -1,3 +1,12 @@
+; 2017-09-06
+get_trigger_state:
+  ; Entry: IX = Pointer to trigger struct.
+  ; Exit: Trigger state (ENABLED/DISABLED bluelib constants) in A.
+  ld a,(ix+trigger.state)
+ret
+;
+
+
 ;2017-09-05
 test_1:
   ld ix,bee
