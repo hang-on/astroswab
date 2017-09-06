@@ -81,6 +81,7 @@
     .db %00000000, 0, 0, 16, 24, SPINNER
   spinner_trigger_init_table:
     .db SPINNER_TRIGGER_CHANCE_INIT, SPINNER_TRIGGER_INTERVAL_INIT
+    .db ENABLED
   spinner_anim_table:
   .rept 8
     .rept 8
@@ -103,6 +104,7 @@
     .db %00000000, 0, 0, 16, 16, DANISH           ; TODO: Might need adjustment!
   danish_trigger_init_table:
     .db DANISH_TRIGGER_CHANCE_INIT, DANISH_TRIGGER_INTERVAL_INIT
+    .db ENABLED
   danish_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
