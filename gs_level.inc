@@ -331,14 +331,17 @@
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,spinner_trigger               ;
-      call process_trigger
-      jp nc,+
-        ; If spinner_generator_timer is up, do...
-        ; Activate a new spinner.
-        ld ix,spinner
-        call spawn_game_object_in_invisible_area
-        ld hl,spinner_anim_table
-        call load_animation_game_object
+      ld a,(ix+trigger.state)
+      cp ENABLED
+      jp nz,+
+        call process_trigger
+        jp nc,+
+          ; If spinner_generator_timer is up, do...
+          ; Activate a new spinner.
+          ld ix,spinner
+          call spawn_game_object_in_invisible_area
+          ld hl,spinner_anim_table
+          call load_animation_game_object
     +:
     ;
     ld ix,spinner
@@ -360,21 +363,24 @@
     cp GAME_OBJECT_ACTIVE
     jp z,+
       ld ix,danish_trigger               ;
-      call process_trigger
-      jp nc,+
-        ; If danish_trigger generates a trigger event - activate a new danish.
-        ld ix,danish
-        call spawn_game_object_in_invisible_area
-        call get_random_number
-        and DANISH_SPRITE_MASK
-        ld hl,danish_sprite_table
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
-        ld (ix+game_object.sprite),a
-        call activate_game_object
-    +:
+      ld a,(ix+trigger.state)
+      cp ENABLED
+      jp nz,+
+        call process_trigger
+        jp nc,+
+          ; If danish_trigger generates a trigger event - activate a new danish.
+          ld ix,danish
+          call spawn_game_object_in_invisible_area
+          call get_random_number
+          and DANISH_SPRITE_MASK
+          ld hl,danish_sprite_table
+          ld d,0
+          ld e,a
+          add hl,de
+          ld a,(hl)
+          ld (ix+game_object.sprite),a
+          call activate_game_object
+        +:
     ;
     ld ix,danish
     ld a,(ix+game_object.state)
@@ -392,8 +398,8 @@
     ld a,(ix+game_object.state)          ; If missile is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
-      ld ix,missile_trigger              ; Only process trigger if it is enabled.
-      call get_trigger_state
+      ld ix,missile_trigger
+      ld a,(ix+trigger.state)
       cp ENABLED
       jp nz,+
         call process_trigger

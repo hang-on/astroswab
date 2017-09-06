@@ -9,7 +9,6 @@
   interval db
   chance db
   state db
-  ; add interval modifier here...?
 .endst
 ;
 .section "Trigger functions" free
@@ -44,12 +43,6 @@
     ; Entry: IX = Pointer to trigger struct.
     ld a,ENABLED
     ld (ix+trigger.state),a
-  ret
-  ;
-  get_trigger_state:
-    ; Entry: IX = Pointer to trigger struct.
-    ; Exit: Trigger state (ENABLED/DISABLED bluelib constants) in A.
-    ld a,(ix+trigger.state)
   ret
   ;
   initialize_trigger:

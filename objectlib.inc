@@ -341,14 +341,12 @@
   mark_scanline_with_game_object:
     ; Mark scanline by drawing a game object on it.
     ; Entry: IX = Pointer to game object to use as marker.
-    ; Uses: None.
-    push af
-      in a,(V_COUNTER_PORT)
-      cp CRT_BOTTOM_BORDER
-      ret nc
-      ld (ix+game_object.y),a
-      call draw_game_object
-    pop af
+    ; Uses: AF.
+    in a,(V_COUNTER_PORT)
+    cp CRT_BOTTOM_BORDER
+    ret nc
+    ld (ix+game_object.y),a
+    call draw_game_object
   ret
   ; ---------------------------------------------------------------------------
   ; COLLISION DETECTION
