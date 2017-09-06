@@ -392,8 +392,8 @@
     ld a,(ix+game_object.state)          ; If missile is already out, skip!
     cp GAME_OBJECT_ACTIVE
     jp z,+
-      ld ix,missile_trigger              ; Only process trigger if it is enabled.
-      call get_trigger_state
+      ld ix,missile_trigger
+      ld a,(ix+trigger.state)
       cp ENABLED
       jp nz,+
         call process_trigger

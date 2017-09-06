@@ -46,7 +46,7 @@
     ld (ix+trigger.state),a
   ret
   ;
-  get_trigger_state:
+  ;get_trigger_state:
     ; Entry: IX = Pointer to trigger struct.
     ; Exit: Trigger state (ENABLED/DISABLED bluelib constants) in A.
     ld a,(ix+trigger.state)
