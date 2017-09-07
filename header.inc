@@ -170,4 +170,6 @@
   objects_in_bottom_collision_table db
   ;
   bee instanceof game_object
+  ;
+  sandbox_trigger instanceof trigger
 .ends

@@ -64,14 +64,23 @@ jp main_loop
 init_tests:
   ;
   ld hl,sandbox_game_object_init_table
-  ld a,1
+  ld a,2
   call batch_initialize_game_objects
   ld a,2
   ld ix, shard
   ld hl,sandbox_shard_position_table
   call position_multiple_game_object_instances
+  ld hl,sandbox_trigger_init_table
+  ld ix,sandbox_trigger
+  call initialize_trigger
 ret
 test_1:
+  ld ix,sandbox_trigger
+  call process_trigger
+  jp nc,+
+  +:
+
+  ;
   ld b,2
   ld ix,shard
   -:
@@ -92,9 +101,17 @@ test_1:
     add ix,de
     pop bc
   djnz -
+
+  call is_reset_pressed
+  jp nc,+
+    ld a,GS_PREPARE_SANDBOX
+    ld (game_state),a
+  +:
+
 ret
   sandbox_game_object_init_table:
     .dw shard, sandbox_shard_init_table, 2
+    .dw asteroid, sandbox_asteroid_init_table, 1
   sandbox_shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_ACTIVE
@@ -105,5 +122,5 @@ ret
     .db %00000000, 15, 15, ASTEROID
   sandbox_shard_position_table:
     .db 35, 70, 45, 80
-  sandbox_batch_draw_table:
-    .dw shard, 2
+  sandbox_trigger_init_table:
+    .db 255, 255
