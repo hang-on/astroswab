@@ -73,12 +73,26 @@ init_tests:
   ld hl,sandbox_trigger_init_table
   ld ix,sandbox_trigger
   call initialize_trigger
+  ld a,ENABLED
+  ld (ix+trigger.state),a
 ret
 test_1:
   ld ix,sandbox_trigger
-  call process_trigger
-  jp nc,+
-  +:
+  ld a,(ix+trigger.state)
+  cp ENABLED
+  jp nz,++
+    call process_trigger
+    jp nc,+
+      ;
+      push ix
+        ld ix,asteroid
+        ld a,DISABLED
+        ld (ix+game_object.state),a
+      pop ix
+      ld a,DISABLED
+      ld (ix+trigger.state),a
+    +:
+  ++:
 
   ;
   ld b,2
@@ -102,6 +116,13 @@ test_1:
     pop bc
   djnz -
 
+  ld ix,asteroid
+  ld a,(ix+game_object.state)
+  cp GAME_OBJECT_ACTIVE
+  jp nz,+
+    call draw_game_object
+  +:
+
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_SANDBOX
@@ -114,13 +135,13 @@ ret
     .dw asteroid, sandbox_asteroid_init_table, 1
   sandbox_shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
-    .db 0, 0, GAME_OBJECT_ACTIVE
+    .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 7, 7, SHARD
   sandbox_asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 0, 0, GAME_OBJECT_ACTIVE
+    .db 50, 50, GAME_OBJECT_ACTIVE
     .db %00000000, 15, 15, ASTEROID
   sandbox_shard_position_table:
     .db 35, 70, 45, 80
   sandbox_trigger_init_table:
-    .db 255, 255
+    .db 255, 100
