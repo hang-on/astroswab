@@ -26,6 +26,7 @@ prepare_sandbox:
   call PSGSFXStop
   call PSGStop
   ; ----------------------------------------------------------
+  call init_tests
   ; ----------------------------------------------------------
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -55,8 +56,54 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  ; call test_1
+  call test_1
   ;
 jp main_loop
 ;
 ; Tests for the sandbox:
+init_tests:
+  ;
+  ld hl,sandbox_game_object_init_table
+  ld a,1
+  call batch_initialize_game_objects
+  ld a,2
+  ld ix, shard
+  ld hl,sandbox_shard_position_table
+  call position_multiple_game_object_instances
+ret
+test_1:
+  ld b,2
+  ld ix,shard
+  -:
+    push bc
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      call move_game_object              ; Move shard.
+      ld a,SHARD_DEACTIVATE_ZONE_START
+      ld b,SHARD_DEACTIVATE_ZONE_END
+      ;call horizontal_zone_deactivate_game_object
+      ;
+      call draw_game_object              ; Put it in the SAT.
+      ;call add_game_object_to_collision_table
+    ;
+    +:
+    ld de,_sizeof_game_object
+    add ix,de
+    pop bc
+  djnz -
+ret
+  sandbox_game_object_init_table:
+    .dw shard, sandbox_shard_init_table, 2
+  sandbox_shard_init_table:
+    .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
+    .db 0, 0, GAME_OBJECT_ACTIVE
+    .db %00010001, 7, 7, SHARD
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 0, GAME_OBJECT_ACTIVE
+    .db %00000000, 15, 15, ASTEROID
+  sandbox_shard_position_table:
+    .db 35, 70, 45, 80
+  sandbox_batch_draw_table:
+    .dw shard, 2
