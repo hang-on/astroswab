@@ -86,8 +86,28 @@ test_1:
       ;
       push ix
         ld ix,asteroid
-        ld a,DISABLED
+        ld a,GAME_OBJECT_INACTIVE
         ld (ix+game_object.state),a
+        ld ix,shard
+        ld a,GAME_OBJECT_ACTIVE
+        ld (ix+game_object.state),a
+        ld a,-1
+        ld (ix+game_object.xspeed),a
+        ld ix,asteroid
+        ld a,(ix+game_object.y)
+        ld ix,shard
+        ld (ix+game_object.y),a
+        ;
+        ld ix,shard+_sizeof_game_object
+        ld a,GAME_OBJECT_ACTIVE
+        ld (ix+game_object.state),a
+        ld a,1
+        ld (ix+game_object.xspeed),a
+        ld ix,asteroid
+        ld a,(ix+game_object.y)
+        add a,9
+        ld ix,shard+_sizeof_game_object
+        ld (ix+game_object.y),a
       pop ix
       ld a,DISABLED
       ld (ix+trigger.state),a
@@ -105,7 +125,9 @@ test_1:
       call move_game_object              ; Move shard.
       ld a,SHARD_DEACTIVATE_ZONE_START
       ld b,SHARD_DEACTIVATE_ZONE_END
-      ;call horizontal_zone_deactivate_game_object
+      call horizontal_zone_deactivate_game_object
+      ; Test shards against a vertical deactivate zone (i.e. the blanked column)
+      ; !!!!! TODO
       ;
       call draw_game_object              ; Put it in the SAT.
       ;call add_game_object_to_collision_table
