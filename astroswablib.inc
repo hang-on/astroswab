@@ -289,7 +289,7 @@ tall_meta_sprite_table:
     push hl
     pop ix
     ;
-    ld hl,offset_table
+    ld hl,shard_offset_table
     .rept 2
       pop iy
       ld a,(hl)
@@ -302,7 +302,7 @@ tall_meta_sprite_table:
       call position_game_object_in_relation_to_game_object
     .endr
   ret
-    offset_table:
+    shard_offset_table:
       .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
       .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
 

@@ -114,7 +114,6 @@ test_1:
       ; !!!!! TODO
       ;
       call draw_game_object              ; Put it in the SAT.
-      ;call add_game_object_to_collision_table
     ;
     +:
     ld de,_sizeof_game_object
