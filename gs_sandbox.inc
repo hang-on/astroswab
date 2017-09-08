@@ -87,7 +87,6 @@ test_1:
     jp nc,+
       ;
       push ix
-
         ld ix,asteroid
         call explode_asteroid_into_shards
       pop ix
@@ -95,7 +94,6 @@ test_1:
       ld (ix+trigger.state),a
     +:
   ++:
-
   ;
   ld b,2
   ld ix,shard
@@ -108,8 +106,9 @@ test_1:
       ld a,SHARD_DEACTIVATE_ZONE_START
       ld b,SHARD_DEACTIVATE_ZONE_END
       call horizontal_zone_deactivate_game_object
-      ; Test shards against a vertical deactivate zone (i.e. the blanked column)
-      ; !!!!! TODO
+      ld a,VERTICAL_DEACTIVATE_ZONE_START
+      ld b,VERTICAL_DEACTIVATE_ZONE_END
+      call vertical_zone_deactivate_game_object
       ;
       call draw_game_object              ; Put it in the SAT.
     ;
@@ -126,13 +125,11 @@ test_1:
     call move_game_object
     call draw_game_object
   +:
-
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_SANDBOX
     ld (game_state),a
   +:
-
 ret
   sandbox_game_object_init_table:
     .dw shard, sandbox_shard_init_table, SHARD_MAX
@@ -143,7 +140,7 @@ ret
     .db %00010001, 7, 7, SHARD
   sandbox_asteroid_init_table:
     .db SPRITE_8, 1, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 0, 70, GAME_OBJECT_ACTIVE
+    .db 0, 200, GAME_OBJECT_ACTIVE
     .db %00000000, 15, 15, ASTEROID
   sandbox_shard_position_table:
     .db 35, 70, 45, 80

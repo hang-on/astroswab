@@ -333,4 +333,22 @@ tall_meta_sprite_table:
     ld (iy+game_object.x),a   ; Position other object.
   ret
   ;
+  .equ VERTICAL_DEACTIVATE_ZONE_START 0
+  .equ VERTICAL_DEACTIVATE_ZONE_END 7
+  vertical_zone_deactivate_game_object:
+    ; Test game object x to see if it is within the vertical zone defined
+    ; the borders passed in A and B. If true, then deactivate enemy object.
+    ; Entry: IX = Pointer to struct.
+    ;        A = Zone start. B = Zone end.
+    ; Uses: AF, BC.
+    ld c,b
+    ld b,a
+    ld a,(ix+game_object.x)
+    cp b
+    ret c
+    cp c
+    ret nc
+    call deactivate_game_object
+  ret
+
 .ends
