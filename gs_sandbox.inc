@@ -86,10 +86,6 @@ test_1:
       ;
       push ix
 
-        ; TODO: Make this more generic, like:
-        ; ix = asteroid object to explode
-        ; >> finds to shards and activates them in the way below.
-        ; explode_asteroid (function name?)
         ld ix,asteroid
         ld a,GAME_OBJECT_INACTIVE
         ld (ix+game_object.state),a

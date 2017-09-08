@@ -545,35 +545,5 @@
     ; -------------------------------------------------------------------------
     ; Misc.
     ;
-    explode_asteroid_into_shards:
-      ;
-      ; Entry: IX = Pointer to asteroid to explode.
-      ; Exit:
-      ; Uses:
-      push ix
-      pop iy
-      ld ix,shard
-      ld a,GAME_OBJECT_ACTIVE
-      ld (ix+game_object.state),a
-      ld a,-1
-      ld (ix+game_object.xspeed),a
-
-      ;ld ix,asteroid
-      ld a,(iy+game_object.y)
-      ;ld ix,shard
-      ld (ix+game_object.y),a
-      ;
-      ld ix,shard+_sizeof_game_object
-      ld a,GAME_OBJECT_ACTIVE
-      ld (ix+game_object.state),a
-      ld a,1
-      ld (ix+game_object.xspeed),a
-      ;ld ix,asteroid
-      ld a,(iy+game_object.y)
-      add a,9
-      ;ld ix,shard+_sizeof_game_object
-      ld (ix+game_object.y),a
-
-    ret
 
 .ends

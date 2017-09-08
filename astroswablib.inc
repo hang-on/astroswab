@@ -258,4 +258,48 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  explode_asteroid_into_shards:
+    ;
+    ; Entry: IX = Pointer to asteroid to explode.
+    ; Exit:
+    ; Uses: AF, IX, IY.
+
+    ; TODO: 1) Find next inactive shard.
+    ; 2) Make constants.
+    ; -- > the pull it into master. And then add vertical column deactivate zone
+    push ix
+    pop iy
+    ld ix,shard
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+    ld a,-1
+    ld (ix+game_object.xspeed),a
+
+    ;ld ix,asteroid
+    ld a,(iy+game_object.y)
+    add a,3
+    ;ld ix,shard
+    ld (ix+game_object.y),a
+    ld a,(iy+game_object.x)
+    sub 2
+    ld (ix+game_object.x),a
+
+    ;
+    ld ix,shard+_sizeof_game_object
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+    ld a,1
+    ld (ix+game_object.xspeed),a
+    ;ld ix,asteroid
+    ld a,(iy+game_object.y)
+    add a,10
+    ;ld ix,shard+_sizeof_game_object
+    ld (ix+game_object.y),a
+
+    ld a,(iy+game_object.x)
+    add a,4
+    ld (ix+game_object.x),a
+
+  ret
+
 .ends
