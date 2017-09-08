@@ -93,26 +93,7 @@ test_1:
         ld ix,asteroid
         ld a,GAME_OBJECT_INACTIVE
         ld (ix+game_object.state),a
-        ld ix,shard
-        ld a,GAME_OBJECT_ACTIVE
-        ld (ix+game_object.state),a
-        ld a,-1
-        ld (ix+game_object.xspeed),a
-        ld ix,asteroid
-        ld a,(ix+game_object.y)
-        ld ix,shard
-        ld (ix+game_object.y),a
-        ;
-        ld ix,shard+_sizeof_game_object
-        ld a,GAME_OBJECT_ACTIVE
-        ld (ix+game_object.state),a
-        ld a,1
-        ld (ix+game_object.xspeed),a
-        ld ix,asteroid
-        ld a,(ix+game_object.y)
-        add a,9
-        ld ix,shard+_sizeof_game_object
-        ld (ix+game_object.y),a
+        call explode_asteroid_into_shards
       pop ix
       ld a,DISABLED
       ld (ix+trigger.state),a
