@@ -61,7 +61,9 @@ run_sandbox:
 jp main_loop
 ;
 ; Tests for the sandbox:
+; -----------------------------------------------------------------------------
 init_tests:
+; -----------------------------------------------------------------------------
   ;
   ld hl,sandbox_game_object_init_table
   ld a,2
@@ -135,7 +137,7 @@ test_1:
 
 ret
   sandbox_game_object_init_table:
-    .dw shard, sandbox_shard_init_table, 2
+    .dw shard, sandbox_shard_init_table, SHARD_MAX
     .dw asteroid, sandbox_asteroid_init_table, 1
   sandbox_shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
