@@ -274,46 +274,38 @@ tall_meta_sprite_table:
     ; x) Apply offset function.
     ; 3) Comment and clean up this func.
     ; 4) transfer game_object speed (asteroid) to shard.
-    ; 5) DRY!
+    ; x) DRY!
     ; -- > the pull it into master. And then add vertical column deactivate zone
     push ix
+    pop hl
+    .rept 2
       ld ix,shard
       ld a,SHARD_MAX
       call get_inactive_game_object
-      jp c,no_more_shards
-      ;
       ld a,GAME_OBJECT_ACTIVE
       ld (ix+game_object.state),a
-      ld a,-1
-      ld (ix+game_object.xspeed),a
       push ix
-      pop iy
+    .endr
+    push hl
     pop ix
-    ld b,SHARD_Y_OFFSET_1
-    ld c,SHARD_X_OFFSET_1
-    call position_game_object_in_relation_to_game_object
     ;
-    push ix
-      ld ix,shard
-      ld a,SHARD_MAX
-      call get_inactive_game_object
-      jp c,no_more_shards
-      ;
-      ld a,GAME_OBJECT_ACTIVE
-      ld (ix+game_object.state),a
-      ld a,1
-      ld (ix+game_object.xspeed),a
-      push ix
+    ld hl,offset_table
+    .rept 2
       pop iy
-    pop ix
-    ld b,SHARD_Y_OFFSET_2
-    ld c,SHARD_X_OFFSET_2
-    call position_game_object_in_relation_to_game_object
-    ;---
+      ld a,(hl)
+      inc hl
+      ld (iy+game_object.xspeed),a
+      ld b,(hl)
+      inc hl
+      ld c,(hl)
+      inc hl
+      call position_game_object_in_relation_to_game_object
+    .endr
   ret
-    no_more_shards:
-      scf
-    ret
+    offset_table:
+      .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
+      .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
+
   ;
   position_game_object_in_relation_to_game_object:
     ; IX = Game object 1, IY = Game object 2, B = Y offset, C=X offset.
