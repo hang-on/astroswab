@@ -258,6 +258,11 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  .equ SHARD_X_OFFSET_1 3
+  .equ SHARD_Y_OFFSET_1 2
+  .equ SHARD_X_OFFSET_2 10
+  .equ SHARD_Y_OFFSET_2 4
+  ;
   explode_asteroid_into_shards:
     ;
     ; Entry: IX = Pointer to asteroid to explode.
@@ -265,8 +270,10 @@ tall_meta_sprite_table:
     ; Uses: AF, IX, IY.
 
     ; TODO: X) Find next inactive shard.
-    ; 2) Make constants. - place them right above this func?
+    ; x) Make constants. - place them right above this func?
+    ; 2.1 Apply offset function.
     ; 3) Comment and clean up this func.
+    ; 4) transfer game_object speed (asteroid) to shard.
     ; -- > the pull it into master. And then add vertical column deactivate zone
     push ix
     pop iy
@@ -281,11 +288,11 @@ tall_meta_sprite_table:
 
     ;ld ix,asteroid
     ld a,(iy+game_object.y)
-    add a,3
+    add a,SHARD_Y_OFFSET_1
     ;ld ix,shard
     ld (ix+game_object.y),a
     ld a,(iy+game_object.x)
-    sub 2
+    sub SHARD_X_OFFSET_1
     ld (ix+game_object.x),a
 
     ;
@@ -299,12 +306,12 @@ tall_meta_sprite_table:
     ld (ix+game_object.xspeed),a
     ;ld ix,asteroid
     ld a,(iy+game_object.y)
-    add a,10
+    add a,SHARD_Y_OFFSET_2
     ;ld ix,shard+_sizeof_game_object
     ld (ix+game_object.y),a
 
     ld a,(iy+game_object.x)
-    add a,4
+    add a,SHARD_X_OFFSET_2
     ld (ix+game_object.x),a
 
   ret
