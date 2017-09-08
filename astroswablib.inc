@@ -261,15 +261,18 @@ tall_meta_sprite_table:
   explode_asteroid_into_shards:
     ;
     ; Entry: IX = Pointer to asteroid to explode.
-    ; Exit:
+    ; Exit: Carry flag set if all shards are currently active.
     ; Uses: AF, IX, IY.
 
-    ; TODO: 1) Find next inactive shard.
+    ; TODO: X) Find next inactive shard.
     ; 2) Make constants.
     ; -- > the pull it into master. And then add vertical column deactivate zone
     push ix
     pop iy
     ld ix,shard
+    ld a,SHARD_MAX
+    call get_inactive_game_object
+    jp c,no_more_shards
     ld a,GAME_OBJECT_ACTIVE
     ld (ix+game_object.state),a
     ld a,-1
@@ -285,7 +288,10 @@ tall_meta_sprite_table:
     ld (ix+game_object.x),a
 
     ;
-    ld ix,shard+_sizeof_game_object
+    ld ix,shard
+    ld a,SHARD_MAX
+    call get_inactive_game_object
+    jp c,no_more_shards
     ld a,GAME_OBJECT_ACTIVE
     ld (ix+game_object.state),a
     ld a,1
@@ -301,5 +307,8 @@ tall_meta_sprite_table:
     ld (ix+game_object.x),a
 
   ret
+    no_more_shards:
+      scf
+      ret
 
 .ends
