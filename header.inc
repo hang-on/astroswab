@@ -21,8 +21,8 @@
   .equ GS_RUN_SANDBOX 5
   ;
   .ifdef DEVELOPER_MODE
-    ; .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
-    .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
+     .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
   .endif
@@ -118,6 +118,9 @@
 ; Missile:
   .equ MISSILE_TRIGGER_CHANCE_INIT 190 ; 190 - 1 to almost disable
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
+;
+.equ VERTICAL_DEACTIVATE_ZONE_START 0
+.equ VERTICAL_DEACTIVATE_ZONE_END 7
 ;
 ; Sound:
   .equ SOUND_BANK 5

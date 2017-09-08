@@ -96,6 +96,22 @@
     call deactivate_game_object
   ret
   ;
+  vertical_zone_deactivate_game_object:
+    ; Test game object x to see if it is within the vertical zone defined
+    ; the borders passed in A and B. If true, then deactivate enemy object.
+    ; Entry: IX = Pointer to struct.
+    ;        A = Zone start. B = Zone end.
+    ; Uses: AF, BC.
+    ld c,b
+    ld b,a
+    ld a,(ix+game_object.x)
+    cp b
+    ret c
+    cp c
+    ret nc
+    call deactivate_game_object
+  ret
+  ;
   initialize_game_object:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to game object init data:
@@ -334,6 +350,20 @@
       add a,b
     ++:
     ld (ix+game_object.x),a
+  ret
+  ;
+  position_game_object_in_relation_to_game_object:
+    ; Set one game object's y,x position offset from another game object's
+    ; y,x position.
+    ; Entry: IX = Pointer to anchor game object
+    ;        IY = Pointer to game object to be positioned.
+    ;         B = y-offset, C = x-offset.
+    ld a,(ix+game_object.y)   ; Get anchor object's y-pos.
+    add a,b                   ; Add y-offset.
+    ld (iy+game_object.y),a   ; Position other object.
+    ld a,(ix+game_object.x)   ; Get anchor object's x-pos.
+    add a,c                   ; Add x-offset.
+    ld (iy+game_object.x),a   ; Position other object.
   ret
   ;
   position_multiple_game_object_instances:
