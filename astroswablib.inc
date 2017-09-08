@@ -258,10 +258,10 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  .equ SHARD_X_OFFSET_1 3
+  .equ SHARD_X_OFFSET_1 (-3)
   .equ SHARD_Y_OFFSET_1 2
   .equ SHARD_X_OFFSET_2 10
-  .equ SHARD_Y_OFFSET_2 4
+  .equ SHARD_Y_OFFSET_2 16
   ;
   explode_asteroid_into_shards:
     ;
@@ -271,52 +271,61 @@ tall_meta_sprite_table:
 
     ; TODO: X) Find next inactive shard.
     ; x) Make constants. - place them right above this func?
-    ; 2.1 Apply offset function.
+    ; x) Apply offset function.
     ; 3) Comment and clean up this func.
     ; 4) transfer game_object speed (asteroid) to shard.
+    ; 5) DRY!
     ; -- > the pull it into master. And then add vertical column deactivate zone
     push ix
-    pop iy
-    ld ix,shard
-    ld a,SHARD_MAX
-    call get_inactive_game_object
-    jp c,no_more_shards
-    ld a,GAME_OBJECT_ACTIVE
-    ld (ix+game_object.state),a
-    ld a,-1
-    ld (ix+game_object.xspeed),a
-
-    ;ld ix,asteroid
-    ld a,(iy+game_object.y)
-    add a,SHARD_Y_OFFSET_1
-    ;ld ix,shard
-    ld (ix+game_object.y),a
-    ld a,(iy+game_object.x)
-    sub SHARD_X_OFFSET_1
-    ld (ix+game_object.x),a
-
+      ld ix,shard
+      ld a,SHARD_MAX
+      call get_inactive_game_object
+      jp c,no_more_shards
+      ;
+      ld a,GAME_OBJECT_ACTIVE
+      ld (ix+game_object.state),a
+      ld a,-1
+      ld (ix+game_object.xspeed),a
+      push ix
+      pop iy
+    pop ix
+    ld b,SHARD_Y_OFFSET_1
+    ld c,SHARD_X_OFFSET_1
+    call position_game_object_in_relation_to_game_object
     ;
-    ld ix,shard
-    ld a,SHARD_MAX
-    call get_inactive_game_object
-    jp c,no_more_shards
-    ld a,GAME_OBJECT_ACTIVE
-    ld (ix+game_object.state),a
-    ld a,1
-    ld (ix+game_object.xspeed),a
-    ;ld ix,asteroid
-    ld a,(iy+game_object.y)
-    add a,SHARD_Y_OFFSET_2
-    ;ld ix,shard+_sizeof_game_object
-    ld (ix+game_object.y),a
-
-    ld a,(iy+game_object.x)
-    add a,SHARD_X_OFFSET_2
-    ld (ix+game_object.x),a
-
+    push ix
+      ld ix,shard
+      ld a,SHARD_MAX
+      call get_inactive_game_object
+      jp c,no_more_shards
+      ;
+      ld a,GAME_OBJECT_ACTIVE
+      ld (ix+game_object.state),a
+      ld a,1
+      ld (ix+game_object.xspeed),a
+      push ix
+      pop iy
+    pop ix
+    ld b,SHARD_Y_OFFSET_2
+    ld c,SHARD_X_OFFSET_2
+    call position_game_object_in_relation_to_game_object
+    ;---
   ret
     no_more_shards:
       scf
-      ret
+    ret
+  ;
+  position_game_object_in_relation_to_game_object:
+    ; IX = Game object 1, IY = Game object 2, B = Y offset, C=X offset.
+    ld a,(ix+game_object.y)
+    add a,b
+    ld (iy+game_object.y),a
+    ;
+    ld a,(ix+game_object.x)
+    add a,c
+    ld (iy+game_object.x),a
+  ret
+
+
 
 .ends

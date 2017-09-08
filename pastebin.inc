@@ -1,3 +1,18 @@
+; 2017-09-08
+
+  apply_offset_to_game_object:
+    ; IX = Pointer, B=Y, C= X
+    ld a,(ix+game_object.y)
+    add a,b
+    ld (ix+game_object.y),a
+    ;
+    ld a,(ix+game_object.x)
+    add a,c
+    ld (ix+game_object.x),a
+  ret
+
+
+
 ; 2017-09-06
 get_trigger_state:
   ; Entry: IX = Pointer to trigger struct.
