@@ -265,7 +265,8 @@ tall_meta_sprite_table:
     ; Uses: AF, IX, IY.
 
     ; TODO: X) Find next inactive shard.
-    ; 2) Make constants.
+    ; 2) Make constants. - place them right above this func?
+    ; 3) Comment and clean up this func.
     ; -- > the pull it into master. And then add vertical column deactivate zone
     push ix
     pop iy
