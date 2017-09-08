@@ -89,8 +89,6 @@ test_1:
       push ix
 
         ld ix,asteroid
-        ld a,GAME_OBJECT_INACTIVE
-        ld (ix+game_object.state),a
         call explode_asteroid_into_shards
       pop ix
       ld a,DISABLED
@@ -125,6 +123,7 @@ test_1:
   ld a,(ix+game_object.state)
   cp GAME_OBJECT_ACTIVE
   jp nz,+
+    call move_game_object
     call draw_game_object
   +:
 
@@ -139,14 +138,14 @@ ret
     .dw shard, sandbox_shard_init_table, SHARD_MAX
     .dw asteroid, sandbox_asteroid_init_table, 1
   sandbox_shard_init_table:
-    .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
-    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db SPRITE_45, 0, 0, GAME_OBJECT_SHAPE_SMALL
+    .db 2, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 7, 7, SHARD
   sandbox_asteroid_init_table:
-    .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 50, 50, GAME_OBJECT_ACTIVE
+    .db SPRITE_8, 1, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 70, GAME_OBJECT_ACTIVE
     .db %00000000, 15, 15, ASTEROID
   sandbox_shard_position_table:
     .db 35, 70, 45, 80
   sandbox_trigger_init_table:
-    .db 255, 100
+    .db 255, 40

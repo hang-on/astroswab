@@ -262,42 +262,55 @@ tall_meta_sprite_table:
   .equ SHARD_Y_OFFSET_1 2
   .equ SHARD_X_OFFSET_2 10
   .equ SHARD_Y_OFFSET_2 16
+  .equ SHARD_MOVE_LEFT 0
+  .equ SHARD_MOVE_RIGHT 1
+  .equ SHARD_XSPEED 1
   ;
   explode_asteroid_into_shards:
-    ;
+    ; Deactivate the asteroid pointed to by IX. Create two shards relative to
+    ; the asteroid's position, and transfer the asteroid's yspeed to the two
+    ; shards. One shard moves left. The other moves right. Fixed xspeed = 1.
     ; Entry: IX = Pointer to asteroid to explode.
-    ; Exit: Carry flag set if all shards are currently active.
-    ; Uses: AF, IX, IY.
-
-    ; TODO: X) Find next inactive shard.
-    ; x) Make constants. - place them right above this func?
-    ; x) Apply offset function.
-    ; 3) Comment and clean up this func.
-    ; 4) transfer game_object speed (asteroid) to shard.
-    ; x) DRY!
-    ; -- > the pull it into master. And then add vertical column deactivate zone
-    push ix
-    pop hl
-    .rept 2
+    ; Exit: None.
+    ; Uses: AF, BC, HL, IY.
+    ld a,GAME_OBJECT_INACTIVE         ; Deactivate the asteroid.
+    ld (ix+game_object.state),a
+    ;
+    push ix                           ; Temporarily store pointer to asteroid
+    pop hl                            ; in HL.
+    .rept 2                           ; Get two deactivated shards...
       ld ix,shard
       ld a,SHARD_MAX
-      call get_inactive_game_object
-      ld a,GAME_OBJECT_ACTIVE
+      call get_inactive_game_object   ; Return with IX = Pointer to shard.
+      ld a,GAME_OBJECT_ACTIVE         ; Activate this shard.
       ld (ix+game_object.state),a
-      push ix
-    .endr
+      push ix                         ; And store it on the stack.
+    .endr                             ; Get one more shard.
     push hl
-    pop ix
+    pop ix                            ; Restore pointer to asteroid.
     ;
-    ld hl,shard_offset_table
-    .rept 2
-      pop iy
-      ld a,(hl)
+    ld hl,shard_offset_table          ; Point to the shard offset table.
+    .rept 2                           ; For both shards, do...
+      pop iy                          ; Retrieve pointer to shard from stack.
+      ld a,(hl)                       ; Get horizontal direction from table.
       inc hl
-      ld (iy+game_object.xspeed),a
-      ld b,(hl)
+      ;
+      cp SHARD_MOVE_RIGHT             ; Move downwards and right...?
+      jp nz,+
+        ld a,(ix+game_object.yspeed)  ; Get asteroid yspeed.
+        ld (iy+game_object.yspeed),a  ; Copy asteroid's yspeed to the shard.
+        ld a,SHARD_XSPEED             ; Get fixed xspeed.
+        ld (iy+game_object.xspeed),a  ; And apply it to the shard.
+        jp ++
+      +:                              ; Move downwards and left!
+        ld a,(ix+game_object.yspeed)  ; Just like above...
+        ld (iy+game_object.yspeed),a
+        ld a,-(SHARD_XSPEED)          ; Negated xspeed for left movement.
+        ld (iy+game_object.xspeed),a
+      ++:
+      ld b,(hl)                       ; Get y-offset from table
       inc hl
-      ld c,(hl)
+      ld c,(hl)                       ; Get x-offset from table.
       inc hl
       call position_game_object_in_relation_to_game_object
     .endr
@@ -305,19 +318,19 @@ tall_meta_sprite_table:
     shard_offset_table:
       .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
       .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
-
   ;
   position_game_object_in_relation_to_game_object:
-    ; IX = Game object 1, IY = Game object 2, B = Y offset, C=X offset.
-    ld a,(ix+game_object.y)
-    add a,b
-    ld (iy+game_object.y),a
-    ;
-    ld a,(ix+game_object.x)
-    add a,c
-    ld (iy+game_object.x),a
+    ; Set one game object's y,x position offset from another game object's
+    ; y,x position.
+    ; Entry: IX = Pointer to anchor game object
+    ;        IY = Pointer to game object to be positioned.
+    ;         B = y-offset, C = x-offset.
+    ld a,(ix+game_object.y)   ; Get anchor object's y-pos.
+    add a,b                   ; Add y-offset.
+    ld (iy+game_object.y),a   ; Position other object.
+    ld a,(ix+game_object.x)   ; Get anchor object's x-pos.
+    add a,c                   ; Add x-offset.
+    ld (iy+game_object.x),a   ; Position other object.
   ret
-
-
-
+  ;
 .ends
