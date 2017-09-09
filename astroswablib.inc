@@ -164,9 +164,10 @@ tall_meta_sprite_table:
     ; Placeholder function for handling what happens when swabby collides with
     ; other objects.
     ; TODO: Implement DEATH!
-    ; IX = bullet, IY other object..
-    ld a,GAME_OBJECT_INACTIVE
-    ld (iy+game_object.state),a
+    ; IX = swabby, IY other object..
+    push iy
+    pop ix
+    call deactivate_game_object
   ret
   ;
   .equ SHARD_X_OFFSET_1 (-3)

@@ -96,33 +96,27 @@
     call begin_sprites
     ;
     ; ---------------------------------------------------------------------------
-    ; Resolve possible bullet collisions on even frames:
+    ; Resolve possible bullet collisions:
     ld a,(frame_counter)
-    and %00000001
-    jp nz,++
-      ld ix,bullet
-      ld b,BULLET_MAX
-      bullet_collision_loop:
-        push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_INACTIVE
-        jp z,+
-          ; Test this bullet instance.
-          call detect_collision_using_collision_table
-          call c,handle_bullet_collision
-        +:
-        ld de,_sizeof_game_object
-        add ix,de
-        pop bc
-      djnz bullet_collision_loop
-    ++:
-    ; Resolve possible swabby collisions on odd frames:
-    ld a,(frame_counter)
-    and %00000001
-    jp z,+
-      ld ix,swabby
-      call detect_collision_using_collision_table
-    +:
+    ld ix,bullet
+    ld b,BULLET_MAX
+    bullet_collision_loop:
+      push bc
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_INACTIVE
+      jp z,+
+        ; Test this bullet instance.
+        call detect_collision_using_collision_table
+        call c,handle_bullet_collision
+      +:
+      ld de,_sizeof_game_object
+      add ix,de
+      pop bc
+    djnz bullet_collision_loop
+    ; Resolve possible swabby collisions.
+    ld ix,swabby
+    call detect_collision_using_collision_table
+    call c,handle_swabby_collision
     ; End of collision tests for this frame.
     ; -------------------------------------------------------------------------
     call begin_collision_tables       ; Restart filling the coll.tables.
