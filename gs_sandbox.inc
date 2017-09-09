@@ -26,6 +26,7 @@ prepare_sandbox:
   call PSGSFXStop
   call PSGStop
   ; ----------------------------------------------------------
+  call init_tests
   ; ----------------------------------------------------------
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -60,3 +61,9 @@ run_sandbox:
 jp main_loop
 ;
 ; Tests for the sandbox:
+; -----------------------------------------------------------------------------
+init_tests:
+; -----------------------------------------------------------------------------
+  ;
+
+ret

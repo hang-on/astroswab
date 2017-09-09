@@ -140,7 +140,7 @@ tall_meta_sprite_table:
 .ends
 ;
 ; -----------------------------------------------------------------------------
-.section "swabby and bullet functions" free
+.section "Game object implementations" free
 ; -----------------------------------------------------------------------------
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
@@ -150,6 +150,15 @@ tall_meta_sprite_table:
     ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
     ld (iy+game_object.state),a
+    ;
+    ld a,(iy+game_object.id)
+    cp ASTEROID
+    ret nz
+      push ix
+        push iy
+        pop ix
+        call explode_asteroid_into_shards
+      pop ix
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
@@ -159,6 +168,69 @@ tall_meta_sprite_table:
     ld a,GAME_OBJECT_INACTIVE
     ld (iy+game_object.state),a
   ret
+  ;
+  .equ SHARD_X_OFFSET_1 (-3)
+  .equ SHARD_Y_OFFSET_1 2
+  .equ SHARD_X_OFFSET_2 10
+  .equ SHARD_Y_OFFSET_2 16
+  .equ SHARD_MOVE_LEFT 0
+  .equ SHARD_MOVE_RIGHT 1
+  .equ SHARD_XSPEED 1
+  ;
+  explode_asteroid_into_shards:
+    ; Deactivate the asteroid pointed to by IX. Create two shards relative to
+    ; the asteroid's position, and transfer the asteroid's yspeed to the two
+    ; shards. One shard moves left. The other moves right. Fixed xspeed = 1.
+    ; Entry: IX = Pointer to asteroid to explode.
+    ; Exit: None.
+    ; Uses: AF, BC, HL, IY.
+    ld a,GAME_OBJECT_INACTIVE         ; Deactivate the asteroid.
+    ld (ix+game_object.state),a
+    ;
+    push ix                           ; Temporarily store pointer to asteroid
+    pop hl                            ; in HL.
+    .rept 2                           ; Get two deactivated shards...
+      ld ix,shard
+      ld a,SHARD_MAX
+      call get_inactive_game_object   ; Return with IX = Pointer to shard.
+      ld a,GAME_OBJECT_ACTIVE         ; Activate this shard.
+      ld (ix+game_object.state),a
+      push ix                         ; And store it on the stack.
+    .endr                             ; Get one more shard.
+    push hl
+    pop ix                            ; Restore pointer to asteroid.
+    ;
+    ld hl,shard_offset_table          ; Point to the shard offset table.
+    .rept 2                           ; For both shards, do...
+      pop iy                          ; Retrieve pointer to shard from stack.
+      ld a,(hl)                       ; Get horizontal direction from table.
+      inc hl
+      ;
+      cp SHARD_MOVE_RIGHT             ; Move downwards and right...?
+      jp nz,+
+        ld a,(ix+game_object.yspeed)  ; Get asteroid yspeed.
+        ld (iy+game_object.yspeed),a  ; Copy asteroid's yspeed to the shard.
+        ld a,SHARD_XSPEED             ; Get fixed xspeed.
+        ld (iy+game_object.xspeed),a  ; And apply it to the shard.
+        jp ++
+      +:                              ; Move downwards and left!
+        ld a,(ix+game_object.yspeed)  ; Just like above...
+        ld (iy+game_object.yspeed),a
+        ld a,-(SHARD_XSPEED)          ; Negated xspeed for left movement.
+        ld (iy+game_object.xspeed),a
+      ++:
+      ld b,(hl)                       ; Get y-offset from table
+      inc hl
+      ld c,(hl)                       ; Get x-offset from table.
+      inc hl
+      call position_game_object_in_relation_to_game_object
+    .endr
+  ret
+    shard_offset_table:
+      .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
+      .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
+  ;
+
 .ends
 ;
 ; ---------------------------------------------------------------------------
@@ -257,6 +329,5 @@ tall_meta_sprite_table:
   sandbox_function_1:
     ; ...
   ret
-  ;
 
 .ends

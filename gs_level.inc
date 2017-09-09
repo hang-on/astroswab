@@ -329,6 +329,9 @@
         ld a,SHARD_DEACTIVATE_ZONE_START
         ld b,SHARD_DEACTIVATE_ZONE_END
         call horizontal_zone_deactivate_game_object
+        ld a,VERTICAL_DEACTIVATE_ZONE_START
+        ld b,VERTICAL_DEACTIVATE_ZONE_END
+        call vertical_zone_deactivate_game_object
         ;
         call draw_game_object              ; Put it in the SAT.
         call add_game_object_to_collision_table

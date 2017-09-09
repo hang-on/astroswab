@@ -1,3 +1,103 @@
+; 2017-09-08
+
+test_1:
+  ld ix,sandbox_trigger
+  ld a,(ix+trigger.state)
+  cp ENABLED
+  jp nz,++
+    call process_trigger
+    jp nc,+
+      ;
+      push ix
+        ld ix,asteroid
+        call explode_asteroid_into_shards
+      pop ix
+      ld a,DISABLED
+      ld (ix+trigger.state),a
+    +:
+  ++:
+  ;
+  ld b,2
+  ld ix,shard
+  -:
+    push bc
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      call move_game_object              ; Move shard.
+      ld a,SHARD_DEACTIVATE_ZONE_START
+      ld b,SHARD_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      ld a,VERTICAL_DEACTIVATE_ZONE_START
+      ld b,VERTICAL_DEACTIVATE_ZONE_END
+      call vertical_zone_deactivate_game_object
+      ;
+      call draw_game_object              ; Put it in the SAT.
+    ;
+    +:
+    ld de,_sizeof_game_object
+    add ix,de
+    pop bc
+  djnz -
+
+  ld ix,asteroid
+  ld a,(ix+game_object.state)
+  cp GAME_OBJECT_ACTIVE
+  jp nz,+
+    call move_game_object
+    call draw_game_object
+  +:
+  call is_reset_pressed
+  jp nc,+
+    ld a,GS_PREPARE_SANDBOX
+    ld (game_state),a
+  +:
+ret
+  sandbox_game_object_init_table:
+    .dw shard, sandbox_shard_init_table, SHARD_MAX
+    .dw asteroid, sandbox_asteroid_init_table, 1
+  sandbox_shard_init_table:
+    .db SPRITE_45, 0, 0, GAME_OBJECT_SHAPE_SMALL
+    .db 2, 0, GAME_OBJECT_INACTIVE
+    .db %00010001, 7, 7, SHARD
+  sandbox_asteroid_init_table:
+    .db SPRITE_8, 1, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db 0, 200, GAME_OBJECT_ACTIVE
+    .db %00000000, 15, 15, ASTEROID
+  sandbox_shard_position_table:
+    .db 35, 70, 45, 80
+  sandbox_trigger_init_table:
+    .db 255, 40
+
+
+
+ld hl,sandbox_game_object_init_table
+ld a,2
+call batch_initialize_game_objects
+ld a,2
+ld ix, shard
+ld hl,sandbox_shard_position_table
+call position_multiple_game_object_instances
+ld hl,sandbox_trigger_init_table
+ld ix,sandbox_trigger
+call initialize_trigger
+ld a,ENABLED
+ld (ix+trigger.state),a
+
+
+  apply_offset_to_game_object:
+    ; IX = Pointer, B=Y, C= X
+    ld a,(ix+game_object.y)
+    add a,b
+    ld (ix+game_object.y),a
+    ;
+    ld a,(ix+game_object.x)
+    add a,c
+    ld (ix+game_object.x),a
+  ret
+
+
+
 ; 2017-09-06
 get_trigger_state:
   ; Entry: IX = Pointer to trigger struct.

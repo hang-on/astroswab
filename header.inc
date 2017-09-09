@@ -119,6 +119,9 @@
   .equ MISSILE_TRIGGER_CHANCE_INIT 190 ; 190 - 1 to almost disable
   .equ MISSILE_TRIGGER_INTERVAL_INIT 130
 ;
+.equ VERTICAL_DEACTIVATE_ZONE_START 0
+.equ VERTICAL_DEACTIVATE_ZONE_END 7
+;
 ; Sound:
   .equ SOUND_BANK 5
 ;
@@ -170,4 +173,6 @@
   objects_in_bottom_collision_table db
   ;
   bee instanceof game_object
+  ;
+  sandbox_trigger instanceof trigger
 .ends
