@@ -154,9 +154,11 @@ tall_meta_sprite_table:
     ld a,(iy+game_object.id)
     cp ASTEROID
     ret nz
-      push iy
+      push ix
+        push iy
+        pop ix
+        call explode_asteroid_into_shards
       pop ix
-      call explode_asteroid_into_shards
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
