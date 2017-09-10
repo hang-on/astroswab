@@ -334,6 +334,25 @@ tall_meta_sprite_table:
     ;
   ret
 
+  convert_byte:
+    ;
+    ; hl = pointe to table, carry set on error?
+    ; a = byte to convert.
+    -:
+      ld b,(hl)
+      cp a
+      inc hl
+      jp nz,+
+        ld a,(hl)
+        ret
+      +:
+      inc hl
+    jp -
+  ret
+  ;
+  converter_test_table:
+    .db 1, 10, 2, 20,3,30,4,40
+
   asteroid_to_shard_sprite_table:
     ;.db SPRITE_8, sharsprite, SPRITE_9, shardsprite, SPRITE_10, sharsprite, SPRITE_11, shardsprite
 .ends
