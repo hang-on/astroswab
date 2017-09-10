@@ -64,8 +64,6 @@
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 7, 7, SHARD           ; TODO: Might need adjustment!
-  shard_sprite_table:
-    .db YELLOW_SHARD
   shard_trigger_init_table:
     .db SHARD_TRIGGER_CHANCE_INIT, SHARD_TRIGGER_INTERVAL_INIT
   ;

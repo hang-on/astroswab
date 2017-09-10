@@ -350,6 +350,31 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "convert_byte" free
+; -----------------------------------------------------------------------------
+  convert_byte:
+    ; Convert a byte passed in A to a value from a specified conversion table.
+    ; Entry: A = Byte-sized value to convert.
+    ;        B = Values in conversion table (failsafe).
+    ;       HL = Ptr to conversion table (value, converted value, value etc..)
+    ; Exit:  A = result of conversion (if matching value found in table).
+    ;       Carry flag set if no matching value found in table.
+    ; Uses: AF, BC, HL
+    -:
+      ld c,(hl)
+      cp c
+      inc hl
+      jp nz,+
+        ld a,(hl)
+        ret
+      +:
+      inc hl
+    djnz -
+    scf
+  ret
+.ends
+;
+; -----------------------------------------------------------------------------
 .section "cp_word" free
 ; -----------------------------------------------------------------------------
   cp_word:

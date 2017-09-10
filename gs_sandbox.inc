@@ -56,7 +56,7 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  ; call test_1
+  ; call test_10
   ;
 jp main_loop
 ;
