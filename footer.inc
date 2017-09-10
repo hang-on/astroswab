@@ -56,8 +56,9 @@
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
   asteroid_sprite_table:
-    ; Note - only first four items are taken into account.
+    ; Note - only first eight items are taken into account.
     .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
+    .db PURPLE_ASTEROID, BROWN_ASTEROID, GREY_ASTEROID, PURPLE_ASTEROID
   ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
