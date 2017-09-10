@@ -225,6 +225,13 @@ tall_meta_sprite_table:
       ld c,(hl)                       ; Get x-offset from table.
       inc hl
       call position_game_object_in_relation_to_game_object
+      push hl
+        ld a,(ix+game_object.sprite)
+        ld b,(shard_conversion_table_end-shard_conversion_table)/2
+        ld hl,shard_conversion_table
+        call convert_byte
+        ld (iy+game_object.sprite),a
+      pop hl
     .endr
   ret
     shard_offset_table:
