@@ -338,16 +338,17 @@ tall_meta_sprite_table:
     ;
     ; hl = pointe to table, carry set on error?
     ; a = byte to convert.
+    ; add b = max iterations for failsafe!
     -:
-      ld b,(hl)
-      cp a
+      ld c,(hl)
+      cp c
       inc hl
       jp nz,+
         ld a,(hl)
         ret
       +:
       inc hl
-    jp -
+    djnz -
   ret
   ;
   converter_test_table:
