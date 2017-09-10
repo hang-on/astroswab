@@ -318,7 +318,6 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
-
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
@@ -331,4 +330,10 @@ tall_meta_sprite_table:
     ; ...
   ret
 
+  calculate_shard_sprite_from_asteroid_sprite:
+    ;
+  ret
+
+  asteroid_to_shard_sprite_table:
+    ;.db SPRITE_8, sharsprite, SPRITE_9, shardsprite, SPRITE_10, sharsprite, SPRITE_11, shardsprite
 .ends
