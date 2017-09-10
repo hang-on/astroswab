@@ -58,7 +58,7 @@
   asteroid_sprite_table:
     ; Note - only first eight items are taken into account.
     .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
-    .db PURPLE_ASTEROID, BROWN_ASTEROID, GREY_ASTEROID, PURPLE_ASTEROID
+    .db PURPLE_ASTEROID, BROWN_ASTEROID, YELLOW_ASTEROID_1
   ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
@@ -66,6 +66,13 @@
     .db %00010001, 1, 1, 7, 7, SHARD           ; TODO: Might need adjustment!
   shard_trigger_init_table:
     .db SHARD_TRIGGER_CHANCE_INIT, SHARD_TRIGGER_INTERVAL_INIT
+  ;
+  shard_conversion_table:
+    .db YELLOW_ASTEROID_1, YELLOW_SHARD
+    .db YELLOW_ASTEROID_2, YELLOW_SHARD
+    .db BROWN_ASTEROID, BROWN_SHARD
+    .db GREY_ASTEROID, GREY_SHARD
+    .db PURPLE_ASTEROID, PURPLE_SHARD
   ;
   trigger_batch_init_table:
     .dw spinner_trigger, spinner_trigger_init_table
