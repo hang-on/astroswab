@@ -56,7 +56,7 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-   call test_10
+  ; call test_10
   ;
 jp main_loop
 ;
@@ -65,23 +65,5 @@ jp main_loop
 init_tests:
 ; -----------------------------------------------------------------------------
   ;
-
-ret
-test_10:
-  ld a,3
-  ld b,4
-  ld hl,converter_test_table
-  call convert_byte
-  assertEqualsA 30, "Test 10 failed"
-  ld a,2
-  ld b,4
-  ld hl,converter_test_table
-  call convert_byte
-  assertEqualsA 20, "Test 10 failed"
-  ld a,5
-  ld b,4
-  ld hl,converter_test_table
-  call convert_byte
-  assertEqualsA 4, "Test 10 failed"
 
 ret

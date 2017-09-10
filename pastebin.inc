@@ -1,3 +1,26 @@
+; 2017-09-10
+test_10:
+  ld a,3
+  ld b,4
+  ld hl,converter_test_table
+  call convert_byte
+  assertEqualsA 30, "Test 10 failed"
+  ld a,2
+  ld b,4
+  ld hl,converter_test_table
+  call convert_byte
+  assertCarryReset "Test 10.2 failed"
+  ;assertEqualsA 20, "Test 10 failed"
+  ld a,5
+  ld b,4
+  ld hl,converter_test_table
+  call convert_byte
+  ;assertEqualsA 5, "Test 10 failed"
+  assertCarrySet "Test 10.1 failed"
+
+ret
+
+
 ; 2017-09-08
 
 test_1:
