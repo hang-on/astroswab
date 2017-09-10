@@ -57,7 +57,7 @@
     .db %00000000, 0, 0, 16, 16, ASTEROID
   asteroid_sprite_table:
     ; Note - only first four items are taken into account.
-    .db SPRITE_8, SPRITE_9, SPRITE_10, SPRITE_11
+    .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
   ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
