@@ -292,12 +292,15 @@
           cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
           jp nz,+
             call spawn_game_object_in_invisible_area
+            ; -----------------------------
+            ; TODO? This might be better with a shard sprite table like astero.
             ld a,SHARD_YELLOW_SPRITE
             ld b,a
             call get_random_number
             and %00000011
             add a,b
             ld (ix+game_object.sprite),a
+            ; ------------------------------
             call get_random_number
             and SHARD_SPEED_MODIFIER
             inc a
