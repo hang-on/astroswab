@@ -73,6 +73,7 @@
     .db BROWN_ASTEROID, BROWN_SHARD
     .db GREY_ASTEROID, GREY_SHARD
     .db PURPLE_ASTEROID, PURPLE_SHARD
+  shard_conversion_table_end:
   ;
   trigger_batch_init_table:
     .dw spinner_trigger, spinner_trigger_init_table
