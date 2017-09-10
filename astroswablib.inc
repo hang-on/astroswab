@@ -318,7 +318,11 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
-
+  .equ YELLOW_ASTEROID_1 SPRITE_8
+  .equ YELLOW_ASTEROID_2 SPRITE_9
+  .equ PURPLE_ASTEROID SPRITE_7
+  .equ GREY_ASTEROID SPRITE_11
+  .equ BROWN_ASTEROID SPRITE_10
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
