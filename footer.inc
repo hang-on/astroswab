@@ -257,4 +257,6 @@
 ; -----------------------------------------------------------------------------
   shot_1:
     .incbin "bank_5\shot_1.psg"
+  spinner_coming_down:
+    .incbin "bank_5\spinner_coming_down.psg"
 .ends

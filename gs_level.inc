@@ -355,6 +355,10 @@
           call spawn_game_object_in_invisible_area
           ld hl,spinner_anim_table
           call load_animation_game_object
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,spinner_coming_down
+          call PSGPlayNoRepeat
+
     +:
     ;
     ld ix,spinner
