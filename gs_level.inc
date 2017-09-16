@@ -362,7 +362,6 @@
           SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
           ld hl,spinner_coming_down
           call PSGPlayNoRepeat
-
     +:
     ;
     ld ix,spinner
@@ -372,7 +371,9 @@
       call move_game_object              ; Move
       ld a,SPINNER_DEACTIVATE_ZONE_START
       ld b,SPINNER_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
+      ld hl,spinner_hits_ground
+      call horizontal_zone_send_to_handler
+      ;
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table

@@ -142,6 +142,15 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Game object implementations" free
 ; -----------------------------------------------------------------------------
+  spinner_hits_ground:
+      ; IX points to spinner structure.
+      call deactivate_game_object
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+  ret
+
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
     ; other objects.
