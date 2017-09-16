@@ -209,10 +209,14 @@
             ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
             ld (ix+game_object.x),a
             ;
-            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-            ld c,SFX_CHANNEL2
-            ld hl,shot_1
-            call PSGSFXPlay           ; Play the swabby shot sound effect.
+            call PSGSFXGetStatus
+            cp PSG_PLAYING
+            jp z,+
+              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+              ld c,SFX_CHANNELS2AND3
+              ld hl,shot_1
+              call PSGSFXPlay           ; Play the swabby shot sound effect.
+            +:
             ;
     activate_bullet_end:              ; End of bullet activation code.
     ; Process all bullets.

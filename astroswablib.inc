@@ -151,14 +151,32 @@ tall_meta_sprite_table:
     ld (ix+game_object.state),a
     ld (iy+game_object.state),a
     ;
+    ;
     ld a,(iy+game_object.id)
     cp ASTEROID
-    ret nz
+    jp nz,+
       push ix
         push iy
         pop ix
         call explode_asteroid_into_shards
+        SELECT_BANK SOUND_BANK
+        call PSGSFXStop
+        ld hl,explosion
+        ld c,SFX_CHANNELS2AND3
+        call PSGSFXPlay
       pop ix
+      ret
+    +:
+    cp SPINNER
+    jp nz,+
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ret
+    +:
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
