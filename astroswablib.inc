@@ -151,6 +151,16 @@ tall_meta_sprite_table:
       call PSGSFXPlay
   ret
   ;
+  missile_hits_ground:
+      ; IX points to spinner structure.
+      call deactivate_game_object
+      ;call PSGStop
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+  ret
+  ;
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
     ; other objects.
@@ -198,15 +208,35 @@ tall_meta_sprite_table:
         call PSGPlayNoRepeat
         ret
     +:
+    cp MISSILE
+    jp nz,+
+      ; Points and stuff here...
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+    +:
+
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
     ; other objects.
     ; TODO: Implement DEATH!
     ; IX = swabby, IY other object..
-    push iy
-    pop ix
-    call deactivate_game_object
+    ld a,GAME_OBJECT_INACTIVE
+    ld (iy+game_object.state),a
+    ;
+    ld a,(iy+game_object.id)
+    cp BOOSTER
+    jp nz,+
+      SELECT_BANK SOUND_BANK
+      ld hl,got_booster
+      call PSGPlayNoRepeat
+    ret
+    +:
+
   ret
   ;
   .equ SHARD_X_OFFSET_1 (-3)

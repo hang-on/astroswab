@@ -430,6 +430,10 @@
           ld ix,missile
           call spawn_game_object_in_invisible_area
           call activate_game_object
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,missile_warning
+          call PSGPlayNoRepeat
+
     +:
     ;
     ld ix,missile
@@ -440,7 +444,8 @@
       call move_game_object              ; Move
       ld a,ASTEROID_DEACTIVATE_ZONE_START
       ld b,ASTEROID_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
+      ld hl,missile_hits_ground
+      call horizontal_zone_send_to_handler
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
     +:
