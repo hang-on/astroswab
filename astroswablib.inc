@@ -152,7 +152,7 @@ tall_meta_sprite_table:
   ret
   ;
   missile_hits_ground:
-      ; IX points to spinner structure.
+      ; IX points to missile structure.
       call deactivate_game_object
       ;call PSGStop
       SELECT_BANK SOUND_BANK

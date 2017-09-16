@@ -117,7 +117,7 @@
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
   ;
   missile_init_table:
-    .db SPRITE_4, 2, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db SPRITE_4, 3, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
   missile_trigger_init_table:

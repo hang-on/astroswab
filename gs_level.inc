@@ -439,16 +439,33 @@
     ld ix,missile
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
-    jp nz,+
-      ; TODO: Make missile track/follow Swabby.
-      call move_game_object              ; Move
+    jp nz,missile_loop_end
+      ld a,(ix+game_object.y)
+      cp MISSILE_TRACKING_LINE
+      jp nc,++
+        ; Make missile track/follow Swabby.
+        ld iy,swabby
+        ld a,(iy+game_object.x)
+        ld b,(ix+game_object.x)
+        cp b
+        jp c,+
+          ld a,1                    ; Move missile right.
+          jp +++
+        +:
+          ld a,-1                   ; Move missile left.
+        jp +++
+      ++:                           ; Missile close to ground.
+        ld a,0                      ; Don't move missile horizontally.
+      +++:
+      ld (ix+game_object.xspeed),a
+      call move_game_object
       ld a,ASTEROID_DEACTIVATE_ZONE_START
       ld b,ASTEROID_DEACTIVATE_ZONE_END
       ld hl,missile_hits_ground
       call horizontal_zone_send_to_handler
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
-    +:
+    missile_loop_end:
     ; -------------------------------------------------------------------------
     ;
     call PSGSFXFrame
