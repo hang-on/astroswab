@@ -150,7 +150,7 @@ tall_meta_sprite_table:
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
   ret
-
+  ;
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
     ; other objects.
@@ -185,6 +185,18 @@ tall_meta_sprite_table:
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
       ret
+    +:
+    cp BOOSTER
+    jp nz,+
+      ; Points and stuff here...
+      call PSGGetStatus
+      cp PSG_PLAYING
+      ret z
+        SELECT_BANK SOUND_BANK
+        ld hl,shot_booster
+        ;ld c,SFX_CHANNELS2AND3
+        call PSGPlayNoRepeat
+        ret
     +:
   ret
   handle_swabby_collision:
