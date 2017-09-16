@@ -266,7 +266,9 @@
             ld (ix+game_object.sprite),a
             call get_random_number
             and ASTEROID_SPEED_MODIFIER
-            inc a
+            jp nz,end_asteroid_speed_setting
+              inc a
+            end_asteroid_speed_setting:
             ld (ix+game_object.yspeed),a
             call activate_game_object
       +: ; Here we process the active asteroids.
