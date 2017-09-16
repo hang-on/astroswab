@@ -256,7 +256,18 @@
 .section "Sound assets" free
 ; -----------------------------------------------------------------------------
   shot_1:
-    .incbin "bank_5\shot_1.psg"
+    .incbin "bank_5\shot_3.psg"
   spinner_coming_down:
     .incbin "bank_5\spinner_coming_down.psg"
+  explosion:
+    .incbin "bank_5\explosion.psg"
+  got_booster:
+    .incbin "bank_5\got_booster.psg"
+  shot_booster:
+    .incbin "bank_5\shot_booster.psg"
+  missile_warning:
+    .incbin "bank_5\missile_warning.psg"
+
+
+
 .ends
