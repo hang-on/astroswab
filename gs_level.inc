@@ -354,14 +354,18 @@
         call process_trigger
         jp nc,+
           ; If spinner_generator_timer is up, do...
-          ; Activate a new spinner.
-          ld ix,spinner
-          call spawn_game_object_in_invisible_area
-          ld hl,spinner_anim_table
-          call load_animation_game_object
-          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-          ld hl,spinner_coming_down
-          call PSGPlayNoRepeat
+          ; Activate a new spinner, if missile is not out!
+          ld iy,missile
+          ld a,(game_object.state)
+          cp GAME_OBJECT_ACTIVE
+          jp z,+
+            ld ix,spinner
+            call spawn_game_object_in_invisible_area
+            ld hl,spinner_anim_table
+            call load_animation_game_object
+            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+            ld hl,spinner_coming_down
+            call PSGPlayNoRepeat
     +:
     ;
     ld ix,spinner
