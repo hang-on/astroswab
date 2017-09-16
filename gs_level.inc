@@ -209,10 +209,14 @@
             ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
             ld (ix+game_object.x),a
             ;
-            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-            ld c,SFX_CHANNEL2
-            ld hl,shot_1
-            call PSGSFXPlay           ; Play the swabby shot sound effect.
+            call PSGSFXGetStatus
+            cp PSG_PLAYING
+            jp z,+
+              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+              ld c,SFX_CHANNELS2AND3
+              ld hl,shot_1
+              call PSGSFXPlay           ; Play the swabby shot sound effect.
+            +:
             ;
     activate_bullet_end:              ; End of bullet activation code.
     ; Process all bullets.
@@ -358,7 +362,6 @@
           SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
           ld hl,spinner_coming_down
           call PSGPlayNoRepeat
-
     +:
     ;
     ld ix,spinner
@@ -368,7 +371,9 @@
       call move_game_object              ; Move
       ld a,SPINNER_DEACTIVATE_ZONE_START
       ld b,SPINNER_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
+      ld hl,spinner_hits_ground
+      call horizontal_zone_send_to_handler
+      ;
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
@@ -425,6 +430,10 @@
           ld ix,missile
           call spawn_game_object_in_invisible_area
           call activate_game_object
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,missile_warning
+          call PSGPlayNoRepeat
+
     +:
     ;
     ld ix,missile
@@ -435,7 +444,8 @@
       call move_game_object              ; Move
       ld a,ASTEROID_DEACTIVATE_ZONE_START
       ld b,ASTEROID_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
+      ld hl,missile_hits_ground
+      call horizontal_zone_send_to_handler
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
     +:

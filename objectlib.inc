@@ -85,6 +85,7 @@
     ; the borders passed in A and B. If true, then deactivate enemy object.
     ; Entry: IX = Pointer to struct.
     ;        A = Zone start. B = Zone end.
+    ; Exit:
     ; Uses: AF, BC.
     ld c,b
     ld b,a
@@ -95,6 +96,22 @@
     ret nc
     call deactivate_game_object
   ret
+  ;
+  horizontal_zone_send_to_handler:
+    ; Test enemy object y to see if it is within the horizontal zone defined
+    ; the borders passed in A and B. If true, then jump to handler.
+    ; Entry: IX = Pointer to struct.
+    ;        A = Zone start. B = Zone end.
+    ;        HL = Pointer to handler.
+    ; Uses: AF, BC.
+    ld c,b
+    ld b,a
+    ld a,(ix+game_object.y)
+    cp b
+    ret c
+    cp c
+    ret nc
+      jp (hl)
   ;
   vertical_zone_deactivate_game_object:
     ; Test game object x to see if it is within the vertical zone defined

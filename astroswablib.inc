@@ -142,6 +142,25 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Game object implementations" free
 ; -----------------------------------------------------------------------------
+  spinner_hits_ground:
+      ; IX points to spinner structure.
+      call deactivate_game_object
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+  ret
+  ;
+  missile_hits_ground:
+      ; IX points to spinner structure.
+      call deactivate_game_object
+      ;call PSGStop
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+  ret
+  ;
   handle_bullet_collision:
     ; Placeholder function for handling what happens when bullet collides with
     ; other objects.
@@ -151,23 +170,73 @@ tall_meta_sprite_table:
     ld (ix+game_object.state),a
     ld (iy+game_object.state),a
     ;
+    ;
     ld a,(iy+game_object.id)
     cp ASTEROID
-    ret nz
+    jp nz,+
       push ix
         push iy
         pop ix
         call explode_asteroid_into_shards
+        SELECT_BANK SOUND_BANK
+        call PSGSFXStop
+        ld hl,explosion
+        ld c,SFX_CHANNELS2AND3
+        call PSGSFXPlay
       pop ix
+      ret
+    +:
+    cp SPINNER
+    jp nz,+
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ret
+    +:
+    cp BOOSTER
+    jp nz,+
+      ; Points and stuff here...
+      call PSGGetStatus
+      cp PSG_PLAYING
+      ret z
+        SELECT_BANK SOUND_BANK
+        ld hl,shot_booster
+        ;ld c,SFX_CHANNELS2AND3
+        call PSGPlayNoRepeat
+        ret
+    +:
+    cp MISSILE
+    jp nz,+
+      ; Points and stuff here...
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+    +:
+
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
     ; other objects.
     ; TODO: Implement DEATH!
     ; IX = swabby, IY other object..
-    push iy
-    pop ix
-    call deactivate_game_object
+    ld a,GAME_OBJECT_INACTIVE
+    ld (iy+game_object.state),a
+    ;
+    ld a,(iy+game_object.id)
+    cp BOOSTER
+    jp nz,+
+      SELECT_BANK SOUND_BANK
+      ld hl,got_booster
+      call PSGPlayNoRepeat
+    ret
+    +:
+
   ret
   ;
   .equ SHARD_X_OFFSET_1 (-3)
