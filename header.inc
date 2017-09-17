@@ -194,11 +194,9 @@
   swabby instanceof game_object
   ;
   asteroid instanceof game_object ASTEROID_MAX
+  asteroid_trigger instanceof trigger
   ;
-  shard_generator_timer db
-  shard_generator_chance db
   shard instanceof game_object SHARD_MAX
-  ; ---
   shard_trigger instanceof trigger
   ;
   spinner instanceof game_object
