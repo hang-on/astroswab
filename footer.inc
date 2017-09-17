@@ -153,6 +153,87 @@
     .db 0, 8, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, BEE
   ;
+  ;
+  difficulty_to_trigger_init_tables:
+    .dw difficulty_0_batch_trigger_init_table
+    .dw difficulty_1_batch_trigger_init_table
+    .dw difficulty_2_batch_trigger_init_table
+    .dw difficulty_3_batch_trigger_init_table
+  ;
+  difficulty_0_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_0
+    .dw booster_trigger, booster_trigger_init_table_0
+    .dw missile_trigger, missile_trigger_init_table_0
+    .dw shard_trigger, shard_trigger_init_table_0
+  difficulty_1_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_1
+    .dw booster_trigger, booster_trigger_init_table_1
+    .dw missile_trigger, missile_trigger_init_table_1
+    .dw shard_trigger, shard_trigger_init_table_1
+  difficulty_2_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_2
+    .dw booster_trigger, booster_trigger_init_table_2
+    .dw missile_trigger, missile_trigger_init_table_2
+    .dw shard_trigger, shard_trigger_init_table_2
+  difficulty_3_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_3
+    .dw booster_trigger, booster_trigger_init_table_3
+    .dw missile_trigger, missile_trigger_init_table_3
+    .dw shard_trigger, shard_trigger_init_table_3
+  ;
+  spinner_trigger_init_table_0:
+    .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  booster_trigger_init_table_0:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_0, BOOSTER_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  missile_trigger_init_table_0:
+    .db MISSILE_TRIGGER_CHANCE_INIT_0, MISSILE_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  shard_trigger_init_table_0:
+    .db SHARD_TRIGGER_CHANCE_INIT_0, SHARD_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  ;
+  spinner_trigger_init_table_1:
+    .db SPINNER_TRIGGER_CHANCE_INIT_1, SPINNER_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED
+  booster_trigger_init_table_1:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_1, BOOSTER_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED
+  missile_trigger_init_table_1:
+    .db MISSILE_TRIGGER_CHANCE_INIT_1, MISSILE_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED
+  shard_trigger_init_table_1:
+    .db SHARD_TRIGGER_CHANCE_INIT_1, SHARD_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED
+  ;
+  spinner_trigger_init_table_2:
+    .db SPINNER_TRIGGER_CHANCE_INIT_2, SPINNER_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED
+  booster_trigger_init_table_2:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_2, BOOSTER_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED
+  missile_trigger_init_table_2:
+    .db MISSILE_TRIGGER_CHANCE_INIT_2, MISSILE_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED
+  shard_trigger_init_table_2:
+    .db SHARD_TRIGGER_CHANCE_INIT_2, SHARD_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED
+  ;
+  spinner_trigger_init_table_3:
+    .db SPINNER_TRIGGER_CHANCE_INIT_3, SPINNER_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED
+  booster_trigger_init_table_3:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_3, BOOSTER_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED
+  missile_trigger_init_table_3:
+    .db MISSILE_TRIGGER_CHANCE_INIT_3, MISSILE_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED
+  shard_trigger_init_table_3:
+    .db SHARD_TRIGGER_CHANCE_INIT_3, SHARD_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED
+  ;
+  ;
   ; ---------------------------------------------------------------------------
   ; Menu item strings:
   menu_title:
