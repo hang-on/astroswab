@@ -406,6 +406,4 @@ tall_meta_sprite_table:
     ; ...
   ret
 
-  asteroid_to_shard_sprite_table:
-    ;.db SPRITE_8, sharsprite, SPRITE_9, shardsprite, SPRITE_10, sharsprite, SPRITE_11, shardsprite
 .ends
