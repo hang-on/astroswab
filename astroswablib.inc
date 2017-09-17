@@ -406,13 +406,8 @@ tall_meta_sprite_table:
     ; ...
   ret
 
-  asteroid_trigger_init_table_0:
-    .db ASTEROID_TRIGGER_CHANCE_INIT_0, ASTEROID_TRIGGER_INTERVAL_INIT_0
-    .db ENABLED
 
   ; Difficulty 0
-  .equ ASTEROID_TRIGGER_CHANCE_INIT_0 50 ; 50
-  .equ ASTEROID_TRIGGER_INTERVAL_INIT_0 10 ;10
 
 
 .ends

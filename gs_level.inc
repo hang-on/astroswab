@@ -57,9 +57,9 @@
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
     ;
-    ld hl,asteroid_trigger_init_table_0
-    ld ix,asteroid_trigger
-    call initialize_trigger
+    ;ld hl,asteroid_trigger_init_table_0
+    ;ld ix,asteroid_trigger
+    ;call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE

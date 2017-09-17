@@ -149,22 +149,26 @@
     .dw booster_trigger, booster_trigger_init_table_0
     .dw missile_trigger, missile_trigger_init_table_0
     .dw shard_trigger, shard_trigger_init_table_0
+    .dw asteroid_trigger, asteroid_trigger_init_table_0
   difficulty_0_batch_trigger_init_table_end:
   difficulty_1_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_1
     .dw booster_trigger, booster_trigger_init_table_1
     .dw missile_trigger, missile_trigger_init_table_1
     .dw shard_trigger, shard_trigger_init_table_1
+    .dw asteroid_trigger, asteroid_trigger_init_table_1
   difficulty_2_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_2
     .dw booster_trigger, booster_trigger_init_table_2
     .dw missile_trigger, missile_trigger_init_table_2
     .dw shard_trigger, shard_trigger_init_table_2
+    .dw asteroid_trigger, asteroid_trigger_init_table_2
   difficulty_3_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_3
     .dw booster_trigger, booster_trigger_init_table_3
     .dw missile_trigger, missile_trigger_init_table_3
     .dw shard_trigger, shard_trigger_init_table_3
+    .dw asteroid_trigger, asteroid_trigger_init_table_3
   ;
   spinner_trigger_init_table_0:
     .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
@@ -177,6 +181,9 @@
     .db ENABLED
   shard_trigger_init_table_0:
     .db SHARD_TRIGGER_CHANCE_INIT_0, SHARD_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  asteroid_trigger_init_table_0:
+    .db ASTEROID_TRIGGER_CHANCE_INIT_0, ASTEROID_TRIGGER_INTERVAL_INIT_0
     .db ENABLED
   ;
   spinner_trigger_init_table_1:
@@ -191,6 +198,9 @@
   shard_trigger_init_table_1:
     .db SHARD_TRIGGER_CHANCE_INIT_1, SHARD_TRIGGER_INTERVAL_INIT_1
     .db ENABLED
+  asteroid_trigger_init_table_1:
+    .db ASTEROID_TRIGGER_CHANCE_INIT_1, ASTEROID_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED
   ;
   spinner_trigger_init_table_2:
     .db SPINNER_TRIGGER_CHANCE_INIT_2, SPINNER_TRIGGER_INTERVAL_INIT_2
@@ -203,6 +213,9 @@
     .db ENABLED
   shard_trigger_init_table_2:
     .db SHARD_TRIGGER_CHANCE_INIT_2, SHARD_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED
+  asteroid_trigger_init_table_2:
+    .db ASTEROID_TRIGGER_CHANCE_INIT_2, ASTEROID_TRIGGER_INTERVAL_INIT_2
     .db ENABLED
   ;
   spinner_trigger_init_table_3:
@@ -217,6 +230,10 @@
   shard_trigger_init_table_3:
     .db SHARD_TRIGGER_CHANCE_INIT_3, SHARD_TRIGGER_INTERVAL_INIT_3
     .db ENABLED
+  asteroid_trigger_init_table_3:
+    .db ASTEROID_TRIGGER_CHANCE_INIT_3, ASTEROID_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED
+
   ;
   ;
   ; ---------------------------------------------------------------------------
