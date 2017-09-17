@@ -40,7 +40,7 @@
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
     ; FIXME - hardcoded difficulty setting for testing purposes.
-    ld a,0                ;  difficulty.
+    ld a,3                ;  difficulty.
     ld (difficulty),a
     ;
     ld a,(difficulty)                         ; Get current difficulty.
@@ -54,7 +54,7 @@
     ld h,(hl)
     ld l,a
     ; Initialize the triggers.
-    ld a,(trigger_batch_init_table_end-trigger_batch_init_table)/4
+    ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
     ;
     ; -------------------------------------------------------------------------

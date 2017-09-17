@@ -64,8 +64,6 @@
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 7, 7, SHARD           ; TODO: Might need adjustment!
-  shard_trigger_init_table:
-    .db SHARD_TRIGGER_CHANCE_INIT, SHARD_TRIGGER_INTERVAL_INIT
   ;
   shard_conversion_table:
     .db YELLOW_ASTEROID_1, YELLOW_SHARD
@@ -75,20 +73,11 @@
     .db PURPLE_ASTEROID, PURPLE_SHARD
   shard_conversion_table_end:
   ;
-  trigger_batch_init_table:
-    .dw spinner_trigger, spinner_trigger_init_table
-    .dw booster_trigger, booster_trigger_init_table
-    .dw missile_trigger, missile_trigger_init_table
-    .dw shard_trigger, shard_trigger_init_table
-  trigger_batch_init_table_end:
   ;
   spinner_init_table:
     .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 24, SPINNER
-  spinner_trigger_init_table:
-    .db SPINNER_TRIGGER_CHANCE_INIT, SPINNER_TRIGGER_INTERVAL_INIT
-    .db ENABLED
   spinner_anim_table:
   .rept 8
     .rept 8
@@ -109,9 +98,6 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
-  booster_trigger_init_table:
-    .db BOOSTER_TRIGGER_CHANCE_INIT, BOOSTER_TRIGGER_INTERVAL_INIT
-    .db ENABLED
   booster_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
@@ -120,9 +106,6 @@
     .db SPRITE_4, 3, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
-  missile_trigger_init_table:
-    .db MISSILE_TRIGGER_CHANCE_INIT, MISSILE_TRIGGER_INTERVAL_INIT
-    .db ENABLED
   ;
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
@@ -160,11 +143,13 @@
     .dw difficulty_2_batch_trigger_init_table
     .dw difficulty_3_batch_trigger_init_table
   ;
+  ; Note! First table is used for dimensioning batch inits (lev. startup).
   difficulty_0_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_0
     .dw booster_trigger, booster_trigger_init_table_0
     .dw missile_trigger, missile_trigger_init_table_0
     .dw shard_trigger, shard_trigger_init_table_0
+  difficulty_0_batch_trigger_init_table_end:
   difficulty_1_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_1
     .dw booster_trigger, booster_trigger_init_table_1
