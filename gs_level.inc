@@ -40,22 +40,21 @@
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
     ; FIXME - hardcoded difficulty setting for testing purposes.
-    ld a,0                ; Lowest difficulty.
+    ld a,0                ;  difficulty.
     ld (difficulty),a
     ;
-    ld a,(difficulty)
-    add a,a
+    ld a,(difficulty)                         ; Get current difficulty.
+    add a,a                                   ; Word-sized table items.
     ld e,a
     ld d,0
-    ld hl,difficulty_to_trigger_init_tables
-    add hl,de
-    ld a,(hl)
-    inc hl
+    ld hl,difficulty_to_trigger_init_tables   ; Base of batch init tables.
+    add hl,de                                 ; Apply difficulty offset.
+    ld a,(hl)                                 ; Read pointer to trigger batch
+    inc hl                                    ; init table into HL.
     ld h,(hl)
     ld l,a
     ; Initialize the triggers.
     ld a,(trigger_batch_init_table_end-trigger_batch_init_table)/4
-    ;ld hl,trigger_batch_init_table
     call batch_initialize_triggers
     ;
     ; -------------------------------------------------------------------------
