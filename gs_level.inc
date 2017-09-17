@@ -254,7 +254,38 @@
       add ix,de
       pop bc
     djnz -
+    ;
+    ;
     ; ---------------------------------------------------------------------------
+
+    ld ix,asteroid
+    ld b,ASTEROID_MAX
+    process_asteroid:
+      push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_ACTIVE
+        jp nz,+
+          call move_game_object              
+          ld a,ASTEROID_DEACTIVATE_ZONE_START
+          ld b,ASTEROID_DEACTIVATE_ZONE_END
+          call horizontal_zone_deactivate_game_object
+          ld a,VERTICAL_DEACTIVATE_ZONE_START
+          ld b,VERTICAL_DEACTIVATE_ZONE_END
+          call vertical_zone_deactivate_game_object
+          ;
+          call draw_game_object              ; Put it in the SAT.
+          call add_game_object_to_collision_table
+        ;
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz process_asteroid
+
+
+
+
+    /*
     ld ix,asteroid
     ld b,ASTEROID_MAX
     process_asteroids:
@@ -299,6 +330,10 @@
       add ix,de
       pop bc
     djnz process_asteroids
+    */
+    ;
+    ;
+    ;
     ; ---------------------------------------------------------------------------
     ; Shard generator
       ld ix,shard_trigger               ;
