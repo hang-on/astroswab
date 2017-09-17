@@ -57,6 +57,9 @@
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
     ;
+    ld hl,asteroid_trigger_init_table_0
+    ld ix,asteroid_trigger
+    call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
@@ -258,6 +261,48 @@
     ;
     ; ---------------------------------------------------------------------------
 
+
+  ; Asteroid generator
+    ld ix,asteroid_trigger               ;
+    call process_trigger
+    jp nc,++
+      ld b,ASTEROID_MAX
+      ld ix,asteroid
+      -:
+        push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
+        jp nz,+
+          call spawn_game_object_in_invisible_area
+          ; -----------------------------
+          call get_random_number
+          and ASTEROID_SPRITE_MASK
+          ld hl,asteroid_sprite_table
+          ld d,0
+          ld e,a
+          add hl,de
+          ld a,(hl)
+          ld (ix+game_object.sprite),a
+          call get_random_number
+          and ASTEROID_SPEED_MODIFIER
+          jp nz,end_asteroid_speed_setting
+            inc a
+          end_asteroid_speed_setting:
+          ld (ix+game_object.yspeed),a
+          call activate_game_object
+          ; ----
+          jp ++                        ; Jump out of loop.
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+        pop bc
+      djnz -
+  ++:
+
+
+
+
+
     ld ix,asteroid
     ld b,ASTEROID_MAX
     process_asteroid:
@@ -265,7 +310,7 @@
         ld a,(ix+game_object.state)
         cp GAME_OBJECT_ACTIVE
         jp nz,+
-          call move_game_object              
+          call move_game_object
           ld a,ASTEROID_DEACTIVATE_ZONE_START
           ld b,ASTEROID_DEACTIVATE_ZONE_END
           call horizontal_zone_deactivate_game_object

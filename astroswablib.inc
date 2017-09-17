@@ -412,7 +412,7 @@ tall_meta_sprite_table:
 
   ; Difficulty 0
   .equ ASTEROID_TRIGGER_CHANCE_INIT_0 50 ; 50
-  .equ ASTEROID_TRIGGER_INTERVAL_INIT_0 50 ;230
+  .equ ASTEROID_TRIGGER_INTERVAL_INIT_0 10 ;10
 
 
 .ends
