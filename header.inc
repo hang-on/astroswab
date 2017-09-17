@@ -48,6 +48,10 @@
   .equ BEE 8
   .equ NOT_MOVING 0
 ;
+; How many different kinds of triggers to initialize on level init?
+; shard, missile, booster, spinner = 4
+  .equ NUMBER_OF_TRIGGERS 4 ; FIXME? Could be calc. from one of the diffi.tables??
+;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
   .equ NON_ASCII_AREA_START $0c00
@@ -154,6 +158,7 @@
   vblank_update_finished_line db
   ;
   level db
+  difficulty db
   ;
   swabby instanceof game_object
   ;

@@ -406,6 +406,55 @@ tall_meta_sprite_table:
     ; ...
   ret
 
-  asteroid_to_shard_sprite_table:
-    ;.db SPRITE_8, sharsprite, SPRITE_9, shardsprite, SPRITE_10, sharsprite, SPRITE_11, shardsprite
+  difficulty_to_trigger_init_tables:
+    .dw difficulty_0_batch_trigger_init_table
+    .dw difficulty_1_batch_trigger_init_table
+    .dw difficulty_2_batch_trigger_init_table
+    .dw difficulty_3_batch_trigger_init_table
+  ;
+  ;
+  difficulty_0_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_0
+    .dw booster_trigger, booster_trigger_init_table_0
+    .dw missile_trigger, missile_trigger_init_table_0
+    .dw shard_trigger, shard_trigger_init_table_0
+  difficulty_1_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table
+    .dw booster_trigger, booster_trigger_init_table
+    .dw missile_trigger, missile_trigger_init_table
+    .dw shard_trigger, shard_trigger_init_table
+  difficulty_2_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table
+    .dw booster_trigger, booster_trigger_init_table
+    .dw missile_trigger, missile_trigger_init_table
+    .dw shard_trigger, shard_trigger_init_table
+  difficulty_3_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table
+    .dw booster_trigger, booster_trigger_init_table
+    .dw missile_trigger, missile_trigger_init_table
+    .dw shard_trigger, shard_trigger_init_table
+
+  spinner_trigger_init_table_0:
+    .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  booster_trigger_init_table_0:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_0, BOOSTER_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  missile_trigger_init_table_0:
+    .db MISSILE_TRIGGER_CHANCE_INIT_0, MISSILE_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+  shard_trigger_init_table_0:
+    .db SHARD_TRIGGER_CHANCE_INIT_0, SHARD_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED
+
+
+  .equ SPINNER_TRIGGER_CHANCE_INIT_0 15 ; 50
+  .equ SPINNER_TRIGGER_INTERVAL_INIT_0 230 ;230
+  .equ BOOSTER_TRIGGER_CHANCE_INIT_0 130 ; 190  1 to turn off
+  .equ BOOSTER_TRIGGER_INTERVAL_INIT_0 200
+  .equ MISSILE_TRIGGER_CHANCE_INIT_0 1 ; 190 - 1 to almost disable
+  .equ MISSILE_TRIGGER_INTERVAL_INIT_0 255
+  .equ SHARD_TRIGGER_CHANCE_INIT_0 60 ;50
+  .equ SHARD_TRIGGER_INTERVAL_INIT_0 50 ;230
+
 .ends

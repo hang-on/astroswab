@@ -38,16 +38,31 @@
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
     ; -------------------------------------------------------------------------
+    ; Depending on difficulty.
+    ; FIXME - hardcoded difficulty setting for testing purposes.
+    ld a,0                ; Lowest difficulty.
+    ld (difficulty),a
+    ;
+    ld a,(difficulty)
+    add a,a
+    ld e,a
+    ld d,0
+    ld hl,difficulty_to_trigger_init_tables
+    add hl,de
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
+    ; Initialize the triggers.
+    ld a,(trigger_batch_init_table_end-trigger_batch_init_table)/4
+    ;ld hl,trigger_batch_init_table
+    call batch_initialize_triggers
+    ;
+    ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
     call batch_initialize_game_objects
-    ;
-    ; Initialize the triggers.
-    ld a,(trigger_batch_init_table_end-trigger_batch_init_table)/4
-    ld hl,trigger_batch_init_table
-    call batch_initialize_triggers
-    ;
     ; Initialize gun
     ld a,GUN_DELAY_INIT
     ld (gun_delay),a
