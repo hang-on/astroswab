@@ -57,9 +57,6 @@
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
     ;
-    ;ld hl,asteroid_trigger_init_table_0
-    ;ld ix,asteroid_trigger
-    ;call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
@@ -258,12 +255,8 @@
       pop bc
     djnz -
     ;
-    ;
-    ; ---------------------------------------------------------------------------
-
-
-  ; Asteroid generator
-    ld ix,asteroid_trigger               ;
+    ; Asteroid generator
+    ld ix,asteroid_trigger
     call process_trigger
     jp nc,++
       ld b,ASTEROID_MAX
@@ -273,8 +266,8 @@
         ld a,(ix+game_object.state)
         cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
         jp nz,+
+        ; -----------------------------
           call spawn_game_object_in_invisible_area
-          ; -----------------------------
           call get_random_number
           and ASTEROID_SPRITE_MASK
           ld hl,asteroid_sprite_table
@@ -290,19 +283,15 @@
           end_asteroid_speed_setting:
           ld (ix+game_object.yspeed),a
           call activate_game_object
-          ; ----
+          ; --------------------------------
           jp ++                        ; Jump out of loop.
         +:
         ld de,_sizeof_game_object
         add ix,de
         pop bc
       djnz -
-  ++:
-
-
-
-
-
+    ++:
+    ;
     ld ix,asteroid
     ld b,ASTEROID_MAX
     process_asteroid:
@@ -326,94 +315,41 @@
         add ix,de
       pop bc
     djnz process_asteroid
-
-
-
-
-    /*
-    ld ix,asteroid
-    ld b,ASTEROID_MAX
-    process_asteroids:
-      push bc
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_INACTIVE
-      jp nz,+
-        ld hl,frame_counter                   ; Only consider reactivation on
-        bit 0,(hl)                            ; even frames.
-        jp nz,asteroid_loop_end
-          call get_random_number
-          cp ASTEROID_REACTIVATE_VALUE
-          jp nc,asteroid_loop_end
-            ; Activate asteroid.
-            call spawn_game_object_in_invisible_area
-            call get_random_number
-            and ASTEROID_SPRITE_MASK
-            ld hl,asteroid_sprite_table
-            ld d,0
-            ld e,a
-            add hl,de
-            ld a,(hl)
-            ld (ix+game_object.sprite),a
-            call get_random_number
-            and ASTEROID_SPEED_MODIFIER
-            jp nz,end_asteroid_speed_setting
-              inc a
-            end_asteroid_speed_setting:
-            ld (ix+game_object.yspeed),a
-            call activate_game_object
-      +: ; Here we process the active asteroids.
-      call move_game_object              ; Move asteroid downwards.
-      ld a,ASTEROID_DEACTIVATE_ZONE_START
-      ld b,ASTEROID_DEACTIVATE_ZONE_END
-      call horizontal_zone_deactivate_game_object
-      ;
-      call draw_game_object              ; Put it in the SAT.
-      call add_game_object_to_collision_table
-      ;
-      asteroid_loop_end:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz process_asteroids
-    */
-    ;
-    ;
-    ;
     ; ---------------------------------------------------------------------------
     ; Shard generator
-      ld ix,shard_trigger               ;
-      call process_trigger
-      jp nc,++
-        ld b,SHARD_MAX
-        ld ix,shard
-        -:
-          push bc
-          ld a,(ix+game_object.state)
-          cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
-          jp nz,+
-            call spawn_game_object_in_invisible_area
-            ; -----------------------------
-            ; TODO? This might be better with a shard sprite table like astero.
-            ld a,SHARD_YELLOW_SPRITE
-            ld b,a
-            call get_random_number
-            and %00000011
-            add a,b
-            ld (ix+game_object.sprite),a
-            ; ------------------------------
-            call get_random_number
-            and SHARD_SPEED_MODIFIER
-            inc a
-            ld b,SHARD_FREEFALLING_XSPEED
-            ld (ix+game_object.yspeed),a
-            ld (ix+game_object.xspeed),b
-            call activate_game_object
-            jp ++                        ; Jump out of loop.
-          +:
-          ld de,_sizeof_game_object
-          add ix,de
-          pop bc
-        djnz -
+    ld ix,shard_trigger               ;
+    call process_trigger
+    jp nc,++
+      ld b,SHARD_MAX
+      ld ix,shard
+      -:
+        push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
+        jp nz,+
+          call spawn_game_object_in_invisible_area
+          ; -----------------------------
+          ; TODO? This might be better with a shard sprite table like astero.
+          ld a,SHARD_YELLOW_SPRITE
+          ld b,a
+          call get_random_number
+          and %00000011
+          add a,b
+          ld (ix+game_object.sprite),a
+          ; ------------------------------
+          call get_random_number
+          and SHARD_SPEED_MODIFIER
+          inc a
+          ld b,SHARD_FREEFALLING_XSPEED
+          ld (ix+game_object.yspeed),a
+          ld (ix+game_object.xspeed),b
+          call activate_game_object
+          jp ++                        ; Jump out of loop.
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+        pop bc
+      djnz -
     ++:
     ld ix,shard
     ld b,SHARD_MAX
