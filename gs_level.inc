@@ -39,11 +39,6 @@
     call randomize  ; FIXME! Base on player input (titlescreen).
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
-    ; FIXME - hardcoded difficulty setting for testing purposes. Move out of
-    ; and into something like prepare_new_game...
-    ld a,INITIAL_DIFFICULTY                   ; Set difficulty
-    ld (difficulty),a
-    ;
     ld a,(difficulty)                         ; Get current difficulty.
     add a,a                                   ; Word-sized table items.
     ld e,a

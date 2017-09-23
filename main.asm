@@ -54,11 +54,15 @@
   ; ---------------------------------------------------------------------------
   ; S E T U P  G A M E  A N D  S E T U P / R U N  L E V E L                                                        (gameplay)
   ; ---------------------------------------------------------------------------
-  .include "gs_level.inc"
+  .include "gs_level.inc"             ; Prepare and run levels.
+  ;
   setup_new_game:
     ;
-    ld a,GS_PREPARE_LEVEL
-    ld (game_state),a
+    ld a,INITIAL_DIFFICULTY           ; Set difficulty.
+    ld (difficulty),a
+    ;
+    ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
+    ld (game_state),a                 ; on and prepare a relevant level...
   jp main_loop
   ;
   ; ---------------------------------------------------------------------------
