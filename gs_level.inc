@@ -477,23 +477,20 @@
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
     jp nz,missile_loop_end
-      ld a,(ix+game_object.y)
-      cp MISSILE_TRACKING_LINE
-      jp nc,++
-        ; Make missile track/follow Swabby.
-        ld iy,swabby
-        ld a,(iy+game_object.x)
-        ld b,(ix+game_object.x)
-        cp b
-        jp c,+
-          ld a,1                    ; Move missile right.
-          jp +++
-        +:
-          ld a,-1                   ; Move missile left.
+      ; Make missile track/follow Swabby.
+      ld iy,swabby
+      ld a,(iy+game_object.x)
+      ld b,(ix+game_object.x)
+      cp b
+      jp c,+
+        ld a,1                    ; Move missile right.
         jp +++
-      ++:                           ; Missile close to ground.
-        ld a,0                      ; Don't move missile horizontally.
-      +++:
+      +:
+        ld a,-1                   ; Move missile left.
+      jp +++
+    ++:                           ; Missile close to ground.
+      ld a,0                      ; Don't move missile horizontally.
+    +++:
       ld (ix+game_object.xspeed),a
       call move_game_object
       ld a,ASTEROID_DEACTIVATE_ZONE_START
