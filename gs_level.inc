@@ -12,16 +12,19 @@
     ld b,1
     call set_register
     ;
+    ld a,(difficulty)
+    call difficulty_to_background_pointer
+    
     SELECT_BANK BACKGROUND_BANK
-    ld a,(level)                          ; Multiply level with 16, because
-    rla                                   ; the background table elements are
-    rla                                   ; 3+3+2 words wide.
-    rla
-    rla
-    ld d,0
-    ld e,a
-    ld hl,background_table
-    add hl,de
+    ;ld a,(level)                          ; Multiply level with 16, because
+    ;rla                                   ; the background table elements are
+    ;rla                                   ; 3+3+2 words wide.
+    ;rla
+    ;rla
+    ;ld d,0
+    ;ld e,a
+    ;ld hl,background_table
+    ;add hl,de
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     ; Print the dummy text under the playfield.

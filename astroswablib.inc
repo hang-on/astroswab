@@ -405,5 +405,36 @@ tall_meta_sprite_table:
   sandbox_function_1:
     ; ...
   ret
+  ;
+  difficulty_to_background_pointer:
+    ;
+    ld hl,background_table
+  ret
+  ;
+  background_table:
+    ; level 1:
+    .dw NON_ASCII_AREA_START,
+    .dw background_1_tiles_end-background_1_tiles,
+    .dw background_1_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_1_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+    ; level 2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_2_tiles_end-background_2_tiles,
+    .dw background_2_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_2_tilemap
+    .dw $0000, $0000
+    ; level 3:
+    .dw NON_ASCII_AREA_START,
+    .dw background_3_tiles_end-background_3_tiles,
+    .dw background_3_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_3_tilemap
+    .dw $0000, $0000
 
 .ends

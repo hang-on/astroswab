@@ -15,31 +15,6 @@
     .dw prepare_sandbox, run_sandbox,
     .dw prepare_titlescreen, run_titlescreen, setup_new_game
   ;
-  background_table:
-    ; level 1:
-    .dw NON_ASCII_AREA_START,
-    .dw background_1_tiles_end-background_1_tiles,
-    .dw background_1_tiles
-    .dw NAME_TABLE_START,
-    .dw VISIBLE_NAME_TABLE_SIZE,
-    .dw background_1_tilemap
-    .dw $0000, $0000                                  ; Filler: 2 words.
-    ; level 2:
-    .dw NON_ASCII_AREA_START,
-    .dw background_2_tiles_end-background_2_tiles,
-    .dw background_2_tiles
-    .dw NAME_TABLE_START,
-    .dw VISIBLE_NAME_TABLE_SIZE,
-    .dw background_2_tilemap
-    .dw $0000, $0000
-    ; level 3:
-    .dw NON_ASCII_AREA_START,
-    .dw background_3_tiles_end-background_3_tiles,
-    .dw background_3_tiles
-    .dw NAME_TABLE_START,
-    .dw VISIBLE_NAME_TABLE_SIZE,
-    .dw background_3_tilemap
-    .dw $0000, $0000
   ;
   batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1
