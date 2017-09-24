@@ -407,7 +407,18 @@ tall_meta_sprite_table:
   ret
   ;
   difficulty_to_background_pointer:
+    ; Entry: A = diffciluty.
+    ld hl,background_table
+    add a,a
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
     ;
+    jp ++
     cp 0 ; difficulty 0?
     jp nz,+
       ld hl,difficulty_0_background_table
@@ -439,6 +450,10 @@ tall_meta_sprite_table:
       ld h,(hl)
       ld l,a
     ret
+  background_table:
+    .dw difficulty_0_background_table, difficulty_1_background_table
+    .dw difficulty_2_background_table, difficulty_3_background_table
+
   difficulty_0_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
