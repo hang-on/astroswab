@@ -406,9 +406,21 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  difficulty_to_background_pointer:
-    ; Entry: A = diffciluty.
-    ld hl,background_table
+  get_random_background_pointer:
+    ; Retrieve a pointer to background data for VRAM loading.
+    ; Entry: A = Index of meta pointer table.
+    ; Exit: HL = Pointer to background data for VRAM loading.
+    ld hl,meta_pointer_table
+    call get_pointer_from_table    ;
+    push hl
+      call get_random_number
+    pop hl
+    and %00000111
+    call get_pointer_from_table
+    ret
+  get_pointer_from_table:
+    ; Entry: A = index to table of pointers (words).
+    ; Exit: HL = Pointer at index.
     add a,a
     ld d,0
     ld e,a
@@ -417,40 +429,9 @@ tall_meta_sprite_table:
     inc hl
     ld h,(hl)
     ld l,a
-    ;
-    jp ++
-    cp 0 ; difficulty 0?
-    jp nz,+
-      ld hl,difficulty_0_background_table
-      jp ++
-    +:
-    cp 1 ; difficulty 1?
-    jp nz,+
-      ld hl,difficulty_1_background_table
-      jp ++
-    +:
-    cp 2 ; difficulty 2?
-    jp nz,+
-      ld hl,difficulty_2_background_table
-      jp ++
-    +:
-    ; fall through to difficulty 3 == catch all.
-      ld hl,difficulty_3_background_table
-    ++:
-      push hl
-        call get_random_number
-      pop hl
-      and %00000111
-      add a,a
-      ld d,0
-      ld e,a
-      add hl,de
-      ld a,(hl)
-      inc hl
-      ld h,(hl)
-      ld l,a
-    ret
-  background_table:
+  ret
+
+  meta_pointer_table:
     .dw difficulty_0_background_table, difficulty_1_background_table
     .dw difficulty_2_background_table, difficulty_3_background_table
 

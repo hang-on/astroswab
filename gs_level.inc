@@ -13,8 +13,8 @@
     call set_register
     ;
     ld a,(difficulty)
-    call difficulty_to_background_pointer
-    
+    call get_random_background_pointer
+
     SELECT_BANK BACKGROUND_BANK
     ;ld a,(level)                          ; Multiply level with 16, because
     ;rla                                   ; the background table elements are
