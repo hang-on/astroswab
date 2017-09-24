@@ -13,7 +13,9 @@
     call set_register
     ;
     ld a,(difficulty)
+    ld b,BACKGROUND_POINTER_MASK
     call get_random_background_pointer
+    ; TODO - this will NOT be a function!!
 
     SELECT_BANK BACKGROUND_BANK
     ;ld a,(level)                          ; Multiply level with 16, because

@@ -409,13 +409,14 @@ tall_meta_sprite_table:
   get_random_background_pointer:
     ; Retrieve a pointer to background data for VRAM loading.
     ; Entry: A = Index of meta pointer table.
+    ; B = ...
     ; Exit: HL = Pointer to background data for VRAM loading.
     ld hl,meta_pointer_table
     call get_pointer_from_table    ;
     push hl
       call get_random_number
     pop hl
-    and %00000111
+    and b
     call get_pointer_from_table
     ret
   get_pointer_from_table:
@@ -436,9 +437,11 @@ tall_meta_sprite_table:
     .dw difficulty_2_background_table, difficulty_3_background_table
 
   difficulty_0_background_table:
+    ; Note: Table size should be: 2,4,8,16,32...
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
     .dw background_0_3, background_0_3, background_0_3
+  difficulty_0_background_table_end:
   difficulty_1_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
