@@ -81,6 +81,7 @@
     ld b,0
     call set_register
     ei
+    call FadeInScreen
     ; When all is set, change the game state.
     ld a,GS_RUN_LEVEL
     ld (game_state),a
@@ -505,6 +506,8 @@
       call is_reset_pressed
       jp nc,+
         call PSGSFXStop
+        call PSGStop
+        call FadeOutScreen
         ld a,GS_PREPARE_DEVMENU
         ld (game_state),a
         jp ++

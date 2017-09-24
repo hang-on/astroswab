@@ -66,6 +66,8 @@ prepare_devmenu:
   ld b,1
   call set_register
   ei
+  call await_frame_interrupt
+  call FadeInScreen
   ; When all is set, change the game state.
   ld a,GS_RUN_DEVMENU
   ld (game_state),a
@@ -141,6 +143,7 @@ run_devmenu:
       ld a,3
       ld (difficulty),a
       +++:
+      call FadeOutScreen
       ld a,GS_PREPARE_LEVEL
       ld (game_state),a                 ; Load game state for next loop,
     jp main_loop
