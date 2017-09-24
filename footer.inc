@@ -87,7 +87,7 @@
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 1, 1, 7, 7, SHARD           ; TODO: Might need adjustment!
+    .db %00010001, 1, 0, 8, 7, SHARD           
   ;
   shard_conversion_table:
     .db YELLOW_ASTEROID_1, YELLOW_SHARD
