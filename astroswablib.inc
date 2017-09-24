@@ -406,22 +406,11 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  get_random_background_pointer:
-    ; Retrieve a pointer to background data for VRAM loading.
-    ; Entry: A = Index of meta pointer table.
-    ; B = ...
-    ; Exit: HL = Pointer to background data for VRAM loading.
-    ld hl,meta_pointer_table
-    call get_pointer_from_table    ;
-    push hl
-      call get_random_number
-    pop hl
-    and b
-    call get_pointer_from_table
-    ret
-  get_pointer_from_table:
-    ; Entry: A = index to table of pointers (words).
-    ; Exit: HL = Pointer at index.
+  get_word_from_table:
+    ; Retrieve a word item from a table of words.
+    ; Entry: A = Index.
+    ;        HL = Base address of word table.
+    ; Exit: HL = Word.
     add a,a
     ld d,0
     ld e,a
@@ -431,7 +420,7 @@ tall_meta_sprite_table:
     ld h,(hl)
     ld l,a
   ret
-
+  .equ BACKGROUND_POINTER_MASK %00000111
   meta_pointer_table:
     .dw difficulty_0_background_table, difficulty_1_background_table
     .dw difficulty_2_background_table, difficulty_3_background_table

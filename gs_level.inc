@@ -13,20 +13,14 @@
     call set_register
     ;
     ld a,(difficulty)
-    ld b,BACKGROUND_POINTER_MASK
-    call get_random_background_pointer
-    ; TODO - this will NOT be a function!!
-
+    ld hl,meta_pointer_table
+    call get_word_from_table
+    push hl
+      call get_random_number
+    pop hl
+    and BACKGROUND_POINTER_MASK
+    call get_word_from_table
     SELECT_BANK BACKGROUND_BANK
-    ;ld a,(level)                          ; Multiply level with 16, because
-    ;rla                                   ; the background table elements are
-    ;rla                                   ; 3+3+2 words wide.
-    ;rla
-    ;rla
-    ;ld d,0
-    ;ld e,a
-    ;ld hl,background_table
-    ;add hl,de
     call load_vram_from_table             ; Load the tiles.
     call load_vram_from_table             ; Load the tilemap.
     ; Print the dummy text under the playfield.
