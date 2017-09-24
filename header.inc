@@ -62,14 +62,6 @@
   .equ DUMMY_TEXT_ROW 22
   .equ DUMMY_TEXT_COLUMN 1
   .equ BACKGROUND_TABLE_MASK %00000111
-
-;
-; Levels:
-  .equ LEVEL_1 0
-  .equ LEVEL_2 1
-  .equ LEVEL_3 2
-  .equ LEVEL_4 3
-  .equ LEVEL_5 4
 ;
 ; Swabby:
   .equ SWABBY_LEFT_BORDER_SPACER 9
