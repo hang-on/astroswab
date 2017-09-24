@@ -415,7 +415,7 @@ tall_meta_sprite_table:
       add a,a
       ld d,0
       ld e,a
-      ld hl,difficulty_1_background_table
+      ld hl,difficulty_0_background_table
       add hl,de
       ld a,(hl)
       inc hl
@@ -425,13 +425,25 @@ tall_meta_sprite_table:
     +:
     ;
   ret
+  difficulty_0_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
   difficulty_1_background_table:
-    .dw background_1_1, background_1_1
-    .dw background_1_2, background_1_2, background_1_2
-    .dw background_1_3, background_1_3, background_1_3
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  difficulty_2_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  difficulty_3_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
   ;
 
-  background_1_1:
+  background_0_1:
     .dw NON_ASCII_AREA_START,
     .dw background_1_tiles_end-background_1_tiles,
     .dw background_1_tiles
@@ -439,7 +451,7 @@ tall_meta_sprite_table:
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
-  background_1_2:
+  background_0_2:
     .dw NON_ASCII_AREA_START,
     .dw background_2_tiles_end-background_2_tiles,
     .dw background_2_tiles
@@ -447,7 +459,7 @@ tall_meta_sprite_table:
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_2_tilemap
     .dw $0000, $0000
-  background_1_3:
+  background_0_3:
     .dw NON_ASCII_AREA_START,
     .dw background_3_tiles_end-background_3_tiles,
     .dw background_3_tiles
