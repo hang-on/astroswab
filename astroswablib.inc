@@ -408,8 +408,27 @@ tall_meta_sprite_table:
   ;
   difficulty_to_background_pointer:
     ;
-    ld hl,background_1_1
+    cp 0 ; difficulty 0?
+    jp nz,+
+      call get_random_number
+      and %00000111
+      add a,a
+      ld d,0
+      ld e,a
+      ld hl,difficulty_1_background_table
+      add hl,de
+      ld a,(hl)
+      inc hl
+      ld h,(hl)
+      ld l,a
+      ret
+    +:
+    ;
   ret
+  difficulty_1_background_table:
+    .dw background_1_1, background_1_1
+    .dw background_1_2, background_1_2, background_1_2
+    .dw background_1_3, background_1_3, background_1_3
   ;
 
   background_1_1:
