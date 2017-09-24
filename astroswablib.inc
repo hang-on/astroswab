@@ -408,11 +408,11 @@ tall_meta_sprite_table:
   ;
   difficulty_to_background_pointer:
     ;
-    ld hl,background_table
+    ld hl,background_1_1
   ret
   ;
-  background_table:
-    ; level 1:
+
+  background_1_1:
     .dw NON_ASCII_AREA_START,
     .dw background_1_tiles_end-background_1_tiles,
     .dw background_1_tiles
@@ -420,7 +420,7 @@ tall_meta_sprite_table:
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_1_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
-    ; level 2:
+  background_1_2:
     .dw NON_ASCII_AREA_START,
     .dw background_2_tiles_end-background_2_tiles,
     .dw background_2_tiles
@@ -428,7 +428,7 @@ tall_meta_sprite_table:
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_2_tilemap
     .dw $0000, $0000
-    ; level 3:
+  background_1_3:
     .dw NON_ASCII_AREA_START,
     .dw background_3_tiles_end-background_3_tiles,
     .dw background_3_tiles
