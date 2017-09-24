@@ -119,24 +119,27 @@ run_devmenu:
       dec a
       jp p,++
         ; Menu item 0:
-        ld a,LEVEL_1
-        ld (level),a
+        ld a,0
+        ld (difficulty),a
         jp +++
       ++:
       dec a
       jp p,++
         ; Menu item 1:
-        ld a,LEVEL_2
-        ld (level),a
+        ld a,1
+        ld (difficulty),a
         jp +++
       ++:
       dec a
       jp p,++
         ; Menu item 2:
-        ld a,LEVEL_3
-        ld (level),a
+        ld a,2
+        ld (difficulty),a
         jp +++
       ++:
+      ; Menu item 3 (fall through):
+      ld a,3
+      ld (difficulty),a
       +++:
       ld a,GS_PREPARE_LEVEL
       ld (game_state),a                 ; Load game state for next loop,

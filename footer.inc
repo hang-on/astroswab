@@ -87,7 +87,7 @@
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 1, 0, 8, 7, SHARD           
+    .db %00010001, 1, 0, 8, 7, SHARD
   ;
   shard_conversion_table:
     .db YELLOW_ASTEROID_1, YELLOW_SHARD
@@ -265,13 +265,13 @@
   menu_title:
     .asc "ASTROSWAB! debug menu#"
   item_1:
-    .asc "Countryside#"
+    .asc "Difficulty 0#"
   item_2:
-    .asc "Beach#"
+    .asc "Difficulty 1#"
   item_3:
-    .asc "Shroomopia#"
+    .asc "Difficulty 2#"
   item_4:
-    .asc "<unused>#"
+    .asc "Difficulty 3#"
   menu_footer:
     .asc "---------------------#"
   extram_counter_label:
@@ -279,7 +279,7 @@
   gfx_label:
     .asc "GFX:#"
   loop_label:
-    .asc "Loop:#"
+    .asc "Loop: n.a.#"
   ;
   menu_table:
     .db 47, 63, 79, 95                       ; Contains y-pos for menu selector.
