@@ -436,6 +436,26 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "get_word_from_table" free
+; -----------------------------------------------------------------------------
+  get_word_from_table:
+    ; Retrieve a word item from a table of words.
+    ; Entry: A = Index.
+    ;        HL = Base address of word table.
+    ; Exit: HL = Word.
+    ; Uses: AF, DE, HL.
+    add a,a
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
+    inc hl
+    ld h,(hl)
+    ld l,a
+  ret
+;
+.ends
+; -----------------------------------------------------------------------------
 .section "InitializeVDPRegisters" free
 ; -----------------------------------------------------------------------------
 ; Initialize the 11 VDP registers with the preset data block.

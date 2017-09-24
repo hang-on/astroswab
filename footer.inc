@@ -15,6 +15,54 @@
     .dw prepare_sandbox, run_sandbox,
     .dw prepare_titlescreen, run_titlescreen, setup_new_game
   ;
+  meta_background_table:
+    ; Used when preparing a level.
+    .dw difficulty_0_background_table, difficulty_1_background_table
+    .dw difficulty_2_background_table, difficulty_3_background_table
+  ;
+  difficulty_0_background_table:
+    ; Note: See BACKGROUND_TABLE_MASK!
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  difficulty_1_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  difficulty_2_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  difficulty_3_background_table:
+    .dw background_0_1, background_0_1
+    .dw background_0_2, background_0_2, background_0_2
+    .dw background_0_3, background_0_3, background_0_3
+  ;
+
+  background_0_1:
+    .dw NON_ASCII_AREA_START,
+    .dw background_1_tiles_end-background_1_tiles,
+    .dw background_1_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_1_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  background_0_2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_2_tiles_end-background_2_tiles,
+    .dw background_2_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_2_tilemap
+    .dw $0000, $0000
+  background_0_3:
+    .dw NON_ASCII_AREA_START,
+    .dw background_3_tiles_end-background_3_tiles,
+    .dw background_3_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_3_tilemap
+    .dw $0000, $0000
   ;
   batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1

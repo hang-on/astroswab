@@ -11,18 +11,18 @@
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,1
     call set_register
-    ;
-    ld a,(difficulty)
-    ld hl,meta_pointer_table
-    call get_word_from_table
-    push hl
-      call get_random_number
-    pop hl
-    and BACKGROUND_POINTER_MASK
-    call get_word_from_table
-    SELECT_BANK BACKGROUND_BANK
-    call load_vram_from_table             ; Load the tiles.
-    call load_vram_from_table             ; Load the tilemap.
+    ; Load a random background depending on difficulty.
+    ld a,(difficulty)               ; Get current difficulty as index.
+    ld hl,meta_background_table     ; Point HL to base of meta pointer table.
+    call get_word_from_table        ; Point HL to base of table of backgrounds.
+    push hl                         ; Save this pointer.
+      call get_random_number        ; Get random number.
+    pop hl                          ; Restore pointer.
+    and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
+    call get_word_from_table        ; Point HL to random background table at
+    SELECT_BANK BACKGROUND_BANK     ; this difficulty.
+    call load_vram_from_table       ; Load the tiles.
+    call load_vram_from_table       ; Load the tilemap.
     ; Print the dummy text under the playfield.
     ld b,DUMMY_TEXT_ROW
     ld c,DUMMY_TEXT_COLUMN
