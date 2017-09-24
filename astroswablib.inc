@@ -410,21 +410,35 @@ tall_meta_sprite_table:
     ;
     cp 0 ; difficulty 0?
     jp nz,+
-      call get_random_number
+      ld hl,difficulty_0_background_table
+      jp ++
+    +:
+    cp 1 ; difficulty 1?
+    jp nz,+
+      ld hl,difficulty_1_background_table
+      jp ++
+    +:
+    cp 2 ; difficulty 2?
+    jp nz,+
+      ld hl,difficulty_2_background_table
+      jp ++
+    +:
+    ; fall through to difficulty 3 == catch all.
+      ld hl,difficulty_3_background_table
+    ++:
+      push hl
+        call get_random_number
+      pop hl
       and %00000111
       add a,a
       ld d,0
       ld e,a
-      ld hl,difficulty_0_background_table
       add hl,de
       ld a,(hl)
       inc hl
       ld h,(hl)
       ld l,a
-      ret
-    +:
-    ;
-  ret
+    ret
   difficulty_0_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
