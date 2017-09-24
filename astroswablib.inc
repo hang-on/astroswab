@@ -405,5 +405,6 @@ tall_meta_sprite_table:
   sandbox_function_1:
     ; ...
   ret
+  ;
 
 .ends

@@ -24,7 +24,8 @@
   .equ GS_SETUP_NEW_GAME 8
   ;
   .ifdef DEVELOPER_MODE
-     .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_SETUP_NEW_GAME ; Where to go after boot?
+    ; .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
@@ -60,6 +61,8 @@
   .equ NON_ASCII_AREA_START $0c00
   .equ DUMMY_TEXT_ROW 22
   .equ DUMMY_TEXT_COLUMN 1
+  .equ BACKGROUND_TABLE_MASK %00000111
+
 ;
 ; Levels:
   .equ LEVEL_1 0
@@ -131,7 +134,7 @@
   .equ MISSILE_TRACKING_LINE 125
   .equ MISSILE_YSPEED 4
 ;
-.equ INITIAL_DIFFICULTY 0
+.equ INITIAL_DIFFICULTY 3
 ;
 ; Difficulty 0
 .equ SPINNER_TRIGGER_CHANCE_INIT_0 50 ; 50
