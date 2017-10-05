@@ -477,14 +477,15 @@
       ld a,(iy+game_object.x)
       ld b,(ix+game_object.x)
       cp b
+      jp z,++
       jp c,+
-        ld a,1                    ; Move missile right.
+        ld a,MISSILE_XSPEED       ; Move missile right.
         jp +++
       +:
-        ld a,-1                   ; Move missile left.
+        ld a,-(MISSILE_XSPEED)    ; Move missile left.
       jp +++
-    ++:                           ; Missile close to ground.
-      ld a,0                      ; Don't move missile horizontally.
+    ++:                           ; Missile directly above Swabby.
+      xor a                       ; Don't move missile horizontally.
     +++:
       ld (ix+game_object.xspeed),a
       call move_game_object
