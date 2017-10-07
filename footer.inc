@@ -32,9 +32,9 @@
     .dw background_1_2, background_1_2, background_1_2
     .dw background_1_3, background_1_3, background_1_3
   difficulty_2_background_table:
-    .dw background_0_1, background_0_1
-    .dw background_0_2, background_0_2, background_0_2
-    .dw background_0_3, background_0_3, background_0_3
+    .dw background_2_1, background_2_1
+    .dw background_2_2, background_2_2, background_2_2
+    .dw background_2_3, background_2_3, background_2_3
   difficulty_3_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
@@ -91,9 +91,34 @@
     .dw background_6_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
   ;
+  background_2_1:
+    .dw NON_ASCII_AREA_START,
+    .dw background_7_tiles_end-background_7_tiles,
+    .dw background_7_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_7_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  background_2_2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_8_tiles_end-background_8_tiles,
+    .dw background_8_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_8_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  background_2_3:
+    .dw NON_ASCII_AREA_START,
+    .dw background_9_tiles_end-background_9_tiles,
+    .dw background_9_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_9_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  ;
   difficulty_to_background_bank_table:
     .db 0, BACKGROUND_BANK, 1, BACKGROUND_BANK_2
-    .db 2, BACKGROUND_BANK, 3, BACKGROUND_BANK
+    .db 2, BACKGROUND_BANK_3, 3, BACKGROUND_BANK
   difficulty_to_background_bank_table_end:
   ;
   batch_game_object_init_table:
@@ -414,6 +439,29 @@
   background_6_tilemap:
     .include "bank_6\background_6_tilemap.inc"
 
+.ends
+.bank BACKGROUND_BANK_3 slot 2
+; -----------------------------------------------------------------------------
+.section "Background assets #3" free
+; -----------------------------------------------------------------------------
+  ;
+  background_7_tiles:
+    .include "bank_7\background_7_tiles.inc"
+  background_7_tiles_end:
+  background_7_tilemap:
+    .include "bank_7\background_7_tilemap.inc"
+    ;
+  background_8_tiles:
+    .include "bank_7\background_8_tiles.inc"
+  background_8_tiles_end:
+  background_8_tilemap:
+    .include "bank_7\background_8_tilemap.inc"
+    ;
+  background_9_tiles:
+    .include "bank_7\background_9_tiles.inc"
+  background_9_tiles_end:
+  background_9_tilemap:
+    .include "bank_7\background_9_tilemap.inc"
 .ends
 ;
 .bank SOUND_BANK slot 2
