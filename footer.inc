@@ -30,7 +30,7 @@
   difficulty_1_background_table:
     .dw background_1_1, background_1_1
     .dw background_1_2, background_1_2, background_1_2
-    .dw background_1_1, background_1_1, background_1_1
+    .dw background_1_3, background_1_3, background_1_3
   difficulty_2_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
@@ -81,6 +81,14 @@
     .dw NAME_TABLE_START,
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_5_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  background_1_3:
+    .dw NON_ASCII_AREA_START,
+    .dw background_6_tiles_end-background_6_tiles,
+    .dw background_6_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_6_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
   ;
   difficulty_to_background_bank_table:
@@ -394,12 +402,17 @@
   background_4_tilemap:
     .include "bank_6\background_4_tilemap.inc"
   ;
-background_5_tiles:
-  .include "bank_6\background_5_tiles.inc"
-background_5_tiles_end:
-background_5_tilemap:
-  .include "bank_6\background_5_tilemap.inc"
-;
+  background_5_tiles:
+    .include "bank_6\background_5_tiles.inc"
+  background_5_tiles_end:
+  background_5_tilemap:
+    .include "bank_6\background_5_tilemap.inc"
+  ;
+  background_6_tiles:
+    .include "bank_6\background_6_tiles.inc"
+  background_6_tiles_end:
+  background_6_tilemap:
+    .include "bank_6\background_6_tilemap.inc"
 
 .ends
 ;
