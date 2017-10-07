@@ -28,9 +28,9 @@
     .dw background_0_2, background_0_2, background_0_2
     .dw background_0_3, background_0_3, background_0_3
   difficulty_1_background_table:
-    .dw background_0_1, background_0_1
-    .dw background_0_2, background_0_2, background_0_2
-    .dw background_0_3, background_0_3, background_0_3
+    .dw background_1_1, background_1_1
+    .dw background_1_1, background_1_1, background_1_1
+    .dw background_1_1, background_1_1, background_1_1
   difficulty_2_background_table:
     .dw background_0_1, background_0_1
     .dw background_0_2, background_0_2, background_0_2
@@ -76,7 +76,9 @@
     .dw $0000, $0000                                  ; Filler: 2 words.
   ;
   difficulty_to_background_bank_table:
-    .db 0, 4, 1, 6
+    .db 0, BACKGROUND_BANK, 1, BACKGROUND_BANK_2
+    .db 2, BACKGROUND_BANK, 3, BACKGROUND_BANK
+  difficulty_to_background_bank_table_end:
   ;
   batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1

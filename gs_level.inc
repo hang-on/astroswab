@@ -12,6 +12,12 @@
     ld b,1
     call set_register
     ; Load a random background depending on difficulty.
+    ld a,(difficulty)
+    ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
+    ld hl,difficulty_to_background_bank_table
+    call convert_byte
+    ld (SLOT_2_CONTROL),a
+    ;
     ld a,(difficulty)               ; Get current difficulty as index.
     ld hl,meta_background_table     ; Point HL to base of meta pointer table.
     call get_word_from_table        ; Point HL to base of table of backgrounds.
@@ -20,10 +26,8 @@
     pop hl                          ; Restore pointer.
     and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
     call get_word_from_table        ; Point HL to random background table at
-    SELECT_BANK BACKGROUND_BANK     ; this difficulty.
-    ; TODO: New bank select macro - just taking A
-    ; TODO: Convert difficulty to bank number.
-    ; TODO: Rearrange background banks and have only three?
+                                    ; this difficulty.
+    ;
     ;
     call load_vram_from_table       ; Load the tiles.
     call load_vram_from_table       ; Load the tilemap.
