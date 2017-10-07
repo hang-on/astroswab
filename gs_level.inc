@@ -108,6 +108,8 @@
       cp FIRST_LINE_OF_VBLANK+1
     jp nz,-
     call load_sat
+    ; TODO: Check gun_level_flag - if true, then write gun level to tilemap.
+    ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
       call profile_vblank

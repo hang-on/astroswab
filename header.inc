@@ -91,6 +91,7 @@
   .equ BULLET_DEACTIVATE_ZONE_END INVISIBLE_AREA_BOTTOM_BORDER
   .equ GUN_DELAY_INIT 12
   .equ GUN_LEVEL_INIT 0
+  .equ GUN_LEVEL_MAX 8
 ;
 ; Asteroids:
   .equ ASTEROID_DEACTIVATE_ZONE_START 155
@@ -229,6 +230,7 @@
   gun_released db
   gun_delay db
   gun_level db
+  gun_level_flag db
   ;
   top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_top_collision_table db
