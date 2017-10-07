@@ -36,9 +36,9 @@
     .dw background_2_2, background_2_2, background_2_2
     .dw background_2_3, background_2_3, background_2_3
   difficulty_3_background_table:
-    .dw background_0_1, background_0_1
-    .dw background_0_2, background_0_2, background_0_2
-    .dw background_0_3, background_0_3, background_0_3
+    .dw background_3_1, background_3_1
+    .dw background_3_1, background_3_1, background_3_2
+    .dw background_3_2, background_3_2, background_3_2
   ;
 
   background_0_1:
@@ -116,9 +116,26 @@
     .dw background_9_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
   ;
+  background_3_1:
+    .dw NON_ASCII_AREA_START,
+    .dw background_10_tiles_end-background_10_tiles,
+    .dw background_10_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_10_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  background_3_2:
+    .dw NON_ASCII_AREA_START,
+    .dw background_11_tiles_end-background_11_tiles,
+    .dw background_11_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_11_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  ;
   difficulty_to_background_bank_table:
     .db 0, BACKGROUND_BANK, 1, BACKGROUND_BANK_2
-    .db 2, BACKGROUND_BANK_3, 3, BACKGROUND_BANK
+    .db 2, BACKGROUND_BANK_3, 3, BACKGROUND_BANK_4
   difficulty_to_background_bank_table_end:
   ;
   batch_game_object_init_table:
@@ -462,6 +479,25 @@
   background_9_tiles_end:
   background_9_tilemap:
     .include "bank_7\background_9_tilemap.inc"
+.ends
+;
+.bank BACKGROUND_BANK_4 slot 2
+; -----------------------------------------------------------------------------
+.section "Background assets #4" free
+; -----------------------------------------------------------------------------
+  ;
+  background_10_tiles:
+    .include "bank_8\background_10_tiles.inc"
+  background_10_tiles_end:
+  background_10_tilemap:
+    .include "bank_8\background_10_tilemap.inc"
+    ;
+  background_11_tiles:
+    .include "bank_8\background_11_tiles.inc"
+  background_11_tiles_end:
+  background_11_tilemap:
+    .include "bank_8\background_11_tilemap.inc"
+    ;
 .ends
 ;
 .bank SOUND_BANK slot 2
