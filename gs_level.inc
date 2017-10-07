@@ -65,8 +65,11 @@
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
     call batch_initialize_game_objects
-    ; Initialize gun
+    ; Initialize gun (use the current gun level)
+    ld a,(gun_level)
+    ld b,a
     ld a,GUN_DELAY_INIT
+    sub b
     ld (gun_delay),a
     xor a
     ld (gun_timer),a

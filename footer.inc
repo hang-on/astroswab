@@ -339,7 +339,7 @@
   menu_title:
     .asc "ASTROSWAB! debug menu#"
   item_1:
-    .asc "Difficulty 0#"
+    .asc "Start new game#"
   item_2:
     .asc "Difficulty 1#"
   item_3:

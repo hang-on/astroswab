@@ -61,6 +61,9 @@
     ld a,INITIAL_DIFFICULTY           ; Set difficulty.
     ld (difficulty),a
     ;
+    xor a                             ; Reset gun
+    ld (gun_level),a
+    ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...
   jp main_loop
