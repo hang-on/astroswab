@@ -21,6 +21,10 @@
     and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
     call get_word_from_table        ; Point HL to random background table at
     SELECT_BANK BACKGROUND_BANK     ; this difficulty.
+    ; TODO: New bank select macro - just taking A
+    ; TODO: Convert difficulty to bank number.
+    ; TODO: Rearrange background banks and have only three?
+    ;
     call load_vram_from_table       ; Load the tiles.
     call load_vram_from_table       ; Load the tilemap.
     ; Print the dummy text under the playfield.

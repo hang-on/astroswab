@@ -66,6 +66,18 @@
     .dw background_3_tilemap
     .dw $0000, $0000
   ;
+  background_1_1:
+    .dw NON_ASCII_AREA_START,
+    .dw background_4_tiles_end-background_4_tiles,
+    .dw background_4_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_4_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
+  ;
+  difficulty_to_background_bank_table:
+    .db 0, 4, 1, 6
+  ;
   batch_game_object_init_table:
     .dw swabby, swabby_init_table, 1
     .dw spinner, spinner_init_table, 1
@@ -360,6 +372,21 @@
   background_3_tilemap:
     .include "bank_4\background_3_tilemap.inc"
 .ends
+;
+.bank BACKGROUND_BANK_2 slot 2
+; -----------------------------------------------------------------------------
+.section "Background assets #2" free
+; -----------------------------------------------------------------------------
+  ;
+  background_4_tiles:
+    .include "bank_6\background_4_tiles.inc"
+  background_4_tiles_end:
+  background_4_tilemap:
+    .include "bank_6\background_4_tilemap.inc"
+  ;
+
+.ends
+;
 .bank SOUND_BANK slot 2
 ; -----------------------------------------------------------------------------
 .section "Sound assets" free

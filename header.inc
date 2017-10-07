@@ -58,6 +58,7 @@
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
+  .equ BACKGROUND_BANK_2 6
   .equ NON_ASCII_AREA_START $0c00
   .equ DUMMY_TEXT_ROW 22
   .equ DUMMY_TEXT_COLUMN 1
