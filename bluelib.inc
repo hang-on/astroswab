@@ -446,7 +446,31 @@
     out (DATA_PORT),a             ; Write 2nd byte to name table.
   ret
 .ends
-
+;
+; -----------------------------------------------------------------------------
+.section "put_string" free
+; -----------------------------------------------------------------------------
+  ; Put a string of multiple characters on the nametable with minimum overhead.
+  ; Entry:
+  ; Exit: None
+  ; Uses: AF, HL
+  put_string:
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    -:
+      inc hl
+      ld a,(hl)
+      out (DATA_PORT),a
+      inc hl
+      ld a,(hl)
+      out (DATA_PORT),a             ; Write 2nd byte to name table.
+    djnz -
+  ret
+.ends
 ;
 ; -----------------------------------------------------------------------------
 .section "get_input_ports" free

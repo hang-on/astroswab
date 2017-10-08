@@ -36,6 +36,11 @@
     ld c,DUMMY_TEXT_COLUMN
     ld hl,dummy_text
     call print
+    ; -------------
+    ld hl,gun_level_string
+    ld b,3
+    call put_string
+    ; -------------
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles

@@ -14,6 +14,10 @@
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
     .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
+  gun_level_string:
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS-4
+    .db 169, %00000001, 26, %00000000, ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
+
   ;
   game_state_jump_table:
     ; Check the game state constants in header.inc!
