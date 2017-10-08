@@ -430,6 +430,7 @@
   ;             Address (word), char (byte), flags (byte)
   ; Exit: None
   ; Uses: AF, HL
+  .equ FAST_PUT_CHAR_OFFSET 2 ; Used to alter just the char being put.
   fast_put_char:
     ld a,(hl)
     out (CONTROL_PORT),a

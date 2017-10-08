@@ -323,6 +323,8 @@ tall_meta_sprite_table:
         ld (gun_level),a
         ld hl,gun_delay
         dec (hl)
+        ld hl,gun_level_char_data+FAST_PUT_CHAR_OFFSET
+        inc (hl)
         ld a,TRUE               ; Signal that we should update the counter.
         ld (gun_level_flag),a
         SELECT_BANK SOUND_BANK

@@ -108,10 +108,15 @@
       cp FIRST_LINE_OF_VBLANK+1
     jp nz,-
     call load_sat
-    ; TODO: Check gun_level_flag - if true, then write gun level to tilemap.
-    ld hl,gun_level_char_data
-    call fast_put_char
-
+    ;
+    ld a,(gun_level_flag)
+    cp TRUE
+    jp nz,+
+      ld hl,gun_level_char_data
+      call fast_put_char
+      ld a,FALSE
+      ld (gun_level_flag),a
+    +:
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
