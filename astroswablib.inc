@@ -500,5 +500,22 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  fast_put_char_buffer:
+    .db $ae, $3d, ASCII_ZERO, 0 ; Last char = palette, bank, flipped, etc.
+  ; $3DAE
+  fast_put_char:
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    out (DATA_PORT),a
+    inc hl
+    ld a,(hl)
+    out (DATA_PORT),a             ; Write 2nd byte to name table.
 
+  ret
 .ends

@@ -112,11 +112,13 @@
     ; fast_put_char - ram buffer row, column, bank, char ... go!
     ; make a rom buffer for testing...
     ; Ghetto-solution for a start:
-    ld a, 22
-    ld b, 21
-    call set_cursor
-    ld a,(gun_level)
-    call print_register_a
+    ;ld a, 22
+    ;ld b, 21
+    ;call set_cursor
+    ;ld a,(gun_level)
+    ;call print_register_a
+    ld hl,fast_put_char_buffer
+    call fast_put_char
 
     ;
     ; End of VDP-updating...
