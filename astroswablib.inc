@@ -500,25 +500,5 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  .equ GUN_LEVEL_NAMETABLE_ADDRESS $3dae
-  .equ GUN_LEVEL_NAMETABLE_FLAGS %00000000
-  gun_level_char_data_init:
-    .dw GUN_LEVEL_NAMETABLE_ADDRESS
-    .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
-  ; $3DAE
-  fast_put_char:
-    ld a,(hl)
-    out (CONTROL_PORT),a
-    inc hl
-    ld a,(hl)
-    or VRAM_WRITE_COMMAND
-    out (CONTROL_PORT),a
-    inc hl
-    ld a,(hl)
-    out (DATA_PORT),a
-    inc hl
-    ld a,(hl)
-    out (DATA_PORT),a             ; Write 2nd byte to name table.
 
-  ret
 .ends

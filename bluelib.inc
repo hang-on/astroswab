@@ -423,6 +423,31 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "fast_put_char" free
+; -----------------------------------------------------------------------------
+  ; Put one character on the nametable with minimum overhead.
+  ; Entry: HL = Pointer to 4-byte table with char data, in this format:
+  ;             Address (word), char (byte), flags (byte)
+  ; Exit: None
+  ; Uses: AF, HL
+  fast_put_char:
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    out (DATA_PORT),a
+    inc hl
+    ld a,(hl)
+    out (DATA_PORT),a             ; Write 2nd byte to name table.
+  ret
+.ends
+
+;
+; -----------------------------------------------------------------------------
 .section "get_input_ports" free
 ; -----------------------------------------------------------------------------
   ; Set input_ports (word) to mirror current state of ports $dc and $dd.

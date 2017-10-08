@@ -11,6 +11,10 @@
   dummy_text:
     .asc "Score: 00000*00000#"
   ;
+  gun_level_char_data_init:
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS
+    .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
+  ;
   game_state_jump_table:
     ; Check the game state constants in header.inc!
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level
