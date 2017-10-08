@@ -500,8 +500,11 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  fast_put_char_buffer:
-    .db $ae, $3d, ASCII_ZERO, 0 ; Last char = palette, bank, flipped, etc.
+  .equ GUN_LEVEL_NAMETABLE_ADDRESS $3dae
+  .equ GUN_LEVEL_NAMETABLE_FLAGS %00000000
+  gun_level_char_data_init:
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS
+    .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
   ; $3DAE
   fast_put_char:
     ld a,(hl)

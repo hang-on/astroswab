@@ -231,6 +231,7 @@
   gun_delay db
   gun_level db
   gun_level_flag db
+  gun_level_char_data dsb 4
   ;
   top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_top_collision_table db

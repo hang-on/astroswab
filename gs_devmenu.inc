@@ -129,25 +129,21 @@ run_devmenu:
       dec a
       jp p,++
         ; Menu item 1:
-        ld a,1
-        ld (difficulty),a
-        jp +++
+        ;ld a,1
+        ;ld (difficulty),a
+        jp main_loop
       ++:
       dec a
       jp p,++
         ; Menu item 2:
-        ld a,2
-        ld (difficulty),a
-        jp +++
+        ;ld a,2
+        ;ld (difficulty),a
+        jp main_loop
       ++:
       ; Menu item 3 (fall through):
-      ld a,3
-      ld (difficulty),a
-      +++:
-      call FadeOutScreen
-      ld a,GS_PREPARE_LEVEL
-      ld (game_state),a                 ; Load game state for next loop,
-    jp main_loop                        ; OK, because we jumped here.
+      ;ld a,3
+      ;ld (difficulty),a
+    jp main_loop
 
     ;
   menu_end:

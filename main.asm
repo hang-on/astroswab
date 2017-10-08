@@ -65,6 +65,10 @@
     ld (gun_level),a
     ld a,TRUE
     ld (gun_level_flag),a             ; Update the gun level counter gfx.
+    ld hl,gun_level_char_data_init
+    ld de,gun_level_char_data
+    ld bc,4
+    ldir
     ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...

@@ -341,11 +341,11 @@
   item_1:
     .asc "Start new game#"
   item_2:
-    .asc "Difficulty 1#"
+    .asc "- unused - #"
   item_3:
-    .asc "Difficulty 2#"
+    .asc "- unused - #"
   item_4:
-    .asc "Difficulty 3#"
+    .asc "- unused -#"
   menu_footer:
     .asc "---------------------#"
   extram_counter_label:
