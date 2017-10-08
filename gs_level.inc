@@ -109,6 +109,15 @@
     jp nz,-
     call load_sat
     ; TODO: Check gun_level_flag - if true, then write gun level to tilemap.
+    ; fast_put_char - ram buffer row, column, bank, char ... go!
+    ; make a rom buffer for testing...
+    ; Ghetto-solution for a start:
+    ld a, 22
+    ld b, 21
+    call set_cursor
+    ld a,(gun_level)
+    call print_register_a
+
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
