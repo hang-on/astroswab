@@ -9,14 +9,23 @@
     .db $00 $10 $12 $18 $06 $15 $3F $3F $13 $0B $0F $0C $38 $26 $27 $2F
   ;
   dummy_text:
-    .asc "Score: 00000*00000#"
+    .asc "  Score:00000*00000#"
   ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
     .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
   gun_level_string:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS-4
-    .db 169, %00000001, 26, %00000000, ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
+    .db BULLET_CHAR, CHAR_FROM_SPRITE_BANK
+    .db ASCII_LOWERCASE_X, CHAR_FROM_BACKGROUND_BANK
+    .db ASCII_ZERO, CHAR_FROM_BACKGROUND_BANK
+  gun_level_string_end:
+  lives_string:
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS+4
+    .db SWABBY_LIFE_CHAR, CHAR_FROM_SPRITE_BANK
+    .db ASCII_LOWERCASE_X, CHAR_FROM_BACKGROUND_BANK
+    .db ASCII_ZERO+3, CHAR_FROM_BACKGROUND_BANK
+  lives_string_end:
 
   ;
   game_state_jump_table:
