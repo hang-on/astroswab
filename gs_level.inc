@@ -109,8 +109,8 @@
     jp nz,-
     call load_sat
     ;
-    ld a,(gun_level_flag)
-    cp TRUE
+    ld a,(gun_level_flag)         ; Check flag to see if gun level has changed
+    cp TRUE                       ; and thus a char update is needed...
     jp nz,+
       ld hl,gun_level_char_data
       call fast_put_char
