@@ -31,17 +31,26 @@
     ;
     call load_vram_from_table       ; Load the tiles.
     call load_vram_from_table       ; Load the tilemap.
-    ; Print the dummy text under the playfield.
-    ld b,DUMMY_TEXT_ROW
-    ld c,DUMMY_TEXT_COLUMN
-    ld hl,dummy_text
-    call print
     ;
     SELECT_BANK SPRITE_BANK
     ld bc,sprite_tiles_end-sprite_tiles
     ld de,SPRITE_BANK_START
     ld hl,sprite_tiles
     call load_vram
+    ;
+    ; Print the dummy text under the playfield.
+    ld b,DUMMY_TEXT_ROW
+    ld c,DUMMY_TEXT_COLUMN
+    ld hl,dummy_text
+    call print
+    ; Print the gun level meter.
+    ld hl,gun_level_string
+    ld b,(gun_level_string_end-gun_level_string-2)/2
+    call put_string
+    ; Print the lives meter.
+    ld hl,lives_string
+    ld b,(lives_string_end-lives_string-2)/2
+    call put_string
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
     ; -------------------------------------------------------------------------
@@ -65,8 +74,11 @@
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
     call batch_initialize_game_objects
-    ; Initialize gun
+    ; Initialize gun (use the current gun level)
+    ld a,(gun_level)
+    ld b,a
     ld a,GUN_DELAY_INIT
+    sub b
     ld (gun_delay),a
     xor a
     ld (gun_timer),a
@@ -105,6 +117,16 @@
       cp FIRST_LINE_OF_VBLANK+1
     jp nz,-
     call load_sat
+    ;
+    ld a,(gun_level_flag)         ; Check flag to see if gun level has changed
+    cp TRUE                       ; and thus a char update is needed...
+    jp nz,+
+      ld hl,gun_level_char_data
+      call fast_put_char
+      ld a,FALSE
+      ld (gun_level_flag),a
+    +:
+    ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
       call profile_vblank

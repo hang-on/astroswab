@@ -9,6 +9,10 @@
   .equ PICO8_PALETTE_SIZE 16
   .equ FIRST_LINE_OF_VBLANK 192
   .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
+  .equ CHAR_FROM_BACKGROUND_BANK %00000000
+  .equ CHAR_FROM_SPRITE_BANK %00000001
+  .equ ASCII_LOWERCASE_X 88
+
 
 ;
 ; Game states:
@@ -80,6 +84,7 @@
   .equ SWABBY_RIGHT_SPRITE SPRITE_1
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
+  .equ SWABBY_LIFE_CHAR 175
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
@@ -90,6 +95,11 @@
   .equ BULLET_DEACTIVATE_ZONE_START INVISIBLE_AREA_TOP_BORDER
   .equ BULLET_DEACTIVATE_ZONE_END INVISIBLE_AREA_BOTTOM_BORDER
   .equ GUN_DELAY_INIT 12
+  .equ GUN_LEVEL_INIT 0
+  .equ GUN_LEVEL_MAX 8
+  .equ GUN_LEVEL_NAMETABLE_ADDRESS $3dae+4
+  .equ GUN_LEVEL_NAMETABLE_FLAGS %00000000
+  .equ BULLET_CHAR 169
 ;
 ; Asteroids:
   .equ ASTEROID_DEACTIVATE_ZONE_START 155
@@ -227,6 +237,9 @@
   gun_timer db
   gun_released db
   gun_delay db
+  gun_level db
+  gun_level_flag db
+  gun_level_char_data dsb 4
   ;
   top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_top_collision_table db
