@@ -257,6 +257,11 @@ tall_meta_sprite_table:
     ;
     ;
     ld a,(iy+game_object.id)
+    cp SHARD
+    jp nz,+
+      ; Do nothing with shards...
+      ret
+    +:
     cp ASTEROID
     jp nz,+
       push ix
@@ -502,6 +507,6 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-    
+
 
 .ends
