@@ -370,6 +370,9 @@
           ld (ix+game_object.yspeed),a
           ld (ix+game_object.xspeed),b
           call activate_game_object
+          ; Fix for exploding shards:
+          ld a,SHARD
+          ld (ix+game_object.id),a
           jp ++                        ; Jump out of loop.
         +:
         ld de,_sizeof_game_object
