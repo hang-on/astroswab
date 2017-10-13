@@ -170,10 +170,15 @@
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
-  asteroid_sprite_table:
+  ;asteroid_sprite_table:
     ; Note - only first eight items are taken into account.
-    .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
-    .db PURPLE_ASTEROID, BROWN_ASTEROID, YELLOW_ASTEROID_1
+  ;  .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
+  ;  .db PURPLE_ASTEROID, BROWN_ASTEROID, YELLOW_ASTEROID_1
+  new_asteroid_sprite_table:
+    .db 0, BROWN_ASTEROID, 1, GREY_ASTEROID, 2, PURPLE_ASTEROID
+    .db 3, YELLOW_ASTEROID_1, 4, YELLOW_ASTEROID_2, 5, BROWN_ASTEROID
+    .db 6, GREY_ASTEROID, 7, YELLOW_ASTEROID_1
+  new_asteroid_sprite_table_end:
   ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL

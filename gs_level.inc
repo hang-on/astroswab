@@ -137,7 +137,6 @@
     ;
     ; ---------------------------------------------------------------------------
     ; Resolve possible bullet collisions:
-    ld a,(frame_counter)
     ld ix,bullet
     ld b,BULLET_MAX
     bullet_collision_loop:
@@ -145,9 +144,14 @@
       ld a,(ix+game_object.state)
       cp GAME_OBJECT_INACTIVE
       jp z,+
+      ld a,(ix+game_object.y)       ; Prevent shooting objects in the invisible
+      cp SWABBY_Y_INIT              ; area...
+      jp nc,+
         ; Test this bullet instance.
+        push ix
         call detect_collision_using_collision_table
         call c,handle_bullet_collision
+        pop ix
       +:
       ld de,_sizeof_game_object
       add ix,de
@@ -296,11 +300,9 @@
           call spawn_game_object_in_invisible_area
           call get_random_number
           and ASTEROID_SPRITE_MASK
-          ld hl,asteroid_sprite_table
-          ld d,0
-          ld e,a
-          add hl,de
-          ld a,(hl)
+          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
+          ld hl, new_asteroid_sprite_table
+          call convert_byte
           ld (ix+game_object.sprite),a
           call get_random_number
           and ASTEROID_SPEED_MODIFIER
