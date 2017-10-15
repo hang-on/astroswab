@@ -495,20 +495,24 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
-  .equ SCORE_DIGIT_0
-  .equ SCORE_DIGIT_1
+  .equ SCORE_ONES
+  .equ SCORE_TENS
+  .equ SCORE_DIGITS_TOTAL 5
 ;
 .struct score_struct
+  ; A five-digit scoring struct
+  ; score struct must start with the ones digit! (return score).
   ones db
   tens db
+  hundreds db
+  thousands db
+  ten_thousands db
 .endst
 ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
   ;
-  score_ones db
-  score_tens db
   player_score instanceof score_struct
 .ends
 .section "Sandbox functions" free
@@ -518,28 +522,23 @@ tall_meta_sprite_table:
   ret
   ;
   init_score:
+    ; IN: HL = pointer to struct
+    ld b,SCORE_DIGITS_TOTAL
     xor a
-    ld (score_ones),a
-    ld (score_tens),a
+    -:
+      ld (hl),a
+      inc hl
+    djnz -
   ret
   ;
-  get_score_ones:
-    ld a,(score_ones)
-  ret
-  get_score_tens:
-    ld a,(score_tens)
-  ret
   return_score_digit:
     ; In: A = digit to return
+    ;     HL = pointer to score struct.
     ; Out: A = value of digit
-    cp SCORE_DIGIT_0
-    jp nz,+
-      ld a,(score_ones)
-    +:
-    cp SCORE_DIGIT_1
-    jp nz,+
-      ld a,(score_tens)
-    +:
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
   ret
 
 
