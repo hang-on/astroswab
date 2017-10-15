@@ -502,6 +502,7 @@ tall_meta_sprite_table:
 .struct score_struct
   ; A five-digit scoring struct
   ; score struct must start with the ones digit! (return score).
+  ; Depends on ascii 0-9 set somewhere with asciitable mapping
   ones db
   tens db
   hundreds db
@@ -524,13 +525,15 @@ tall_meta_sprite_table:
   init_score:
     ; IN: HL = pointer to struct
     ld b,SCORE_DIGITS_TOTAL
-    xor a
+    ld a,(init_score_ascii_zero)
     -:
       ld (hl),a
       inc hl
     djnz -
   ret
-  ;
+    init_score_ascii_zero:
+      .asc "0"
+      ;
   return_score_digit:
     ; In: A = digit to return
     ;     HL = pointer to score struct.

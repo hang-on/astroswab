@@ -78,7 +78,7 @@ test_resetted_ones:
   ld a,SCORE_ONES
   ld hl,player_score
   call return_score_digit
-  assertEqualsA 0,"! test_resetted_ones"
+  assertEqualsA ASCII_ZERO,"! test_resetted_ones"
 ret
 ;
 test_resetted_tens:
@@ -87,5 +87,5 @@ test_resetted_tens:
   ld a,SCORE_TENS
   ld hl,player_score
   call return_score_digit
-  assertEqualsA 0,"! test_resetted_tens"
+  assertEqualsA ASCII_ZERO,"! test_resetted_tens"
 ret
