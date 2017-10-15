@@ -500,6 +500,8 @@ tall_meta_sprite_table:
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
   ;
+  score_ones db
+  score_tens db
 .ends
 .section "Sandbox functions" free
   ; Short text here...
@@ -507,6 +509,17 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  init_score:
+    xor a
+    ld (score_ones),a
+  ret
+  ;
+  get_score_ones:
+    ld a,(score_ones)
+  ret
+  get_score_tens:
+    ld a,(score_tens)
+  ret
 
 
 .ends

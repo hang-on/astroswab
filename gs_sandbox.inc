@@ -56,7 +56,10 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  ; call test_10
+  call test_resetted_ones
+  call test_resetted_tens
+
+
   ;
 jp main_loop
 ;
@@ -66,4 +69,16 @@ init_tests:
 ; -----------------------------------------------------------------------------
   ;
 
+
+ret
+;
+test_resetted_ones:
+  call init_score
+  call get_score_ones
+  assertEqualsA 0,"! test_resetted_ones"
+ret
+test_resetted_tens:
+  call init_score
+  call get_score_tens
+  assertEqualsA 0,"! test_resetted_tens"
 ret
