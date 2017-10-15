@@ -509,8 +509,9 @@ tall_meta_sprite_table:
   ; A five-digit score struct.
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
   ; constant ASCII_ZERO.
-  name_table_address dw
-  ten_thousands db
+  id db
+  name_table_address dw   ; print_score depends on address being followed by
+  ten_thousands db        ; the five digits.
   thousands db
   hundreds db
   tens db
@@ -532,7 +533,10 @@ tall_meta_sprite_table:
   print_score:
     ; Fast and totally unsafe printing of the score digits.
     ; Entry: HL = Pointer to score struct.
-    ; Uses: A, B, HL.
+    ; Uses: A, B, DE, HL.
+    ld d,0
+    ld e,score_struct.name_table_address
+    add hl,de
     ld a,(hl)
     out (CONTROL_PORT),a
     inc hl
@@ -553,12 +557,14 @@ tall_meta_sprite_table:
   ;
   init_score:
     ; Initialize score struct.
-    ; Entry: HL = pointer to struct.
+    ; Entry: DE = Pointer to struct.
+    ;        HL = Pointer to init data, se example below.
     ; Uses: AF, BC, DE, HL.
     ld bc,_sizeof_score_struct
     ldir
   ret
     score_init_data_example:
+      .db 0         ; Id.
       .dw $3aa0     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       ;

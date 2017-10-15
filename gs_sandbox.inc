@@ -62,7 +62,8 @@ run_sandbox:
   ;call test_add_1_then_9_visual
   ;call test_reset_visual
   ;call test_add_1_then_9_visual
-  call test_add_1_visual
+  ;call test_add_1_visual
+  call test_shoot_one_asteroid
   ;
 jp main_loop
 ;
@@ -73,102 +74,16 @@ init_tests:
   ;
 ret
 ;
-test_add_1_visual:
-  ld hl,score_init_data
-  ld de,player_score
-  call init_score
-  ;
-  ld hl,player_score
-  ld a,SCORE_ONES
-  ld b,1
-  call add_to_score
-  ;
-  ld hl,player_score
-  call print_score
-ret
-score_init_data: ; Should be the phenomena, i.e. "killed boss"
-  .dw $3aa0
-  .asc "00000"
-
-test_add_1_then_9_visual:
+test_shoot_one_asteroid:
   ld hl,score_init_data_example
   ld de,player_score
   call init_score
   ;
   ld hl,player_score
-  ld a,SCORE_ONES
+  ld a,SCORE_TENS
   ld b,1
-  call add_to_score
-  ld hl,player_score
-  ld a,SCORE_ONES
-  ld b,9
   call add_to_score
   ;
   ld hl,player_score
   call print_score
-ret
-
-;
-test_add_1_then_9:
-  ld hl,player_score
-  call init_score
-  ;
-  ld hl,player_score
-  ld a,SCORE_ONES
-  ld b,1
-  call add_to_score
-  ld hl,player_score
-  ld a,SCORE_ONES
-  ld b,9
-  call add_to_score
-  ;
-  ld a,SCORE_ONES
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"test_add_1_then_9 failed"
-  ld a,SCORE_TENS
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ONE,"test_add_1_then_9 failed"
-ret
-
-
-test_add_1:
-  ld hl,player_score
-  call init_score
-  ;
-  ld hl,player_score
-  ld a,SCORE_ONES
-  ld b,1
-  call add_to_score
-  ;
-  ld a,SCORE_ONES
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ONE,"test_add_1_failed"
-ret
-;
-test_all_digits_reset:
-  ld hl,player_score
-  call init_score
-  ld a,SCORE_ONES
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
-  ld a,SCORE_TENS
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
-  ld a,SCORE_HUNDREDS
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
-  ld a,SCORE_THOUSANDS
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
-  ld a,SCORE_TEN_THOUANDS
-  ld hl,player_score
-  call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
 ret
