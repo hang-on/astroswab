@@ -502,6 +502,8 @@ tall_meta_sprite_table:
   .equ SCORE_THOUSANDS 3
   .equ SCORE_TEN_THOUANDS 4
   .equ SCORE_DIGITS_TOTAL 5
+
+
 ;
 .struct score_struct
   ; A five-digit scoring struct
@@ -547,6 +549,11 @@ tall_meta_sprite_table:
     add hl,de
     ld a,(hl)
   ret
+
+  add_to_score:
+
+  ret
+
 
 
 .ends

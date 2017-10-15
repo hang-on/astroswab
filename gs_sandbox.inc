@@ -57,6 +57,7 @@ run_sandbox:
   ;
   ; Tests below:
   call test_all_digits_reset
+  call test_add_1
 
   ;
 jp main_loop
@@ -68,6 +69,21 @@ init_tests:
   ;
 
 
+ret
+;
+test_add_1:
+  ld hl,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call add_to_score
+  ;
+  ld a,SCORE_ONES
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA 1,"test_add_1_failed"
 ret
 ;
 test_all_digits_reset:
