@@ -495,8 +495,12 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
-  .equ SCORE_ONES
-  .equ SCORE_TENS
+  ; ---
+  .equ SCORE_ONES 0
+  .equ SCORE_TENS 1
+  .equ SCORE_HUNDREDS 2
+  .equ SCORE_THOUSANDS 3
+  .equ SCORE_TEN_THOUANDS 4
   .equ SCORE_DIGITS_TOTAL 5
 ;
 .struct score_struct

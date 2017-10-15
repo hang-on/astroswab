@@ -1,3 +1,23 @@
+; 2017-10-15
+test_resetted_ones:
+  ld hl,player_score
+  call init_score
+  ld a,SCORE_ONES
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"! test_resetted_ones"
+ret
+;
+test_resetted_tens:
+  ld hl,player_score
+  call init_score
+  ld a,SCORE_TENS
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"! test_resetted_tens"
+ret
+
+
 ; 2017-09-10
 test_10:
   ld a,3

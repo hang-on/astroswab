@@ -56,9 +56,7 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_resetted_ones
-  call test_resetted_tens
-
+  call test_all_digits_reset
 
   ;
 jp main_loop
@@ -72,20 +70,27 @@ init_tests:
 
 ret
 ;
-test_resetted_ones:
+test_all_digits_reset:
   ld hl,player_score
   call init_score
   ld a,SCORE_ONES
   ld hl,player_score
   call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_resetted_ones"
-ret
-;
-test_resetted_tens:
-  ld hl,player_score
-  call init_score
+  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
   ld a,SCORE_TENS
   ld hl,player_score
   call return_score_digit
-  assertEqualsA ASCII_ZERO,"! test_resetted_tens"
+  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
+  ld a,SCORE_HUNDREDS
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
+  ld a,SCORE_THOUSANDS
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
+  ld a,SCORE_TEN_THOUANDS
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"! test_all_digits_reset"
 ret
