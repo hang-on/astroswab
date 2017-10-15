@@ -83,7 +83,7 @@ test_add_1:
   ld a,SCORE_ONES
   ld hl,player_score
   call return_score_digit
-  assertEqualsA 1,"test_add_1_failed"
+  assertEqualsA ASCII_ONE,"test_add_1_failed"
 ret
 ;
 test_all_digits_reset:

@@ -103,6 +103,7 @@
 .equ CHARS_IN_ASCII_SET 91
 .equ STRING_TERMINATOR 3        ; Terminate strings with #
 .equ ASCII_ZERO 16        ; Where in the tilebank is the ASCII zero?
+.equ ASCII_ONE 17
 .equ ASCII_SPACE 0
 .equ ASCII_EXCLAMATION 1
 .asciitable

@@ -549,9 +549,15 @@ tall_meta_sprite_table:
     add hl,de
     ld a,(hl)
   ret
-
+  ;
   add_to_score:
-
+    ; Entry HL = Pointer, A=digit to add to, B=number to add (not ascii)
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,b
+    add a,(hl)
+    ld (hl),a
   ret
 
 
