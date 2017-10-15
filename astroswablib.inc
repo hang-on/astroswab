@@ -584,6 +584,7 @@ tall_meta_sprite_table:
     ;        HL = Pointer to score struct.
     ; Uses: AF, DE, HL
     ld d,0
+    add a,score_struct.ten_thousands
     ld e,a
     add hl,de
     ld a,b

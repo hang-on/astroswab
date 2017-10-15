@@ -106,8 +106,9 @@
 .equ ASCII_ONE 17
 .equ ASCII_SPACE 0
 .equ ASCII_EXCLAMATION 1
+.equ ASCII_TABLE_START 0
 .asciitable
-  map " " to "z" = 0
+  map " " to "z" = ASCII_TABLE_START
 .enda
 ; =============================================================================
 ; M A C R O S
