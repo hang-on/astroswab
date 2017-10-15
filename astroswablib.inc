@@ -496,12 +496,18 @@ tall_meta_sprite_table:
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
 ;
+.struct score_struct
+  ones db
+  tens db
+.endst
+;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
   ;
   score_ones db
   score_tens db
+  player_score instanceof score_struct
 .ends
 .section "Sandbox functions" free
   ; Short text here...
@@ -512,6 +518,7 @@ tall_meta_sprite_table:
   init_score:
     xor a
     ld (score_ones),a
+    ld (score_tens),a
   ret
   ;
   get_score_ones:
@@ -519,6 +526,18 @@ tall_meta_sprite_table:
   ret
   get_score_tens:
     ld a,(score_tens)
+  ret
+  return_score_digit:
+    ; In: A = digit to return
+    ; Out: A = value of digit
+    cp 0
+    jp nz,+
+      ld a,(score_ones)
+    +:
+    cp 1
+    jp nz,+
+      ld a,(score_tens)
+    +:
   ret
 
 
