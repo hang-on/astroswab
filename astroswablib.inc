@@ -530,7 +530,9 @@ tall_meta_sprite_table:
   ret
   ;
   print_score:
-    ;
+    ; Fast and totally unsafe printing of the score digits.
+    ; Entry: HL = Pointer to score struct.
+    ; Uses: A, B, HL.
     ld a,(hl)
     out (CONTROL_PORT),a
     inc hl
@@ -541,7 +543,7 @@ tall_meta_sprite_table:
     -:
       inc hl
       ld a,(hl)
-      out (DATA_PORT),a
+      out (DATA_PORT),a             ; Write digit.
       ld a,%00000000
       out (DATA_PORT),a             ; Write 2nd byte to name table.
     djnz -
@@ -557,7 +559,7 @@ tall_meta_sprite_table:
     ldir
   ret
     score_init_data_example:
-      .dw $3aa0     ; Name table address.
+      .dw $3aa0     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       ;
   ;
