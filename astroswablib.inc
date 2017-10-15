@@ -496,24 +496,25 @@ tall_meta_sprite_table:
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
   ; ---
-  .equ SCORE_ONES 0
-  .equ SCORE_TENS 1
+  .equ SCORE_ONES 4 ; offsets ind the struct
+  .equ SCORE_TENS 3
   .equ SCORE_HUNDREDS 2
-  .equ SCORE_THOUSANDS 3
-  .equ SCORE_TEN_THOUANDS 4
+  .equ SCORE_THOUSANDS 1
+  .equ SCORE_TEN_THOUANDS 0
   .equ SCORE_DIGITS_TOTAL 5
 
 
 ;
 .struct score_struct
   ; A five-digit scoring struct
-  ; score struct must start with the ones digit! (return score).
+  ; score struct must start with the ten thousands digit! (return score).
   ; Depends on ascii 0-9 set somewhere with asciitable mapping
-  ones db
-  tens db
-  hundreds db
-  thousands db
+  ; and also the constant ASCII_ZERO (like in bluelib printing).
   ten_thousands db
+  thousands db
+  hundreds db
+  tens db
+  ones db
 .endst
 ;
 ; -----------------------------------------------------------------------------
@@ -531,14 +532,12 @@ tall_meta_sprite_table:
   init_score:
     ; IN: HL = pointer to struct
     ld b,SCORE_DIGITS_TOTAL
-    ld a,(init_score_ascii_zero)
+    ld a,ASCII_ZERO
     -:
       ld (hl),a
       inc hl
     djnz -
   ret
-    init_score_ascii_zero:
-      .asc "0"
       ;
   return_score_digit:
     ; In: A = digit to return
@@ -552,12 +551,27 @@ tall_meta_sprite_table:
   ;
   add_to_score:
     ; Entry HL = Pointer, A=digit to add to, B=number to add (not ascii)
+    ; Updates the score struct pointed to.
     ld d,0
     ld e,a
     add hl,de
     ld a,b
     add a,(hl)
     ld (hl),a
+    cp ASCII_ZERO+10
+    ret c
+      sub 10
+      ld (hl),a
+      -:
+        dec hl
+        inc (hl)
+        ld a,(hl)
+        cp ASCII_ZERO+10
+        ret c
+          sub 10
+          ld (hl),a
+          jp -
+          ;
   ret
 
 

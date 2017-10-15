@@ -56,8 +56,10 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_all_digits_reset
-  call test_add_1
+  ;call test_all_digits_reset
+  ;call test_add_1
+  ;call test_add_1_then_9
+  call test_add_1_then_9_visual
 
   ;
 jp main_loop
@@ -67,10 +69,54 @@ jp main_loop
 init_tests:
 ; -----------------------------------------------------------------------------
   ;
-
-
 ret
 ;
+test_add_1_then_9_visual:
+  ld hl,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call add_to_score
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,9
+  call add_to_score
+  ;
+  ld a,21
+  ld b,1
+  call set_cursor
+  ld hl,player_score
+  ld b,SCORE_DIGITS_TOTAL
+  call put_string_at_cursor
+ret
+
+;
+test_add_1_then_9:
+  ld hl,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call add_to_score
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,9
+  call add_to_score
+  ;
+  ld a,SCORE_ONES
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"test_add_1_then_9 failed"
+  ld a,SCORE_TENS
+  ld hl,player_score
+  call return_score_digit
+  assertEqualsA ASCII_ONE,"test_add_1_then_9 failed"
+ret
+
+
 test_add_1:
   ld hl,player_score
   call init_score
