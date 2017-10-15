@@ -59,8 +59,8 @@ run_sandbox:
   ;call test_all_digits_reset
   ;call test_add_1
   ;call test_add_1_then_9
-  call test_add_1_then_9_visual
-
+  ;call test_add_1_then_9_visual
+  call test_reset_visual
   ;
 jp main_loop
 ;
@@ -71,8 +71,17 @@ init_tests:
   ;
 ret
 ;
-test_add_1_then_9_visual:
+test_reset_visual:
+  ld hl,score_init_data_example
+  ld de,player_score
+  call init_score
   ld hl,player_score
+  call print_score
+ret
+
+test_add_1_then_9_visual:
+  ld hl,score_init_data_example
+  ld de,player_score
   call init_score
   ;
   ld hl,player_score
@@ -87,7 +96,7 @@ test_add_1_then_9_visual:
   ld a,21
   ld b,1
   call set_cursor
-  ld hl,player_score
+  ld hl,player_score+2
   ld b,SCORE_DIGITS_TOTAL
   call put_string_at_cursor
 ret

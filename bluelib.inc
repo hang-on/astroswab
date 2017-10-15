@@ -1323,12 +1323,13 @@
   put_string_at_cursor:
     ; Put a string of multiple characters on the nametable with minimum
     ; overhead. Use current cursor position. Does not depend on '#' to
-    ; terminate. Use only chars in background bank
-    ; Entry: B = Number og characters in string.
+    ; terminate. Use only chars in background bank. Should be pretty interrupt-
+    ; safe with di/ei and VDP access delays.
+    ; Entry: B = Number of characters in string.
     ;        HL = pointer to string
     ; Exit: None
-    ; Uses:
-
+    ; Uses: None
+    SAVE_REGISTERS
     push bc
     push hl                       ;
     ld hl,NAME_TABLE_START        ; Get ready to calculate destination address.
@@ -1353,23 +1354,25 @@
     inc a
     ld (cursor_x),a               ; Inc cursor x position.
     ld a,l                        ; Setup vram to load bytes at dest. address.
+    di
     out (CONTROL_PORT),a
     ld a,h
     or VRAM_WRITE_COMMAND
     out (CONTROL_PORT),a
+    ei
     ;
     pop hl
     pop bc                        ; Get tile.
     -:
       ld a,(hl)
       inc hl
-      out (DATA_PORT),a             ; Write it to name table.
+      out (DATA_PORT),a           ; Write it to name table.
       push ix
       pop ix
-      ld a,%00000000                ; Select background palette for this char.
-      out (DATA_PORT),a             ; Write 2nd byte to name table.
+      ld a,%00000000              ; Select background palette for this char.
+      out (DATA_PORT),a           ; Write 2nd byte to name table.
     djnz -
-
+    RESTORE_REGISTERS
   ret
 
 

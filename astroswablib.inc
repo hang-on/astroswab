@@ -506,10 +506,10 @@ tall_meta_sprite_table:
 
 ;
 .struct score_struct
-  ; A five-digit scoring struct
-  ; score struct must start with the ten thousands digit! (return score).
-  ; Depends on ascii 0-9 set somewhere with asciitable mapping
-  ; and also the constant ASCII_ZERO (like in bluelib printing).
+  ; A five-digit score struct.
+  ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
+  ; constant ASCII_ZERO.
+  name_table_address dw
   ten_thousands db
   thousands db
   hundreds db
@@ -529,20 +529,45 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  init_score:
-    ; IN: HL = pointer to struct
+  print_score:
+    ;
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
     ld b,SCORE_DIGITS_TOTAL
-    ld a,ASCII_ZERO
     -:
-      ld (hl),a
       inc hl
+      ld a,(hl)
+      out (DATA_PORT),a
+      ld a,%00000000
+      out (DATA_PORT),a             ; Write 2nd byte to name table.
     djnz -
   ret
+
+  ret
+  ;
+  init_score:
+    ; Initialize score struct.
+    ; Entry: HL = pointer to struct.
+    ; Uses: AF, BC, DE, HL.
+    ld bc,_sizeof_score_struct
+    ldir
+  ret
+    score_init_data_example:
+      .dw $3aa0     ; Name table address.
+      .asc "00000"  ; Init value.
       ;
+  ;
   return_score_digit:
-    ; In: A = digit to return
-    ;     HL = pointer to score struct.
-    ; Out: A = value of digit
+    ; Return in A the value (ASCII) of a specified digit in the score struct.
+    ; Entry: A = Digit to return.
+    ;        HL = Pointer to score struct.
+    ; Exit:  A = Value of digit.
+    ; Uses: AF, DE, HL
+    add a,score_struct.ten_thousands
     ld d,0
     ld e,a
     add hl,de
@@ -550,8 +575,12 @@ tall_meta_sprite_table:
   ret
   ;
   add_to_score:
-    ; Entry HL = Pointer, A=digit to add to, B=number to add (not ascii)
-    ; Updates the score struct pointed to.
+    ; Add a number passed in B to the digit specified in A. Update the other
+    ; digits in the score struct as necessary. Credit to Jonathan Cauldwell.
+    ; Entry:  A = Digit to add to
+    ;         B = Number to add (non-ascii!)
+    ;        HL = Pointer to score struct.
+    ; Uses: AF, DE, HL
     ld d,0
     ld e,a
     add hl,de
@@ -570,10 +599,7 @@ tall_meta_sprite_table:
         ret c
           sub 10
           ld (hl),a
-          jp -
-          ;
+      jp -
+      ;
   ret
-
-
-
 .ends
