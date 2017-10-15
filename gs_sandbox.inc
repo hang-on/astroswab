@@ -74,13 +74,13 @@ ret
 ;
 test_resetted_ones:
   call init_score
-  ld a,0
+  ld a,SCORE_DIGIT_0
   call return_score_digit
   assertEqualsA 0,"! test_resetted_ones"
 ret
 test_resetted_tens:
   call init_score
-  ld a,1
+  ld a,SCORE_DIGIT_1
   call return_score_digit
   assertEqualsA 0,"! test_resetted_tens"
 ret

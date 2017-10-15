@@ -495,6 +495,8 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
+  .equ SCORE_DIGIT_0
+  .equ SCORE_DIGIT_1
 ;
 .struct score_struct
   ones db
@@ -530,11 +532,11 @@ tall_meta_sprite_table:
   return_score_digit:
     ; In: A = digit to return
     ; Out: A = value of digit
-    cp 0
+    cp SCORE_DIGIT_0
     jp nz,+
       ld a,(score_ones)
     +:
-    cp 1
+    cp SCORE_DIGIT_1
     jp nz,+
       ld a,(score_tens)
     +:
