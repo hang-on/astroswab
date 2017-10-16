@@ -616,6 +616,10 @@ tall_meta_sprite_table:
     ; Entry:  A = Digit to subtract from½
     ;         B = Number to subtract (non-ascii!)
     ;        HL = Pointer to score struct.
-
+    ld d,0
+    ld e,score_struct.ones
+    add hl,de
+    ld a,ASCII_ZERO
+    ld (hl),a
   ret
 .ends
