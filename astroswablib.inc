@@ -613,13 +613,36 @@ tall_meta_sprite_table:
   ret
   ;
   subtract_from_score:
-    ; Entry:  A = Digit to subtract from½
+    ; Entry:  A = Digit to subtract from
     ;         B = Number to subtract (non-ascii!)
     ;        HL = Pointer to score struct.
     ld d,0
-    ld e,score_struct.ones
+    add a,score_struct.ten_thousands
+    ld e,a
     add hl,de
-    ld a,ASCII_ZERO
+    ld a,(hl)
+    sub b
     ld (hl),a
+    cp ASCII_ZERO
+    ret nc
+      add a,10
+      ld (hl),a
+      -:
+        dec hl
+        dec (hl)
+        ld a,(hl)
+        cp ASCII_ZERO
+        ret nc
+          add a,10
+          ld (hl),a
+      jp -
+      ;
   ret
+
+  ld d,0
+  ld e,score_struct.ones
+  add hl,de
+  ld a,ASCII_ZERO
+  ld (hl),a
+
 .ends
