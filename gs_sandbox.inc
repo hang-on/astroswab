@@ -66,6 +66,7 @@ run_sandbox:
   ;call test_shoot_one_asteroid
   call test_add_1_then_sub_1
   call test_add_2_then_sub_1
+  call test_sub_1_from_10
   ;
 jp main_loop
 ;
@@ -75,6 +76,27 @@ init_tests:
 ; -----------------------------------------------------------------------------
   ;
 ret
+;
+test_sub_1_from_10:
+  ld hl,test_data_1
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call subtract_from_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  call return_score_digit
+  assertEqualsA ASCII_NINE,"test_sub_1_from_10 failed"
+ret
+test_data_1:
+  .db 0         ; Id.
+  .dw $3aa0     ; Name table address for fast printing.
+  .asc "00010"  ; Init value.
+
 ;
 test_add_2_then_sub_1:
   ld hl,score_init_data_example

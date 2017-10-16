@@ -613,8 +613,10 @@ tall_meta_sprite_table:
   ret
   ;
   subtract_from_score:
-    ; Entry:  A = Digit to subtract from
-    ;         B = Number to subtract (non-ascii!)
+    ; Subtract a number passed in B from the digit specified in A. Update the
+    ; other digits in the score struct as necessary.
+    ; Entry:  A = Digit to subtract from.
+    ;         B = Number to subtract (non-ascii!).
     ;        HL = Pointer to score struct.
     ld d,0
     add a,score_struct.ten_thousands
