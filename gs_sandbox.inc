@@ -63,7 +63,8 @@ run_sandbox:
   ;call test_reset_visual
   ;call test_add_1_then_9_visual
   ;call test_add_1_visual
-  call test_shoot_one_asteroid
+  ;call test_shoot_one_asteroid
+  call test_add_1_then_sub_1
   ;
 jp main_loop
 ;
@@ -72,6 +73,27 @@ jp main_loop
 init_tests:
 ; -----------------------------------------------------------------------------
   ;
+ret
+;
+test_add_1_then_sub_1:
+  ld hl,score_init_data_example
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call add_to_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call subtract_from_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"test_add_1_then_sub_1 failed"
 ret
 ;
 test_shoot_one_asteroid:

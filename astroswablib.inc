@@ -611,4 +611,11 @@ tall_meta_sprite_table:
       jp -
       ;
   ret
+  ;
+  subtract_from_score:
+    ; Entry:  A = Digit to subtract from½
+    ;         B = Number to subtract (non-ascii!)
+    ;        HL = Pointer to score struct.
+
+  ret
 .ends
