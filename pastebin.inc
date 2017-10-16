@@ -1,3 +1,19 @@
+;2017-10-16
+test_shoot_one_asteroid:
+  ld hl,score_init_data_example
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_TENS
+  ld b,1
+  call add_to_score
+  ;
+  ld hl,player_score
+  call print_score
+ret
+
+
 ; 2017-10-15
 
 test_add_1_visual:
