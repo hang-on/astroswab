@@ -505,17 +505,19 @@ tall_meta_sprite_table:
 
 
 ;
+.equ LETTERS_IN_INITIALS 3
 .struct score_struct
   ; A five-digit score struct.
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
   ; constant ASCII_ZERO.
   id db
   name_table_address dw   ; print_score depends on address being followed by
-  ten_thousands db        ; the five digits.
+  ten_thousands db        ; the five digits and the initials.
   thousands db
   hundreds db
   tens db
   ones db
+  initials dsb LETTERS_IN_INITIALS
 .endst
 ;
 ; -----------------------------------------------------------------------------
@@ -534,29 +536,44 @@ tall_meta_sprite_table:
   .equ INCLUDE_INITIALS TRUE
   .equ EXCLUDE_INITIALS FALSE
   print_score:
-    ; Fast and totally unsafe printing of the score digits.
+    ; Totally unsafe printing of the score digits.
     ; Entry: A = Include initials (TRUE/FALSE)
     ;        HL = Pointer to score struct.
     ; Uses: A, B, DE, HL.
     push af
-    ld d,0
-    ld e,score_struct.name_table_address
-    add hl,de
-    ld a,(hl)
-    out (CONTROL_PORT),a
-    inc hl
-    ld a,(hl)
-    or VRAM_WRITE_COMMAND
-    out (CONTROL_PORT),a
-    ld b,SCORE_DIGITS_TOTAL
-    -:
+      ld d,0
+      ld e,score_struct.name_table_address
+      add hl,de
+      ld a,(hl)
+      out (CONTROL_PORT),a
       inc hl
       ld a,(hl)
+      or VRAM_WRITE_COMMAND
+      out (CONTROL_PORT),a
+      ld b,SCORE_DIGITS_TOTAL
+      -:
+        inc hl
+        ld a,(hl)
+        out (DATA_PORT),a             ; Write digit.
+        ld a,%00000000
+        out (DATA_PORT),a             ; Write 2nd byte to name table.
+      djnz -
+    pop af
+    cp INCLUDE_INITIALS
+    ret nz
+      ld a,ASCII_SPACE
       out (DATA_PORT),a             ; Write digit.
       ld a,%00000000
       out (DATA_PORT),a             ; Write 2nd byte to name table.
-    djnz -
-  pop af
+      ld b,LETTERS_IN_INITIALS
+      -:
+        inc hl
+        ld a,(hl)
+        out (DATA_PORT),a             ; Write digit.
+        ld a,%00000000
+        out (DATA_PORT),a             ; Write 2nd byte to name table.
+      djnz -
+
   ret
 
   ;
@@ -572,6 +589,7 @@ tall_meta_sprite_table:
       .db 0         ; Id.
       .dw $3994     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
+      .asc "FAR"    ; Initials
       ;
   ;
   return_score_digit:
