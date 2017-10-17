@@ -512,6 +512,7 @@ tall_meta_sprite_table:
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
   ; constant ASCII_ZERO.
   id db
+  rank db
   name_table_address dw   ; print_score depends on address being followed by
   ten_thousands db        ; the five digits and the initials.
   thousands db
@@ -600,6 +601,7 @@ tall_meta_sprite_table:
   ret
     score_init_example:
       .db 0         ; Id.
+      .db 1         ; Rank.
       .dw $3800     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       .asc "FAR"    ; Initials

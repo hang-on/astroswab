@@ -93,14 +93,17 @@ ret
 ;
 score_init_table:
   .db 0         ; Id.
+  .db 3
   .dw $3800     ; Name table address for fast printing.
   .asc "00000"  ; Init value.
   .asc "FAR"    ; Initials
   .db 1         ; Id.
+  .db 2
   .dw $3840     ; Name table address for fast printing.
   .asc "00001"  ; Init value.
   .asc "MOR"    ; Initials
   .db 2         ; Id.
+  .db 1
   .dw $3880     ; Name table address for fast printing.
   .asc "00002"  ; Init value.
   .asc "LAS"    ; Initials
