@@ -57,8 +57,8 @@ run_sandbox:
   ;
   ; Tests below:
   ;call test_print_score_w_initials
-  call test_print_unsorted_score_table
-
+  ;call test_print_unsorted_score_table
+  call test_print_unsorted_and_repositioned_score_table
   ;
 jp main_loop
 ;
@@ -69,6 +69,36 @@ init_tests:
   ;
 ret
 ;
+test_print_unsorted_and_repositioned_score_table:
+  ;
+  ld a,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  ld hl,score_init_table
+  call init_score_array
+  ; Reposition
+  ld a,NUMBER_OF_SCORE_ITEMS
+  ld hl,my_score_name_table_address_table
+  ld ix,score
+  call set_score_name_table_addresses_from_table
+
+  ;
+  ld b,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  -:
+    push bc
+      push ix
+      pop hl
+      ld a,INCLUDE_INITIALS
+      call print_score
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+ret
+my_score_name_table_address_table:
+  .dw $3952, $3952+$40, $3952+$80
+
 test_print_unsorted_score_table:
   ;
   ld a,NUMBER_OF_SCORE_ITEMS

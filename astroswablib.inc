@@ -537,6 +537,24 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  set_score_name_table_addresses_from_table:
+    ld b,a
+    -:
+      push bc
+        ld a,(hl)
+        ld (ix+score_struct.name_table_address),a
+        inc hl
+        ld a,(hl)
+        ld (ix+score_struct.name_table_address+1),a
+        inc hl
+        ;
+        ld de,_sizeof_score_struct
+        add ix,de
+      pop bc
+    djnz -
+
+  ret
+
   .equ INCLUDE_INITIALS %00000001
   .equ EXCLUDE_INITIALS %00000000
   .equ INCLUDE_INITIALS_BIT 0
