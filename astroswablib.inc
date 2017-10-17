@@ -525,6 +525,8 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   player_score instanceof score_struct
+  score_1 instanceof score_struct
+  score_2 instanceof score_struct
 .ends
 .section "Sandbox functions" free
   ; Short text here...
@@ -533,36 +535,48 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  calc_vram_addresses_from_item_order:
+
+  ret
+  ;
   print_score_table:
     ; Print a table of score structs.
     ; IN: A = Number of score structs
     ; HL = Pointer to table of score structs - see example below.
     di
+    ;
     ld b,a
+    ;
     -:
       push bc
-        ld a,b
         push hl
+          ld a,b
           call get_word_from_table
           ld a,INCLUDE_INITIALS
           call print_score
+          ;
         pop hl
       pop bc
     djnz -
     ei
   ret
+
     score_table_example:
     .dw $0000 ; Filler - could be table start address
-    .dw score_init_example_1, score_init_example_2
+    .dw score_1, score_2
   ;
   .equ INCLUDE_INITIALS %00000001
   .equ EXCLUDE_INITIALS %00000000
+  .equ INCLUDE_INITIALS_AND_OVERRIDE_ADDRESS %10000001
+  .equ ADDRESS_OVERRIDE_BIT 7
+  .equ INCLUDE_INITIALS_BIT 0
   print_score:
     ; Totally unsafe printing of the score digits.
     ; Entry: A = Include initials (TRUE/FALSE)
     ;        HL = Pointer to score struct.
     ; Uses: A, B, DE, HL.
     push af
+      ;
       ld d,0
       ld e,score_struct.name_table_address
       add hl,de
@@ -572,6 +586,7 @@ tall_meta_sprite_table:
       ld a,(hl)
       or VRAM_WRITE_COMMAND
       out (CONTROL_PORT),a
+      ;
       ld b,SCORE_DIGITS_TOTAL
       -:
         inc hl
@@ -582,9 +597,9 @@ tall_meta_sprite_table:
         ld a,%00000000
         out (DATA_PORT),a             ; Write 2nd byte to name table.
       djnz -
-    pop af
-    cp INCLUDE_INITIALS
-    ret nz
+      pop af
+    bit INCLUDE_INITIALS_BIT,a
+    ret z
       ; OK - we should also print the initials associated with this score.
       ld a,ASCII_SPACE
       out (DATA_PORT),a             ; Print space as separator.
@@ -602,7 +617,7 @@ tall_meta_sprite_table:
         ld a,%00000000
         out (DATA_PORT),a
       djnz -
-
+      ;
   ret
 
   ;
@@ -621,7 +636,7 @@ tall_meta_sprite_table:
       .asc "FAR"    ; Initials
     score_init_example_2:
       .db 1         ; Id.
-      .dw $3840     ; Name table address for fast printing.
+      .dw $3820     ; Name table address for fast printing.
       .asc "00001"  ; Init value.
       .asc "LAS"    ; Initials
       ;

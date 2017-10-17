@@ -58,6 +58,7 @@ run_sandbox:
   ; Tests below:
   ;call test_print_score_w_initials
   call test_print_unsorted_score_table
+
   ;
 jp main_loop
 ;
@@ -70,9 +71,23 @@ ret
 ;
 test_print_unsorted_score_table:
   ;
+  ld de,score_1
+  ld hl,score_init_example_1
+  call init_score
+  ld de,score_2
+  ld hl,score_init_example_2
+  call init_score
+  ;
+  ld a,2
+  ld hl,my_score_table
+  call calc_vram_addresses_from_item_order
+
+
   ld a,2 ; score structs in table
-  ld hl,score_table_example
+  ld hl,my_score_table
   call print_score_table
 ret
+  my_score_table:
+  .dw $0000, score_1, score_2
 ;
 ;
