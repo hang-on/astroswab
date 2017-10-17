@@ -56,7 +56,8 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_print_score_w_initials
+  ;call test_print_score_w_initials
+  call test_print_unsorted_score_table
   ;
 jp main_loop
 ;
@@ -67,11 +68,11 @@ init_tests:
   ;
 ret
 ;
-test_print_score_w_initials:
+test_print_unsorted_score_table:
   ;
-  ld a,INCLUDE_INITIALS
-  ld hl,score_init_data_example
-  call print_score
-
+  ld a,2 ; score structs in table
+  ld hl,score_table_example
+  call print_score_table
 ret
+;
 ;

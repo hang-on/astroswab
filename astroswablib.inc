@@ -533,6 +533,26 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  print_score_table:
+    ; Print a table of score structs.
+    ; IN: A = Number of score structs
+    ; HL = Pointer to table of score structs - see example below.
+    ld b,a
+    -:
+      push bc
+        ld a,b
+        push hl
+          call get_word_from_table
+          ld a,INCLUDE_INITIALS
+          call print_score
+        pop hl
+      pop bc
+    djnz -
+  ret
+    score_table_example:
+    .dw $0000 ; Filler - could be table start address
+    .dw score_init_example_1, score_init_example_2
+  ;
   .equ INCLUDE_INITIALS TRUE
   .equ EXCLUDE_INITIALS FALSE
   print_score:
@@ -572,7 +592,7 @@ tall_meta_sprite_table:
         ld a,(hl)
         out (DATA_PORT),a
         ld a,%00000000
-        out (DATA_PORT),a            
+        out (DATA_PORT),a
       djnz -
 
   ret
@@ -586,11 +606,16 @@ tall_meta_sprite_table:
     ld bc,_sizeof_score_struct
     ldir
   ret
-    score_init_data_example:
+    score_init_example_1:
       .db 0         ; Id.
-      .dw $3994     ; Name table address for fast printing.
+      .dw $3800     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       .asc "FAR"    ; Initials
+    score_init_example_2:
+      .db 1         ; Id.
+      .dw $3840     ; Name table address for fast printing.
+      .asc "00001"  ; Init value.
+      .asc "LAS"    ; Initials
       ;
   ;
   return_score_digit:

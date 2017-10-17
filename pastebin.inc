@@ -1,4 +1,13 @@
 ;2017-10-17
+test_print_score_w_initials:
+  ;
+  ld a,INCLUDE_INITIALS
+  ld hl,score_init_data_example
+  call print_score
+
+ret
+
+
 test_sub_1_from_10:
   ld hl,test_data_1
   ld de,player_score
