@@ -71,23 +71,38 @@ ret
 ;
 test_print_unsorted_score_table:
   ;
-  ld de,score_1
-  ld hl,score_init_example_1
-  call init_score
-  ld de,score_2
-  ld hl,score_init_example_2
-  call init_score
+  ld a,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  ld hl,score_init_table
+  call init_score_array
   ;
-  ld a,2
-  ld hl,my_score_table
-  call calc_vram_addresses_from_item_order
-
-
-  ld a,2 ; score structs in table
-  ld hl,my_score_table
-  call print_score_table
+  ld b,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  -:
+    push bc
+      push ix
+      pop hl
+      ld a,INCLUDE_INITIALS
+      call print_score
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
 ret
-  my_score_table:
-  .dw $0000, score_1, score_2
 ;
+score_init_table:
+  .db 0         ; Id.
+  .dw $3800     ; Name table address for fast printing.
+  .asc "00000"  ; Init value.
+  .asc "FAR"    ; Initials
+  .db 1         ; Id.
+  .dw $3840     ; Name table address for fast printing.
+  .asc "00001"  ; Init value.
+  .asc "MOR"    ; Initials
+  .db 2         ; Id.
+  .dw $3880     ; Name table address for fast printing.
+  .asc "00002"  ; Init value.
+  .asc "LAS"    ; Initials
+
 ;

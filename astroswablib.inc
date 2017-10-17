@@ -506,6 +506,7 @@ tall_meta_sprite_table:
 
 ;
 .equ LETTERS_IN_INITIALS 3
+.equ NUMBER_OF_SCORE_ITEMS 3
 .struct score_struct
   ; A five-digit score struct.
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
@@ -525,8 +526,8 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   player_score instanceof score_struct
-  score_1 instanceof score_struct
-  score_2 instanceof score_struct
+  score instanceof score_struct NUMBER_OF_SCORE_ITEMS
+
 .ends
 .section "Sandbox functions" free
   ; Short text here...
@@ -535,44 +536,12 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  calc_vram_addresses_from_item_order:
-
-  ret
-  ;
-  print_score_table:
-    ; Print a table of score structs.
-    ; IN: A = Number of score structs
-    ; HL = Pointer to table of score structs - see example below.
-    di
-    ;
-    ld b,a
-    ;
-    -:
-      push bc
-        push hl
-          ld a,b
-          call get_word_from_table
-          ld a,INCLUDE_INITIALS
-          call print_score
-          ;
-        pop hl
-      pop bc
-    djnz -
-    ei
-  ret
-
-    score_table_example:
-    .dw $0000 ; Filler - could be table start address
-    .dw score_1, score_2
-  ;
   .equ INCLUDE_INITIALS %00000001
   .equ EXCLUDE_INITIALS %00000000
-  .equ INCLUDE_INITIALS_AND_OVERRIDE_ADDRESS %10000001
-  .equ ADDRESS_OVERRIDE_BIT 7
   .equ INCLUDE_INITIALS_BIT 0
   print_score:
     ; Totally unsafe printing of the score digits.
-    ; Entry: A = Include initials (TRUE/FALSE)
+    ; Entry: A = Include initials (bit set/reset)
     ;        HL = Pointer to score struct.
     ; Uses: A, B, DE, HL.
     push af
@@ -629,17 +598,28 @@ tall_meta_sprite_table:
     ld bc,_sizeof_score_struct
     ldir
   ret
-    score_init_example_1:
+    score_init_example:
       .db 0         ; Id.
       .dw $3800     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       .asc "FAR"    ; Initials
-    score_init_example_2:
-      .db 1         ; Id.
-      .dw $3820     ; Name table address for fast printing.
-      .asc "00001"  ; Init value.
-      .asc "LAS"    ; Initials
       ;
+  init_score_array:
+    ; Initialize score items in an array.
+    ; IN: A = Number of score items, IX = Pointer to first score item[0].,
+    ; HL = Init data.
+    ; Uses:....
+    ld b,a
+    -:
+      push bc
+        push ix
+        pop de
+        call init_score
+        ld de,_sizeof_score_struct
+        add ix,de
+      pop bc
+    djnz -
+  ret
   ;
   return_score_digit:
     ; Return in A the value (ASCII) of a specified digit in the score struct.
