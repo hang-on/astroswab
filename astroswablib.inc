@@ -561,17 +561,18 @@ tall_meta_sprite_table:
     pop af
     cp INCLUDE_INITIALS
     ret nz
+      ; OK - we should also print the initials associated with this score.
       ld a,ASCII_SPACE
-      out (DATA_PORT),a             ; Write digit.
+      out (DATA_PORT),a             ; Print space as separator.
       ld a,%00000000
       out (DATA_PORT),a             ; Write 2nd byte to name table.
-      ld b,LETTERS_IN_INITIALS
+      ld b,LETTERS_IN_INITIALS      ; Print the letters in the initials.
       -:
         inc hl
         ld a,(hl)
-        out (DATA_PORT),a             ; Write digit.
+        out (DATA_PORT),a
         ld a,%00000000
-        out (DATA_PORT),a             ; Write 2nd byte to name table.
+        out (DATA_PORT),a            
       djnz -
 
   ret
