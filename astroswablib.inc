@@ -537,6 +537,7 @@ tall_meta_sprite_table:
     ; Print a table of score structs.
     ; IN: A = Number of score structs
     ; HL = Pointer to table of score structs - see example below.
+    di
     ld b,a
     -:
       push bc
@@ -548,13 +549,14 @@ tall_meta_sprite_table:
         pop hl
       pop bc
     djnz -
+    ei
   ret
     score_table_example:
     .dw $0000 ; Filler - could be table start address
     .dw score_init_example_1, score_init_example_2
   ;
-  .equ INCLUDE_INITIALS TRUE
-  .equ EXCLUDE_INITIALS FALSE
+  .equ INCLUDE_INITIALS %00000001
+  .equ EXCLUDE_INITIALS %00000000
   print_score:
     ; Totally unsafe printing of the score digits.
     ; Entry: A = Include initials (TRUE/FALSE)
@@ -575,6 +577,8 @@ tall_meta_sprite_table:
         inc hl
         ld a,(hl)
         out (DATA_PORT),a             ; Write digit.
+        push ix
+        pop ix
         ld a,%00000000
         out (DATA_PORT),a             ; Write 2nd byte to name table.
       djnz -
@@ -584,6 +588,8 @@ tall_meta_sprite_table:
       ; OK - we should also print the initials associated with this score.
       ld a,ASCII_SPACE
       out (DATA_PORT),a             ; Print space as separator.
+      push ix
+      pop ix
       ld a,%00000000
       out (DATA_PORT),a             ; Write 2nd byte to name table.
       ld b,LETTERS_IN_INITIALS      ; Print the letters in the initials.
@@ -591,6 +597,8 @@ tall_meta_sprite_table:
         inc hl
         ld a,(hl)
         out (DATA_PORT),a
+        push ix
+        pop ix
         ld a,%00000000
         out (DATA_PORT),a
       djnz -
