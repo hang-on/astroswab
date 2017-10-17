@@ -79,8 +79,8 @@ test_print_unsorted_and_repositioned_score_table:
   ld a,NUMBER_OF_SCORE_ITEMS
   ld hl,my_score_name_table_address_table
   ld ix,score
-  call set_score_name_table_addresses_from_table
-
+  ;call set_score_name_table_addresses_from_table
+  call set_score_name_table_addresses_from_table_sort_by_rank
   ;
   ld b,NUMBER_OF_SCORE_ITEMS
   ld ix,score

@@ -537,6 +537,49 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  find_score_item_by_rank:
+    ; IN: IX=Base struct array, A, Number of items, B = rank
+    push bc
+    push de
+      ld c,b
+      ld b,a
+      ld de,_sizeof_score_struct
+      -:
+        ld a,(ix+score_struct.rank)
+        cp c
+        jp z,+
+          add ix,de
+      djnz -
+      +:
+    pop de
+    pop bc
+  ret
+  ;
+  set_score_name_table_addresses_from_table_sort_by_rank:
+    ld b,a
+    ld c,1
+    -:
+      push bc
+      push ix
+        ld a,NUMBER_OF_SCORE_ITEMS ; BAD!!
+        ld b,c
+        call find_score_item_by_rank
+        ld a,(hl)
+        ld (ix+score_struct.name_table_address),a
+        inc hl
+        ld a,(hl)
+        ld (ix+score_struct.name_table_address+1),a
+        inc hl
+        ;
+        ld de,_sizeof_score_struct
+        add ix,de
+      pop ix
+      pop bc
+      inc c
+    djnz -
+
+  ret
+  ;
   set_score_name_table_addresses_from_table:
     ld b,a
     -:
