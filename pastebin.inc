@@ -6,6 +6,27 @@ test_print_score_w_initials:
   call print_score
 
 ret
+test_print_unsorted_score_table:
+  ;
+  ld a,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  ld hl,score_init_table
+  call init_score_array
+  ;
+  ld b,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  -:
+    push bc
+      push ix
+      pop hl
+      ld a,INCLUDE_INITIALS
+      call print_score
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+ret
 
 
 test_sub_1_from_10:

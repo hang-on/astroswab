@@ -536,6 +536,42 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  calculate_score_item_ranks:
+    ld b,a
+    -:
+      push bc
+        ; loop:
+        ;   ix = next score with flag reset
+        ;   iy = next next score with flag reset
+        ;   compare scores
+        ;   the highest continues as ix (if flag not set)..
+        ;   when we have been through all items, set a flag (id?) on the score in ix
+        ;   and assign rank 1
+        ;   inc rank
+        ; loop back
+        ; reset all flags.
+
+        ld de,_sizeof_score_struct
+        add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
+  print_score_array:
+    ld b,a
+    -:
+      push bc
+        push ix
+        pop hl
+        ld a,INCLUDE_INITIALS
+        call print_score
+        ;
+        ld de,_sizeof_score_struct
+        add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
   ;
   find_score_item_by_rank:
     ; IN: IX=Base struct array, A, Number of items, B = rank
@@ -556,12 +592,18 @@ tall_meta_sprite_table:
   ret
   ;
   set_score_name_table_addresses_from_table_sort_by_rank:
+    ; Assign the first address in the table pointed to by HL to the score item
+    ; with rank 1. Then assign the next address to item ranked #2, and so on...
+    ; IN: A = number of score items, HL = name table address table (source), ix =
+    ; first item in array (destination).
     ld b,a
+    ld d,a
     ld c,1
     -:
       push bc
       push ix
-        ld a,NUMBER_OF_SCORE_ITEMS ; BAD!!
+      push de
+        ld a,d
         ld b,c
         call find_score_item_by_rank
         ld a,(hl)
@@ -573,6 +615,7 @@ tall_meta_sprite_table:
         ;
         ld de,_sizeof_score_struct
         add ix,de
+      pop de
       pop ix
       pop bc
       inc c

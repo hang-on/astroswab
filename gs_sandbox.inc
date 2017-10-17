@@ -58,7 +58,7 @@ run_sandbox:
   ; Tests below:
   ;call test_print_score_w_initials
   ;call test_print_unsorted_score_table
-  call test_print_unsorted_and_repositioned_score_table
+  call test_print_sorted_and_repositioned_score_array
   ;
 jp main_loop
 ;
@@ -69,73 +69,45 @@ init_tests:
   ;
 ret
 ;
-test_print_unsorted_and_repositioned_score_table:
-  ;
+test_print_sorted_and_repositioned_score_array:
+  ; Init
   ld a,NUMBER_OF_SCORE_ITEMS
   ld ix,score
   ld hl,score_init_table
   call init_score_array
-  ; Reposition
+  ; TODO
+  ld a,NUMBER_OF_SCORE_ITEMS
+  ld ix,score
+  call calculate_score_item_ranks
+  ;
+  ; Reposition and sort.
   ld a,NUMBER_OF_SCORE_ITEMS
   ld hl,my_score_name_table_address_table
   ld ix,score
-  ;call set_score_name_table_addresses_from_table
   call set_score_name_table_addresses_from_table_sort_by_rank
-  ;
-  ld b,NUMBER_OF_SCORE_ITEMS
-  ld ix,score
-  -:
-    push bc
-      push ix
-      pop hl
-      ld a,INCLUDE_INITIALS
-      call print_score
-      ;
-      ld de,_sizeof_score_struct
-      add ix,de
-    pop bc
-  djnz -
-ret
-my_score_name_table_address_table:
-  .dw $3952, $3952+$40, $3952+$80
-
-test_print_unsorted_score_table:
-  ;
+  ; Print
   ld a,NUMBER_OF_SCORE_ITEMS
   ld ix,score
-  ld hl,score_init_table
-  call init_score_array
-  ;
-  ld b,NUMBER_OF_SCORE_ITEMS
-  ld ix,score
-  -:
-    push bc
-      push ix
-      pop hl
-      ld a,INCLUDE_INITIALS
-      call print_score
-      ;
-      ld de,_sizeof_score_struct
-      add ix,de
-    pop bc
-  djnz -
+  call print_score_array
 ret
-;
-score_init_table:
-  .db 0         ; Id.
-  .db 3
-  .dw $3800     ; Name table address for fast printing.
-  .asc "00000"  ; Init value.
-  .asc "FAR"    ; Initials
-  .db 1         ; Id.
-  .db 2
-  .dw $3840     ; Name table address for fast printing.
-  .asc "00001"  ; Init value.
-  .asc "MOR"    ; Initials
-  .db 2         ; Id.
-  .db 1
-  .dw $3880     ; Name table address for fast printing.
-  .asc "00002"  ; Init value.
-  .asc "LAS"    ; Initials
+  my_score_name_table_address_table:
+    .dw $3952, $3952+$40, $3952+$80
+  ;
+  score_init_table:
+    .db 0         ; Id.
+    .db 3
+    .dw $3800     ; Name table address for fast printing.
+    .asc "00000"  ; Init value.
+    .asc "FAR"    ; Initials
+    .db 1         ; Id.
+    .db 2
+    .dw $3840     ; Name table address for fast printing.
+    .asc "00001"  ; Init value.
+    .asc "MOR"    ; Initials
+    .db 2         ; Id.
+    .db 1
+    .dw $3880     ; Name table address for fast printing.
+    .asc "00002"  ; Init value.
+    .asc "LAS"    ; Initials
 
 ;
