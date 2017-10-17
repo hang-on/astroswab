@@ -530,10 +530,15 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  ;
+  .equ INCLUDE_INITIALS TRUE
+  .equ EXCLUDE_INITIALS FALSE
   print_score:
     ; Fast and totally unsafe printing of the score digits.
-    ; Entry: HL = Pointer to score struct.
+    ; Entry: A = Include initials (TRUE/FALSE)
+    ;        HL = Pointer to score struct.
     ; Uses: A, B, DE, HL.
+    push af
     ld d,0
     ld e,score_struct.name_table_address
     add hl,de
@@ -551,9 +556,9 @@ tall_meta_sprite_table:
       ld a,%00000000
       out (DATA_PORT),a             ; Write 2nd byte to name table.
     djnz -
+  pop af
   ret
 
-  ret
   ;
   init_score:
     ; Initialize score struct.
@@ -565,7 +570,7 @@ tall_meta_sprite_table:
   ret
     score_init_data_example:
       .db 0         ; Id.
-      .dw $3aa0     ; Name table address for fast printing.
+      .dw $3994     ; Name table address for fast printing.
       .asc "00000"  ; Init value.
       ;
   ;
@@ -640,11 +645,4 @@ tall_meta_sprite_table:
       jp -
       ;
   ret
-
-  ld d,0
-  ld e,score_struct.ones
-  add hl,de
-  ld a,ASCII_ZERO
-  ld (hl),a
-
 .ends

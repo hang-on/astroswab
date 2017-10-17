@@ -1,3 +1,68 @@
+;2017-10-17
+test_sub_1_from_10:
+  ld hl,test_data_1
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call subtract_from_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  call return_score_digit
+  assertEqualsA ASCII_NINE,"test_sub_1_from_10 failed"
+ret
+test_data_1:
+  .db 0         ; Id.
+  .dw $3aa0     ; Name table address for fast printing.
+  .asc "00010"  ; Init value.
+
+;
+test_add_2_then_sub_1:
+  ld hl,score_init_data_example
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,2
+  call add_to_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call subtract_from_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  call return_score_digit
+  assertEqualsA ASCII_ONE,"test_add_2_then_sub_1 failed"
+ret
+;
+test_add_1_then_sub_1:
+  ld hl,score_init_data_example
+  ld de,player_score
+  call init_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call add_to_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  ld b,1
+  call subtract_from_score
+  ;
+  ld hl,player_score
+  ld a,SCORE_ONES
+  call return_score_digit
+  assertEqualsA ASCII_ZERO,"test_add_1_then_sub_1 failed"
+ret
+
+
 ;2017-10-16
 test_shoot_one_asteroid:
   ld hl,score_init_data_example
