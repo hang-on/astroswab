@@ -92,7 +92,12 @@ test_compare_hiscore_table_and_player_score:
   ld a,NUMBER_OF_HISCORE_ITEMS
   call calculate_address_and_rank_in_score_table
   jp c,+
+    push ix
+      ld hl,(_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
+      call shift_remaining_score_table_elements_one_down
+    pop ix
     call insert_score_into_score_table
+
   +:
   ;
   ; Print hiscore table
@@ -110,7 +115,7 @@ ret
     .db 3         ; Id.
     .db 0         ; unused
     .dw $3800     ; Name table address for fast printing.
-    .asc "00000"  ; Init value.
+    .asc "00001"  ; Init value.
     .asc "LUN"    ; Initials
     ;
   hi_score_name_table_address_table:

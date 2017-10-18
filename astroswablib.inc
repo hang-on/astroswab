@@ -537,6 +537,21 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  shift_remaining_score_table_elements_one_down:
+    ; IN: IX first position to shift down
+    ; HL = Address of last hiscore table item.
+
+    ; test - is this the last score table item?
+    push ix
+    pop de
+    sbc hl,de
+    ret z
+      ; If not zero, shift one down.
+      ;... Should be a simple ldir!!!!
+    ;  - or maybe not!
+
+  ret
+  ;
   insert_score_into_score_table:
     ; IN: IY, IX
     ld bc,_sizeof_score_struct
@@ -549,7 +564,7 @@ tall_meta_sprite_table:
   ;
   calculate_address_and_rank_in_score_table:
     ; IN IY, IX, A = number of hisscore item
-    ; Out: Return in A position of score IY in table that starts at ix.
+    ; Out: Return in IX position of score IY in table that starts at ix.
     ; Carry set IY is not strong enough to be in table.
     ld b,a
     -:
