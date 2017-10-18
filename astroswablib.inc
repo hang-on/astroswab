@@ -506,7 +506,8 @@ tall_meta_sprite_table:
 
 ;
 .equ LETTERS_IN_INITIALS 3
-.equ NUMBER_OF_SCORE_ITEMS 3
+.equ NUMBER_OF_HISCORE_ITEMS 3
+.equ HISCORE_TABLE_TOP_POSITION 1
 .struct score_struct
   ; A five-digit score struct.
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
@@ -527,7 +528,7 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   player_score instanceof score_struct
-  score instanceof score_struct NUMBER_OF_SCORE_ITEMS
+  hi_score instanceof score_struct NUMBER_OF_HISCORE_ITEMS
 
 .ends
 .section "Sandbox functions" free
@@ -536,26 +537,6 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  calculate_score_item_ranks:
-    ld b,a
-    -:
-      push bc
-        ; loop:
-        ;   ix = next score with flag reset
-        ;   iy = next next score with flag reset
-        ;   compare scores
-        ;   the highest continues as ix (if flag not set)..
-        ;   when we have been through all items, set a flag (id?) on the score in ix
-        ;   and assign rank 1
-        ;   inc rank
-        ; loop back
-        ; reset all flags.
-
-        ld de,_sizeof_score_struct
-        add ix,de
-      pop bc
-    djnz -
-  ret
   ;
   print_score_array:
     ld b,a
@@ -594,11 +575,11 @@ tall_meta_sprite_table:
   set_score_name_table_addresses_from_table_sort_by_rank:
     ; Assign the first address in the table pointed to by HL to the score item
     ; with rank 1. Then assign the next address to item ranked #2, and so on...
-    ; IN: A = number of score items, HL = name table address table (source), ix =
-    ; first item in array (destination).
+    ; IN: A = number of score items, B= highest position (usually 1)
+    ; HL = name table address table (source), ix = first item in array (destination).
+    ld c,b
     ld b,a
     ld d,a
-    ld c,1
     -:
       push bc
       push ix

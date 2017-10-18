@@ -71,43 +71,42 @@ ret
 ;
 test_print_sorted_and_repositioned_score_array:
   ; Init
-  ld a,NUMBER_OF_SCORE_ITEMS
-  ld ix,score
-  ld hl,score_init_table
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
+  ld hl,hi_score_init_table
   call init_score_array
   ; TODO
-  ld a,NUMBER_OF_SCORE_ITEMS
-  ld ix,score
-  call calculate_score_item_ranks
+
   ;
   ; Reposition and sort.
-  ld a,NUMBER_OF_SCORE_ITEMS
-  ld hl,my_score_name_table_address_table
-  ld ix,score
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld b,HISCORE_TABLE_TOP_POSITION
+  ld hl,hi_score_name_table_address_table
+  ld ix,hi_score
   call set_score_name_table_addresses_from_table_sort_by_rank
   ; Print
-  ld a,NUMBER_OF_SCORE_ITEMS
-  ld ix,score
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
   call print_score_array
 ret
-  my_score_name_table_address_table:
+  hi_score_name_table_address_table:
     .dw $3952, $3952+$40, $3952+$80
   ;
-  score_init_table:
+  hi_score_init_table:
     .db 0         ; Id.
     .db 3
     .dw $3800     ; Name table address for fast printing.
-    .asc "00000"  ; Init value.
+    .asc "00001"  ; Init value.
     .asc "FAR"    ; Initials
     .db 1         ; Id.
     .db 2
     .dw $3840     ; Name table address for fast printing.
-    .asc "00001"  ; Init value.
+    .asc "00002"  ; Init value.
     .asc "MOR"    ; Initials
     .db 2         ; Id.
     .db 1
     .dw $3880     ; Name table address for fast printing.
-    .asc "00002"  ; Init value.
+    .asc "00003"  ; Init value.
     .asc "LAS"    ; Initials
 
 ;
