@@ -86,13 +86,6 @@ test_compare_hiscore_table_and_player_score:
   ld hl,luna_score
   call init_score
   ;
-  ; Reposition and sort. (kind of like 'build hiscore table')
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld b,HISCORE_TABLE_TOP_POSITION
-  ld hl,hi_score_name_table_address_table
-  ld ix,hi_score
-  call set_score_name_table_addresses_from_table_sort_by_rank
-
   ; compare scores
   ld iy,player_score
   ld ix,hi_score ; should be hi_score_table
@@ -100,16 +93,7 @@ test_compare_hiscore_table_and_player_score:
   ;ld b,HISCORE_TABLE_TOP_POSITION
   call calculate_address_and_rank_in_score_table
   call insert_score_into_score_table
-
-
-  ; Reposition and sort. (kind of like 'build hiscore table')
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld b,HISCORE_TABLE_TOP_POSITION
-  ld hl,hi_score_name_table_address_table
-  ld ix,hi_score
-  call set_score_name_table_addresses_from_table_sort_by_rank
-
-
+  ;
   ; Print hiscore table
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld ix,hi_score
@@ -119,16 +103,11 @@ test_compare_hiscore_table_and_player_score:
   ld hl,player_score
   call print_score
 
-
-  ;ld ix,hi_score
-  ;ld iy,player_score
-  ;call compare_scores
-  ;assertCarrySet "Rank calc failed!"
 ret
 
   luna_score:
     .db 3         ; Id.
-    .db 0
+    .db 0         ; unused
     .dw $3800     ; Name table address for fast printing.
     .asc "00001"  ; Init value.
     .asc "LUN"    ; Initials
@@ -139,20 +118,20 @@ ret
   hi_score_init_table:
     ;
     .db 2         ; Id.
-    .db 1         ; Rank...?! == Position in table??
-    .dw $3880     ; Name table address for fast printing.
+    .db 0         ; Unused
+    .dw $3952     ; Name table address for fast printing.
     .asc "00003"  ; Init value.
     .asc "LAS"    ; Initials
     ;
     .db 1         ; Id.
-    .db 2
-    .dw $3840     ; Name table address for fast printing.
+    .db 0
+    .dw $3952+$40 ; Name table address for fast printing.
     .asc "00002"  ; Init value.
     .asc "MOR"    ; Initials
     ;
     .db 0         ; Id.
-    .db 3
-    .dw $3800     ; Name table address for fast printing.
+    .db 0
+    .dw $3952+$80    ; Name table address for fast printing.
     .asc "00001"  ; Init value.
     .asc "FAR"    ; Initials
 

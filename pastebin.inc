@@ -1,4 +1,83 @@
 ;2017-10-18
+set_score_name_table_addresses_from_table:
+  ld b,a
+  -:
+    push bc
+      ld a,(hl)
+      ld (ix+score_struct.name_table_address),a
+      inc hl
+      ld a,(hl)
+      ld (ix+score_struct.name_table_address+1),a
+      inc hl
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+
+ret
+
+
+
+find_score_item_by_rank:
+  ; IN: IX=Base struct array, A, Number of items, B = rank
+  push bc
+  push de
+    ld c,b
+    ld b,a
+    ld de,_sizeof_score_struct
+    -:
+      ld a,(ix+score_struct.rank)
+      cp c
+      jp z,+
+        add ix,de
+    djnz -
+    +:
+  pop de
+  pop bc
+ret
+;
+set_score_name_table_addresses_from_table_sort_by_rank:
+  ; Assign the first address in the table pointed to by HL to the score item
+  ; with rank 1. Then assign the next address to item ranked #2, and so on...
+  ; IN: A = number of score items, B= highest position (usually 1)
+  ; HL = name table address table (source), ix = first item in array (destination).
+  ld c,b
+  ld b,a
+  ld d,a
+  -:
+    push bc
+    push ix
+    push de
+      ld a,d
+      ld b,c
+      call find_score_item_by_rank ; Rank should be assumed from position in table!
+      ld a,(hl)
+      ld (ix+score_struct.name_table_address),a
+      inc hl
+      ld a,(hl)
+      ld (ix+score_struct.name_table_address+1),a
+      inc hl
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop de
+    pop ix
+    pop bc
+    inc c
+  djnz -
+
+ret
+
+
+
+  ; Reposition and sort. (kind of like 'build hiscore table')
+  ;ld a,NUMBER_OF_HISCORE_ITEMS
+  ;ld b,HISCORE_TABLE_TOP_POSITION
+  ;ld hl,hi_score_name_table_address_table
+  ;ld ix,hi_score
+  ;call set_score_name_table_addresses_from_table_sort_by_rank
+
 
 test_print_sorted_and_repositioned_score_array:
   ; Init

@@ -552,19 +552,20 @@ tall_meta_sprite_table:
     ; Out: Return in A position of score IY in table that starts at ix.
     ; Carry set IY is not strong enough to be in table.
     ld b,a
-    ld h,1  ; rank - should not be necessary!
     -:
       push bc
         call compare_scores
         jp nc,+
-          ld (iy+score_struct.rank),h
+          ld a,(ix+score_struct.name_table_address)
+          ld (iy+score_struct.name_table_address),a
+          ld a,(ix+score_struct.name_table_address+1)
+          ld (iy+score_struct.name_table_address+1),a
           pop bc
           or a
           ret
         +:
         ld de,_sizeof_score_struct
         add ix,de
-        inc h
       pop bc
     djnz -
     scf
@@ -629,74 +630,7 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  find_score_item_by_rank:
-    ; IN: IX=Base struct array, A, Number of items, B = rank
-    push bc
-    push de
-      ld c,b
-      ld b,a
-      ld de,_sizeof_score_struct
-      -:
-        ld a,(ix+score_struct.rank)
-        cp c
-        jp z,+
-          add ix,de
-      djnz -
-      +:
-    pop de
-    pop bc
-  ret
   ;
-  set_score_name_table_addresses_from_table_sort_by_rank:
-    ; Assign the first address in the table pointed to by HL to the score item
-    ; with rank 1. Then assign the next address to item ranked #2, and so on...
-    ; IN: A = number of score items, B= highest position (usually 1)
-    ; HL = name table address table (source), ix = first item in array (destination).
-    ld c,b
-    ld b,a
-    ld d,a
-    -:
-      push bc
-      push ix
-      push de
-        ld a,d
-        ld b,c
-        call find_score_item_by_rank ; Rank should be assumed from position in table!
-        ld a,(hl)
-        ld (ix+score_struct.name_table_address),a
-        inc hl
-        ld a,(hl)
-        ld (ix+score_struct.name_table_address+1),a
-        inc hl
-        ;
-        ld de,_sizeof_score_struct
-        add ix,de
-      pop de
-      pop ix
-      pop bc
-      inc c
-    djnz -
-
-  ret
-  ;
-  set_score_name_table_addresses_from_table:
-    ld b,a
-    -:
-      push bc
-        ld a,(hl)
-        ld (ix+score_struct.name_table_address),a
-        inc hl
-        ld a,(hl)
-        ld (ix+score_struct.name_table_address+1),a
-        inc hl
-        ;
-        ld de,_sizeof_score_struct
-        add ix,de
-      pop bc
-    djnz -
-
-  ret
-
   .equ INCLUDE_INITIALS %00000001
   .equ EXCLUDE_INITIALS %00000000
   .equ INCLUDE_INITIALS_BIT 0
