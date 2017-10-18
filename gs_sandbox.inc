@@ -90,9 +90,10 @@ test_compare_hiscore_table_and_player_score:
   ld iy,player_score
   ld ix,hi_score ; should be hi_score_table
   ld a,NUMBER_OF_HISCORE_ITEMS
-  ;ld b,HISCORE_TABLE_TOP_POSITION
   call calculate_address_and_rank_in_score_table
-  call insert_score_into_score_table
+  jp c,+
+    call insert_score_into_score_table
+  +:
   ;
   ; Print hiscore table
   ld a,NUMBER_OF_HISCORE_ITEMS
@@ -109,7 +110,7 @@ ret
     .db 3         ; Id.
     .db 0         ; unused
     .dw $3800     ; Name table address for fast printing.
-    .asc "00001"  ; Init value.
+    .asc "00000"  ; Init value.
     .asc "LUN"    ; Initials
     ;
   hi_score_name_table_address_table:
