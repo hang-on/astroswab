@@ -538,7 +538,9 @@ tall_meta_sprite_table:
   ret
   ;
   calculate_rank:
-    ; Out: Carry set if score being tested cannot be in table.
+    ;
+    ; Out: Return in A position of score IY in table that starts at ix.
+    ; A = 0 if IY is not strong enough to be in table.
     ld d,a
     ld c,b
     ld b,a
@@ -555,6 +557,7 @@ tall_meta_sprite_table:
       add ix,de
       pop bc
     djnz -
+    ld a,h
   ret
   ;
   compare_scores:

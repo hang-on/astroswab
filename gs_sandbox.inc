@@ -71,6 +71,11 @@ init_tests:
 ret
 ;
 test_compare_hiscore_table_and_player_score:
+  ld a,21
+  ld b,4
+  call set_cursor
+
+
   ; Init hiscore table
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld ix,hi_score
@@ -101,12 +106,6 @@ test_compare_hiscore_table_and_player_score:
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld b,HISCORE_TABLE_TOP_POSITION
   call calculate_rank
-  ;
-  ld a,21
-  ld b,4
-  call set_cursor
-
-  ld a,h
   call print_register_a
 
   ;ld ix,hi_score
