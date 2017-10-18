@@ -539,16 +539,22 @@ tall_meta_sprite_table:
   ;
   calculate_rank:
     ; Out: Carry set if score being tested cannot be in table.
+    ld d,a
     ld c,b
     ld b,a
-    push bc
-    push ix
-      ld a,b ; num of items
-      ld b,c ; top position
-      call find_score_item_by_rank
-      call compare_scores
-    pop ix
-    pop bc
+    ld h,0
+    -:
+      push bc
+        call find_score_item_by_rank
+        call compare_scores
+        jp nc,+ ; if iy is higher then this score, save position
+          ;
+          ld h,b
+        +:
+      ld de,_sizeof_score_struct
+      add ix,de
+      pop bc
+    djnz -
   ret
   ;
   compare_scores:

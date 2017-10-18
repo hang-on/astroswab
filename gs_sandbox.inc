@@ -59,7 +59,6 @@ run_sandbox:
   ;call test_print_score_w_initials
   ;call test_print_unsorted_score_table
   ;call test_print_sorted_and_repositioned_score_array
-  call test_compare_hiscore_table_and_player_score
   ;
 jp main_loop
 ;
@@ -67,6 +66,7 @@ jp main_loop
 ; -----------------------------------------------------------------------------
 init_tests:
 ; -----------------------------------------------------------------------------
+  call test_compare_hiscore_table_and_player_score
   ;
 ret
 ;
@@ -96,11 +96,18 @@ test_compare_hiscore_table_and_player_score:
   ld hl,player_score
   call print_score
   ; compare scores
-  ;ld iy,player_score
-  ;ld ix,hi_score
-  ;ld a,NUMBER_OF_HISCORE_ITEMS
-  ;ld b,HISCORE_TABLE_TOP_POSITION
-  ;call calculate_rank
+  ld iy,player_score
+  ld ix,hi_score
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld b,HISCORE_TABLE_TOP_POSITION
+  call calculate_rank
+  ;
+  ld a,21
+  ld b,4
+  call set_cursor
+
+  ld a,h
+  call print_register_a
 
   ;ld ix,hi_score
   ;ld iy,player_score
@@ -133,7 +140,7 @@ ret
     .db 3         ; Id.
     .db 0
     .dw $3800     ; Name table address for fast printing.
-    .asc "00000"  ; Init value.
+    .asc "00001"  ; Init value.
     .asc "LUN"    ; Initials
     ;
   hi_score_name_table_address_table:
