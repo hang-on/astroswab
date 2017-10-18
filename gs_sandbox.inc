@@ -86,12 +86,30 @@ test_compare_hiscore_table_and_player_score:
   ld hl,luna_score
   call init_score
   ;
-  ; Reposition and sort.
+  ; Reposition and sort. (kind of like 'build hiscore table')
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld b,HISCORE_TABLE_TOP_POSITION
   ld hl,hi_score_name_table_address_table
   ld ix,hi_score
   call set_score_name_table_addresses_from_table_sort_by_rank
+
+  ; compare scores
+  ld iy,player_score
+  ld ix,hi_score ; should be hi_score_table
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ;ld b,HISCORE_TABLE_TOP_POSITION
+  call calculate_address_and_rank_in_score_table
+  call insert_score_into_score_table
+
+
+  ; Reposition and sort. (kind of like 'build hiscore table')
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld b,HISCORE_TABLE_TOP_POSITION
+  ld hl,hi_score_name_table_address_table
+  ld ix,hi_score
+  call set_score_name_table_addresses_from_table_sort_by_rank
+
+
   ; Print hiscore table
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld ix,hi_score
@@ -100,13 +118,7 @@ test_compare_hiscore_table_and_player_score:
   ld a,INCLUDE_INITIALS
   ld hl,player_score
   call print_score
-  ; compare scores
-  ld iy,player_score
-  ld ix,hi_score
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld b,HISCORE_TABLE_TOP_POSITION
-  call calculate_rank
-  call print_register_a
+
 
   ;ld ix,hi_score
   ;ld iy,player_score
@@ -114,27 +126,6 @@ test_compare_hiscore_table_and_player_score:
   ;assertCarrySet "Rank calc failed!"
 ret
 
-
-test_print_sorted_and_repositioned_score_array:
-  ; Init
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld ix,hi_score
-  ld hl,hi_score_init_table
-  call init_score_array
-  ; TODO
-
-  ;
-  ; Reposition and sort.
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld b,HISCORE_TABLE_TOP_POSITION
-  ld hl,hi_score_name_table_address_table
-  ld ix,hi_score
-  call set_score_name_table_addresses_from_table_sort_by_rank
-  ; Print
-  ld a,NUMBER_OF_HISCORE_ITEMS
-  ld ix,hi_score
-  call print_score_array
-ret
   luna_score:
     .db 3         ; Id.
     .db 0
@@ -146,20 +137,23 @@ ret
     .dw $3952, $3952+$40, $3952+$80
     ;
   hi_score_init_table:
-    .db 0         ; Id.
-    .db 3
-    .dw $3800     ; Name table address for fast printing.
-    .asc "00001"  ; Init value.
-    .asc "FAR"    ; Initials
+    ;
+    .db 2         ; Id.
+    .db 1         ; Rank...?! == Position in table??
+    .dw $3880     ; Name table address for fast printing.
+    .asc "00003"  ; Init value.
+    .asc "LAS"    ; Initials
+    ;
     .db 1         ; Id.
     .db 2
     .dw $3840     ; Name table address for fast printing.
     .asc "00002"  ; Init value.
     .asc "MOR"    ; Initials
-    .db 2         ; Id.
-    .db 1
-    .dw $3880     ; Name table address for fast printing.
-    .asc "00003"  ; Init value.
-    .asc "LAS"    ; Initials
+    ;
+    .db 0         ; Id.
+    .db 3
+    .dw $3800     ; Name table address for fast printing.
+    .asc "00001"  ; Init value.
+    .asc "FAR"    ; Initials
 
 ;

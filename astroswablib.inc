@@ -537,27 +537,37 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
-  calculate_rank:
-    ;
+  insert_score_into_score_table:
+    ; IN: IY, IX
+    ld bc,_sizeof_score_struct
+    push ix
+    pop de
+    push iy
+    pop hl
+    ldir
+  ret
+  ;
+  calculate_address_and_rank_in_score_table:
+    ; IN IY, IX, A = number of hisscore item
     ; Out: Return in A position of score IY in table that starts at ix.
-    ; A = 0 if IY is not strong enough to be in table.
-    ld d,a
-    ld c,b
+    ; Carry set IY is not strong enough to be in table.
     ld b,a
-    ld h,0
+    ld h,1  ; rank - should not be necessary!
     -:
       push bc
-        call find_score_item_by_rank
         call compare_scores
-        jp nc,+ ; if iy is higher then this score, save position
-          ;
-          ld h,b
+        jp nc,+
+          ld (iy+score_struct.rank),h
+          pop bc
+          or a
+          ret
         +:
-      ld de,_sizeof_score_struct
-      add ix,de
+        ld de,_sizeof_score_struct
+        add ix,de
+        inc h
       pop bc
     djnz -
-    ld a,h
+    scf
   ret
   ;
   compare_scores:
@@ -651,7 +661,7 @@ tall_meta_sprite_table:
       push de
         ld a,d
         ld b,c
-        call find_score_item_by_rank
+        call find_score_item_by_rank ; Rank should be assumed from position in table!
         ld a,(hl)
         ld (ix+score_struct.name_table_address),a
         inc hl

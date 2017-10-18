@@ -1,3 +1,27 @@
+;2017-10-18
+
+test_print_sorted_and_repositioned_score_array:
+  ; Init
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
+  ld hl,hi_score_init_table
+  call init_score_array
+  ; TODO
+
+  ;
+  ; Reposition and sort.
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld b,HISCORE_TABLE_TOP_POSITION
+  ld hl,hi_score_name_table_address_table
+  ld ix,hi_score
+  call set_score_name_table_addresses_from_table_sort_by_rank
+  ; Print
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
+  call print_score_array
+ret
+
+
 ;2017-10-17
 test_print_score_w_initials:
   ;
