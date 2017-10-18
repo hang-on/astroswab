@@ -537,6 +537,62 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  calculate_rank:
+    ; Out: Carry set if score being tested cannot be in table.
+    ld c,b
+    ld b,a
+    push bc
+    push ix
+      ld a,b ; num of items
+      ld b,c ; top position
+      call find_score_item_by_rank
+      call compare_scores
+    pop ix
+    pop bc
+  ret
+  ;
+  compare_scores:
+    ; if score in iy is equal or higher, then set carry. Else reset.
+    ; IY and IX
+    ld a,(ix+score_struct.ten_thousands)
+    cp (iy+score_struct.ten_thousands)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    ;
+    +:
+    ld a,(ix+score_struct.thousands)
+    cp (iy+score_struct.thousands)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    +:
+    ld a,(ix+score_struct.hundreds)
+    cp (iy+score_struct.hundreds)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    +:
+    ld a,(ix+score_struct.tens)
+    cp (iy+score_struct.tens)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    ;
+    +:
+    ld a,(ix+score_struct.ones)
+    cp (iy+score_struct.ones)
+    jp c,iy_is_higher
+    jp z,iy_is_higher
+    jp ix_is_higher
+    ;
+    iy_is_higher: ; iy higher or equal.
+      scf
+      ret
+    ix_is_higher:
+      or a
+      ret
+  ret
   ;
   print_score_array:
     ld b,a

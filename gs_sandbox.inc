@@ -59,7 +59,7 @@ run_sandbox:
   ;call test_print_score_w_initials
   ;call test_print_unsorted_score_table
   ;call test_print_sorted_and_repositioned_score_array
-  call test_print_hiscore_table_and_player_score
+  call test_compare_hiscore_table_and_player_score
   ;
 jp main_loop
 ;
@@ -70,7 +70,7 @@ init_tests:
   ;
 ret
 ;
-test_print_hiscore_table_and_player_score:
+test_compare_hiscore_table_and_player_score:
   ; Init hiscore table
   ld a,NUMBER_OF_HISCORE_ITEMS
   ld ix,hi_score
@@ -95,6 +95,17 @@ test_print_hiscore_table_and_player_score:
   ld a,INCLUDE_INITIALS
   ld hl,player_score
   call print_score
+  ; compare scores
+  ;ld iy,player_score
+  ;ld ix,hi_score
+  ;ld a,NUMBER_OF_HISCORE_ITEMS
+  ;ld b,HISCORE_TABLE_TOP_POSITION
+  ;call calculate_rank
+
+  ;ld ix,hi_score
+  ;ld iy,player_score
+  ;call compare_scores
+  ;assertCarrySet "Rank calc failed!"
 ret
 
 
