@@ -524,7 +524,7 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   score_1 instanceof score_struct
-  score_2 instanceof score_struct
+  hiscore_table_workbench instanceof score_struct
   ;
 .ends
 ;
@@ -534,5 +534,17 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  copy_score:
+    ; IN: HL source score, DE destination score.
+    ; Uses: None
+    push bc
+    push de
+    push hl
+      ld bc,_sizeof_score_struct
+      ldir
+    pop hl
+    pop de
+    pop bc
+  ret
 
 .ends

@@ -56,6 +56,7 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
+  call test_copy_score
   ;
 jp main_loop
 ;
@@ -66,6 +67,18 @@ init_tests:
   ;
 ret
 ;
-
+test_copy_score:
+  ld hl,score_1_init
+  ld de,score_1
+  call copy_score
+  ld ix,score_1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ONE,"copy_score failed"
+ret
+  ;
+  score_1_init:
+    .asc "00001"
+    .asc "FAR"
+    ;
 
 ;
