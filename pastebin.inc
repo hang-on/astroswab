@@ -1,3 +1,295 @@
+;2017-10-19
+test_compare_hiscore_table_and_player_score:
+  ld a,21
+  ld b,4
+  call set_cursor
+
+
+  ; Init hiscore table
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
+  ld hl,hi_score_init_table
+  call init_score_array
+  ; Init player score
+  ld de,player_score
+  ld hl,luna_score
+  call init_score
+  ;
+  ; compare scores
+  ld iy,player_score
+  ld ix,hi_score ; should be hi_score_table
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  call calculate_address_and_rank_in_score_table
+  jp c,+
+    call insert_score_into_score_table
+  +:
+  ;
+  ; Print hiscore table
+  ld a,NUMBER_OF_HISCORE_ITEMS
+  ld ix,hi_score
+  call print_score_array
+  ; print player score
+  ld a,INCLUDE_INITIALS
+  ld hl,player_score
+  call print_score
+
+ret
+
+
+;
+insert_score_into_score_table:
+  ; IN: IY, IX
+  ld bc,_sizeof_score_struct
+  push ix
+  pop de
+  push iy
+  pop hl
+  ldir
+ret
+;
+calculate_address_and_rank_in_score_table:
+  ; IN IY, IX, A = number of hisscore item
+  ; Out: Return in IX position of score IY in table that starts at ix.
+  ; Carry set IY is not strong enough to be in table.
+  ld b,a
+  -:
+    push bc
+      call compare_scores
+      jp nc,+
+        ld a,(ix+score_struct.name_table_address)
+        ld (iy+score_struct.name_table_address),a
+        ld a,(ix+score_struct.name_table_address+1)
+        ld (iy+score_struct.name_table_address+1),a
+        pop bc
+        or a
+        ret
+      +:
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+  scf
+ret
+;
+compare_scores:
+  ; if score in iy is equal or higher, then set carry. Else reset.
+  ; IY and IX
+  ld a,(ix+score_struct.ten_thousands)
+  cp (iy+score_struct.ten_thousands)
+  jp c,iy_is_higher
+  jp z,+
+  jp ix_is_higher
+  ;
+  +:
+  ld a,(ix+score_struct.thousands)
+  cp (iy+score_struct.thousands)
+  jp c,iy_is_higher
+  jp z,+
+  jp ix_is_higher
+  +:
+  ld a,(ix+score_struct.hundreds)
+  cp (iy+score_struct.hundreds)
+  jp c,iy_is_higher
+  jp z,+
+  jp ix_is_higher
+  +:
+  ld a,(ix+score_struct.tens)
+  cp (iy+score_struct.tens)
+  jp c,iy_is_higher
+  jp z,+
+  jp ix_is_higher
+  ;
+  +:
+  ld a,(ix+score_struct.ones)
+  cp (iy+score_struct.ones)
+  jp c,iy_is_higher
+  jp z,iy_is_higher
+  jp ix_is_higher
+  ;
+  iy_is_higher: ; iy higher or equal.
+    scf
+    ret
+  ix_is_higher:
+    or a
+    ret
+ret
+;
+print_score_array:
+  ld b,a
+  -:
+    push bc
+      push ix
+      pop hl
+      ld a,INCLUDE_INITIALS
+      call print_score
+      ;
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+ret
+;
+;
+;
+.equ INCLUDE_INITIALS %00000001
+.equ EXCLUDE_INITIALS %00000000
+.equ INCLUDE_INITIALS_BIT 0
+print_score:
+  ; Totally unsafe printing of the score digits.
+  ; Entry: A = Include initials (bit set/reset)
+  ;        HL = Pointer to score struct.
+  ; Uses: A, B, DE, HL.
+  push af
+    ;
+    ld d,0
+    ld e,score_struct.name_table_address
+    add hl,de
+    ld a,(hl)
+    out (CONTROL_PORT),a
+    inc hl
+    ld a,(hl)
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ;
+    ld b,SCORE_DIGITS_TOTAL
+    -:
+      inc hl
+      ld a,(hl)
+      out (DATA_PORT),a             ; Write digit.
+      push ix
+      pop ix
+      ld a,%00000000
+      out (DATA_PORT),a             ; Write 2nd byte to name table.
+    djnz -
+    pop af
+  bit INCLUDE_INITIALS_BIT,a
+  ret z
+    ; OK - we should also print the initials associated with this score.
+    ld a,ASCII_SPACE
+    out (DATA_PORT),a             ; Print space as separator.
+    push ix
+    pop ix
+    ld a,%00000000
+    out (DATA_PORT),a             ; Write 2nd byte to name table.
+    ld b,LETTERS_IN_INITIALS      ; Print the letters in the initials.
+    -:
+      inc hl
+      ld a,(hl)
+      out (DATA_PORT),a
+      push ix
+      pop ix
+      ld a,%00000000
+      out (DATA_PORT),a
+    djnz -
+    ;
+ret
+
+;
+init_score:
+  ; Initialize score struct.
+  ; Entry: DE = Pointer to struct.
+  ;        HL = Pointer to init data, se example below.
+  ; Uses: AF, BC, DE, HL.
+  ld bc,_sizeof_score_struct
+  ldir
+ret
+  score_init_example:
+    .db 0         ; Id.
+    .db 1         ; Rank.
+    .dw $3800     ; Name table address for fast printing.
+    .asc "00000"  ; Init value.
+    .asc "FAR"    ; Initials
+    ;
+init_score_array:
+  ; Initialize score items in an array.
+  ; IN: A = Number of score items, IX = Pointer to first score item[0].,
+  ; HL = Init data.
+  ; Uses:....
+  ld b,a
+  -:
+    push bc
+      push ix
+      pop de
+      call init_score
+      ld de,_sizeof_score_struct
+      add ix,de
+    pop bc
+  djnz -
+ret
+;
+return_score_digit:
+  ; Return in A the value (ASCII) of a specified digit in the score struct.
+  ; Entry: A = Digit to return.
+  ;        HL = Pointer to score struct.
+  ; Exit:  A = Value of digit.
+  ; Uses: AF, DE, HL
+  add a,score_struct.ten_thousands
+  ld d,0
+  ld e,a
+  add hl,de
+  ld a,(hl)
+ret
+;
+add_to_score:
+  ; Add a number passed in B to the digit specified in A. Update the other
+  ; digits in the score struct as necessary. Credit to Jonathan Cauldwell.
+  ; Entry:  A = Digit to add to
+  ;         B = Number to add (non-ascii!)
+  ;        HL = Pointer to score struct.
+  ; Uses: AF, DE, HL
+  ld d,0
+  add a,score_struct.ten_thousands
+  ld e,a
+  add hl,de
+  ld a,b
+  add a,(hl)
+  ld (hl),a
+  cp ASCII_ZERO+10
+  ret c
+    sub 10
+    ld (hl),a
+    -:
+      dec hl
+      inc (hl)
+      ld a,(hl)
+      cp ASCII_ZERO+10
+      ret c
+        sub 10
+        ld (hl),a
+    jp -
+    ;
+ret
+;
+subtract_from_score:
+  ; Subtract a number passed in B from the digit specified in A. Update the
+  ; other digits in the score struct as necessary.
+  ; Entry:  A = Digit to subtract from.
+  ;         B = Number to subtract (non-ascii!).
+  ;        HL = Pointer to score struct.
+  ld d,0
+  add a,score_struct.ten_thousands
+  ld e,a
+  add hl,de
+  ld a,(hl)
+  sub b
+  ld (hl),a
+  cp ASCII_ZERO
+  ret nc
+    add a,10
+    ld (hl),a
+    -:
+      dec hl
+      dec (hl)
+      ld a,(hl)
+      cp ASCII_ZERO
+      ret nc
+        add a,10
+        ld (hl),a
+    jp -
+    ;
+ret
+
+
 ;2017-10-18
 set_score_name_table_addresses_from_table:
   ld b,a
