@@ -524,7 +524,11 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   score_1 instanceof score_struct
-  hiscore_table_workbench instanceof score_struct
+  hiscore_workbench instanceof score_struct
+  hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
+  hiscore_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
+  hiscore_table_pointer dw
+  hiscore_buffer_pointer dw
   ;
 .ends
 ;
@@ -536,14 +540,11 @@ tall_meta_sprite_table:
   ;
   copy_score:
     ; IN: HL source score, DE destination score.
+    ; OUT Increment HL and DE.
     ; Uses: None
     push bc
-    push de
-    push hl
       ld bc,_sizeof_score_struct
       ldir
-    pop hl
-    pop de
     pop bc
   ret
 

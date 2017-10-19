@@ -57,6 +57,8 @@ run_sandbox:
   ;
   ; Tests below:
   call test_copy_score
+  call test_init_hiscore
+  call test_increment_pointers
   ;
 jp main_loop
 ;
@@ -75,10 +77,44 @@ test_copy_score:
   ld a,(ix+score_struct.ones)
   assertEqualsA ASCII_ONE,"copy_score failed"
 ret
+test_init_hiscore:
+  ld b,NUMBER_OF_HISCORE_ITEMS
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  ld bc,_sizeof_score_struct
+  -:
+    call copy_score
+  djnz -
+  ;
+  ld ix,hiscore_item.1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+4,"init_hiscore failed (1)"
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+2,"init_hiscore failed (2)"
+ret
+;
+test_increment_pointers:
+  ld hl,hiscore_item
+  ld (hiscore_table_pointer),hl
+  assertEqualsHL hiscore_item,"Increment pointers failed (1)"
+  ld hl,hiscore_buffer
+  ld (hiscore_buffer_pointer),hl
+  assertEqualsHL hiscore_buffer,"Increment pointers failed (2)"
+ret
+
   ;
   score_1_init:
     .asc "00001"
     .asc "FAR"
     ;
+  hiscore_init:
+    .asc "00004"
+    .asc "LAS"
+    .asc "00003"
+    .asc "LUN"
+    .asc "00002"
+    .asc "MOR"
 
 ;
