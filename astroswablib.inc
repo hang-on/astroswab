@@ -543,8 +543,15 @@ tall_meta_sprite_table:
   ;
   rebuild_hiscore_table:
     ; Entry: HL = Pointer to new score to build table against
-    ;        DE = Pointer to first element in hiscore table.
-    
+    ;
+    ; Copy player score into the workbench for testing.
+    ld de,hiscore_workbench
+    call copy_score
+    ld hl,hiscore_item.1
+    ; Point to start of hiscore table and hiscore table buffer.
+    ld (hiscore_table_pointer),hl
+    ld hl,hiscore_table_buffer
+    ld (hiscore_table_buffer_pointer),hl
   ret
 
   compare_scores:

@@ -128,7 +128,6 @@ test_rebuild_hiscore_table_against_multe_score:
   call copy_score_table
   ;
   ld hl,player_score
-  ld de,hiscore_item.1
   call rebuild_hiscore_table
   ;
   ld ix,hiscore_item.3
@@ -147,7 +146,6 @@ test_rebuild_hiscore_table_against_felix_score:
   call copy_score_table
   ;
   ld hl,player_score
-  ld de,hiscore_item.1
   call rebuild_hiscore_table
   ;
   ld ix,hiscore_item.3
