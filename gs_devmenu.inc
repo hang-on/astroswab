@@ -129,8 +129,9 @@ run_devmenu:
       dec a
       jp p,++
         ; Menu item 1:
-        ;ld a,1
-        ;ld (difficulty),a
+        call FadeOutScreen
+        ld a,GS_PREPARE_HISCORE
+        ld (game_state),a                 ; Load game state for next loop,
         jp main_loop
       ++:
       dec a

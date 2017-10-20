@@ -11,6 +11,23 @@
   dummy_text:
     .asc "  Score:00000*00000#"
   ;
+  ; Init and dummy data for testing hiscore table functionality.
+  multe_score_init:
+    .asc "00001"
+    .asc "MUL"
+    ;
+  hiscore_init:
+    .asc "00100"
+    .asc "LAS"
+    .asc "00090"
+    .asc "LUN"
+    .asc "00080"
+    .asc "MOR"
+    .asc "00070"
+    .asc "FAR"
+    .asc "00060"
+    .asc "FEL"
+  ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
     .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
@@ -33,6 +50,7 @@
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level
     .dw prepare_sandbox, run_sandbox,
     .dw prepare_titlescreen, run_titlescreen, setup_new_game
+    .dw prepare_hiscore, run_hiscore
   ;
   meta_background_table:
     ; Used when preparing a level.
@@ -363,7 +381,7 @@
   item_1:
     .asc "Start new game#"
   item_2:
-    .asc "- unused - #"
+    .asc "Hiscore table#"
   item_3:
     .asc "- unused - #"
   item_4:
