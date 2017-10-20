@@ -540,6 +540,49 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  compare_scores:
+    ; if score in iy is equal or higher, then set carry. Else reset.
+    ; IY and IX
+    ld a,(ix+score_struct.ten_thousands)
+    cp (iy+score_struct.ten_thousands)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    ;
+    +:
+    ld a,(ix+score_struct.thousands)
+    cp (iy+score_struct.thousands)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    +:
+    ld a,(ix+score_struct.hundreds)
+    cp (iy+score_struct.hundreds)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    +:
+    ld a,(ix+score_struct.tens)
+    cp (iy+score_struct.tens)
+    jp c,iy_is_higher
+    jp z,+
+    jp ix_is_higher
+    ;
+    +:
+    ld a,(ix+score_struct.ones)
+    cp (iy+score_struct.ones)
+    jp c,iy_is_higher
+    jp z,iy_is_higher
+    jp ix_is_higher
+    ;
+    iy_is_higher: ; iy higher or equal.
+      scf
+      ret
+    ix_is_higher:
+      or a
+      ret
+  ret
+  ;
   copy_score:
     ; IN: HL source score, DE destination score.
     ; OUT Increment HL and DE.

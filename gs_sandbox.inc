@@ -59,6 +59,7 @@ run_sandbox:
   call test_copy_score
   call test_init_hiscore
   call test_increment_pointers
+  call test_compare_scores
   ;
 jp main_loop
 ;
@@ -99,11 +100,28 @@ test_increment_pointers:
   ld hl,(hiscore_table_pointer)
   assertEqualsHL hiscore_item.2,"Increment pointers failed"
 ret
-
+;
+test_compare_scores:
+  ld hl,felix_score_init
+  ld de,score_1
+  call copy_score
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_score_table
+  ;
+  ld iy,score_1
+  ld ix,hiscore_item.3
+  call compare_scores
+  assertCarrySet "Compare scores failed"
+ret
   ;
   score_1_init:
     .asc "00001"
     .asc "FAR"
+  felix_score_init:
+    .asc "00002"
+    .asc "FLX"
     ;
   hiscore_init:
     .asc "00004"
