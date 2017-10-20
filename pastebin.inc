@@ -1,3 +1,28 @@
+;2017-10-20
+test_increment_pointers:
+  ld hl,hiscore_item.1
+  ld (hiscore_table_pointer),hl
+  ;
+  INCREMENT_SCORE_TABLE_POINTER hiscore_table_pointer
+  ld hl,(hiscore_table_pointer)
+  assertEqualsHL hiscore_item.2,"Increment pointers failed"
+ret
+
+.macro INCREMENT_SCORE_TABLE_POINTER
+  ; Entry: \1 = Score table pointer.
+  ; Exit: Pointer at \1 is incremented by the size of one score struct.
+  ; Uses: None
+  push de
+  push hl
+    ld hl,(\1)
+    ld de,_sizeof_score_struct
+    add hl,de
+    ld (\1),hl
+  pop hl
+  pop de
+.endm
+
+
 ;2017-10-19
 test_compare_hiscore_table_and_player_score:
   ld a,21

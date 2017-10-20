@@ -58,7 +58,6 @@ run_sandbox:
   ; Tests below:
   call test_copy_score
   call test_init_hiscore
-  call test_increment_pointers
   call test_compare_scores
   call test_rebuild_hiscore_table_against_multe_score
   call test_rebuild_hiscore_table_against_felix_score
@@ -93,15 +92,6 @@ test_init_hiscore:
   ld ix,hiscore_item.3
   ld a,(ix+score_struct.ones)
   assertEqualsA ASCII_ZERO+2,"init_hiscore failed (2)"
-ret
-;
-test_increment_pointers:
-  ld hl,hiscore_item.1
-  ld (hiscore_table_pointer),hl
-  ;
-  INCREMENT_SCORE_TABLE_POINTER hiscore_table_pointer
-  ld hl,(hiscore_table_pointer)
-  assertEqualsHL hiscore_item.2,"Increment pointers failed"
 ret
 ;
 test_compare_scores:
@@ -173,9 +163,6 @@ test_rebuild_hiscore_table_against_fine_score:
   ld a,(ix+score_struct.ones)
   assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2)"
 ret
-
-
-
   ;
   score_1_init:
     .asc "00001"

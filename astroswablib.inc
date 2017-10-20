@@ -496,31 +496,29 @@ tall_meta_sprite_table:
 ; Work- and testbench.
   .equ SANDBOX_LOGGER_START_ROW 19
   ; ---
+  ; Score and hiscore related definitions.
   .equ SCORE_ONES 4 ; offsets ind the struct
   .equ SCORE_TENS 3
   .equ SCORE_HUNDREDS 2
   .equ SCORE_THOUSANDS 1
   .equ SCORE_TEN_THOUANDS 0
   .equ SCORE_DIGITS_TOTAL 5
-
-
-;
-.equ LETTERS_IN_INITIALS 3
-.equ NUMBER_OF_HISCORE_ITEMS 3
-
-
-.struct score_struct
-  ; A five-digit score struct.
-  ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
-  ; constant ASCII_ZERO.
-  ten_thousands db
-  thousands db
-  hundreds db
-  tens db
-  ones db
-  initials dsb LETTERS_IN_INITIALS
-.endst
-;
+  .equ LETTERS_IN_INITIALS 3
+  ;
+  .struct score_struct
+    ; A five-digit score struct.
+    ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
+    ; constant ASCII_ZERO.
+    ten_thousands db
+    thousands db
+    hundreds db
+    tens db
+    ones db
+    initials dsb LETTERS_IN_INITIALS
+  .endst
+  ;
+  .equ NUMBER_OF_HISCORE_ITEMS 3
+  ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
@@ -545,7 +543,7 @@ tall_meta_sprite_table:
   rebuild_hiscore_table:
     ; Rebuilds the hiscore table against a new score item pointed to by HL.
     ; If the new score is high enough to be somewhere on the hiscore list,
-    ; then it is copied into the hiscore tbale and all subsequent items are
+    ; then it is copied into the hiscore table and all subsequent items are
     ; moved one position down. The last item on the list is destroyed.
     ; If the new score is not at least equal to the last item on the hiscore
     ; list, then the hiscore table stays unchanged.
@@ -663,8 +661,11 @@ tall_meta_sprite_table:
   ret
   ;
   copy_hiscore_table:
-
-    ; Entry: HL = Source, DE = Destination.
+    ; Copy a table of score items (at the size of the hiscore table) to another
+    ; table. It can be used for initializing the hiscore table with ROM data,
+    ; or when using the hiscore table buffer to rebuild the hiscore table.
+    ; Entry: HL = Source (Pointer to first item in table).
+    ;        DE = Destination (Pointer to first item in table).
     ; Uses: None
     SAVE_REGISTERS
     ld b,NUMBER_OF_HISCORE_ITEMS
@@ -677,17 +678,4 @@ tall_meta_sprite_table:
     RESTORE_REGISTERS
   ret
   ;
-  .macro INCREMENT_SCORE_TABLE_POINTER
-    ; Entry: \1 = Score table pointer.
-    ; Exit: Pointer at \1 is incremented by the size of one score struct.
-    ; Uses: None
-    push de
-    push hl
-      ld hl,(\1)
-      ld de,_sizeof_score_struct
-      add hl,de
-      ld (\1),hl
-    pop hl
-    pop de
-  .endm
 .ends
