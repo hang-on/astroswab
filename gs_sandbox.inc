@@ -62,6 +62,7 @@ run_sandbox:
   call test_compare_scores
   call test_rebuild_hiscore_table_against_multe_score
   call test_rebuild_hiscore_table_against_felix_score
+  call test_rebuild_hiscore_table_against_fine_score
   ;
 jp main_loop
 ;
@@ -152,6 +153,26 @@ test_rebuild_hiscore_table_against_felix_score:
   ld a,(ix+score_struct.initials)
   assertEqualsA ASCII_F,"Rebuild table (Felix) failed"
 ret
+;
+test_rebuild_hiscore_table_against_fine_score:
+  ld hl,fine_score_init
+  ld de,player_score
+  call copy_score_and_increment_pointers
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item.1
+  call copy_score_table
+  ;
+  ld hl,player_score
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+3,"Rebuild table (Fine) failed (1)"
+  ld ix,hiscore_item.1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2½)"
+ret
 
 
 
@@ -165,6 +186,9 @@ ret
   felix_score_init:
     .asc "00002"
     .asc "FLX"
+  fine_score_init:
+    .asc "00005"
+    .asc "FIN"
     ;
   hiscore_init:
     .asc "00004"
