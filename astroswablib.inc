@@ -491,42 +491,31 @@ tall_meta_sprite_table:
     .dbrnd 2,1,254
 .ends
 ; -----------------------------------------------------------------------------
-; SANDBOX
+; Score and hiscore handling
 ; -----------------------------------------------------------------------------
-; Work- and testbench.
-  .equ SANDBOX_LOGGER_START_ROW 19
-  ; ---
-  ; Score and hiscore related definitions.
-  .equ SCORE_ONES 4 ; offsets ind the struct
-  .equ SCORE_TENS 3
-  .equ SCORE_HUNDREDS 2
-  .equ SCORE_THOUSANDS 1
-  .equ SCORE_TEN_THOUANDS 0
-  .equ SCORE_DIGITS_TOTAL 5
-  .equ LETTERS_IN_INITIALS 3
-  ;
-  .struct score_struct
-    ; A five-digit score struct.
-    ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
-    ; constant ASCII_ZERO.
-    ten_thousands db
-    thousands db
-    hundreds db
-    tens db
-    ones db
-    initials dsb LETTERS_IN_INITIALS
-  .endst
-  ;
-  .equ NUMBER_OF_HISCORE_ITEMS 5
-  .equ HISCORE_TABLE_ROW 4
-  .equ HISCORE_TABLE_COLUMN 8
-  ;
-; -----------------------------------------------------------------------------
-.ramsection "Sandbox variables" slot 3
-; -----------------------------------------------------------------------------
-  ;
-  player_score instanceof score_struct
-  ;
+;
+.equ SCORE_ONES 4
+.equ SCORE_TENS 3
+.equ SCORE_HUNDREDS 2
+.equ SCORE_THOUSANDS 1
+.equ SCORE_TEN_THOUANDS 0
+.equ SCORE_DIGITS_TOTAL 5
+.equ LETTERS_IN_INITIALS 3
+;
+.struct score_struct
+  ten_thousands db
+  thousands db
+  hundreds db
+  tens db
+  ones db
+  initials dsb LETTERS_IN_INITIALS
+.endst
+;
+.equ NUMBER_OF_HISCORE_ITEMS 5
+.equ HISCORE_TABLE_ROW 4
+.equ HISCORE_TABLE_COLUMN 8
+;
+.ramsection "score and hiscore handling - variables" slot 3
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
   hiscore_workbench instanceof score_struct
   hiscore_table_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
@@ -534,13 +523,8 @@ tall_meta_sprite_table:
   hiscore_table_buffer_pointer dw
   ;
 .ends
-;
-.section "Sandbox functions" free
-  ; Short text here...
-  sandbox_function_1:
-    ; ...
-  ret
-  ;
+; -----------------------------------------------------------------------------
+.section "score and hiscore handling - functions" free
   ;
   add_to_score:
     ; Add a number passed in B to the digit specified in A. Update the other
@@ -795,6 +779,26 @@ tall_meta_sprite_table:
         pop bc
       djnz -
     RESTORE_REGISTERS
+  ret
+.ends
+; -----------------------------------------------------------------------------
+; SANDBOX
+; -----------------------------------------------------------------------------
+; Work- and testbench.
+  .equ SANDBOX_LOGGER_START_ROW 19
+  ; ---
+; -----------------------------------------------------------------------------
+.ramsection "Sandbox variables" slot 3
+; -----------------------------------------------------------------------------
+  ;
+  player_score instanceof score_struct
+  ;
+.ends
+;
+.section "Sandbox functions" free
+  ; Short text here...
+  sandbox_function_1:
+    ; ...
   ret
   ;
 .ends
