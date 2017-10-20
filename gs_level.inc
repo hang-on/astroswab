@@ -127,7 +127,13 @@
       ld (gun_level_flag),a
     +:
     ; -------------------------
-    
+    ; TEMP! FIXME !!
+    ld b,9
+    ld a,22
+    call set_cursor
+    ld hl,player_score
+    ld b,SCORE_DIGITS_TOTAL
+    call put_string_at_cursor
     ; -------------------------
     ;
     ; End of VDP-updating...
