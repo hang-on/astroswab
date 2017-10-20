@@ -78,15 +78,9 @@ test_copy_score:
   assertEqualsA ASCII_ONE,"copy_score failed"
 ret
 test_init_hiscore:
-  ld b,NUMBER_OF_HISCORE_ITEMS
   ld hl,hiscore_init
   ld de,hiscore_item
-  -:
-    push bc
-      ld bc,_sizeof_score_struct
-      call copy_score
-    pop bc
-  djnz -
+  call copy_score_table
   ;
   ld ix,hiscore_item.1
   ld a,(ix+score_struct.ones)

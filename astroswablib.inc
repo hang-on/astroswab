@@ -550,6 +550,20 @@ tall_meta_sprite_table:
     pop bc
   ret
   ;
+  copy_score_table:
+    ; Entry: HL = Source, DE = Destination.
+    ; Uses: None
+    push bc
+      ld b,NUMBER_OF_HISCORE_ITEMS
+      -:
+        push bc
+          ld bc,_sizeof_score_struct
+          call copy_score
+        pop bc
+      djnz -
+    pop bc
+  ret
+  ;
   .macro INCREMENT_SCORE_TABLE_POINTER
     ; Entry: \1 = Score table pointer.
     ; Exit: Pointer at \1 is incremented by the size of one score struct.
