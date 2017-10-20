@@ -526,6 +526,7 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
   ;
   score_1 instanceof score_struct
+  player_score instanceof score_struct
   hiscore_workbench instanceof score_struct
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
   hiscore_table_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
@@ -540,6 +541,12 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  rebuild_hiscore_table:
+    ; Entry: HL = Pointer to new score to build table against
+    ;        DE = Pointer to first element in hiscore table.
+    
+  ret
+
   compare_scores:
     ; if score in iy is equal or higher, then set carry. Else reset.
     ; IY and IX

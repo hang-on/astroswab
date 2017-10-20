@@ -60,6 +60,8 @@ run_sandbox:
   call test_init_hiscore
   call test_increment_pointers
   call test_compare_scores
+  call test_rebuild_hiscore_table_against_multe_score
+  call test_rebuild_hiscore_table_against_felix_score
   ;
 jp main_loop
 ;
@@ -115,10 +117,53 @@ test_compare_scores:
   call compare_scores
   assertCarrySet "Compare scores failed"
 ret
+;
+test_rebuild_hiscore_table_against_multe_score:
+  ld hl,multe_score_init
+  ld de,player_score
+  call copy_score
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_score_table
+  ;
+  ld hl,player_score
+  ld de,hiscore_item.1
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+2,"Rebuild table (Multe) failed"
+ret
+;
+.equ ASCII_F 38
+test_rebuild_hiscore_table_against_felix_score:
+  ld hl,felix_score_init
+  ld de,player_score
+  call copy_score
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_score_table
+  ;
+  ld hl,player_score
+  ld de,hiscore_item.1
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.initials)
+  assertEqualsA ASCII_F,"Rebuild table (Felix) failed"
+ret
+
+
+
   ;
   score_1_init:
     .asc "00001"
     .asc "FAR"
+  multe_score_init:
+    .asc "00001"
+    .asc "MUL"
   felix_score_init:
     .asc "00002"
     .asc "FLX"
