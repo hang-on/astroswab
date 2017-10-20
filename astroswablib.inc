@@ -555,13 +555,28 @@ tall_meta_sprite_table:
     ; For each hiscore table item, do...
     ld b,NUMBER_OF_HISCORE_ITEMS
     -:
-      ;
+      ; Is score at hiscore table pointer higher than score at workbench?
+      ld hl,(hiscore_table_pointer)
+      push hl
+      pop ix                          ; Put hiscore table pointer in IX
+      ld iy,hiscore_workbench         ; Point IY to score at workbench.
+      call compare_scores
+      jp c,+
+        ; Yes - score in IX (item in hiscore table) is higher.
+
+        jp ++
+      +:
+        ; No - score in IY (item at workbench) is higher or even.
+
+      ++:
+        ;
     djnz -
   ret
 
   compare_scores:
     ; if score in iy is equal or higher, then set carry. Else reset.
-    ; IY and IX
+    ; Entry: IX, IY = Pointers to score structs to compare
+    ; Uses: AF
     ld a,(ix+score_struct.ten_thousands)
     cp (iy+score_struct.ten_thousands)
     jp c,iy_is_higher
