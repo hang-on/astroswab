@@ -517,13 +517,14 @@ tall_meta_sprite_table:
     initials dsb LETTERS_IN_INITIALS
   .endst
   ;
-  .equ NUMBER_OF_HISCORE_ITEMS 3
+  .equ NUMBER_OF_HISCORE_ITEMS 5
+  .equ HISCORE_TABLE_ROW 4
+  .equ HISCORE_TABLE_COLUMN 8
   ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
   ;
-  score_1 instanceof score_struct
   player_score instanceof score_struct
   ;
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
@@ -539,6 +540,64 @@ tall_meta_sprite_table:
   sandbox_function_1:
     ; ...
   ret
+  ;
+  print_hiscore_table:
+    ; Print the hiscore table starting at a specified (row,column).
+    ; Entry: A = Row (vertical).
+    ;        B = Column (horizontal).
+    ; Exit: None.
+    ; Uses: AF, BC, DE, HL, IX
+    ;
+    ld ix,hiscore_item.1
+    ld c,NUMBER_OF_HISCORE_ITEMS
+    ld de,_sizeof_score_struct
+    -:
+      call print_one_item
+      inc a
+      add ix,de
+      ;
+      dec c
+    jp nz,-
+  ret
+    ;
+    print_one_item:
+      SAVE_REGISTERS
+      push bc
+        call set_cursor
+        push ix
+        pop hl
+        ld b,SCORE_DIGITS_TOTAL
+        call put_string_at_cursor
+      pop bc
+      push af
+        ld a,SCORE_DIGITS_TOTAL
+        add a,b
+        ld b,a
+      pop af
+      push bc
+        call set_cursor
+        ld hl,hiscore_item_spacer
+        ld b,HISCORE_ITEM_SPACER_SIZE
+        call put_string_at_cursor
+      pop bc
+      push af
+        ld a,HISCORE_ITEM_SPACER_SIZE
+        add a,b
+        ld b,a
+      pop af
+      call set_cursor
+      push ix
+      pop hl
+      ld de,score_struct.initials
+      add hl,de
+      ld b,LETTERS_IN_INITIALS
+      call put_string_at_cursor
+      RESTORE_REGISTERS
+      ret
+      ;
+    .equ HISCORE_ITEM_SPACER_SIZE 5
+    hiscore_item_spacer:
+      .asc "....."
   ;
   rebuild_hiscore_table:
     ; Rebuilds the hiscore table against a new score item pointed to by HL.

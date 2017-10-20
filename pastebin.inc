@@ -1,4 +1,104 @@
 ;2017-10-20
+test_rebuild_hiscore_table_against_fine_score:
+  ld hl,fine_score_init
+  ld de,player_score
+  call copy_score_and_increment_pointers
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item.1
+  call copy_hiscore_table
+  ;
+  ld hl,player_score
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+3,"Rebuild table (Fine) failed (1)"
+  ld ix,hiscore_item.1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2)"
+ret
+
+
+call test_copy_score
+call test_init_hiscore
+call test_compare_scores
+call test_rebuild_hiscore_table_against_multe_score
+call test_rebuild_hiscore_table_against_felix_score
+
+test_copy_score:
+  ld hl,score_1_init
+  ld de,score_1
+  call copy_score_and_increment_pointers
+  ld ix,score_1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ONE,"copy_score failed"
+ret
+test_init_hiscore:
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_hiscore_table
+  ;
+  ld ix,hiscore_item.1
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+4,"init_hiscore failed (1)"
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+2,"init_hiscore failed (2)"
+ret
+;
+test_compare_scores:
+  ld hl,felix_score_init
+  ld de,score_1
+  call copy_score_and_increment_pointers
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_hiscore_table
+  ;
+  ld iy,score_1
+  ld ix,hiscore_item.3
+  call compare_scores
+  assertCarrySet "Compare scores failed"
+ret
+;
+test_rebuild_hiscore_table_against_multe_score:
+  ld hl,multe_score_init
+  ld de,player_score
+  call copy_score_and_increment_pointers
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_hiscore_table
+  ;
+  ld hl,player_score
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.ones)
+  assertEqualsA ASCII_ZERO+2,"Rebuild table (Multe) failed"
+ret
+;
+.equ ASCII_F 38
+test_rebuild_hiscore_table_against_felix_score:
+  ld hl,felix_score_init
+  ld de,player_score
+  call copy_score_and_increment_pointers
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item
+  call copy_hiscore_table
+  ;
+  ld hl,player_score
+  call rebuild_hiscore_table
+  ;
+  ld ix,hiscore_item.3
+  ld a,(ix+score_struct.initials)
+  assertEqualsA ASCII_F,"Rebuild table (Felix) failed"
+ret
+
+
 test_increment_pointers:
   ld hl,hiscore_item.1
   ld (hiscore_table_pointer),hl

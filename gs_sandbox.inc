@@ -56,12 +56,8 @@ run_sandbox:
   call reset_logger
   ;
   ; Tests below:
-  call test_copy_score
-  call test_init_hiscore
-  call test_compare_scores
-  call test_rebuild_hiscore_table_against_multe_score
-  call test_rebuild_hiscore_table_against_felix_score
-  call test_rebuild_hiscore_table_against_fine_score
+  ;call test_rebuild_hiscore_table_against_fine_score
+  ;call test_rebuild_against_fine_and_print
   ;
 jp main_loop
 ;
@@ -69,82 +65,12 @@ jp main_loop
 ; -----------------------------------------------------------------------------
 init_tests:
 ; -----------------------------------------------------------------------------
+  ; Tests below:
+  call test_rebuild_against_fine_and_print
   ;
 ret
-;
-test_copy_score:
-  ld hl,score_1_init
-  ld de,score_1
-  call copy_score_and_increment_pointers
-  ld ix,score_1
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ONE,"copy_score failed"
-ret
-test_init_hiscore:
-  ld hl,hiscore_init
-  ld de,hiscore_item
-  call copy_hiscore_table
-  ;
-  ld ix,hiscore_item.1
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+4,"init_hiscore failed (1)"
-  ;
-  ld ix,hiscore_item.3
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+2,"init_hiscore failed (2)"
-ret
-;
-test_compare_scores:
-  ld hl,felix_score_init
-  ld de,score_1
-  call copy_score_and_increment_pointers
-  ;
-  ld hl,hiscore_init
-  ld de,hiscore_item
-  call copy_hiscore_table
-  ;
-  ld iy,score_1
-  ld ix,hiscore_item.3
-  call compare_scores
-  assertCarrySet "Compare scores failed"
-ret
-;
-test_rebuild_hiscore_table_against_multe_score:
-  ld hl,multe_score_init
-  ld de,player_score
-  call copy_score_and_increment_pointers
-  ;
-  ld hl,hiscore_init
-  ld de,hiscore_item
-  call copy_hiscore_table
-  ;
-  ld hl,player_score
-  call rebuild_hiscore_table
-  ;
-  ld ix,hiscore_item.3
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+2,"Rebuild table (Multe) failed"
-ret
-;
-.equ ASCII_F 38
-test_rebuild_hiscore_table_against_felix_score:
-  ld hl,felix_score_init
-  ld de,player_score
-  call copy_score_and_increment_pointers
-  ;
-  ld hl,hiscore_init
-  ld de,hiscore_item
-  call copy_hiscore_table
-  ;
-  ld hl,player_score
-  call rebuild_hiscore_table
-  ;
-  ld ix,hiscore_item.3
-  ld a,(ix+score_struct.initials)
-  assertEqualsA ASCII_F,"Rebuild table (Felix) failed"
-ret
-;
-test_rebuild_hiscore_table_against_fine_score:
+; -----------------------------------------------------------------------------
+test_rebuild_against_fine_and_print:
   ld hl,fine_score_init
   ld de,player_score
   call copy_score_and_increment_pointers
@@ -156,33 +82,31 @@ test_rebuild_hiscore_table_against_fine_score:
   ld hl,player_score
   call rebuild_hiscore_table
   ;
-  ld ix,hiscore_item.3
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+3,"Rebuild table (Fine) failed (1)"
-  ld ix,hiscore_item.1
-  ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2)"
-ret
+  ld a,HISCORE_TABLE_ROW
+  ld b,HISCORE_TABLE_COLUMN
+  call print_hiscore_table
   ;
-  score_1_init:
-    .asc "00001"
-    .asc "FAR"
-  multe_score_init:
-    .asc "00001"
-    .asc "MUL"
-  felix_score_init:
-    .asc "00002"
-    .asc "FLX"
-  fine_score_init:
-    .asc "00005"
-    .asc "FIN"
-    ;
-  hiscore_init:
-    .asc "00004"
-    .asc "LAS"
-    .asc "00003"
-    .asc "LUN"
-    .asc "00002"
-    .asc "MOR"
+ret
+;
+;
+multe_score_init:
+  .asc "00001"
+  .asc "MUL"
+fine_score_init:
+  .asc "00010"
+  .asc "FIN"
+  ;
+hiscore_init:
+  .asc "00100"
+  .asc "LAS"
+  .asc "00090"
+  .asc "LUN"
+  .asc "00080"
+  .asc "MOR"
+  .asc "00070"
+  .asc "FAR"
+  .asc "00060"
+  .asc "FEL"
+
 
 ;

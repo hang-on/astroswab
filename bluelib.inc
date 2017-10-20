@@ -1274,9 +1274,13 @@
   set_cursor:
     ; Set cursor used by put_char.
     ; Entry: A = cursor_y / row, B = cursor_x / column.
-    ld (cursor_y),a
-    ld a,b
-    ld (cursor_x),a
+    ; Exit: None. Contents of A and B stay unchanged.
+    ; Uses: None.
+    push af
+      ld (cursor_y),a
+      ld a,b
+      ld (cursor_x),a
+    pop af
   ret
   ;
   put_char:
