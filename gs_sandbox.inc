@@ -84,7 +84,7 @@ ret
 test_init_hiscore:
   ld hl,hiscore_init
   ld de,hiscore_item
-  call copy_score_table
+  call copy_hiscore_table
   ;
   ld ix,hiscore_item.1
   ld a,(ix+score_struct.ones)
@@ -111,7 +111,7 @@ test_compare_scores:
   ;
   ld hl,hiscore_init
   ld de,hiscore_item
-  call copy_score_table
+  call copy_hiscore_table
   ;
   ld iy,score_1
   ld ix,hiscore_item.3
@@ -126,7 +126,7 @@ test_rebuild_hiscore_table_against_multe_score:
   ;
   ld hl,hiscore_init
   ld de,hiscore_item
-  call copy_score_table
+  call copy_hiscore_table
   ;
   ld hl,player_score
   call rebuild_hiscore_table
@@ -144,7 +144,7 @@ test_rebuild_hiscore_table_against_felix_score:
   ;
   ld hl,hiscore_init
   ld de,hiscore_item
-  call copy_score_table
+  call copy_hiscore_table
   ;
   ld hl,player_score
   call rebuild_hiscore_table
@@ -161,7 +161,7 @@ test_rebuild_hiscore_table_against_fine_score:
   ;
   ld hl,hiscore_init
   ld de,hiscore_item.1
-  call copy_score_table
+  call copy_hiscore_table
   ;
   ld hl,player_score
   call rebuild_hiscore_table
@@ -171,7 +171,7 @@ test_rebuild_hiscore_table_against_fine_score:
   assertEqualsA ASCII_ZERO+3,"Rebuild table (Fine) failed (1)"
   ld ix,hiscore_item.1
   ld a,(ix+score_struct.ones)
-  assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2½)"
+  assertEqualsA ASCII_ZERO+5,"Rebuild table (Fine) failed (2)"
 ret
 
 

@@ -527,8 +527,9 @@ tall_meta_sprite_table:
   ;
   score_1 instanceof score_struct
   player_score instanceof score_struct
-  hiscore_workbench instanceof score_struct
+  ;
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
+  hiscore_workbench instanceof score_struct
   hiscore_table_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
   hiscore_table_pointer dw
   hiscore_table_buffer_pointer dw
@@ -542,8 +543,15 @@ tall_meta_sprite_table:
   ret
   ;
   rebuild_hiscore_table:
+    ; Rebuilds the hiscore table against a new score item pointed to by HL.
+    ; If the new score is high enough to be somewhere on the hiscore list,
+    ; then it is copied into the hiscore tbale and all subsequent items are
+    ; moved one position down. The last item on the list is destroyed.
+    ; If the new score is not at least equal to the last item on the hiscore
+    ; list, then the hiscore table stays unchanged.
     ; Entry: HL = Pointer to new score to build table against
-    ;
+    ; Exit: None.
+    ; Uses: All registers!
     ; Copy player score into the workbench for testing.
     ld de,hiscore_workbench
     call copy_score_and_increment_pointers
@@ -596,44 +604,44 @@ tall_meta_sprite_table:
     ld bc,_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS
     ldir
   ret
-
+  ;
   compare_scores:
-    ; if score in iy is equal or higher, then set carry. Else reset.
-    ; Entry: IX, IY = Pointers to score structs to compare
+    ; Compare two score items to each other, passed to this func in IX and IY.
+    ; If score in IY is equal or higher then score in IX, then set carry. If
+    ; not, then reset carry.
+    ; Entry: IX, IY = Pointers to score structs to compare.
     ; Uses: AF
     ld a,(ix+score_struct.ten_thousands)
     cp (iy+score_struct.ten_thousands)
-    jp c,iy_is_higher
-    jp z,+
-    jp ix_is_higher
-    ;
-    +:
-    ld a,(ix+score_struct.thousands)
-    cp (iy+score_struct.thousands)
-    jp c,iy_is_higher
+    jp c,iy_is_equal_or_higher
     jp z,+
     jp ix_is_higher
     +:
-    ld a,(ix+score_struct.hundreds)
-    cp (iy+score_struct.hundreds)
-    jp c,iy_is_higher
-    jp z,+
-    jp ix_is_higher
-    +:
-    ld a,(ix+score_struct.tens)
-    cp (iy+score_struct.tens)
-    jp c,iy_is_higher
-    jp z,+
-    jp ix_is_higher
-    ;
-    +:
-    ld a,(ix+score_struct.ones)
-    cp (iy+score_struct.ones)
-    jp c,iy_is_higher
-    jp z,iy_is_higher
-    jp ix_is_higher
-    ;
-    iy_is_higher: ; iy higher or equal.
+      ld a,(ix+score_struct.thousands)
+      cp (iy+score_struct.thousands)
+      jp c,iy_is_equal_or_higher
+      jp z,+
+      jp ix_is_higher
+      +:
+        ld a,(ix+score_struct.hundreds)
+        cp (iy+score_struct.hundreds)
+        jp c,iy_is_equal_or_higher
+        jp z,+
+        jp ix_is_higher
+        +:
+          ld a,(ix+score_struct.tens)
+          cp (iy+score_struct.tens)
+          jp c,iy_is_equal_or_higher
+          jp z,+
+          jp ix_is_higher
+          +:
+            ld a,(ix+score_struct.ones)
+            cp (iy+score_struct.ones)
+            jp c,iy_is_equal_or_higher
+            jp z,iy_is_equal_or_higher
+            jp ix_is_higher
+            ;
+    iy_is_equal_or_higher:
       scf
       ret
     ix_is_higher:
@@ -642,6 +650,7 @@ tall_meta_sprite_table:
   ret
   ;
   copy_score_and_increment_pointers:
+    ; Copy the contents of one score struct to another.
     ; Entry: Two score struct pointers:
     ;        HL = Source score
     ;        DE = Destination score.
@@ -653,7 +662,8 @@ tall_meta_sprite_table:
     pop bc
   ret
   ;
-  copy_score_table:
+  copy_hiscore_table:
+
     ; Entry: HL = Source, DE = Destination.
     ; Uses: None
     SAVE_REGISTERS
