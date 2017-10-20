@@ -81,9 +81,11 @@ test_init_hiscore:
   ld b,NUMBER_OF_HISCORE_ITEMS
   ld hl,hiscore_init
   ld de,hiscore_item
-  ld bc,_sizeof_score_struct
   -:
-    call copy_score
+    push bc
+      ld bc,_sizeof_score_struct
+      call copy_score
+    pop bc
   djnz -
   ;
   ld ix,hiscore_item.1
@@ -96,12 +98,12 @@ test_init_hiscore:
 ret
 ;
 test_increment_pointers:
-  ld hl,hiscore_item
+  ld hl,hiscore_item.1
   ld (hiscore_table_pointer),hl
-  assertEqualsHL hiscore_item,"Increment pointers failed (1)"
-  ld hl,hiscore_buffer
-  ld (hiscore_buffer_pointer),hl
-  assertEqualsHL hiscore_buffer,"Increment pointers failed (2)"
+  ;
+  INCREMENT_SCORE_TABLE_POINTER hiscore_table_pointer
+  ld hl,(hiscore_table_pointer)
+  assertEqualsHL hiscore_item.2,"Increment pointers failed"
 ret
 
   ;

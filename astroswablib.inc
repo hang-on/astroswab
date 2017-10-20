@@ -507,6 +507,8 @@ tall_meta_sprite_table:
 ;
 .equ LETTERS_IN_INITIALS 3
 .equ NUMBER_OF_HISCORE_ITEMS 3
+
+
 .struct score_struct
   ; A five-digit score struct.
   ; Depends on ascii 0-9 set somewhere with asciitable mapping, and also the
@@ -526,9 +528,9 @@ tall_meta_sprite_table:
   score_1 instanceof score_struct
   hiscore_workbench instanceof score_struct
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
-  hiscore_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
+  hiscore_table_buffer dsb (_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS)
   hiscore_table_pointer dw
-  hiscore_buffer_pointer dw
+  hiscore_table_buffer_pointer dw
   ;
 .ends
 ;
@@ -547,5 +549,18 @@ tall_meta_sprite_table:
       ldir
     pop bc
   ret
-
+  ;
+  .macro INCREMENT_SCORE_TABLE_POINTER
+    ; Entry: \1 = Score table pointer.
+    ; Exit: Pointer at \1 is incremented by the size of one score struct.
+    ; Uses: None
+    push de
+    push hl
+      ld hl,(\1)
+      ld de,_sizeof_score_struct
+      add hl,de
+      ld (\1),hl
+    pop hl
+    pop de
+  .endm
 .ends
