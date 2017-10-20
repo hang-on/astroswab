@@ -75,7 +75,7 @@ ret
 test_copy_score:
   ld hl,score_1_init
   ld de,score_1
-  call copy_score
+  call copy_score_and_increment_pointers
   ld ix,score_1
   ld a,(ix+score_struct.ones)
   assertEqualsA ASCII_ONE,"copy_score failed"
@@ -106,7 +106,7 @@ ret
 test_compare_scores:
   ld hl,felix_score_init
   ld de,score_1
-  call copy_score
+  call copy_score_and_increment_pointers
   ;
   ld hl,hiscore_init
   ld de,hiscore_item
@@ -121,7 +121,7 @@ ret
 test_rebuild_hiscore_table_against_multe_score:
   ld hl,multe_score_init
   ld de,player_score
-  call copy_score
+  call copy_score_and_increment_pointers
   ;
   ld hl,hiscore_init
   ld de,hiscore_item
@@ -139,7 +139,7 @@ ret
 test_rebuild_hiscore_table_against_felix_score:
   ld hl,felix_score_init
   ld de,player_score
-  call copy_score
+  call copy_score_and_increment_pointers
   ;
   ld hl,hiscore_init
   ld de,hiscore_item

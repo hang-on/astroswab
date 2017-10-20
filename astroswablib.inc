@@ -546,12 +546,17 @@ tall_meta_sprite_table:
     ;
     ; Copy player score into the workbench for testing.
     ld de,hiscore_workbench
-    call copy_score
+    call copy_score_and_increment_pointers
     ld hl,hiscore_item.1
     ; Point to start of hiscore table and hiscore table buffer.
     ld (hiscore_table_pointer),hl
     ld hl,hiscore_table_buffer
     ld (hiscore_table_buffer_pointer),hl
+    ; For each hiscore table item, do...
+    ld b,NUMBER_OF_HISCORE_ITEMS
+    -:
+      ;
+    djnz -
   ret
 
   compare_scores:
@@ -597,9 +602,11 @@ tall_meta_sprite_table:
       ret
   ret
   ;
-  copy_score:
-    ; IN: HL source score, DE destination score.
-    ; OUT Increment HL and DE.
+  copy_score_and_increment_pointers:
+    ; Entry: Two score struct pointers:
+    ;        HL = Source score
+    ;        DE = Destination score.
+    ; Exit: Increment HL and DE by the size of one score struct.
     ; Uses: None
     push bc
       ld bc,_sizeof_score_struct
@@ -610,15 +617,15 @@ tall_meta_sprite_table:
   copy_score_table:
     ; Entry: HL = Source, DE = Destination.
     ; Uses: None
-    push bc
-      ld b,NUMBER_OF_HISCORE_ITEMS
+    SAVE_REGISTERS
+    ld b,NUMBER_OF_HISCORE_ITEMS
       -:
         push bc
           ld bc,_sizeof_score_struct
-          call copy_score
+          call copy_score_and_increment_pointers
         pop bc
       djnz -
-    pop bc
+    RESTORE_REGISTERS
   ret
   ;
   .macro INCREMENT_SCORE_TABLE_POINTER
