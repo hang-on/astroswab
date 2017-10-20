@@ -541,6 +541,66 @@ tall_meta_sprite_table:
     ; ...
   ret
   ;
+  ;
+  add_to_score:
+    ; Add a number passed in B to the digit specified in A. Update the other
+    ; digits in the score struct as necessary. Credit to Jonathan Cauldwell.
+    ; Entry:  A = Digit to add to
+    ;         B = Number to add (non-ascii!)
+    ;        HL = Pointer to score struct.
+    ; Uses: AF, DE, HL
+    ld d,0
+    add a,score_struct.ten_thousands
+    ld e,a
+    add hl,de
+    ld a,b
+    add a,(hl)
+    ld (hl),a
+    cp ASCII_ZERO+10
+    ret c
+      sub 10
+      ld (hl),a
+      -:
+        dec hl
+        inc (hl)
+        ld a,(hl)
+        cp ASCII_ZERO+10
+        ret c
+          sub 10
+          ld (hl),a
+      jp -
+      ;
+  ret
+  ;
+  subtract_from_score:
+    ; Subtract a number passed in B from the digit specified in A. Update the
+    ; other digits in the score struct as necessary.
+    ; Entry:  A = Digit to subtract from.
+    ;         B = Number to subtract (non-ascii!).
+    ;        HL = Pointer to score struct.
+    ld d,0
+    add a,score_struct.ten_thousands
+    ld e,a
+    add hl,de
+    ld a,(hl)
+    sub b
+    ld (hl),a
+    cp ASCII_ZERO
+    ret nc
+      add a,10
+      ld (hl),a
+      -:
+        dec hl
+        dec (hl)
+        ld a,(hl)
+        cp ASCII_ZERO
+        ret nc
+          add a,10
+          ld (hl),a
+      jp -
+      ;
+  ret
+  ;
   print_hiscore_table:
     ; Print the hiscore table starting at a specified (row,column).
     ; Entry: A = Row (vertical).

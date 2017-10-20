@@ -66,14 +66,22 @@ jp main_loop
 init_tests:
 ; -----------------------------------------------------------------------------
   ; Tests below:
-  call test_rebuild_against_fine_and_print
+  call test_rebuild_and_print
   ;
 ret
 ; -----------------------------------------------------------------------------
-test_rebuild_against_fine_and_print:
-  ld hl,fine_score_init
+test_rebuild_and_print:
+  ld hl,multe_score_init
   ld de,player_score
   call copy_score_and_increment_pointers
+  ld hl,player_score
+  ld a,SCORE_HUNDREDS
+  ld b,1
+  call add_to_score
+  ld hl,player_score
+  ld a,SCORE_TENS
+  ld b,3
+  call subtract_from_score
   ;
   ld hl,hiscore_init
   ld de,hiscore_item.1
