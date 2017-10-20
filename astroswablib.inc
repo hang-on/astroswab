@@ -563,14 +563,38 @@ tall_meta_sprite_table:
       call compare_scores
       jp c,+
         ; Yes - score in IX (item in hiscore table) is higher.
-
+        ; Copy score item from hiscore table to buffer.
+        ld hl,(hiscore_table_buffer_pointer)  ; Load hiscore table buffer into
+        ex de,hl                              ; destination position (DE).
+        push ix                               ; Load hiscore item into source
+        pop hl                                ; position (HL).
+        call copy_score_and_increment_pointers
         jp ++
       +:
         ; No - score in IY (item at workbench) is higher or even.
-
+        ; Copy score item from workbench to buffer.
+        ld hl,(hiscore_table_buffer_pointer)  ; Load hiscore table buffer into
+        ex de,hl                              ; destination position (DE).
+        ld hl,hiscore_workbench
+        call copy_score_and_increment_pointers
+        ld hl,(hiscore_table_pointer)
+        ld de,hiscore_workbench
+        call copy_score_and_increment_pointers
       ++:
-        ;
+        ; Increment pointers.
+        ld de,_sizeof_score_struct
+        ld hl,(hiscore_table_pointer)
+        add hl,de
+        ld (hiscore_table_pointer),hl         ; Inc hiscore table pointer.
+        ld hl,(hiscore_table_buffer_pointer)
+        add hl,de
+        ld (hiscore_table_buffer_pointer),hl  ; Inc hiscore table buffer ptr.
     djnz -
+    ; Overwrite the hiscore table with the buffer contents.
+    ld hl,hiscore_table_buffer
+    ld de,hiscore_item.1
+    ld bc,_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS
+    ldir
   ret
 
   compare_scores:
