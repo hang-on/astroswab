@@ -12,8 +12,6 @@
   .equ CHAR_FROM_BACKGROUND_BANK %00000000
   .equ CHAR_FROM_SPRITE_BANK %00000001
   .equ ASCII_LOWERCASE_X 88
-
-
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
@@ -219,6 +217,7 @@
   difficulty db
   ;
   swabby instanceof game_object
+  player_score instanceof score_struct
   ;
   asteroid instanceof game_object ASTEROID_MAX
   asteroid_trigger instanceof trigger

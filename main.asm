@@ -69,6 +69,10 @@
     ld de,gun_level_char_data
     ld bc,4
     ldir
+    ; Reset player score.
+    ld hl,player_score_init
+    ld de,player_score
+    call copy_score_and_increment_pointers
     ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...

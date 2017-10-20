@@ -273,6 +273,11 @@ tall_meta_sprite_table:
         ld hl,explosion
         ld c,SFX_CHANNELS2AND3
         call PSGSFXPlay
+        ;
+        ld hl,player_score
+        ld a,SCORE_TENS
+        ld b,2
+        call add_to_score
       pop ix
       ret
     +:
@@ -791,7 +796,6 @@ tall_meta_sprite_table:
 .ramsection "Sandbox variables" slot 3
 ; -----------------------------------------------------------------------------
   ;
-  player_score instanceof score_struct
   ;
 .ends
 ;

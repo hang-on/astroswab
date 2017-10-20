@@ -126,6 +126,9 @@
       ld a,FALSE
       ld (gun_level_flag),a
     +:
+    ; -------------------------
+    
+    ; -------------------------
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
