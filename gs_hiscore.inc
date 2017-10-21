@@ -1,9 +1,8 @@
-; gs_sandbox.inc
-; .
+; gs_hiscore.inc
 ; ---------------------------------------------------------------------------
-; S A N D B O X
+; H I S C O R E
 ; ---------------------------------------------------------------------------
-prepare_sandbox:
+prepare_hiscore:
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
@@ -25,21 +24,48 @@ prepare_sandbox:
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop
-  ; ----------------------------------------------------------
-  call init_tests
-  ; ----------------------------------------------------------
+  ;
+  ; Build, and write to VRAM, the hiscore table.
+  ; TODO: Get rid of the demo add/sub and dummy table. It should be loaded
+  ; directly from EXTRAM.
+  ;ld hl,multe_score_init
+  ;ld de,player_score
+  ;call copy_score_and_increment_pointers
+  ;ld hl,player_score
+  ;ld a,SCORE_HUNDREDS
+  ;ld b,1
+  ;call add_to_score
+  ;ld hl,player_score
+  ;ld a,SCORE_TENS
+  ;ld b,3
+  ;call subtract_from_score
+  ;
+  ld hl,hiscore_init
+  ld de,hiscore_item.1
+  call copy_hiscore_table
+  ;
+  ld hl,player_score
+  call rebuild_hiscore_table
+  ;
+  ld a,HISCORE_TABLE_ROW
+  ld b,HISCORE_TABLE_COLUMN
+  call print_hiscore_table
+  ;
+  ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,1
   call set_register
   ei
+  call FadeInScreen
   ; When all is set, change the game state.
-  ld a,GS_RUN_SANDBOX
+  ld a,GS_RUN_HISCORE
   ld (game_state),a
 jp main_loop
+;
 ; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
-run_sandbox:
+run_hiscore:
   ;
   -:
     call await_frame_interrupt
@@ -52,25 +78,21 @@ run_sandbox:
   call get_input_ports
   call begin_sprites
   ;
-  ld b,SANDBOX_LOGGER_START_ROW
-  call reset_logger
   ;
-  ; Tests below:
-  ;call test_rebuild_hiscore_table_against_fine_score
-  ;call test_rebuild_against_fine_and_print
+  call PSGSFXFrame
+  call PSGFrame
   ;
+  ld hl,frame_counter
+  inc (hl)
+  .ifdef DEVELOPER_MODE
+    call is_reset_pressed
+    jp nc,+
+      call PSGSFXStop
+      call PSGStop
+      call FadeOutScreen
+      ld a,GS_PREPARE_DEVMENU
+      ld (game_state),a
+    +:
+  .endif
+
 jp main_loop
-;
-; Tests for the sandbox:
-; -----------------------------------------------------------------------------
-init_tests:
-; -----------------------------------------------------------------------------
-  ; Tests below:
-  call test_rebuild_and_print
-  ;
-ret
-; -----------------------------------------------------------------------------
-test_rebuild_and_print:
-
-
-;

@@ -6,6 +6,7 @@
 
 .include "objectlib.inc"
 .include "triggerlib.inc"
+.include "scorelib.inc"
 .include "astroswablib.inc";
 .include "header.inc"
 ;
@@ -69,6 +70,10 @@
     ld de,gun_level_char_data
     ld bc,4
     ldir
+    ; Reset player score.
+    ld hl,player_score_init
+    ld de,player_score
+    call copy_score_and_increment_pointers
     ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...
@@ -83,6 +88,11 @@
   ; T I T L E S C R E E N
   ; ---------------------------------------------------------------------------
   .include "gs_titlescreen.inc"
+  ;
+  ; ---------------------------------------------------------------------------
+  ; H I S C O R E
+  ; ---------------------------------------------------------------------------
+  .include "gs_hiscore.inc"
   ;
   ; ---------------------------------------------------------------------------
   ; S A N D B O X

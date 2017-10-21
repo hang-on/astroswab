@@ -12,8 +12,6 @@
   .equ CHAR_FROM_BACKGROUND_BANK %00000000
   .equ CHAR_FROM_SPRITE_BANK %00000001
   .equ ASCII_LOWERCASE_X 88
-
-
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
@@ -26,10 +24,12 @@
   .equ GS_PREPARE_TITLESCREEN 6
   .equ GS_RUN_TITLESCREEN 7
   .equ GS_SETUP_NEW_GAME 8
+  .equ GS_PREPARE_HISCORE 9
+  .equ GS_RUN_HISCORE 10
   ;
   .ifdef DEVELOPER_MODE
-    ;.equ INITIAL_GAME_STATE GS_SETUP_NEW_GAME ; Where to go after boot?
-     .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_SETUP_NEW_GAME ; Where to go after boot?
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
@@ -85,6 +85,8 @@
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
   .equ SWABBY_LIFE_CHAR 175
+; Score:
+  .equ SCORE_VRAM_ADDRESS $3d92
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
@@ -217,6 +219,7 @@
   difficulty db
   ;
   swabby instanceof game_object
+  player_score instanceof score_struct
   ;
   asteroid instanceof game_object ASTEROID_MAX
   asteroid_trigger instanceof trigger
