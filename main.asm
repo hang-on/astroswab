@@ -1,16 +1,18 @@
 ; main.asm
 ; Main code for astroswab.
+;
 .include "bluelib.inc"
+;
 .include "psglib.inc"
 .include "testlib.inc"
-
+;
 .include "objectlib.inc"
 .include "triggerlib.inc"
 .include "scorelib.inc"
 .include "astroswablib.inc";
+;
 .include "header.inc"
 ;
-.bank 0 slot 0
 ; -----------------------------------------------------------------------------
 .section "main" free
 ; -----------------------------------------------------------------------------

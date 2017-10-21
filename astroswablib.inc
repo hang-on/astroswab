@@ -270,21 +270,19 @@ tall_meta_sprite_table:
   ret
   ;
   handle_bullet_collision:
-    ; Placeholder function for handling what happens when bullet collides with
-    ; other objects.
-    ; TODO: Increment score depending on other object's id.
-    ; IX = bullet, IY other object..
-    ld a,GAME_OBJECT_INACTIVE
+    ; Function for handling what happens when bullet collides with other
+    ; objects.
+    ; Entry: IX = bullet.
+    ;        IY = game object that collides with bullet.
+    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating both items.
     ld (ix+game_object.state),a
     ld (iy+game_object.state),a
     ;
-    ;
-    ld a,(iy+game_object.id)
-    cp SHARD
-    jp nz,+
-      ; TODO, DRY-fix this, and make it depend on level.
-      ld hl,player_score
-      ld a,SCORE_TENS
+    ld a,(iy+game_object.id)      ; Do different stuff depending on id.
+    cp SHARD                      ; Does bullet collide with a shard?
+    jp nz,+                       ; No? - skip forward to next id test.
+      ld hl,player_score          ; Yes? - award the player some points.
+      ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
       ld b,2
       call add_to_score
       ret
@@ -309,6 +307,7 @@ tall_meta_sprite_table:
         ld a,SCORE_TENS
         ld b,1
         call add_to_score
+
       pop ix
       ret
     +:

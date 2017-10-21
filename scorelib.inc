@@ -24,6 +24,7 @@
 .equ HISCORE_TABLE_ROW 4
 .equ HISCORE_TABLE_COLUMN 8
 ;
+
 .ramsection "score and hiscore handling - variables" slot 3
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
   hiscore_workbench instanceof score_struct
