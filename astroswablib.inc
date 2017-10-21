@@ -234,6 +234,11 @@ tall_meta_sprite_table:
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
+      ;
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,1
+      call subtract_from_score
   ret
   ;
   missile_hits_ground:
@@ -311,11 +316,22 @@ tall_meta_sprite_table:
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
+      ;
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,4
+      call add_to_score
+      ;
       ret
     +:
     cp BOOSTER
     jp nz,+
       ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,5
+      call subtract_from_score
+      ;
       call PSGGetStatus
       cp PSG_PLAYING
       ret z
@@ -328,6 +344,11 @@ tall_meta_sprite_table:
     cp MISSILE
     jp nz,+
       ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,8
+      call add_to_score
+      ;
       call PSGStop
       SELECT_BANK SOUND_BANK
       call PSGSFXStop
@@ -335,7 +356,6 @@ tall_meta_sprite_table:
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
     +:
-
   ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
@@ -348,6 +368,11 @@ tall_meta_sprite_table:
     ld a,(iy+game_object.id)
     cp BOOSTER
     jp nz,+
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,1
+      call add_to_score
+      ;
       ld a,(gun_level)
       cp GUN_LEVEL_MAX
       ret z
