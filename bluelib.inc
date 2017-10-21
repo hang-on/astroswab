@@ -1380,8 +1380,6 @@
     djnz -
     RESTORE_REGISTERS
   ret
-
-
   ;
   print_register_hl:
     ; Print the contents of register HL as 5 ascii digits using put_char at

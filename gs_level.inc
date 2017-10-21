@@ -126,15 +126,22 @@
       ld a,FALSE
       ld (gun_level_flag),a
     +:
-    ; -------------------------
-    ; TEMP! FIXME !!
-    ld b,9
-    ld a,22
-    call set_cursor
-    ld hl,player_score
+    ; Fast output score digits.
+    ld hl,SCORE_VRAM_ADDRESS
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ld hl,player_score+score_struct.ten_thousands
     ld b,SCORE_DIGITS_TOTAL
-    call put_string_at_cursor
-    ; -------------------------
+    -:
+      ld a,(hl)
+      inc hl
+      out (DATA_PORT),a           ; Write it to name table.
+      ld a,%00000000              ; Select background palette for this char.
+      out (DATA_PORT),a           ; Write 2nd byte to name table.
+    djnz -
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE

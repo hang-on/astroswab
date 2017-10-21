@@ -85,6 +85,8 @@
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
   .equ SWABBY_LIFE_CHAR 175
+; Score:
+  .equ SCORE_VRAM_ADDRESS $3d92
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
