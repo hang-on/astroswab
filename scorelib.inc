@@ -75,13 +75,18 @@
     ; Exit:
     ; Uses: AF, BC, DE, HL
     ;
+    push hl               ; Save ten thousands for underflow test.
+      ld d,0
+      ld e,score_struct.ten_thousands
+      add hl,de
+      ld c,(hl)
+    pop hl
     push hl               ; Save pointer to score struct for underflow test.
       ld d,0
       add a,score_struct.ten_thousands
       ld e,a
       add hl,de
       ld a,(hl)
-      ld c,a                ; Save ten thousands for underflow test.
       sub b
       ld (hl),a
       cp ASCII_ZERO
