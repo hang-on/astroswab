@@ -6,6 +6,7 @@
 
 .include "objectlib.inc"
 .include "triggerlib.inc"
+.include "scorelib.inc"
 .include "astroswablib.inc";
 .include "header.inc"
 ;

@@ -222,8 +222,8 @@
     jp c,+                          ; Is the player pressing the fire button?
       ld a,TRUE                     ; No - then set gun flag (to prevent
       ld (gun_released),a           ; auto fire).
-      add a,(hl)
-      ld (hl),a
+      ;add a,(hl)                   ; This caused a bug with scoring!?
+      ;ld (hl),a
     +:
     ; Process gun timer.
     ld a,(gun_timer)                ; If gun_timer is not already zero then
@@ -339,7 +339,9 @@
           call move_game_object
           ld a,ASTEROID_DEACTIVATE_ZONE_START
           ld b,ASTEROID_DEACTIVATE_ZONE_END
-          call horizontal_zone_deactivate_game_object
+          ld hl,asteroid_hits_ground
+          call horizontal_zone_send_to_handler
+          ;call horizontal_zone_deactivate_game_object
           ld a,VERTICAL_DEACTIVATE_ZONE_START
           ld b,VERTICAL_DEACTIVATE_ZONE_END
           call vertical_zone_deactivate_game_object
@@ -401,7 +403,9 @@
         call move_game_object              ; Move shard.
         ld a,SHARD_DEACTIVATE_ZONE_START
         ld b,SHARD_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
+        ld hl,shard_hits_ground
+        call horizontal_zone_send_to_handler
+        ;call horizontal_zone_deactivate_game_object
         ld a,VERTICAL_DEACTIVATE_ZONE_START
         ld b,VERTICAL_DEACTIVATE_ZONE_END
         call vertical_zone_deactivate_game_object
