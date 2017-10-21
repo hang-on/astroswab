@@ -28,17 +28,6 @@ prepare_hiscore:
   ; Build, and write to VRAM, the hiscore table.
   ; TODO: Get rid of the demo add/sub and dummy table. It should be loaded
   ; directly from EXTRAM.
-  ;ld hl,multe_score_init
-  ;ld de,player_score
-  ;call copy_score_and_increment_pointers
-  ;ld hl,player_score
-  ;ld a,SCORE_HUNDREDS
-  ;ld b,1
-  ;call add_to_score
-  ;ld hl,player_score
-  ;ld a,SCORE_TENS
-  ;ld b,3
-  ;call subtract_from_score
   ;
   ld hl,hiscore_init
   ld de,hiscore_item.1

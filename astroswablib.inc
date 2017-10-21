@@ -292,9 +292,13 @@ tall_meta_sprite_table:
     cp ASTEROID
     jp nz,+
       push ix
-        push iy
-        pop ix
-        call explode_asteroid_into_shards
+        call get_random_number
+        cp ASTEROIDS_INTO_SHARDS_CHANCE
+        jp c,skip_explode
+          push iy
+          pop ix
+          call explode_asteroid_into_shards
+        skip_explode:
         SELECT_BANK SOUND_BANK
         call PSGSFXStop
         ld hl,explosion
