@@ -372,6 +372,10 @@ tall_meta_sprite_table:
     ld a,(iy+game_object.id)
     cp BOOSTER
     jp nz,+
+      SELECT_BANK SOUND_BANK
+      ld hl,got_booster
+      call PSGPlayNoRepeat
+      ;
       ld hl,player_score
       ld a,SCORE_HUNDREDS
       ld b,1
@@ -388,9 +392,6 @@ tall_meta_sprite_table:
         inc (hl)
         ld a,TRUE               ; Signal that we should update the counter.
         ld (gun_level_flag),a
-        SELECT_BANK SOUND_BANK
-        ld hl,got_booster
-        call PSGPlayNoRepeat
         ret
     +:
     ; cp ANOTHER_GAME_OBJECT...
