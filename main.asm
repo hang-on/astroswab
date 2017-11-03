@@ -1,17 +1,22 @@
 ; main.asm
 ; Main code for astroswab.
 ;
-.include "bluelib.inc"
+; - Abstraction level 3: Generic code.
+.include "bluelib.inc"        ; General library with foundation stuff.
+                              ; Includes memory map, help functions etc.
+.include "testlib.inc"        ; Rudimentary unit testing (depends on bluelib).
+.include "psglib.inc"         ; Stand-alone music and SFX lib (c) sverx.
 ;
-.include "psglib.inc"
-.include "testlib.inc"
+; - Abstraction level 2: Semi-general structs and struct-related functions.
+;                             ; (The "Astroswab Engine").
+.include "objectlib.inc"      ; Game objects like asteroids and Swabby.
+.include "triggerlib.inc"     ; Timed triggers controlling enemy respawning.
+.include "scorelib.inc"       ; Keeping score and displaying hiscore table.
 ;
-.include "objectlib.inc"
-.include "triggerlib.inc"
-.include "scorelib.inc"
-.include "astroswablib.inc";
+; - Abstraction level 1: Game-specific code and implementations of structs.
+.include "astroswablib.inc"   ; Metasprites, collision handling, etc.
 ;
-.include "header.inc"
+.include "header.inc"         ; Constants and struct instantiations.
 ;
 ; -----------------------------------------------------------------------------
 .section "main" free
