@@ -133,6 +133,7 @@
       ld a,FALSE
       ld (gun_level_flag),a
     +:
+    ; -------------------------------------------------------------------------
     ; Fast output score digits.
     ld hl,SCORE_VRAM_ADDRESS
     ld a,l
@@ -149,6 +150,24 @@
       ld a,%00000000              ; Select background palette for this char.
       out (DATA_PORT),a           ; Write 2nd byte to name table.
     djnz -
+    ;
+    ; Fast output peak score digits.
+    ld hl,PEAK_SCORE_VRAM_ADDRESS
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    ld hl,peak_score+score_struct.ten_thousands
+    ld b,SCORE_DIGITS_TOTAL
+    -:
+      ld a,(hl)
+      inc hl
+      out (DATA_PORT),a           ; Write it to name table.
+      ld a,%00000000              ; Select background palette for this char.
+      out (DATA_PORT),a           ; Write 2nd byte to name table.
+    djnz -
+    ; -------------------------------------------------------------------------
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
@@ -559,6 +578,16 @@
       call add_game_object_to_collision_table
     missile_loop_end:
     ; -------------------------------------------------------------------------
+    ;
+    ; Update peak score as necessary.
+    ld iy,player_score
+    ld ix,peak_score
+    call compare_scores
+    jp nc,+
+      ld hl,player_score
+      ld de,peak_score
+      call copy_score_and_increment_pointers
+    +:
     ;
     ; Process transition to next difficulty timer.
     ld ix,transition_trigger
