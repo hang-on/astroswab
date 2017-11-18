@@ -4,6 +4,7 @@
 ; TRIGGERS
 ; -----------------------------------------------------------------------------
 ; Triggers have....
+;
 .struct trigger
   timer db
   interval db
@@ -79,8 +80,12 @@
         ld b,a                          ; Store it.
         call get_random_number          ; Roll dice.
         cp b                            ; Compare dice roll to chance.
+        jp nz,+
+          scf                           ; Set carry flag if roll = chance!
+          ret
+      +:
         jp nc,+                         ;
-          scf                           ; Set carry flag!
+          scf                           ; Set carry flag if roll < chance!
           ret
       +:
       or a                              ; Clear carry flag.
