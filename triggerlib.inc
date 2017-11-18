@@ -65,21 +65,24 @@
     ; or otherwise act on timer event) - else reset carry flag.
     ; Entry: IX = Pointer to trigger struct.
     ; Exit: Carry flag set or reset, depending on timer/trigger logic.
-    ld a,(ix+trigger.timer)
-    dec a
-    ld (ix+trigger.timer),a
-    or a                              ; Clear carry and return.
-    ret nz                            ; Only action: Timer was decremented.
-      ld a,(ix+trigger.interval)      ; Reset timer to interval.
+    ld a,(ix+trigger.state)
+    cp DISABLED
+    ret z
+      ld a,(ix+trigger.timer)
+      dec a
       ld (ix+trigger.timer),a
-      ld a,(ix+trigger.chance)        ; Get trigger.chance.
-      ld b,a                          ; Store it.
-      call get_random_number          ; Roll dice.
-      cp b                            ; Compare dice roll to chance.
-      jp nc,+                         ;
-        scf                           ; Set carry flag!
-        ret
-    +:
-    or a                              ; Clear carry flag.
-  ret
+      or a                              ; Clear carry and return.
+      ret nz                            ; Only action: Timer was decremented.
+        ld a,(ix+trigger.interval)      ; Reset timer to interval.
+        ld (ix+trigger.timer),a
+        ld a,(ix+trigger.chance)        ; Get trigger.chance.
+        ld b,a                          ; Store it.
+        call get_random_number          ; Roll dice.
+        cp b                            ; Compare dice roll to chance.
+        jp nc,+                         ;
+          scf                           ; Set carry flag!
+          ret
+      +:
+      or a                              ; Clear carry flag.
+    ret
 .ends
