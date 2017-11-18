@@ -277,6 +277,9 @@
     .db 0, 8, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, BEE
   ;
+  transition_trigger_init_table:
+    .db 255, 255
+    .db DISABLED, TRANSITION_TRIGGER_CYCLE_INIT    
   ;
   difficulty_to_trigger_init_tables:
     .dw difficulty_0_batch_trigger_init_table

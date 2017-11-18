@@ -146,6 +146,8 @@
 .equ INITIAL_DIFFICULTY 0
 .equ DIFFICULTY_MAX 3
 ;
+.equ TRANSITION_TRIGGER_CYCLE_INIT 2
+;
 ; Difficulty 0
 .equ SPINNER_TRIGGER_CHANCE_INIT_0 50 ; 50
 .equ SPINNER_TRIGGER_INTERVAL_INIT_0 230 ;230
@@ -219,6 +221,7 @@
   ;
   level db
   difficulty db
+  transition_trigger instanceof trigger
   ;
   swabby instanceof game_object
   player_score instanceof score_struct

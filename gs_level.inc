@@ -53,6 +53,10 @@
     call put_string
     ;
     call randomize  ; FIXME! Base on player input (titlescreen).
+    ; Reset the transition trigger.
+    ld hl,transition_trigger_init_table
+    ld ix,transition_trigger
+    call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
     ld a,(difficulty)                         ; Get current difficulty.
@@ -573,19 +577,29 @@
       ; Press player 2 button 1 to stop enemy objects spawning.
       call is_player_2_button_1_pressed
       jp nc,+
-        ;ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
-        ;ld hl,batch_wipe_and_disable_all_triggers
-        ;call batch_initialize_triggers
         ld a,(difficulty)
         cp DIFFICULTY_MAX
         jp z,+
-          inc a
-          ld (difficulty),a
-          call PSGSFXStop
-          call PSGStop
-          call FadeOutScreen
-          ld a,GS_PREPARE_LEVEL
-          ld (game_state),a
+          ld a,ENABLED
+          ld (transition_trigger.state),a
+          ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
+          ld hl,batch_wipe_and_disable_all_triggers
+          call batch_initialize_triggers
+      +:
+      ; Process transition to next difficulty timer.
+      ld ix,transition_trigger
+      call process_trigger
+      jp nc,+
+      ld a,(difficulty)
+      cp DIFFICULTY_MAX
+      jp z,+
+        inc a
+        ld (difficulty),a
+        call PSGSFXStop
+        call PSGStop
+        call FadeOutScreen
+        ld a,GS_PREPARE_LEVEL
+        ld (game_state),a
       +:
       ; Put the profiler bee in the SAT.
       ld ix,bee
