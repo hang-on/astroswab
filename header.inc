@@ -87,6 +87,7 @@
   .equ SWABBY_LIFE_CHAR 175
 ; Score:
   .equ SCORE_VRAM_ADDRESS $3d92
+  .equ PEAK_SCORE_VRAM_ADDRESS $3d92+12
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
