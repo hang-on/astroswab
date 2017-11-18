@@ -5,11 +5,14 @@
 ; -----------------------------------------------------------------------------
 ; Triggers have....
 ;
+.equ DEFAULT_CYCLE_VALUE 1
+;
 .struct trigger
   timer db
   interval db
   chance db
   state db
+  cycle db
 .endst
 ;
 .section "Trigger functions" free
@@ -58,6 +61,9 @@
     inc hl
     ld a,(hl)
     ld (ix+trigger.state),a
+    inc hl
+    ld a,(hl)
+    ld (ix+trigger.cycle),a
   ret
   ;
   process_trigger:
