@@ -4,11 +4,16 @@
 ; TRIGGERS
 ; -----------------------------------------------------------------------------
 ; Triggers have....
+;
+.equ DEFAULT_CYCLE_VALUE 1
+;
 .struct trigger
-  timer db
-  interval db
-  chance db
-  state db
+  timer db                        ; Curent timer value.
+  interval db                     ; Timer value when reset.
+  chance db                       ; Chance of carry being set when time is up.
+  state db                        ; ENALED or DISABLED
+  cycle db                        ; Current cycle counter.
+  cycle_reset db                  ; Cycle value when reset.
 .endst
 ;
 .section "Trigger functions" free
@@ -57,6 +62,10 @@
     inc hl
     ld a,(hl)
     ld (ix+trigger.state),a
+    inc hl
+    ld a,(hl)
+    ld (ix+trigger.cycle),a
+    ld (ix+trigger.cycle_reset),a
   ret
   ;
   process_trigger:
@@ -75,14 +84,28 @@
       ret nz                            ; Only action: Timer was decremented.
         ld a,(ix+trigger.interval)      ; Reset timer to interval.
         ld (ix+trigger.timer),a
-        ld a,(ix+trigger.chance)        ; Get trigger.chance.
-        ld b,a                          ; Store it.
-        call get_random_number          ; Roll dice.
-        cp b                            ; Compare dice roll to chance.
-        jp nc,+                         ;
-          scf                           ; Set carry flag!
-          ret
-      +:
-      or a                              ; Clear carry flag.
-    ret
+        ; Check cycle count - when it reaches zero, reset it and roll dice to
+        ; see if we should return with carry set.
+        ld a,(ix+trigger.cycle)
+        dec a
+        ld (ix+trigger.cycle),a
+        ret nz
+          ; Cycle counter has reached zero.
+          ld a,(ix+trigger.cycle_reset)   ; Reset cycle counter.
+          ld (ix+trigger.cycle),a
+          ; Roll dice.
+          ld a,(ix+trigger.chance)        ; Get trigger.chance.
+          ld b,a                          ; Store it.
+          call get_random_number          ; Roll dice.
+          cp b                            ; Compare dice roll to chance.
+          jp nz,+
+            scf                           ; Set carry flag if roll = chance!
+            ret
+        +:
+          jp nc,+                         ;
+            scf                           ; Set carry flag if roll < chance!
+            ret
+        +:
+        or a                              ; Clear carry flag.
+      ret
 .ends
