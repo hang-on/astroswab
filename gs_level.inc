@@ -558,7 +558,9 @@
     ;
     ld hl,frame_counter
     inc (hl)
+    ;
     .ifdef DEVELOPER_MODE
+      ; Exit to developer menu if reset button is pressed.
       call is_reset_pressed
       jp nc,+
         call PSGSFXStop
@@ -568,8 +570,16 @@
         ld (game_state),a
         jp ++
       +:
-        ld ix,bee
-        call mark_scanline_with_game_object
+      ; Press player 2 button 1 to stop enemy objects spawning.
+      call is_player_2_button_1_pressed
+      jp nc,+
+        ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
+        ld hl,batch_wipe_and_disable_all_triggers
+        call batch_initialize_triggers
+      +:
+      ; Put the profiler bee in the SAT.
+      ld ix,bee
+      call mark_scanline_with_game_object
       ++:
     .endif
   jp main_loop

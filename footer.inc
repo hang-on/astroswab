@@ -284,6 +284,17 @@
     .dw difficulty_2_batch_trigger_init_table
     .dw difficulty_3_batch_trigger_init_table
   ;
+  ; Triggers are batch-disabled to stop enemy spawning.
+  batch_wipe_and_disable_all_triggers:
+    .dw spinner_trigger, trigger_wipe_table
+    .dw booster_trigger, trigger_wipe_table
+    .dw missile_trigger, trigger_wipe_table
+    .dw shard_trigger, trigger_wipe_table
+    .dw asteroid_trigger, trigger_wipe_table
+  batch_wipe_and_disable_all_triggers_end:
+  trigger_wipe_table:
+    .db 0, 0, DISABLED
+  ;
   ; Note! First table is used for dimensioning batch inits (lev. startup).
   difficulty_0_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_0

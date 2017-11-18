@@ -535,6 +535,17 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "is_player_2_button_1_pressed" free
+; -----------------------------------------------------------------------------
+  is_player_2_button_1_pressed:
+    ld a,(input_ports+1)
+    and %00000100
+    ret nz            ; Return with carry flag reset
+    scf
+  ret                 ; Return with carry flag set.
+.ends
+;
+; -----------------------------------------------------------------------------
 .section "is_button_2_pressed" free
 ; -----------------------------------------------------------------------------
   is_button_2_pressed:
