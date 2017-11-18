@@ -573,9 +573,19 @@
       ; Press player 2 button 1 to stop enemy objects spawning.
       call is_player_2_button_1_pressed
       jp nc,+
-        ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
-        ld hl,batch_wipe_and_disable_all_triggers
-        call batch_initialize_triggers
+        ;ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
+        ;ld hl,batch_wipe_and_disable_all_triggers
+        ;call batch_initialize_triggers
+        ld a,(difficulty)
+        cp DIFFICULTY_MAX
+        jp z,+
+          inc a
+          ld (difficulty),a
+          call PSGSFXStop
+          call PSGStop
+          call FadeOutScreen
+          ld a,GS_PREPARE_LEVEL
+          ld (game_state),a
       +:
       ; Put the profiler bee in the SAT.
       ld ix,bee
