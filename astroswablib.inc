@@ -91,6 +91,17 @@
       ;
   ret
   ;
+  begin_transition:
+    ; Start transition timed trigger and stop spawning of new enemies.
+    ; DRY-fix for transition from both plr2 button 1 and score.
+    ld a,ENABLED
+    ld (transition_trigger.state),a
+    ;
+    ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
+    ld hl,batch_wipe_and_disable_all_triggers
+    call batch_initialize_triggers
+  ret
+  ;
 .ends
 ;
 ; -----------------------------------------------------------------------------
@@ -546,6 +557,8 @@ tall_meta_sprite_table:
   randomizer_table:
     .dbrnd 2,1,254
 .ends
+
+
 ; -----------------------------------------------------------------------------
 ; SANDBOX
 ; -----------------------------------------------------------------------------
