@@ -72,7 +72,12 @@
     ; Initialize the triggers.
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
-    ;
+    ; Set transition score (when to transition to next difficulty).
+    ld a,(difficulty)
+    ld hl,transition_score_init_table
+    call get_word_from_table
+    ld de,transition_score
+    call copy_score_and_increment_pointers
     ; -------------------------------------------------------------------------
     ; Initialize the various game objects.
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
@@ -588,6 +593,15 @@
       ld de,peak_score
       call copy_score_and_increment_pointers
     +:
+    ; Is it time to transition to next difficulty?
+    ld a,(difficulty)
+    cp DIFFICULTY_MAX
+    jp z,+
+      ld iy,peak_score
+      ld ix,transition_score
+      call compare_scores
+      call c,begin_transition
+    +:
     ;
     ; Process transition to next difficulty timer.
     ld ix,transition_trigger
@@ -627,13 +641,7 @@
       jp nc,+
         ld a,(difficulty)
         cp DIFFICULTY_MAX
-        jp z,+
-          ld a,ENABLED
-          ld (transition_trigger.state),a
-          ;
-          ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
-          ld hl,batch_wipe_and_disable_all_triggers
-          call batch_initialize_triggers
+        call nz,begin_transition
       +:
       ; Put the profiler bee in the SAT.
       ld ix,bee
