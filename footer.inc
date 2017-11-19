@@ -15,9 +15,6 @@
   player_score_init:
     .asc "00000"
     .asc "???"
-  multe_score_init:
-    .asc "00001"
-    .asc "MUL"
     ;
   hiscore_init:
     .asc "00100"
@@ -30,6 +27,17 @@
     .asc "FAR"
     .asc "00060"
     .asc "FEL"
+  ;
+  transition_score_init_table:
+    .dw difficulty_0_transition_score, difficulty_1_transition_score
+    .dw difficulty_2_transition_score
+  difficulty_0_transition_score:
+    .asc "00500"
+  difficulty_1_transition_score:
+    .asc "01500"
+  difficulty_2_transition_score:
+    .asc "03000"
+
   ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
@@ -279,7 +287,7 @@
   ;
   transition_trigger_init_table:
     .db 255, 255
-    .db DISABLED, TRANSITION_TRIGGER_CYCLE_INIT    
+    .db DISABLED, TRANSITION_TRIGGER_CYCLE_INIT
   ;
   difficulty_to_trigger_init_tables:
     .dw difficulty_0_batch_trigger_init_table
