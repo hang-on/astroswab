@@ -17,16 +17,31 @@
     .asc "???"
     ;
   hiscore_init:
-    .asc "00100"
+    .asc "02000"
     .asc "LAS"
-    .asc "00090"
+    .asc "01700"
     .asc "LUN"
-    .asc "00080"
+    .asc "01500"
     .asc "MOR"
-    .asc "00070"
+    .asc "01300"
     .asc "FAR"
-    .asc "00060"
+    .asc "01100"
     .asc "FEL"
+    .asc "00900"
+    .asc "RYU"
+    .asc "00700"
+    .asc "KEN"
+    .asc "00500"
+    .asc "CHU"
+    .asc "00400"
+    .asc "DHA"
+    .asc "00300"
+    .asc "CAM"
+
+
+
+
+
   ;
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score
