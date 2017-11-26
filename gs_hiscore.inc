@@ -21,6 +21,12 @@ prepare_hiscore:
   ; Wipe sprites.
   call begin_sprites
   call load_sat
+  SELECT_BANK HISCORE_BANK
+  ; Background graphics
+  ld hl,hiscore_background_table
+  call load_vram_from_table       ; Load the tiles.
+  call load_vram_from_table       ; Load the tilemap.
+
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop

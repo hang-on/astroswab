@@ -21,8 +21,8 @@
 .endst
 ;
 .equ NUMBER_OF_HISCORE_ITEMS 10
-.equ HISCORE_TABLE_ROW 5
-.equ HISCORE_TABLE_COLUMN 8
+.equ HISCORE_TABLE_ROW 7
+.equ HISCORE_TABLE_COLUMN 10
 ;
 
 .ramsection "score and hiscore handling - variables" slot 3

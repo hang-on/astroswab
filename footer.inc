@@ -15,33 +15,6 @@
   player_score_init:
     .asc "00000"
     .asc "???"
-    ;
-  hiscore_init:
-    .asc "02000"
-    .asc "LAS"
-    .asc "01700"
-    .asc "LUN"
-    .asc "01500"
-    .asc "MOR"
-    .asc "01300"
-    .asc "FAR"
-    .asc "01100"
-    .asc "FEL"
-    .asc "00900"
-    .asc "RYU"
-    .asc "00700"
-    .asc "KEN"
-    .asc "00500"
-    .asc "CHU"
-    .asc "00400"
-    .asc "DHA"
-    .asc "00300"
-    .asc "CAM"
-
-
-
-
-
   ;
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score
@@ -596,7 +569,47 @@
     .incbin "bank_5\shot_booster.psg"
   missile_warning:
     .incbin "bank_5\missile_warning.psg"
-
-
+.ends
+;
+.bank HISCORE_BANK slot 2
+; -----------------------------------------------------------------------------
+.section "Hiscore assets" free
+; -----------------------------------------------------------------------------
+  ;
+hiscore_init:
+  .asc "02000"
+  .asc "LAS"
+  .asc "01700"
+  .asc "LUN"
+  .asc "01500"
+  .asc "MOR"
+  .asc "01300"
+  .asc "FAR"
+  .asc "01100"
+  .asc "FEL"
+  .asc "00900"
+  .asc "RYU"
+  .asc "00700"
+  .asc "KEN"
+  .asc "00500"
+  .asc "CHU"
+  .asc "00400"
+  .asc "DHA"
+  .asc "00300"
+  .asc "CAM"
+;
+hiscore_background_tiles:
+  .include "bank_9\hiscore_background_tiles.inc"
+hiscore_background_tiles_end:
+hiscore_background_tilemap:
+  .include "bank_9\hiscore_background_tilemap.inc"
+hiscore_background_table:
+  .dw NON_ASCII_AREA_START,
+  .dw hiscore_background_tiles_end-hiscore_background_tiles,
+  .dw hiscore_background_tiles
+  .dw NAME_TABLE_START,
+  .dw VISIBLE_NAME_TABLE_SIZE,
+  .dw hiscore_background_tilemap
+  .dw $0000, $0000                                  ; Filler: 2 words.
 
 .ends

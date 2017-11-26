@@ -5,6 +5,9 @@
 ; Font:
   .equ FONT_BANK 2
 ;
+; Hiscore:
+  .equ HISCORE_BANK 9
+;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
   .equ FIRST_LINE_OF_VBLANK 192
