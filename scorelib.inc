@@ -10,7 +10,6 @@
 .equ SCORE_TEN_THOUANDS 0
 .equ SCORE_DIGITS_TOTAL 5
 .equ LETTERS_IN_INITIALS 3
-.equ HISCORE_EXTRAM_ADDRESS EXTRAM_START+10 ; Where in EXTRAM to save table?
 ;
 .struct score_struct
   ten_thousands db

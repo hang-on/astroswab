@@ -38,6 +38,7 @@
     ld hl,font_table
     call load_vram_from_table
     ;
+    ;
     call PSGInit
     ; Go to the initial game state specified in the header.
     ld a,INITIAL_GAME_STATE

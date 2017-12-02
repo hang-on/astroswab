@@ -45,7 +45,7 @@ prepare_devmenu:
   ld b,21
   call set_cursor
   SELECT_EXTRAM
-    ld hl,EXTRAM_START
+    ld hl,EXTRAM_COUNTER
     ld a,(hl)
     inc (hl)
   SELECT_ROM
