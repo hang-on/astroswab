@@ -35,12 +35,20 @@ prepare_hiscore:
   ; TODO: Get rid of the demo add/sub and dummy table. It should be loaded
   ; directly from EXTRAM.
   ;
-  ld hl,hiscore_init
-  ld de,hiscore_item.1
-  call copy_hiscore_table
+  ;ld hl,hiscore_init        ; FIXME: This is only on first game ever!
+  ;ld de,hiscore_item.1      ; Should be turned into func "reset_hiscore_table"
+  ;call copy_hiscore_table
   ;
+  call load_hiscore_table_from_extram
+  ;
+  ; Development: ----------------------------
+  ; Test score against hiscore table and enter initials and rebuild as
+  ; necessary.
   ld hl,player_score
   call rebuild_hiscore_table
+  ; ----------------------------
+  call save_hiscore_table_to_extram ; FIXME
+  ; ----------------------------
   ;
   ld a,HISCORE_TABLE_ROW
   ld b,HISCORE_TABLE_COLUMN

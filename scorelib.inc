@@ -10,6 +10,7 @@
 .equ SCORE_TEN_THOUANDS 0
 .equ SCORE_DIGITS_TOTAL 5
 .equ LETTERS_IN_INITIALS 3
+.equ HISCORE_EXTRAM_ADDRESS EXTRAM_START+10 ; Where in EXTRAM to save table?
 ;
 .struct score_struct
   ten_thousands db
@@ -35,6 +36,28 @@
 .ends
 ; -----------------------------------------------------------------------------
 .section "score and hiscore handling - functions" free
+  ;
+  save_hiscore_table_to_extram:
+    ;
+    ;
+    SELECT_EXTRAM
+      ld hl,hiscore_item.1
+      ld de,HISCORE_EXTRAM_ADDRESS
+      ld bc,_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS
+      ldir
+    SELECT_ROM
+  ret
+  ;
+  load_hiscore_table_from_extram:
+    ;
+    ;
+    SELECT_EXTRAM
+      ld hl,HISCORE_EXTRAM_ADDRESS
+      ld de,hiscore_item.1
+      ld bc,_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS
+      ldir
+    SELECT_ROM
+  ret
   ;
   add_to_score:
     ; Add a number passed in B to the digit specified in A. Update the other
