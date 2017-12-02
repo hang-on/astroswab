@@ -32,8 +32,6 @@ prepare_hiscore:
   call PSGStop
   ;
   ; Build, and write to VRAM, the hiscore table.
-  ; TODO: Get rid of the demo add/sub and dummy table. It should be loaded
-  ; directly from EXTRAM.
   ;
   ;ld hl,hiscore_init        ; FIXME: This is only on first game ever!
   ;ld de,hiscore_item.1      ; Should be turned into func "reset_hiscore_table"
@@ -42,7 +40,7 @@ prepare_hiscore:
   call load_hiscore_table_from_extram
   ;
   ; Development: ----------------------------
-  ; Test score against hiscore table and enter initials and rebuild as
+  ; Test peak score against hiscore table and enter initials and rebuild as
   ; necessary.
   ld hl,peak_score
   call rebuild_hiscore_table
