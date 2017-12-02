@@ -44,7 +44,7 @@ prepare_hiscore:
   ; Development: ----------------------------
   ; Test score against hiscore table and enter initials and rebuild as
   ; necessary.
-  ld hl,player_score
+  ld hl,peak_score
   call rebuild_hiscore_table
   ; ----------------------------
   call save_hiscore_table_to_extram ; FIXME
