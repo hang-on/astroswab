@@ -44,15 +44,14 @@
     ex de,hl
     SELECT_EXTRAM
       ld hl,hiscore_item.1
-      ld de,HISCORE_EXTRAM_ADDRESS
       ld bc,_sizeof_score_struct*NUMBER_OF_HISCORE_ITEMS
       ldir
     SELECT_ROM
   ret
   ;
   load_hiscore_table_from_extram:
-    ;
-    ;
+    ; Load the hiscore table from a specified address in external RAM.
+    ; Entry:
     SELECT_EXTRAM
       ld hl,HISCORE_EXTRAM_ADDRESS
       ld de,hiscore_item.1
