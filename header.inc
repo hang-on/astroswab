@@ -275,6 +275,5 @@
   ;
   sandbox_trigger instanceof trigger
   ;
-  hiscore_trigger instanceof trigger
   new_hiscore db
 .ends

@@ -25,6 +25,7 @@
     .asc "01500"
   difficulty_2_transition_score:
     .asc "03000"
+  
 
   ;
   gun_level_char_data_init:

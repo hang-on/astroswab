@@ -35,6 +35,36 @@ prepare_hiscore:
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
+  ; ---
+  ; Point to the last hiscore item...
+  ld de,_sizeof_score_struct
+  ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
+  ld hl,hiscore_item.1
+  -:
+    add hl,de
+  djnz -
+  ; Now hl points to the last hiscore item.
+  ; Compare against peak score.
+  ld iy,peak_score
+  push hl
+  pop ix
+  call compare_scores
+  jp nc,+
+    ; Player broke on one the highscores -> enter new hiscore mode
+    ld a,TRUE
+    ld (new_hiscore),a
+    jp ++
+  +:
+    ; Player did not break hiscore -> read-only mode
+    ld a,FALSE
+    ld (new_hiscore),a
+    ld hl,transition_trigger_init_table
+    ld ix,transition_trigger
+    call initialize_trigger
+    call enable_trigger
+  ++:
+  ; ---
+  ;
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
   ;
@@ -72,23 +102,39 @@ run_hiscore:
   ; TODO: Add two modes - Read only and write (if player enters the table).
   ; Add If/else here...
   ; Read-only mode (view hiscore list until timer depletes).
+  ld a,(new_hiscore)
+  cp TRUE
+  jp nz,hiscore_read_only
+    ; New hiscore..
+    ; Handle initials input...
 
-
-  ; Write mode (wait for player to enter initials and confirm with button).
-  ;
-  ; Save hiscore table and exit when player press button.
-  call is_button_1_pressed
-  jp nc,+
-    ld hl,HISCORE_EXTRAM_ADDRESS
-    call save_hiscore_table_to_extram
     ;
-    call PSGSFXStop
-    call PSGStop
-    call FadeOutScreen
-    ld a,GS_PREPARE_DEVMENU
-    ld (game_state),a
-  +:
+    ; Save hiscore table and exit when player press button.
+    call is_button_1_pressed
+    jp nc,+
+      ld hl,HISCORE_EXTRAM_ADDRESS
+      call save_hiscore_table_to_extram
+      ;
+      call PSGSFXStop
+      call PSGStop
+      call FadeOutScreen
+      ld a,GS_PREPARE_DEVMENU
+      ld (game_state),a
+    +:
+    jp ++
+  hiscore_read_only:
+    ; Display hiscore table until timer depletes, then transition...
+    ld ix,transition_trigger
+    call process_trigger
+    jp nc,+
+      call PSGSFXStop
+      call PSGStop
+      call FadeOutScreen
+      ld a,GS_PREPARE_DEVMENU
+      ld (game_state),a
+    +:
 
+  ++:
 
   call PSGSFXFrame
   call PSGFrame
