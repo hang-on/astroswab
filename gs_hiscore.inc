@@ -31,11 +31,12 @@ prepare_hiscore:
   call PSGSFXStop
   call PSGStop
   ;
-  ; Build, and write to VRAM, the hiscore table.
+  ; Build, and write to EXTRAM, the hiscore table.
   ;
   ;ld hl,hiscore_init        ; FIXME: This is only on first game ever!
   ;ld de,hiscore_item.1      ; Should be turned into func "reset_hiscore_table"
   ;call copy_hiscore_table
+  ;
   ;
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
