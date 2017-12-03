@@ -45,7 +45,8 @@ prepare_hiscore:
   ld hl,peak_score
   call rebuild_hiscore_table
   ; ----------------------------
-  call save_hiscore_table_to_extram ; FIXME
+  ld hl,HISCORE_EXTRAM_ADDRESS
+  call save_hiscore_table_to_extram
   ; ----------------------------
   ;
   ld a,HISCORE_TABLE_ROW

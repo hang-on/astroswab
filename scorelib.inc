@@ -37,8 +37,11 @@
 .section "score and hiscore handling - functions" free
   ;
   save_hiscore_table_to_extram:
-    ;
-    ;
+    ; Save the hiscore table at a specified address in external RAM.
+    ; Entry: HL = Destination in external RAM.
+    ; Exit: None
+    ; Uses BC, DE, HL (flag P/V is reset).
+    ex de,hl
     SELECT_EXTRAM
       ld hl,hiscore_item.1
       ld de,HISCORE_EXTRAM_ADDRESS
