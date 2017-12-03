@@ -38,8 +38,6 @@ prepare_hiscore:
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
   ;
-  ld hl,HISCORE_EXTRAM_ADDRESS
-  call save_hiscore_table_to_extram
   ;
   ld a,HISCORE_TABLE_ROW
   ld b,HISCORE_TABLE_COLUMN
@@ -71,8 +69,27 @@ run_hiscore:
   ; End of VDP-updating...
   call get_input_ports
   call begin_sprites
+  ; TODO: Add two modes - Read only and write (if player enters the table).
+  ; Add If/else here...
+  ; Read-only mode (view hiscore list until timer depletes).
+
+
+  ; Write mode (wait for player to enter initials and confirm with button).
   ;
-  ;
+  ; Save hiscore table and exit when player press button.
+  call is_button_1_pressed
+  jp nc,+
+    ld hl,HISCORE_EXTRAM_ADDRESS
+    call save_hiscore_table_to_extram
+    ;
+    call PSGSFXStop
+    call PSGStop
+    call FadeOutScreen
+    ld a,GS_PREPARE_DEVMENU
+    ld (game_state),a
+  +:
+
+
   call PSGSFXFrame
   call PSGFrame
   ;
