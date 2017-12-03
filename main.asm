@@ -67,6 +67,15 @@
   ;
   setup_new_game:
     ;
+    SELECT_EXTRAM
+      ld a,(FIRST_GAME_FLAG)
+      cp $aa
+      jp z,+
+        ld a,$aa
+        ld (FIRST_GAME_FLAG),a
+      +:
+    SELECT_ROM
+    ;
     ld a,INITIAL_DIFFICULTY           ; Set difficulty.
     ld (difficulty),a
     ;
