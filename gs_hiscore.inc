@@ -35,7 +35,6 @@ prepare_hiscore:
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
-  ; ---
   ; Point to the last hiscore item...
   ld de,_sizeof_score_struct
   ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
@@ -63,7 +62,6 @@ prepare_hiscore:
     call initialize_trigger
     call enable_trigger
   ++:
-  ; ---
   ;
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
@@ -99,15 +97,12 @@ run_hiscore:
   ; End of VDP-updating...
   call get_input_ports
   call begin_sprites
-  ; TODO: Add two modes - Read only and write (if player enters the table).
-  ; Add If/else here...
-  ; Read-only mode (view hiscore list until timer depletes).
+  ; Switch case depending on whether we have a new hiscore.
   ld a,(new_hiscore)
   cp TRUE
   jp nz,hiscore_read_only
     ; New hiscore..
     ; Handle initials input...
-
     ;
     ; Save hiscore table and exit when player press button.
     call is_button_1_pressed
@@ -115,27 +110,17 @@ run_hiscore:
       ld hl,HISCORE_EXTRAM_ADDRESS
       call save_hiscore_table_to_extram
       ;
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-      ld a,GS_PREPARE_DEVMENU
-      ld (game_state),a
+      call transition_to_devmenu
     +:
-    jp ++
+  jp ++
   hiscore_read_only:
+    ; No new hiscore.
     ; Display hiscore table until timer depletes, then transition...
     ld ix,transition_trigger
     call process_trigger
-    jp nc,+
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-      ld a,GS_PREPARE_DEVMENU
-      ld (game_state),a
-    +:
-
+    call c,transition_to_devmenu
+  ;
   ++:
-
   call PSGSFXFrame
   call PSGFrame
   ;
@@ -143,13 +128,15 @@ run_hiscore:
   inc (hl)
   .ifdef DEVELOPER_MODE
     call is_reset_pressed
-    jp nc,+
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-      ld a,GS_PREPARE_DEVMENU
-      ld (game_state),a
-    +:
+    call c,transition_to_devmenu
   .endif
 
 jp main_loop
+  ;
+  transition_to_devmenu:
+    call PSGSFXStop
+    call PSGStop
+    call FadeOutScreen
+    ld a,GS_PREPARE_DEVMENU
+    ld (game_state),a
+  ret
