@@ -67,15 +67,25 @@
   ;
   setup_new_game:
     ;
+    ; Perform test: Is this the first time ever this game is run?
     SELECT_EXTRAM
-      ld a,(FIRST_GAME_FLAG)
-      cp $aa
+      ld a,(FIRST_GAME_BYTE)
+      cp FIRST_GAME_ID
       jp z,+
-        ld a,$aa
-        ld (FIRST_GAME_FLAG),a
+        ; Game is running for the first time...
+        ld a,FIRST_GAME_ID
+        ld (FIRST_GAME_BYTE),a      ; Stamp EXTRAM byte.
+        SELECT_ROM
+        SELECT_BANK HISCORE_BANK
+          ld hl,hiscore_init        ; Hiscore initialization data.
+          ld de,hiscore_item.1      ; Start of hiscore table.
+          call copy_hiscore_table   ; Initialize hiscore table.
+        SELECT_EXTRAM
+        ld hl,HISCORE_EXTRAM_ADDRESS
+        call save_hiscore_table_to_extram
       +:
     SELECT_ROM
-    ;
+    ; -------------------------------------------------------------------------
     ld a,INITIAL_DIFFICULTY           ; Set difficulty.
     ld (difficulty),a
     ;

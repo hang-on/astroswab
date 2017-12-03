@@ -4,12 +4,15 @@
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
-  .equ FIRST_GAME_FLAG EXTRAM_COUNTER+1
-  .equ RESERVED_BYTE_1 FIRST_GAME_FLAG+1
+  .equ FIRST_GAME_BYTE EXTRAM_COUNTER+1
+  .equ RESERVED_BYTE_1 FIRST_GAME_BYTE+1
   .equ RESERVED_BYTE_2 RESERVED_BYTE_1+1
   .equ RESERVED_WORD_1 RESERVED_BYTE_2+1
   .equ HISCORE_EXTRAM_ADDRESS RESERVED_WORD_1+2
 ;
+; First game (first time the game is run - ever!):
+  .equ FIRST_GAME_ID $aa  ; Check for this value in EXTRAM (FIRST_GAME_BYTE).
+
 ; Font:
   .equ FONT_BANK 2
 ;

@@ -31,25 +31,15 @@ prepare_hiscore:
   call PSGSFXStop
   call PSGStop
   ;
-  ; Build, and write to EXTRAM, the hiscore table.
-  ;
-  ;ld hl,hiscore_init        ; FIXME: This is only on first game ever!
-  ;ld de,hiscore_item.1      ; Should be turned into func "reset_hiscore_table"
-  ;call copy_hiscore_table
-  ;
   ;
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
-  ; Development: ----------------------------
-  ; Test peak score against hiscore table and enter initials and rebuild as
-  ; necessary.
-  ld hl,peak_score
-  call rebuild_hiscore_table
-  ; ----------------------------
+  ld hl,peak_score                      ; Rebuild the hiscore table againt the
+  call rebuild_hiscore_table            ; player's peak score.
+  ;
   ld hl,HISCORE_EXTRAM_ADDRESS
   call save_hiscore_table_to_extram
-  ; ----------------------------
   ;
   ld a,HISCORE_TABLE_ROW
   ld b,HISCORE_TABLE_COLUMN
