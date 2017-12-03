@@ -37,6 +37,7 @@ prepare_hiscore:
   ;ld de,hiscore_item.1      ; Should be turned into func "reset_hiscore_table"
   ;call copy_hiscore_table
   ;
+  ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
   ; Development: ----------------------------
