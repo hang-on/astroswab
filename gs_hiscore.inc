@@ -66,11 +66,9 @@ prepare_hiscore:
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
   ;
-  ;
-  ld a,HISCORE_TABLE_ROW
+  ld a,HISCORE_TABLE_ROW                ; Print table.
   ld b,HISCORE_TABLE_COLUMN
   call print_hiscore_table
-  ;
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -92,9 +90,11 @@ run_hiscore:
     in a,(V_COUNTER_PORT)
     cp FIRST_LINE_OF_VBLANK+1
   jp nz,-
-
+  ;
   call load_sat
-  ; End of VDP-updating...
+  ;
+  ; End of (unsafe) VDP-updating...
+  ;
   call get_input_ports
   call begin_sprites
   ; Switch case depending on whether we have a new hiscore.
@@ -133,7 +133,7 @@ run_hiscore:
 
 jp main_loop
   ;
-  transition_to_devmenu:
+  transition_to_devmenu: ; TODO: Make game state transition func.
     call PSGSFXStop
     call PSGStop
     call FadeOutScreen
