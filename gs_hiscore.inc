@@ -35,6 +35,8 @@ prepare_hiscore:
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
+  ;
+
   ; Point to the last hiscore item...
   ld de,_sizeof_score_struct
   ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
@@ -66,6 +68,25 @@ prepare_hiscore:
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
   ;
+  ; --------------------
+  ld hl,peak_score
+  call get_hiscore_table_postion_from_score
+  jp c,+
+    ; Carry not set - peak score is in the hiscore table.
+    SELECT_EXTRAM
+    ;ld a,1
+    ld (RESERVED_BYTE_1),a
+    SELECT_ROM
+    jp ++
+  +:
+    ; Carry set: Peak score is NOT in the hiscore table.
+    SELECT_EXTRAM
+    ld a,0
+    ld (RESERVED_BYTE_1),a
+    SELECT_ROM
+  ++:
+  ; --------------------
+
   ld a,HISCORE_TABLE_ROW                ; Print table.
   ld b,HISCORE_TABLE_COLUMN
   call print_hiscore_table
@@ -121,6 +142,7 @@ run_hiscore:
     call c,transition_to_devmenu
   ;
   ++:
+
   call PSGSFXFrame
   call PSGFrame
   ;

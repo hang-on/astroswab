@@ -209,6 +209,38 @@
     hiscore_item_spacer:
       .asc "....."
   ;
+  get_hiscore_table_postion_from_score:
+    ; Point to score. Test it against scores already in hiscore table.
+    ; First time a match occurs, stop and return position, and reset carry.
+    ; Else set carry to indicate error: Score not in table.
+    ; Entry: HL = Pointer to score.
+    ; Exit: A = Position in hiscore table (carry reset) or
+    ;           carry set to indicate error: Score is NOT in table.
+    ; Uses: AF, B, DE, HL, IX, IY
+    push hl
+    pop iy
+    ld hl,hiscore_item.1
+    push hl
+    pop ix
+    ld de,_sizeof_score_struct
+    ld b,1
+    -:
+      call compare_scores
+      jp nc,+
+        or a                          ; Reset carry
+        ld a,b                        ; Return with position in A
+        ret                           ; Exit function.
+      +:
+      add hl,de
+      push hl
+      pop ix
+      inc b
+      ld a,NUMBER_OF_HISCORE_ITEMS+1
+      cp b
+    jp nz,-
+    scf                               ; Set carry to indicate error.
+  ret                                 ; Exit function.
+    ;
   rebuild_hiscore_table:
     ; Rebuilds the hiscore table against a new score item pointed to by HL.
     ; If the new score is high enough to be somewhere on the hiscore list,
