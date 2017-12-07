@@ -95,6 +95,11 @@ prepare_hiscore:
   +:
   ; --------------------
   ;
+  ld ix,cursor_blink_trigger
+  ld hl,cursor_blink_trigger_init_table
+  call initialize_trigger
+
+  ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,1
@@ -128,10 +133,10 @@ run_hiscore:
   jp nz,hiscore_read_only
     ; New hiscore..
     ; Handle initials input...
-    ld a,ASCII_SPACE
-    call put_char
-    ld hl,cursor_x
-    dec (hl)
+    ;ld a,ASCII_SPACE
+    ;call put_char
+    ;ld hl,cursor_x
+    ;dec (hl)
     ;
     ; Save hiscore table and exit when player press button.
     call is_button_1_pressed

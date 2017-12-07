@@ -15,7 +15,11 @@
   player_score_init:
     .asc "00000"
     .asc "???"
-  ;
+    ;
+  cursor_blink_trigger_init_table:
+    .db 255, 100
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score
     .dw difficulty_2_transition_score
@@ -25,9 +29,7 @@
     .asc "01500"
   difficulty_2_transition_score:
     .asc "03000"
-  
-
-  ;
+    ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
     .db ASCII_ZERO, GUN_LEVEL_NAMETABLE_FLAGS
