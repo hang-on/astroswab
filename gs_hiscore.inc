@@ -64,8 +64,6 @@ prepare_hiscore:
     ; Player broke on one the highscores -> enter new hiscore mode
     ld a,TRUE
     ld (new_hiscore),a
-
-
     jp ++
   +:
     ; Player did not break hiscore -> read-only mode
@@ -85,25 +83,16 @@ prepare_hiscore:
   call print_hiscore_table
   ;
   ; --------------------
-  ld hl,peak_score
-  call get_hiscore_table_postion_from_score
-  jp c,+
-    ; Carry not set - peak score is in the hiscore table.
-    SELECT_EXTRAM
-    ;ld a,1
-    ld (RESERVED_BYTE_1),a
-    SELECT_ROM
+  ld a,(new_hiscore)
+  cp TRUE
+  jp nz,+
+    ; Place cursor at the first char in player initials.
+    ld hl,peak_score
+    call get_hiscore_table_postion_from_score
     add a,(TOP_POSITION_ROW-1)
     ld b,TOP_POSITION_COLUMN
     call set_cursor
-    jp ++
   +:
-    ; Carry set: Peak score is NOT in the hiscore table.
-    SELECT_EXTRAM
-    ld a,0
-    ld (RESERVED_BYTE_1),a
-    SELECT_ROM
-  ++:
   ; --------------------
   ;
   ; Turn on screen and frame interrupts.
