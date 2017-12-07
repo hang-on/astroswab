@@ -42,6 +42,7 @@ prepare_hiscore:
     call copy_score_and_increment_pointers
     jp +
       peak_score_test_data:
+        .asc "01900"
         .asc "???"
     +:
   .endif
