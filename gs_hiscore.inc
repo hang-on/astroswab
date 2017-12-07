@@ -35,8 +35,17 @@ prepare_hiscore:
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
+  ; Preset peak score for testing.
+  .ifdef DEVELOPER_MODE
+    ld hl,peak_score_test_data
+    ld de,peak_score
+    call copy_score_and_increment_pointers
+    jp +
+      peak_score_test_data:
+        .asc "???"
+    +:
+  .endif
   ;
-
   ; Point to the last hiscore item...
   ld de,_sizeof_score_struct
   ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
