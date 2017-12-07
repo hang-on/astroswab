@@ -137,9 +137,11 @@ run_hiscore:
   hiscore_read_only:
     ; No new hiscore.
     ; Display hiscore table until timer depletes, then transition...
-    ld ix,transition_trigger
-    call process_trigger
-    call c,transition_to_devmenu
+    .ifndef DEVELOPER_MODE             ; Disable timer while in developer mode.
+      ld ix,transition_trigger
+      call process_trigger
+      call c,transition_to_devmenu
+    .endif
   ;
   ++:
 
