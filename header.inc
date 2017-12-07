@@ -242,6 +242,7 @@
   player_score instanceof score_struct
   peak_score instanceof score_struct
   transition_score instanceof score_struct
+  
   ;
   asteroid instanceof game_object ASTEROID_MAX
   asteroid_trigger instanceof trigger

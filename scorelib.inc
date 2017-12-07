@@ -25,7 +25,8 @@
 .equ HISCORE_TABLE_COLUMN 10
 ;
 ; Constants for cursor positioning within hiscore table on the screen.
-.equ TOP_POSITION_COLUMN HISCORE_TABLE_COLUMN+(hiscore_item_spacer_end-hiscore_item_spacer)+SCORE_DIGITS_TOTAL
+.equ HISCORE_ITEM_SPACER_SIZE 5         ; Fix me: Spacer string below.
+.equ TOP_POSITION_COLUMN (HISCORE_TABLE_COLUMN + HISCORE_ITEM_SPACER_SIZE + SCORE_DIGITS_TOTAL)
 .equ TOP_POSITION_ROW HISCORE_TABLE_ROW
 ;
 .ramsection "score and hiscore handling - variables" slot 3
@@ -208,10 +209,6 @@
       RESTORE_REGISTERS
       ret
       ;
-    .equ HISCORE_ITEM_SPACER_SIZE 5
-    hiscore_item_spacer:
-      .asc "....."
-    hiscore_item_spacer_end:
   ;
   get_hiscore_table_postion_from_score:
     ; Point to score. Test it against scores already in hiscore table.
@@ -382,4 +379,8 @@
       djnz -
     RESTORE_REGISTERS
   ret
+  ;
+  hiscore_item_spacer:
+    .asc "....."
+  hiscore_item_spacer_end:
 .ends

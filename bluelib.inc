@@ -1297,7 +1297,7 @@
     ; Put char at cursor y,x and move cursor right.
     ; N.B. Make sure that this function is not interrupted!
     ; Entry: A = tile number (0-255 - in tile bank 1).
-    ; Uses: A, B and C, but saves the rest.
+    ; Uses: A, B and C, but saves the rest. - is this still true?!
     SAVE_REGISTERS
     push af                       ;
     ld hl,NAME_TABLE_START        ; Get ready to calculate destination address.

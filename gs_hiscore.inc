@@ -64,6 +64,8 @@ prepare_hiscore:
     ; Player broke on one the highscores -> enter new hiscore mode
     ld a,TRUE
     ld (new_hiscore),a
+
+
     jp ++
   +:
     ; Player did not break hiscore -> read-only mode
@@ -78,6 +80,10 @@ prepare_hiscore:
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
   ;
+  ld a,HISCORE_TABLE_ROW                ; Print table.
+  ld b,HISCORE_TABLE_COLUMN
+  call print_hiscore_table
+  ;
   ; --------------------
   ld hl,peak_score
   call get_hiscore_table_postion_from_score
@@ -87,6 +93,9 @@ prepare_hiscore:
     ;ld a,1
     ld (RESERVED_BYTE_1),a
     SELECT_ROM
+    add a,(TOP_POSITION_ROW-1)
+    ld b,TOP_POSITION_COLUMN
+    call set_cursor
     jp ++
   +:
     ; Carry set: Peak score is NOT in the hiscore table.
@@ -96,10 +105,6 @@ prepare_hiscore:
     SELECT_ROM
   ++:
   ; --------------------
-
-  ld a,HISCORE_TABLE_ROW                ; Print table.
-  ld b,HISCORE_TABLE_COLUMN
-  call print_hiscore_table
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -134,6 +139,10 @@ run_hiscore:
   jp nz,hiscore_read_only
     ; New hiscore..
     ; Handle initials input...
+    ld a,ASCII_SPACE
+    call put_char
+    ld hl,cursor_x
+    dec (hl)
     ;
     ; Save hiscore table and exit when player press button.
     call is_button_1_pressed
