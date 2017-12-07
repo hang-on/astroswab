@@ -68,6 +68,7 @@
   .equ MISSILE 6
   .equ BOOSTER 7
   .equ BEE 8
+  .equ CURSOR_EFFECT 9
   .equ NOT_MOVING 0
 ;
 ; How many different kinds of triggers to initialize on level init?
@@ -278,6 +279,6 @@
   sandbox_trigger instanceof trigger
   ;
   new_hiscore db
-  cursor_blink_trigger instanceof trigger
+  cursor_effect instanceof game_object
   ;
 .ends

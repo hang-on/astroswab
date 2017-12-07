@@ -85,19 +85,30 @@ prepare_hiscore:
   ; --------------------
   ld a,(new_hiscore)
   cp TRUE
-  jp nz,+
+  jp nz,end_new_hiscore_prep
     ; Place cursor at the first char in player initials.
     ld hl,peak_score
     call get_hiscore_table_postion_from_score
     add a,(TOP_POSITION_ROW-1)
     ld b,TOP_POSITION_COLUMN
     call set_cursor
-  +:
+    ;
+    ld ix,cursor_effect
+    ld hl,cursor_effect_init_table
+    call initialize_game_object
+    ; Position the cursor effect over the first char in initials.
+    ld hl,peak_score
+    call get_hiscore_table_postion_from_score
+    ld b,a
+    ld ix,cursor_effect
+    ld a,(ix+game_object.y)
+    -:
+      add a,8
+    djnz -
+    ld (ix+game_object.y),a
+  end_new_hiscore_prep:
   ; --------------------
   ;
-  ld ix,cursor_blink_trigger
-  ld hl,cursor_blink_trigger_init_table
-  call initialize_trigger
 
   ;
   ; Turn on screen and frame interrupts.
@@ -127,6 +138,10 @@ run_hiscore:
   ;
   call get_input_ports
   call begin_sprites
+  ;
+  ld ix,cursor_effect
+  call draw_game_object
+  ;
   ; Switch case depending on whether we have a new hiscore.
   ld a,(new_hiscore)
   cp TRUE
@@ -137,6 +152,7 @@ run_hiscore:
     ;call put_char
     ;ld hl,cursor_x
     ;dec (hl)
+
     ;
     ; Save hiscore table and exit when player press button.
     call is_button_1_pressed
