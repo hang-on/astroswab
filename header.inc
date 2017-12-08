@@ -18,7 +18,7 @@
 ;
 ; Hiscore:
   .equ HISCORE_BANK 9
-  .equ CURSOR_EFFECT_BLINK_SPEED 30
+  .equ CURSOR_EFFECT_BLINK_SPEED 5
   .equ KEY_RELEASE_DELAY 10
 ;
 ; Misc. definitions:
