@@ -47,6 +47,10 @@ prepare_hiscore:
     +:
   .endif
   ;
+  ld ix,cursor_effect_trigger
+  ld hl,cursor_effect_init_table
+  call initialize_trigger
+  ;
   ; Point to the last hiscore item...
   ld de,_sizeof_score_struct
   ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
@@ -92,6 +96,11 @@ prepare_hiscore:
     add a,(TOP_POSITION_ROW-1)
     ld b,TOP_POSITION_COLUMN
     call set_cursor
+    ;
+    ; Initialize the cursor effect.
+    ld ix,cursor_effect_trigger
+    ld a,ENABLED
+    ld (ix+game_object.state),a
     ;
     ld ix,cursor_effect
     ld hl,cursor_effect_init_table
@@ -152,7 +161,10 @@ run_hiscore:
     ;call put_char
     ;ld hl,cursor_x
     ;dec (hl)
-
+    ld ix,cursor_effect_trigger
+    call process_trigger
+    ld ix,cursor_effect
+    call c,toggle_game_object_state
     ;
     ; Save hiscore table and exit when player press button.
     call is_button_1_pressed

@@ -113,6 +113,10 @@
     ret nc
       jp (hl)
   ;
+  ;toggle_game_object_state:
+
+  ret
+  ;
   vertical_zone_deactivate_game_object:
     ; Test game object x to see if it is within the vertical zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.

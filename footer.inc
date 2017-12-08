@@ -20,6 +20,10 @@
     .db SPRITE_66, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db (TOP_POSITION_ROW*8)-10, (TOP_POSITION_COLUMN*8)-1, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, CURSOR_EFFECT
+  cursor_effect_trigger_init_table:
+    .db 255, 100
+    .db DISABLED, DEFAULT_CYCLE_VALUE
+
     ;
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score

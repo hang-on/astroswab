@@ -280,5 +280,6 @@
   ;
   new_hiscore db
   cursor_effect instanceof game_object
+  cursor_effect_trigger instanceof trigger
   ;
 .ends
