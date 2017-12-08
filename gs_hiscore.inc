@@ -226,15 +226,3 @@ jp main_loop
     ld a,GS_PREPARE_DEVMENU
     ld (game_state),a
   ret
-  transition_to_gamestate:
-    ; Transition to a gamestate passed in A.
-    ; Entry: A = Game state.
-    ; Exit: None
-    ; Uses: ?
-    push af
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-    pop af              ;ld a,GS_PREPARE_DEVMENU
-    ld (game_state),a
-  ret
