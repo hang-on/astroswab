@@ -28,7 +28,7 @@
 .equ HISCORE_ITEM_SPACER_SIZE 5         ; Fix me: Spacer string below.
 .equ TOP_POSITION_COLUMN (HISCORE_TABLE_COLUMN + HISCORE_ITEM_SPACER_SIZE + SCORE_DIGITS_TOTAL)
 .equ TOP_POSITION_ROW HISCORE_TABLE_ROW
-.equ CURSOR_EFFECT_MAX_X (((TOP_POSITION_COLUMN*8)-1)+16)
+.equ CURSOR_EFFECT_MAX_X (((TOP_POSITION_COLUMN*8)-1)+((LETTERS_IN_INITIALS-1)*8))
 ;
 .ramsection "score and hiscore handling - variables" slot 3
   hiscore_item instanceof score_struct NUMBER_OF_HISCORE_ITEMS
