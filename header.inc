@@ -20,6 +20,7 @@
   .equ HISCORE_BANK 9
   .equ CURSOR_EFFECT_BLINK_SPEED 5
   .equ KEY_RELEASE_DELAY 10
+  .equ ONE_CHAR_WIDTH 8
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16

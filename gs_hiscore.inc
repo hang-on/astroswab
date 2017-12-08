@@ -162,17 +162,12 @@ run_hiscore:
   jp nz,hiscore_read_only
     ; New hiscore..
     ; Handle initials input...
-    ;ld a,ASCII_SPACE
-    ;call put_char
-    ;ld hl,cursor_x
-    ;dec (hl)
     ld ix,cursor_effect_trigger
     call process_trigger
     ld ix,cursor_effect
     call c,toggle_game_object_state
-
     ;
-    ; Forward to next char when player presses bytton 1
+    ; Forward to next char or save/exit when player presses button 1
     ld ix,release_keys_trigger
     call process_trigger
     jp nc,+
@@ -187,11 +182,18 @@ run_hiscore:
       jp nc,+
         ld ix,cursor_effect
         ld a,(ix+game_object.x)
-        add a,8
-        ld (ix+game_object.x),a
-        ld ix,release_keys_trigger
-        ld a,ENABLED
-        ld (ix+trigger.state),a
+        cp CURSOR_EFFECT_MAX_X
+        jp z,save_and_exit
+          add a,ONE_CHAR_WIDTH
+          ld (ix+game_object.x),a
+          ld ix,release_keys_trigger
+          ld a,ENABLED
+          ld (ix+trigger.state),a
+          jp +
+          save_and_exit:
+            ld a,GS_PREPARE_DEVMENU
+            call transition_to_gamestate
+            jp main_loop
     +:
   jp ++
   hiscore_read_only:
@@ -222,5 +224,17 @@ jp main_loop
     call PSGStop
     call FadeOutScreen
     ld a,GS_PREPARE_DEVMENU
+    ld (game_state),a
+  ret
+  transition_to_gamestate:
+    ; Transition to a gamestate passed in A.
+    ; Entry: A = Game state.
+    ; Exit: None
+    ; Uses: ?
+    push af
+      call PSGSFXStop
+      call PSGStop
+      call FadeOutScreen
+    pop af              ;ld a,GS_PREPARE_DEVMENU
     ld (game_state),a
   ret
