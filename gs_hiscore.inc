@@ -105,6 +105,11 @@ prepare_hiscore:
     ld ix,cursor_effect
     ld hl,cursor_effect_init_table
     call initialize_game_object
+    ;
+    ld ix,release_keys_trigger
+    ld hl,release_keys_trigger_init_table
+    call initialize_trigger
+    ;
     ; Position the cursor effect over the first char in initials.
     ld hl,peak_score
     call get_hiscore_table_postion_from_score
@@ -165,14 +170,28 @@ run_hiscore:
     call process_trigger
     ld ix,cursor_effect
     call c,toggle_game_object_state
+
     ;
     ; Forward to next char when player presses bytton 1
-    call is_button_1_pressed
+    ld ix,release_keys_trigger
+    call process_trigger
     jp nc,+
-      ld ix,cursor_effect
-      ld a,(ix+game_object.x)
-      add a,8
-      ld (ix+game_object.x),a
+      ld a,DISABLED
+      ld (ix+trigger.state),a
+    +:
+    ;
+    ld a,(ix+trigger.state)
+    cp DISABLED
+    jp nz,+
+      call is_button_1_pressed
+      jp nc,+
+        ld ix,cursor_effect
+        ld a,(ix+game_object.x)
+        add a,8
+        ld (ix+game_object.x),a
+        ld ix,release_keys_trigger
+        ld a,ENABLED
+        ld (ix+trigger.state),a
     +:
   jp ++
   hiscore_read_only:

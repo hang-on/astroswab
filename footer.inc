@@ -23,6 +23,10 @@
   cursor_effect_trigger_init_table:
     .db 255, CURSOR_EFFECT_BLINK_SPEED
     .db DISABLED, DEFAULT_CYCLE_VALUE
+  release_keys_trigger_init_table:
+    .db 255, KEY_RELEASE_DELAY ; release delay.
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+
 
     ;
   transition_score_init_table:

@@ -19,6 +19,7 @@
 ; Hiscore:
   .equ HISCORE_BANK 9
   .equ CURSOR_EFFECT_BLINK_SPEED 30
+  .equ KEY_RELEASE_DELAY 10
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
@@ -282,5 +283,6 @@
   new_hiscore db
   cursor_effect instanceof game_object
   cursor_effect_trigger instanceof trigger
+  release_keys_trigger instanceof trigger
   ;
 .ends
