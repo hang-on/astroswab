@@ -166,13 +166,13 @@ run_hiscore:
     ld ix,cursor_effect
     call c,toggle_game_object_state
     ;
-    ; Save hiscore table and exit when player press button.
+    ; Forward to next char when player presses bytton 1
     call is_button_1_pressed
     jp nc,+
-      ld hl,HISCORE_EXTRAM_ADDRESS
-      call save_hiscore_table_to_extram
-      ;
-      call transition_to_devmenu
+      ld ix,cursor_effect
+      ld a,(ix+game_object.x)
+      add a,8
+      ld (ix+game_object.x),a
     +:
   jp ++
   hiscore_read_only:
