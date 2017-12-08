@@ -18,6 +18,7 @@
 ;
 ; Hiscore:
   .equ HISCORE_BANK 9
+  .equ CURSOR_EFFECT_BLINK_SPEED 30
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16

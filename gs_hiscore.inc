@@ -48,7 +48,7 @@ prepare_hiscore:
   .endif
   ;
   ld ix,cursor_effect_trigger
-  ld hl,cursor_effect_init_table
+  ld hl,cursor_effect_trigger_init_table
   call initialize_trigger
   ;
   ; Point to the last hiscore item...
@@ -100,7 +100,7 @@ prepare_hiscore:
     ; Initialize the cursor effect.
     ld ix,cursor_effect_trigger
     ld a,ENABLED
-    ld (ix+game_object.state),a
+    ld (ix+trigger.state),a
     ;
     ld ix,cursor_effect
     ld hl,cursor_effect_init_table

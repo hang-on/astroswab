@@ -21,7 +21,7 @@
     .db (TOP_POSITION_ROW*8)-10, (TOP_POSITION_COLUMN*8)-1, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, CURSOR_EFFECT
   cursor_effect_trigger_init_table:
-    .db 255, 100
+    .db 255, CURSOR_EFFECT_BLINK_SPEED
     .db DISABLED, DEFAULT_CYCLE_VALUE
 
     ;
