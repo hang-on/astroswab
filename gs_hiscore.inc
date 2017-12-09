@@ -117,7 +117,7 @@ prepare_hiscore:
     ld ix,cursor_effect
     ld a,(ix+game_object.y)
     -:
-      add a,8
+      add a,ONE_CHAR_WIDTH
     djnz -
     ld (ix+game_object.y),a
     ; Select a char.
@@ -195,6 +195,9 @@ run_hiscore:
           ld ix,release_keys_trigger
           ld a,ENABLED
           ld (ix+trigger.state),a
+          ; Write the selected char to
+          ld a,(selected_char)
+          call put_char
           jp +
           save_and_exit:
             ld a,GS_PREPARE_DEVMENU
