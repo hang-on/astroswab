@@ -43,7 +43,7 @@ prepare_hiscore:
     jp +
       peak_score_test_data:
         .asc "01900"
-        .asc "???"
+        .asc "   "
     +:
   .endif
   ;
@@ -120,6 +120,12 @@ prepare_hiscore:
       add a,8
     djnz -
     ld (ix+game_object.y),a
+    ; Select a char.
+    ld a,DEFAULT_CHAR
+    ld (selected_char),a
+    call put_char
+    ld hl,cursor_x
+    dec (hl)
   end_new_hiscore_prep:
   ; --------------------
   ;
