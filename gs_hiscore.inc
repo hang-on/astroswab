@@ -189,7 +189,7 @@ run_hiscore:
         ld ix,cursor_effect
         ld a,(ix+game_object.x)
         cp CURSOR_EFFECT_MAX_X
-        jp z,save_and_exit
+        jp z,save_and_switch_to_read_only_mode
           add a,ONE_CHAR_WIDTH
           ld (ix+game_object.x),a
           ld ix,release_keys_trigger
@@ -198,21 +198,38 @@ run_hiscore:
           ; Write the selected char to
           ld a,(selected_char)
           call put_char
+          ; Put char under cursor effect.
+          ld (selected_char),a
+          call put_char
+          ld hl,cursor_x
+          dec (hl)
+          ;
           jp +
-          save_and_exit:
-            ld a,GS_PREPARE_DEVMENU
-            call transition_to_gamestate
-            jp main_loop
+          save_and_switch_to_read_only_mode:
+            ;ld a,GS_PREPARE_DEVMENU
+            ;call transition_to_gamestate
+            ;
+            ; Here - save to extram.
+            ;
+            ld a,FALSE
+            ld (new_hiscore),a ; Maybe change this to read_only_mode ?
+            ;
+            ld hl,transition_trigger_init_table
+            ld ix,transition_trigger
+            call initialize_trigger
+            call enable_trigger
+            ld ix,cursor_effect
+            ld a,GAME_OBJECT_INACTIVE
+            ld (ix+game_object.state),a
+            jp ++
     +:
   jp ++
   hiscore_read_only:
     ; No new hiscore.
     ; Display hiscore table until timer depletes, then transition...
-    .ifndef DEVELOPER_MODE             ; Disable timer while in developer mode.
-      ld ix,transition_trigger
-      call process_trigger
-      call c,transition_to_devmenu
-    .endif
+    ld ix,transition_trigger
+    call process_trigger
+    call c,transition_to_devmenu
   ;
   ++:
 
