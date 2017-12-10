@@ -287,5 +287,6 @@
   cursor_effect_trigger instanceof trigger
   release_keys_trigger instanceof trigger
   selected_char db
+  active_initial db
   ;
 .ends

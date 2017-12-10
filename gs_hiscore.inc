@@ -96,6 +96,8 @@ prepare_hiscore:
     add a,(TOP_POSITION_ROW-1)
     ld b,TOP_POSITION_COLUMN
     call set_cursor
+    ld a,1
+    ld (active_initial),a
     ;
     ; Initialize the cursor effect.
     ld ix,cursor_effect_trigger
@@ -186,18 +188,23 @@ run_hiscore:
     jp nz,+
       call is_button_1_pressed
       jp nc,+
-        ld ix,cursor_effect
-        ld a,(ix+game_object.x)
-        cp CURSOR_EFFECT_MAX_X
+        ld a,(active_initial)
+        cp LETTERS_IN_INITIALS
         jp z,save_and_switch_to_read_only_mode
+          ld ix,cursor_effect
+          ld a,(ix+game_object.x)
           add a,ONE_CHAR_WIDTH
           ld (ix+game_object.x),a
+          ;
           ld ix,release_keys_trigger
           ld a,ENABLED
           ld (ix+trigger.state),a
           ; Write the selected char to
           ld a,(selected_char)
           call put_char
+          ; Forward to next active initial
+          ld hl,active_initial
+          inc (hl)
           ; Put char under cursor effect.
           ld (selected_char),a
           call put_char
