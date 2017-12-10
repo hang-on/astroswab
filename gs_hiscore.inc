@@ -230,6 +230,21 @@ run_hiscore:
             ld (ix+game_object.state),a
             jp end_of_input_tests
     +:
+    call is_right_pressed
+    jp nc,+
+      ld ix,release_keys_trigger
+      ld a,ENABLED
+      ld (ix+trigger.state),a
+      ;
+      ld hl,selected_char
+      inc (hl)
+      ; Put char under cursor effect.
+      ld a,(selected_char)
+      call put_char
+      ld hl,cursor_x
+      dec (hl)
+      jp end_of_input_tests
+    +:
   ;
   end_of_input_tests:
   jp finish_hiscore_loop
