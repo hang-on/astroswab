@@ -125,6 +125,10 @@ prepare_hiscore:
     ; Select a char.
     ld a,DEFAULT_CHAR
     ld (selected_char),a
+    ld a,(selected_char)
+    ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+    ld hl,selected_char_to_ascii_table
+    call convert_byte
     call put_char
     ld hl,cursor_x
     dec (hl)
@@ -201,12 +205,18 @@ run_hiscore:
           ld (ix+trigger.state),a
           ; Write the selected char to
           ld a,(selected_char)
+          ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+          ld hl,selected_char_to_ascii_table
+          call convert_byte
           call put_char
           ; Forward to next active initial
           ld hl,active_initial
           inc (hl)
           ; Put char under cursor effect.
-          ld (selected_char),a
+          ld a,(selected_char)
+          ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+          ld hl,selected_char_to_ascii_table
+          call convert_byte
           call put_char
           ld hl,cursor_x
           dec (hl)
@@ -238,8 +248,17 @@ run_hiscore:
       ;
       ld hl,selected_char
       inc (hl)
+      ld a,(hl)
+      cp LAST_SELECTED_CHAR ; last value in table +1 .
+      jp nz,skip_wrap_around
+        ld a,FIRST_SELECTED_CHAR
+        ld (hl),a
+      skip_wrap_around:
       ; Put char under cursor effect.
       ld a,(selected_char)
+      ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+      ld hl,selected_char_to_ascii_table
+      call convert_byte
       call put_char
       ld hl,cursor_x
       dec (hl)
