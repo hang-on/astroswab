@@ -236,6 +236,23 @@ run_hiscore:
             ;ld a,GS_PREPARE_DEVMENU
             ;call transition_to_gamestate
             ;
+            ; DRYFIX this:
+            ; Write the selected char to
+            ld a,(selected_char)
+            ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+            ld hl,selected_char_to_ascii_table
+            call convert_byte
+            push af
+              call put_char
+              ; Write it to struct
+              ld a,(active_initial)
+              ld hl,peak_score.initials
+              dec hl
+              ld d,0
+              ld e,a
+              add hl,de
+            pop af
+            ld (hl),a
             ; Here - save to extram.
             ;
             ld hl,HISCORE_EXTRAM_ADDRESS
