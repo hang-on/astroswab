@@ -288,7 +288,44 @@ run_hiscore:
       dec (hl)
       jp end_of_input_tests
     +:
-
+    call is_button_2_pressed
+    jp nc,+
+      ld a,(active_initial)
+      cp 1
+      jp z,+
+        ld ix,cursor_effect
+        ld a,(ix+game_object.x)
+        sub ONE_CHAR_WIDTH
+        ld (ix+game_object.x),a
+        ;
+        ld hl,cursor_x
+        dec (hl)
+        ;
+        ld ix,release_keys_trigger
+        ld a,ENABLED
+        ld (ix+trigger.state),a
+        ; Write the selected char to
+        ld a,(selected_char)
+        ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+        ld hl,selected_char_to_ascii_table
+        call convert_byte
+        call put_char
+        ld hl,cursor_x
+        dec (hl)
+        ;
+        ld hl,active_initial
+        dec (hl)
+        ; Put char under cursor effect.
+        ld a,(selected_char)
+        ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+        ld hl,selected_char_to_ascii_table
+        call convert_byte
+        call put_char
+        ld hl,cursor_x
+        dec (hl)
+        ;
+        jp end_of_input_tests
+    +:
   ;
   end_of_input_tests:
   jp finish_hiscore_loop
