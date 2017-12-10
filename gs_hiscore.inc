@@ -125,11 +125,12 @@ prepare_hiscore:
     ; Select a char.
     ld a,DEFAULT_CHAR
     ld (selected_char),a
-    ld a,(selected_char)
-    ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-    ld hl,selected_char_to_ascii_table
-    call convert_byte
-    call put_char
+    ;ld a,(selected_char)
+    ;ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+    ;ld hl,selected_char_to_ascii_table
+    ;call convert_byte
+    ;call put_char
+    call convert_and_put_selected_char
     ld hl,cursor_x
     dec (hl)
   end_new_hiscore_prep:
@@ -205,7 +206,7 @@ run_hiscore:
           ld (ix+trigger.state),a
           ; Write the selected char to
           ;---
-          
+
           ;---
           ld a,(selected_char)
           ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
@@ -347,13 +348,7 @@ run_hiscore:
         ld hl,active_initial
         dec (hl)
         ;
-        ld a,(active_initial)
-        ld hl,peak_score.initials
-        dec hl
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
+        call get_active_initial_ascii
         ; convert ascii to selected char
         ld b,(ascii_to_selected_char_table_end-ascii_to_selected_char_table)/2
         ld hl, ascii_to_selected_char_table
@@ -404,6 +399,26 @@ run_hiscore:
   .endif
 
 jp main_loop
+  ;
+  convert_and_put_selected_char:
+    ld a,(selected_char)
+    ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+    ld hl,selected_char_to_ascii_table
+    call convert_byte
+    call put_char
+  ret
+  ;
+  get_active_initial_ascii:
+    ; Return the ascii value for the active initial
+    ; Exit: A = ascii value.
+    ld a,(active_initial)
+    ld hl,peak_score.initials
+    dec hl
+    ld d,0
+    ld e,a
+    add hl,de
+    ld a,(hl)
+  ret
   ;
   transition_to_devmenu: ; TODO: Make game state transition func.
     call PSGSFXStop
