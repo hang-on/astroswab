@@ -249,7 +249,7 @@ run_hiscore:
       ld hl,selected_char
       inc (hl)
       ld a,(hl)
-      cp LAST_SELECTED_CHAR ; last value in table +1 .
+      cp LAST_SELECTED_CHAR+1 ; last value in table +1 .
       jp nz,skip_wrap_around
         ld a,FIRST_SELECTED_CHAR
         ld (hl),a
@@ -264,6 +264,31 @@ run_hiscore:
       dec (hl)
       jp end_of_input_tests
     +:
+    call is_left_pressed
+    jp nc,+
+      ld ix,release_keys_trigger
+      ld a,ENABLED
+      ld (ix+trigger.state),a
+      ;
+      ld hl,selected_char
+      dec (hl)
+      ld a,(hl)
+      cp FIRST_SELECTED_CHAR-1 ; last value in table +1 .
+      jp nz,skip_wrap_around_2
+        ld a,LAST_SELECTED_CHAR
+        ld (hl),a
+      skip_wrap_around_2:
+      ; Put char under cursor effect.
+      ld a,(selected_char)
+      ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+      ld hl,selected_char_to_ascii_table
+      call convert_byte
+      call put_char
+      ld hl,cursor_x
+      dec (hl)
+      jp end_of_input_tests
+    +:
+
   ;
   end_of_input_tests:
   jp finish_hiscore_loop

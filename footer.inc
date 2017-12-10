@@ -30,7 +30,7 @@
     .db FIRST_SELECTED_CHAR, 33, 2, 34, 3, 35, 4, 36, 5, 37, 6, 38, 7, 39, 8, 40 ; A-H
     .db 9, 41, 10, 42, 11, 43, 12, 44, 13, 45, 14, 46, 15, 47, 16, 48 ; I-P
     .db 17, 49, 18, 50, 19, 51, 20, 52, 21, 53, 22, 54, 23, 55, 24, 56 ; Q-X
-    .db 25, 57, 26, 58, LAST_SELECTED_CHAR, 0 ; Y, Z, SPACE,
+    .db 25, 57, 26, 58, 27, 1, 28, 3, 29, 4, 30, 5, 31, 6 LAST_SELECTED_CHAR, 0 
   selected_char_to_ascii_table_end:
     ;
   transition_score_init_table:

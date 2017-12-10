@@ -23,7 +23,7 @@
   .equ ONE_CHAR_WIDTH 8
   .equ DEFAULT_CHAR 1
   .equ FIRST_SELECTED_CHAR 1
-  .equ LAST_SELECTED_CHAR 27
+  .equ LAST_SELECTED_CHAR 32
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
