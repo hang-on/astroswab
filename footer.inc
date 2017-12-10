@@ -26,6 +26,12 @@
   release_keys_trigger_init_table:
     .db 255, KEY_RELEASE_DELAY ; release delay.
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  hiscore_input_conversion_table:
+    .db 33, 33, 34, 34, 35, 35, 36, 36, 37, 37, 38, 38, 39, 39, 40, 40 ; A-H
+    .db 41, 41, 42, 42, 43, 43, 44, 44, 45, 45, 46, 46, 47, 47, 48, 48 ; I-P
+    .db 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56 ; Q-X
+    .db 57, 57, 58, 58, 59, 0 ; Y, Z, SPACE,
+  hiscore_input_conversion_table_end:
     ;
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score
