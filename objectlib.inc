@@ -113,6 +113,22 @@
     ret nc
       jp (hl)
   ;
+  toggle_game_object_state:
+    ; Toggle game object state: active --> inactive and vice versa.
+    ; Entry: IX = Pointer to struct.
+    ; Exit:
+    ; Uses:
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (ix+game_object.state),a
+      ret
+    +:
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+  ret
+  ;
   vertical_zone_deactivate_game_object:
     ; Test game object x to see if it is within the vertical zone defined
     ; the borders passed in A and B. If true, then deactivate enemy object.

@@ -2,6 +2,17 @@
 ; Enable debugging features and more:
   .equ DEVELOPER_MODE ; Comment out for consumer mode.
 ; -----------------------------------------------------------------------------
+; External RAM map
+  .equ EXTRAM_COUNTER EXTRAM_START
+  .equ FIRST_GAME_BYTE EXTRAM_COUNTER+1
+  .equ RESERVED_BYTE_1 FIRST_GAME_BYTE+1
+  .equ RESERVED_BYTE_2 RESERVED_BYTE_1+1
+  .equ RESERVED_WORD_1 RESERVED_BYTE_2+1
+  .equ HISCORE_EXTRAM_ADDRESS RESERVED_WORD_1+2
+;
+; First game (first time the game is run - ever!):
+  .equ FIRST_GAME_ID $aa  ; Check for this value in EXTRAM (FIRST_GAME_BYTE).
+
 ; Font:
   .equ FONT_BANK 2
 ;
@@ -31,7 +42,7 @@
   .equ GS_RUN_HISCORE 10
   ;
   .ifdef DEVELOPER_MODE
-    .equ INITIAL_GAME_STATE GS_SETUP_NEW_GAME ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_HISCORE ;GS_SETUP_NEW_GAME ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
@@ -57,6 +68,7 @@
   .equ MISSILE 6
   .equ BOOSTER 7
   .equ BEE 8
+  .equ CURSOR_EFFECT 9
   .equ NOT_MOVING 0
 ;
 ; How many different kinds of triggers to initialize on level init?
@@ -218,6 +230,7 @@
   temp_word dw
   temp_buffer dsb 32*2
   ;
+  ;
   menu_timer db
   menu_state db
   ;
@@ -231,6 +244,7 @@
   player_score instanceof score_struct
   peak_score instanceof score_struct
   transition_score instanceof score_struct
+
   ;
   asteroid instanceof game_object ASTEROID_MAX
   asteroid_trigger instanceof trigger
@@ -263,4 +277,5 @@
   bee instanceof game_object
   ;
   sandbox_trigger instanceof trigger
+  ;
 .ends
