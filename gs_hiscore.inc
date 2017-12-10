@@ -204,6 +204,9 @@ run_hiscore:
           ld a,ENABLED
           ld (ix+trigger.state),a
           ; Write the selected char to
+          ;---
+          
+          ;---
           ld a,(selected_char)
           ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
           ld hl,selected_char_to_ascii_table
