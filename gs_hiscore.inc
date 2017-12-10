@@ -208,7 +208,17 @@ run_hiscore:
           ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
           ld hl,selected_char_to_ascii_table
           call convert_byte
-          call put_char
+          push af
+            call put_char
+            ; Write it to struct
+            ld a,(active_initial)
+            ld hl,peak_score.initials
+            dec hl
+            ld d,0
+            ld e,a
+            add hl,de
+          pop af
+          ld (hl),a
           ; Forward to next active initial
           ld hl,active_initial
           inc (hl)
@@ -227,6 +237,13 @@ run_hiscore:
             ;call transition_to_gamestate
             ;
             ; Here - save to extram.
+            ;
+            ld hl,HISCORE_EXTRAM_ADDRESS
+            call load_hiscore_table_from_extram
+            ld hl,peak_score
+            call rebuild_hiscore_table
+            ld hl,HISCORE_EXTRAM_ADDRESS
+            call save_hiscore_table_to_extram
             ;
             ld a,FALSE
             ld (new_hiscore),a ; Maybe change this to read_only_mode ?

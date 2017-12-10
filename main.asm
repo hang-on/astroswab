@@ -71,7 +71,7 @@
     SELECT_EXTRAM
       ld a,(FIRST_GAME_BYTE)
       cp FIRST_GAME_ID
-      jp z,+
+      jp nz,+
         ; Game is running for the first time...
         ld a,FIRST_GAME_ID
         ld (FIRST_GAME_BYTE),a      ; Stamp EXTRAM byte.
