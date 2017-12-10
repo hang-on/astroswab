@@ -338,8 +338,27 @@ run_hiscore:
         ld ix,release_keys_trigger
         ld a,ENABLED
         ld (ix+trigger.state),a
+        ; Get ascii from initials string at position. Then convert back to
+        ; selected char format.
+        ; ------------------
+        ld hl,active_initial
+        dec (hl)
+        ;
+        ld a,(active_initial)
+        ld hl,peak_score.initials
+        dec hl
+        ld d,0
+        ld e,a
+        add hl,de
+        ld a,(hl)
+        ; convert ascii to selected char
+        ld b,(ascii_to_selected_char_table_end-ascii_to_selected_char_table)/2
+        ld hl, ascii_to_selected_char_table
+        call convert_byte
+        ; now A holds the selected char.
+        ld (selected_char),a
+        ; ------------------
         ; Write the selected char to
-        ld a,(selected_char)
         ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
         ld hl,selected_char_to_ascii_table
         call convert_byte
@@ -347,8 +366,6 @@ run_hiscore:
         ld hl,cursor_x
         dec (hl)
         ;
-        ld hl,active_initial
-        dec (hl)
         ; Put char under cursor effect.
         ld a,(selected_char)
         ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
