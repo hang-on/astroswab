@@ -185,7 +185,7 @@ run_hiscore:
     ;
     ld a,(ix+trigger.state)
     cp DISABLED
-    jp nz,+
+    jp nz,end_of_input_tests
       call is_button_1_pressed
       jp nc,+
         ld a,(active_initial)
@@ -211,7 +211,7 @@ run_hiscore:
           ld hl,cursor_x
           dec (hl)
           ;
-          jp +
+          jp end_of_input_tests
           save_and_switch_to_read_only_mode:
             ;ld a,GS_PREPARE_DEVMENU
             ;call transition_to_gamestate
@@ -228,9 +228,12 @@ run_hiscore:
             ld ix,cursor_effect
             ld a,GAME_OBJECT_INACTIVE
             ld (ix+game_object.state),a
-            jp ++
+            jp end_of_input_tests
     +:
-  jp ++
+  ;
+  end_of_input_tests:
+  jp finish_hiscore_loop
+  ;
   hiscore_read_only:
     ; No new hiscore.
     ; Display hiscore table until timer depletes, then transition...
@@ -238,7 +241,7 @@ run_hiscore:
     call process_trigger
     call c,transition_to_devmenu
   ;
-  ++:
+  finish_hiscore_loop:
 
   call PSGSFXFrame
   call PSGFrame
