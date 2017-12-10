@@ -36,16 +36,16 @@ prepare_hiscore:
   call load_hiscore_table_from_extram
   ;
   ; Preset peak score for testing.
-  .ifdef DEVELOPER_MODE
-    ld hl,peak_score_test_data
-    ld de,peak_score
-    call copy_score_and_increment_pointers
-    jp +
-      peak_score_test_data:
-        .asc "01900"
-        .asc "   "
-    +:
-  .endif
+  ;.ifdef DEVELOPER_MODE
+  ;  ld hl,peak_score_test_data
+  ;  ld de,peak_score
+  ;  call copy_score_and_increment_pointers
+  ;  jp +
+  ;    peak_score_test_data:
+  ;      .asc "01900"
+  ;      .asc "   "
+  ;  +:
+  ;.endif
   ;
   ld ix,cursor_effect_trigger
   ld hl,cursor_effect_trigger_init_table
@@ -86,7 +86,6 @@ prepare_hiscore:
   ld b,HISCORE_TABLE_COLUMN
   call print_hiscore_table
   ;
-  ; --------------------
   ld a,(new_hiscore)
   cp TRUE
   jp nz,end_new_hiscore_prep
@@ -122,21 +121,14 @@ prepare_hiscore:
       add a,ONE_CHAR_WIDTH
     djnz -
     ld (ix+game_object.y),a
-    ; Select a char.
+    ; Select the default char.
     ld a,DEFAULT_CHAR
     ld (selected_char),a
-    ;ld a,(selected_char)
-    ;ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-    ;ld hl,selected_char_to_ascii_table
-    ;call convert_byte
-    ;call put_char
+    ; Put the char to the screen.
     call convert_and_put_selected_char
     ld hl,cursor_x
     dec (hl)
   end_new_hiscore_prep:
-  ; --------------------
-  ;
-
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -149,7 +141,6 @@ prepare_hiscore:
   ld (game_state),a
 jp main_loop
 ;
-; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
 run_hiscore:
   ;
@@ -173,25 +164,31 @@ run_hiscore:
   ld a,(new_hiscore)
   cp TRUE
   jp nz,hiscore_read_only
-    ; New hiscore..
-    ; Handle initials input...
-    ld ix,cursor_effect_trigger
-    call process_trigger
-    ld ix,cursor_effect
+; *****************************************************************************
+;   New hiscore (edit mode).
+; *****************************************************************************
+    ; New hiscore input mode. Flash the cursor effect game object, and process
+    ; input from buttons and the d-pad.
+    ;
+    ld ix,cursor_effect_trigger         ; Activate/deactivate cursor effect
+    call process_trigger                ; game object in order to create the
+    ld ix,cursor_effect                 ; blinking effect.
     call c,toggle_game_object_state
     ;
-    ; Forward to next char or save/exit when player presses button 1
+    ; Process keylock trigger.
     ld ix,release_keys_trigger
     call process_trigger
     jp nc,+
-      ld a,DISABLED
-      ld (ix+trigger.state),a
+      ld a,DISABLED                     ; If time is up, release keylock.
+      ld (ix+trigger.state),a           ; (Anti bouncing measure).
     +:
     ;
-    ld a,(ix+trigger.state)
+    ld a,(ix+trigger.state)             ; Is keylock disabled?
     cp DISABLED
-    jp nz,end_of_input_tests
+    jp nz,end_of_input_tests            ; If not, then skip the input tests.
+      ; -----------------------------------------------------------------------
       call is_button_1_pressed
+      ; -----------------------------------------------------------------------
       jp nc,+
         ld a,(active_initial)
         cp LETTERS_IN_INITIALS
@@ -204,60 +201,20 @@ run_hiscore:
           ld ix,release_keys_trigger
           ld a,ENABLED
           ld (ix+trigger.state),a
-          ; Write the selected char to
-          ;---
-
-          ;---
-          ld a,(selected_char)
-          ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-          ld hl,selected_char_to_ascii_table
-          call convert_byte
-          push af
-            call put_char
-            ; Write it to struct
-            ld a,(active_initial)
-            ld hl,peak_score.initials
-            dec hl
-            ld d,0
-            ld e,a
-            add hl,de
-          pop af
-          ld (hl),a
+          ;
+          call convert_and_put_selected_char_and_update_peak_score_struct
           ; Forward to next active initial
           ld hl,active_initial
           inc (hl)
           ; Put char under cursor effect.
-          ld a,(selected_char)
-          ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-          ld hl,selected_char_to_ascii_table
-          call convert_byte
-          call put_char
+          call convert_and_put_selected_char
           ld hl,cursor_x
           dec (hl)
           ;
           jp end_of_input_tests
           save_and_switch_to_read_only_mode:
-            ;ld a,GS_PREPARE_DEVMENU
-            ;call transition_to_gamestate
             ;
-            ; DRYFIX this:
-            ; Write the selected char to
-            ld a,(selected_char)
-            ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-            ld hl,selected_char_to_ascii_table
-            call convert_byte
-            push af
-              call put_char
-              ; Write it to struct
-              ld a,(active_initial)
-              ld hl,peak_score.initials
-              dec hl
-              ld d,0
-              ld e,a
-              add hl,de
-            pop af
-            ld (hl),a
-            ; Here - save to extram.
+            call convert_and_put_selected_char_and_update_peak_score_struct
             ;
             ld hl,HISCORE_EXTRAM_ADDRESS
             call load_hiscore_table_from_extram
@@ -278,7 +235,9 @@ run_hiscore:
             ld (ix+game_object.state),a
             jp end_of_input_tests
     +:
+    ; -----------------------------------------------------------------------
     call is_right_pressed
+    ; -----------------------------------------------------------------------
     jp nc,+
       ld ix,release_keys_trigger
       ld a,ENABLED
@@ -293,16 +252,14 @@ run_hiscore:
         ld (hl),a
       skip_wrap_around:
       ; Put char under cursor effect.
-      ld a,(selected_char)
-      ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-      ld hl,selected_char_to_ascii_table
-      call convert_byte
-      call put_char
+      call convert_and_put_selected_char
       ld hl,cursor_x
       dec (hl)
       jp end_of_input_tests
     +:
+    ; -----------------------------------------------------------------------
     call is_left_pressed
+    ; -----------------------------------------------------------------------
     jp nc,+
       ld ix,release_keys_trigger
       ld a,ENABLED
@@ -317,16 +274,14 @@ run_hiscore:
         ld (hl),a
       skip_wrap_around_2:
       ; Put char under cursor effect.
-      ld a,(selected_char)
-      ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-      ld hl,selected_char_to_ascii_table
-      call convert_byte
-      call put_char
+      call convert_and_put_selected_char
       ld hl,cursor_x
       dec (hl)
       jp end_of_input_tests
     +:
+    ; -----------------------------------------------------------------------
     call is_button_2_pressed
+    ; -----------------------------------------------------------------------
     jp nc,+
       ld a,(active_initial)
       cp 1
@@ -344,50 +299,47 @@ run_hiscore:
         ld (ix+trigger.state),a
         ; Get ascii from initials string at position. Then convert back to
         ; selected char format.
-        ; ------------------
         ld hl,active_initial
         dec (hl)
         ;
         call get_active_initial_ascii
-        ; convert ascii to selected char
+        ; Convert ascii to selected char
         ld b,(ascii_to_selected_char_table_end-ascii_to_selected_char_table)/2
         ld hl, ascii_to_selected_char_table
-        call convert_byte
-        ; now A holds the selected char.
+        call convert_byte                     ; Now A holds the selected char.
         ld (selected_char),a
         ; ------------------
         ; Write the selected char to
-        ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-        ld hl,selected_char_to_ascii_table
-        call convert_byte
-        call put_char
+        call convert_and_put_selected_char
         ld hl,cursor_x
         dec (hl)
         ;
         ; Put char under cursor effect.
-        ld a,(selected_char)
-        ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
-        ld hl,selected_char_to_ascii_table
-        call convert_byte
-        call put_char
+        call convert_and_put_selected_char
         ld hl,cursor_x
         dec (hl)
         ;
         jp end_of_input_tests
     +:
-  ;
+  ; ---------------------------------------------------------------------------
   end_of_input_tests:
+  ; The various input processing functions above all end here.
   jp finish_hiscore_loop
   ;
-  hiscore_read_only:
+  ;
+; *****************************************************************************
+  hiscore_read_only: ; (read-only mode).
+; *****************************************************************************
     ; No new hiscore.
     ; Display hiscore table until timer depletes, then transition...
     ld ix,transition_trigger
     call process_trigger
     call c,transition_to_devmenu
-  ;
+    ;
+; *****************************************************************************
   finish_hiscore_loop:
-
+  ; Both edit and read-only modes end here...
+  ;
   call PSGSFXFrame
   call PSGFrame
   ;
@@ -397,8 +349,27 @@ run_hiscore:
     call is_reset_pressed
     call c,transition_to_devmenu
   .endif
-
+  ;
 jp main_loop
+  ; ---------------------------------------------------------------------------
+  ; Helper functions only for this game state.
+  convert_and_put_selected_char_and_update_peak_score_struct:
+    ld a,(selected_char)
+    ld b,(selected_char_to_ascii_table_end-selected_char_to_ascii_table)/2
+    ld hl,selected_char_to_ascii_table
+    call convert_byte
+    push af
+      call put_char
+      ; Write it to struct
+      ld a,(active_initial)
+      ld hl,peak_score.initials
+      dec hl
+      ld d,0
+      ld e,a
+      add hl,de
+    pop af
+    ld (hl),a
+  ret
   ;
   convert_and_put_selected_char:
     ld a,(selected_char)
