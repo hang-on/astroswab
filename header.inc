@@ -18,12 +18,6 @@
 ;
 ; Hiscore:
   .equ HISCORE_BANK 9
-  .equ CURSOR_EFFECT_BLINK_SPEED 12
-  .equ KEY_RELEASE_DELAY 10
-  .equ ONE_CHAR_WIDTH 8
-  .equ DEFAULT_CHAR 1
-  .equ FIRST_SELECTED_CHAR 1
-  .equ LAST_SELECTED_CHAR 32
 ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
@@ -283,12 +277,5 @@
   bee instanceof game_object
   ;
   sandbox_trigger instanceof trigger
-  ;
-  new_hiscore db
-  cursor_effect instanceof game_object
-  cursor_effect_trigger instanceof trigger
-  release_keys_trigger instanceof trigger
-  selected_char db
-  active_initial db
   ;
 .ends

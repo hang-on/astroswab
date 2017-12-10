@@ -35,18 +35,6 @@ prepare_hiscore:
   ld hl,HISCORE_EXTRAM_ADDRESS
   call load_hiscore_table_from_extram
   ;
-  ; Preset peak score for testing.
-  ;.ifdef DEVELOPER_MODE
-  ;  ld hl,peak_score_test_data
-  ;  ld de,peak_score
-  ;  call copy_score_and_increment_pointers
-  ;  jp +
-  ;    peak_score_test_data:
-  ;      .asc "01900"
-  ;      .asc "   "
-  ;  +:
-  ;.endif
-  ;
   ld ix,cursor_effect_trigger
   ld hl,cursor_effect_trigger_init_table
   call initialize_trigger

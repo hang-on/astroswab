@@ -1,3 +1,17 @@
+;2017-12-10
+;
+; Preset peak score for testing.
+;.ifdef DEVELOPER_MODE
+;  ld hl,peak_score_test_data
+;  ld de,peak_score
+;  call copy_score_and_increment_pointers
+;  jp +
+;    peak_score_test_data:
+;      .asc "01900"
+;      .asc "   "
+;  +:
+;.endif
+
 ;2017-10-20
 test_rebuild_hiscore_table_against_fine_score:
   ld hl,fine_score_init

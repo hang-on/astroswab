@@ -1,5 +1,6 @@
 ; scorelib.inc
-; ....
+; Score is OK and struct-based. Hiscore table handling and displaying is a
+; contrived mess thanks to me not starting it out as a struct. Sorry future me.
 ; -----------------------------------------------------------------------------
 ; SCORE AND HISCORE
 ; -----------------------------------------------------------------------------
@@ -24,6 +25,13 @@
 .equ HISCORE_TABLE_ROW 7
 .equ HISCORE_TABLE_COLUMN 10
 ;
+.equ CURSOR_EFFECT_BLINK_SPEED 12
+.equ KEY_RELEASE_DELAY 10
+.equ ONE_CHAR_WIDTH 8
+.equ DEFAULT_CHAR 1
+.equ FIRST_SELECTED_CHAR 1
+.equ LAST_SELECTED_CHAR 32
+;
 ; Constants for cursor positioning within hiscore table on the screen.
 .equ HISCORE_ITEM_SPACER_SIZE 5         ; Fix me: Spacer string below.
 .equ TOP_POSITION_COLUMN (HISCORE_TABLE_COLUMN + HISCORE_ITEM_SPACER_SIZE + SCORE_DIGITS_TOTAL)
@@ -37,6 +45,12 @@
   hiscore_table_pointer dw
   hiscore_table_buffer_pointer dw
   ;
+  new_hiscore db
+  cursor_effect instanceof game_object
+  cursor_effect_trigger instanceof trigger
+  release_keys_trigger instanceof trigger
+  selected_char db
+  active_initial db
 .ends
 ; -----------------------------------------------------------------------------
 .section "score and hiscore handling - functions" free
@@ -380,8 +394,35 @@
       djnz -
     RESTORE_REGISTERS
   ret
-  ;
+  ; ---------------------------------------------------------------------------
+  ; Data for score/hiscore lib.
+  ; ---------------------------------------------------------------------------
   hiscore_item_spacer:
     .asc "....."
   hiscore_item_spacer_end:
+  ;
+  cursor_effect_init_table:
+    .db SPRITE_64, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
+    .db (TOP_POSITION_ROW*8)-10, (TOP_POSITION_COLUMN*8), GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 1, 1, CURSOR_EFFECT
+  cursor_effect_trigger_init_table:
+    .db 255, CURSOR_EFFECT_BLINK_SPEED
+    .db DISABLED, DEFAULT_CYCLE_VALUE
+  release_keys_trigger_init_table:
+    .db 255, KEY_RELEASE_DELAY ; release delay.
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  selected_char_to_ascii_table:
+    .db FIRST_SELECTED_CHAR, 33, 2, 34, 3, 35, 4, 36, 5, 37, 6, 38, 7, 39, 8, 40 ; A-H
+    .db 9, 41, 10, 42, 11, 43, 12, 44, 13, 45, 14, 46, 15, 47, 16, 48 ; I-P
+    .db 17, 49, 18, 50, 19, 51, 20, 52, 21, 53, 22, 54, 23, 55, 24, 56 ; Q-X
+    .db 25, 57, 26, 58, 27, 1, 28, 3, 29, 4, 30, 5, 31, 6, LAST_SELECTED_CHAR, 0
+  selected_char_to_ascii_table_end:
+  ;
+  ascii_to_selected_char_table:
+    .db 33, FIRST_SELECTED_CHAR, 34, 2, 35, 3, 36, 4, 37, 5, 38, 6, 39, 7, 40, 8 ; A-H
+    .db 41, 9, 42, 10, 43, 11, 44, 12, 45, 13, 46, 14, 47, 15, 48, 16 ; I-P
+    .db 49, 17, 50, 18, 51, 19, 52, 20, 53, 21, 54, 22, 55, 23, 56, 24 ; Q-X
+    .db 57, 25, 58, 26, 1, 29, 3, 30, 4, 31, 5, 32, 6, LAST_SELECTED_CHAR
+  ascii_to_selected_char_table_end:
+
 .ends
