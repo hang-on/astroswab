@@ -274,6 +274,13 @@ run_hiscore:
       ld a,(active_initial)
       cp 1
       jp z,+
+        ; Put a space in.
+        ld a,LAST_SELECTED_CHAR
+        ld (selected_char),a
+        call convert_and_put_selected_char
+        ld hl,cursor_x
+        dec (hl)
+        ;
         ld ix,cursor_effect
         ld a,(ix+game_object.x)
         sub ONE_CHAR_WIDTH

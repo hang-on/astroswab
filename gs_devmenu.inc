@@ -57,7 +57,7 @@ prepare_devmenu:
   ld a,(vblank_update_finished_line)
   call print_register_a
   ;
-  call reset_scores                   ; Reset scores when preparing devmenu.
+  ;call reset_scores                   ; Reset scores when preparing devmenu.
   ;
   ; Wipe sprites.
   call begin_sprites
@@ -97,6 +97,7 @@ run_devmenu:
     call is_button_2_pressed
     jp nz,+
       ; Both buttons are pressed. Reset hiscore table.
+      call reset_scores
       SELECT_BANK HISCORE_BANK
       ld hl,hiscore_init        ; Hiscore initialization data.
       ld de,hiscore_item.1      ; Start of hiscore table.

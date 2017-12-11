@@ -595,7 +595,7 @@ hiscore_init:
   .asc "CHU"
   .asc "00400"
   .asc "DHA"
-  .asc "00300"
+  .asc "00010"
   .asc "CAM"
 ;
 hiscore_background_tiles:
