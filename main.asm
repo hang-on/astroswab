@@ -98,14 +98,7 @@
     ld bc,4
     ldir
     ; Reset player and peak score.
-    ld hl,player_score_init
-    ld de,player_score
-    call copy_score_and_increment_pointers
-    ld hl,player_score_init
-    ld de,peak_score
-    call copy_score_and_increment_pointers
-    ld a,FALSE
-    ld (new_hiscore),a
+    call reset_scores
     ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...

@@ -56,6 +56,9 @@ prepare_devmenu:
   call set_cursor
   ld a,(vblank_update_finished_line)
   call print_register_a
+  ;
+  call reset_scores                   ; Reset scores when preparing devmenu.
+  ;
   ; Wipe sprites.
   call begin_sprites
   call load_sat
@@ -88,6 +91,25 @@ run_devmenu:
     ld (menu_timer),a               ; It is about anti-bouncing!
     jp menu_end
   +:
+  ;
+  call is_button_1_pressed
+  jp nz,+
+    call is_button_2_pressed
+    jp nz,+
+      ; Both buttons are pressed. Reset hiscore table.
+      SELECT_BANK HISCORE_BANK
+      ld hl,hiscore_init        ; Hiscore initialization data.
+      ld de,hiscore_item.1      ; Start of hiscore table.
+      call copy_hiscore_table   ; Initialize hiscore table.
+      SELECT_EXTRAM
+        ld hl,HISCORE_EXTRAM_ADDRESS
+        call save_hiscore_table_to_extram
+      SELECT_ROM
+      ld a,GS_PREPARE_HISCORE
+      call transition_to_gamestate
+      jp main_loop
+  +:
+  ;
     call is_down_pressed       ; Move selector downwards if player
     jp nc,switch_menu_down_end      ; presses down. menu_state is the menu
       ld a,(menu_state)             ; item currently 'under' the selector.
