@@ -60,6 +60,15 @@ run_titlescreen:
   ;
   call get_random_number
   ;
+  call is_button_1_pressed
+  jp c,+
+  call is_button_2_pressed
+  jp nc,++
+    +:
+    call FadeOutScreen
+    jp setup_new_game
+  ++:
+  ;
   ;
   call PSGSFXFrame
   call PSGFrame
