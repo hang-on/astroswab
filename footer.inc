@@ -50,6 +50,7 @@
     .dw prepare_sandbox, run_sandbox,
     .dw prepare_titlescreen, run_titlescreen, setup_new_game
     .dw prepare_hiscore, run_hiscore
+    .dw prepare_warning, run_warning
   ;
   meta_background_table:
     ; Used when preparing a level.
@@ -633,4 +634,25 @@ titlescreen_background_table:
   .dw titlescreen_background_tilemap
   .dw $0000, $0000                                  ; Filler: 2 words.
 
+.ends
+;
+.bank WARNING_BANK slot 2
+; -----------------------------------------------------------------------------
+.section "Warning assets" free
+; -----------------------------------------------------------------------------
+;
+warning_background_tiles:
+  .include "bank_11\warning_background_tiles.inc"
+warning_background_tiles_end:
+warning_background_tilemap:
+  .include "bank_11\warning_background_tilemap.inc"
+warning_background_table:
+  .dw NON_ASCII_AREA_START,
+  .dw warning_background_tiles_end-warning_background_tiles,
+  .dw warning_background_tiles
+  .dw NAME_TABLE_START,
+  .dw VISIBLE_NAME_TABLE_SIZE,
+  .dw warning_background_tilemap
+  .dw $0000, $0000                                  ; Filler: 2 words.
+  ;
 .ends

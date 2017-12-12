@@ -1,6 +1,6 @@
-; gs_titlescreen.inc
+; gs_warning.inc
 ;
-prepare_titlescreen:
+prepare_warning:
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
@@ -19,33 +19,30 @@ prepare_titlescreen:
   ; Wipe sprites.
   call begin_sprites
   call load_sat
-  SELECT_BANK TITLESCREEN_BANK
+  SELECT_BANK WARNING_BANK
   ; Background graphics
-  ld hl,titlescreen_background_table
+  ld hl,warning_background_table
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
-  call randomize                  ; Seed the random number generator.
   ;
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop
-  ;
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,1
   call set_register
   ei
-  call FadeInScreen
   ;
   ; When all is set, change the game state.
   ;
-  ld a,GS_RUN_TITLESCREEN
+  ld a,GS_RUN_WARNING
   ld (game_state),a
 jp main_loop
 ;
-run_titlescreen:
+run_warning:
   ;
   -:
     call await_frame_interrupt
@@ -62,14 +59,14 @@ run_titlescreen:
   ;
   call get_random_number
   ;
+  ; Press buttons 1 and 2 to proceed to title screen.
   call is_button_1_pressed
-  jp c,+
-  call is_button_2_pressed
-  jp nc,++
-    +:
-    call FadeOutScreen
-    jp setup_new_game
-  ++:
+  jp nc,+
+    call is_button_2_pressed
+    jp nc,+
+      ld a,GS_PREPARE_TITLESCREEN
+      call transition_to_gamestate
+  +:
   ;
   ;
   call PSGSFXFrame

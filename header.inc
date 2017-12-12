@@ -21,6 +21,8 @@
   ;
 ; Title screen:
   .equ TITLESCREEN_BANK 10
+; Warning (wrong tv-type)
+  .equ WARNING_BANK 11
   ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
@@ -43,6 +45,8 @@
   .equ GS_SETUP_NEW_GAME 8
   .equ GS_PREPARE_HISCORE 9
   .equ GS_RUN_HISCORE 10
+  .equ GS_PREPARE_WARNING 11
+  .equ GS_RUN_WARNING 12
   ;
   .ifdef DEVELOPER_MODE
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
@@ -50,7 +54,8 @@
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
-    .equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
   .endif
 ; Sprites:
   .equ SPRITE_BANK 3

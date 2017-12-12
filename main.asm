@@ -43,6 +43,14 @@
     ; Go to the initial game state specified in the header.
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
+    ;
+    ; If we are on an NTSC system, display warning instead of title screen.
+    ld a,(tv_type)
+    cp NTSC
+    jp nz,+
+      ld a,GS_PREPARE_WARNING
+      ld (game_state),a
+    +:
   jp main_loop
   ;
   ; ---------------------------------------------------------------------------
@@ -118,6 +126,11 @@
   ; H I S C O R E
   ; ---------------------------------------------------------------------------
   .include "gs_hiscore.inc"
+  ;
+  ; ---------------------------------------------------------------------------
+  ; W A R N I N G
+  ; ---------------------------------------------------------------------------
+  .include "gs_warning.inc"
   ;
   ; ---------------------------------------------------------------------------
   ; S A N D B O X
