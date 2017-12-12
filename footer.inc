@@ -385,7 +385,6 @@
   asteroid_trigger_init_table_3:
     .db ASTEROID_TRIGGER_CHANCE_INIT_3, ASTEROID_TRIGGER_INTERVAL_INIT_3
     .db ENABLED, DEFAULT_CYCLE_VALUE
-
   ;
   ;
   ; ---------------------------------------------------------------------------
@@ -654,5 +653,34 @@ warning_background_table:
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw warning_background_tilemap
   .dw $0000, $0000                                  ; Filler: 2 words.
-  ;
+;
+; Menu item strings:
+warning_string_1:
+  .asc "W A R N I N G#"
+warning_string_2:
+  .asc "Your setup is NTSC!#"
+warning_string_3:
+  .asc "Please switch to PAL for#"
+warning_string_4:
+  .asc "the best experience.#"
+warning_string_5:
+  .asc "Press both buttons to#"
+warning_string_6:
+  .asc "continue anyway...#"
+;
+warning_batch_print_table:
+  .dw warning_string_1
+  .db 2, 7
+  .dw warning_string_2
+  .db 4, 7
+  .dw warning_string_3
+  .db 5, 7
+  .dw warning_string_4
+  .db 6, 7
+  .dw warning_string_5
+  .db 9, 7
+  .dw warning_string_6
+  .db 10, 7
+warning_batch_print_table_end:
+
 .ends

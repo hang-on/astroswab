@@ -25,6 +25,9 @@ prepare_warning:
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
+  ld a,6
+  ld ix,warning_batch_print_table
+  call batch_print
   ;
   ; Stop music and sound effects.
   call PSGSFXStop
