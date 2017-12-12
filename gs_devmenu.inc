@@ -58,6 +58,7 @@ prepare_devmenu:
   call print_register_a
   ;
   ;call reset_scores                   ; Reset scores when preparing devmenu.
+  call randomize
   ;
   ; Wipe sprites.
   call begin_sprites

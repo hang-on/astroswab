@@ -52,7 +52,7 @@
     ld b,(lives_string_end-lives_string-2)/2
     call put_string
     ;
-    call randomize  ; FIXME! Base on player input (titlescreen).
+    ;call randomize  ; FIXME! Base on player input (titlescreen).
     ; Reset the transition trigger.
     ld hl,transition_trigger_init_table
     ld ix,transition_trigger

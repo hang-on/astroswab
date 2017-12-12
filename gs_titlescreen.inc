@@ -24,7 +24,9 @@ prepare_titlescreen:
   ld hl,titlescreen_background_table
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
-
+  ;
+  call randomize                  ; Seed the random number generator.
+  ;
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop
@@ -56,7 +58,13 @@ run_titlescreen:
   call get_input_ports
   call begin_sprites
   ;
+  call get_random_number
+  ;
   ;
   call PSGSFXFrame
   call PSGFrame
+  ;
+  ld hl,frame_counter
+  inc (hl)
+  ;
 jp main_loop
