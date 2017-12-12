@@ -18,7 +18,10 @@
 ;
 ; Hiscore:
   .equ HISCORE_BANK 9
-;
+  ;
+; Title screen:
+  .equ TITLESCREEN_BANK 10
+  ;
 ; Misc. definitions:
   .equ PICO8_PALETTE_SIZE 16
   .equ FIRST_LINE_OF_VBLANK 192
@@ -42,7 +45,8 @@
   .equ GS_RUN_HISCORE 10
   ;
   .ifdef DEVELOPER_MODE
-    .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ;GS_SETUP_NEW_GAME ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ;GS_SETUP_NEW_GAME ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else

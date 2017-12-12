@@ -613,3 +613,24 @@ hiscore_background_table:
   .dw $0000, $0000                                  ; Filler: 2 words.
 
 .ends
+;
+.bank TITLESCREEN_BANK slot 2
+; -----------------------------------------------------------------------------
+.section "Titlescreen assets" free
+; -----------------------------------------------------------------------------
+;
+titlescreen_background_tiles:
+  .include "bank_10\titlescreen_background_tiles.inc"
+titlescreen_background_tiles_end:
+titlescreen_background_tilemap:
+  .include "bank_10\titlescreen_background_tilemap.inc"
+titlescreen_background_table:
+  .dw NON_ASCII_AREA_START,
+  .dw titlescreen_background_tiles_end-titlescreen_background_tiles,
+  .dw titlescreen_background_tiles
+  .dw NAME_TABLE_START,
+  .dw VISIBLE_NAME_TABLE_SIZE,
+  .dw titlescreen_background_tilemap
+  .dw $0000, $0000                                  ; Filler: 2 words.
+
+.ends
