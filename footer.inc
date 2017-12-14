@@ -452,6 +452,13 @@
   ;
   dd_revolution_tiles:
     .include "bank_2\dd_revolution_tiles.inc"
+    ;
+  alternative_font_table:
+    .dw BACKGROUND_BANK_START
+    .dw CHARS_IN_ASCII_SET*BYTES_PER_TILE
+    .dw dd_revolution_alternative_tiles
+  dd_revolution_alternative_tiles:
+    .include "bank_2\dd_revolution_alternative_tiles.inc"
 .ends
 ;
 .bank SPRITE_BANK slot 2
@@ -669,18 +676,18 @@ warning_string_6:
   .asc "continue anyway...#"
 ;
 warning_batch_print_table:
-  .dw warning_string_1
-  .db 2, 7
+  ;.dw warning_string_1
+  ;.db 2, 7
   .dw warning_string_2
-  .db 4, 7
+  .db 2, 7
   .dw warning_string_3
-  .db 5, 7
+  .db 3, 7
   .dw warning_string_4
-  .db 6, 7
+  .db 4, 7
   .dw warning_string_5
-  .db 9, 7
+  .db 6, 7
   .dw warning_string_6
-  .db 10, 7
+  .db 7, 7
 warning_batch_print_table_end:
 
 .ends

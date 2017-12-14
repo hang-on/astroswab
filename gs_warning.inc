@@ -10,6 +10,10 @@ prepare_warning:
   ld a,ASCII_SPACE
   ld b,TILE_BANK_1
   call reset_name_table
+  ; Load the font tiles.
+  SELECT_BANK FONT_BANK
+  ld hl,alternative_font_table
+  call load_vram_from_table
   ;
   SELECT_BANK SPRITE_BANK
   ld bc,sprite_tiles_end-sprite_tiles
@@ -25,7 +29,7 @@ prepare_warning:
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
-  ld a,6
+  ld a,5
   ld ix,warning_batch_print_table
   call batch_print
   ;
