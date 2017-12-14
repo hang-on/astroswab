@@ -103,6 +103,9 @@
     call begin_sprites
     call load_sat
     ;
+    ld a,FALSE
+    ld (pause_flag),a                 ; Reset pause flag.
+    ;
     call PSGSFXStop
     call PSGStop
     ; Turn on screen, frame interrupts and blank left column.
@@ -178,6 +181,15 @@
     .ifdef DEVELOPER_MODE
       call profile_vblank
     .endif
+    ;
+    ld a,(pause_flag)
+    cp TRUE
+    jp nz,+
+      call PSGSFXStop
+      call PSGStop
+      call PSGFrame
+      jp main_loop
+    +:
     ;
     call get_input_ports
     call begin_sprites
