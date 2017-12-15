@@ -20,6 +20,10 @@ prepare_warning:
   ld de,SPRITE_BANK_START
   ld hl,sprite_tiles
   call load_vram
+  ; Set border color.
+  ld a,BLUE
+  ld b,REGISTER_7
+  call set_register
   ; Wipe sprites.
   call begin_sprites
   call load_sat

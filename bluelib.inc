@@ -23,8 +23,20 @@
 .equ SPRITE_TERMINATOR $d0
 .equ NTSC 0
 .equ PAL 1
-
-
+;
+.equ REGISTER_0 0
+.equ REGISTER_1 1
+.equ REGISTER_2 2
+.equ REGISTER_3 3
+.equ REGISTER_4 4
+.equ REGISTER_5 5
+.equ REGISTER_6 6
+.equ REGISTER_7 7
+.equ REGISTER_8 8
+.equ REGISTER_9 9
+.equ REGISTER_10 10
+.equ REGISTER_11 11
+;
 ; Memory map and initialization:
 .equ RAM_START $c000
 .equ STACK_INIT_ADDRESS $dff0
