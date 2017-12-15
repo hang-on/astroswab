@@ -1217,6 +1217,7 @@
     ;        A = number of strings to print.
     ; Uses: AF, BC, HL.
     ; Depends on print (in bluelib.inc), and on #-terminated strings.
+    .equ SIZE_OF_BATCH_PRINT_ITEM 4
     -:
       push af
       ld l,(ix+0)

@@ -29,7 +29,7 @@ prepare_warning:
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
-  ld a,5
+  ld a,(warning_batch_print_table_end-warning_batch_print_table)/SIZE_OF_BATCH_PRINT_ITEM
   ld ix,warning_batch_print_table
   call batch_print
   ;
