@@ -450,8 +450,8 @@
     .dw CHARS_IN_ASCII_SET*BYTES_PER_TILE
     .dw dd_revolution_tiles
   ;
-  dd_revolution_tiles:
-    .include "bank_2\dd_revolution_tiles.inc"
+  dd_revolution_tiles: ; N.B.: Both ressources point to alternative tiles!
+    .include "bank_2\dd_revolution_alternative_tiles.inc"
     ;
   alternative_font_table:
     .dw BACKGROUND_BANK_START

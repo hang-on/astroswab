@@ -21,7 +21,7 @@ prepare_warning:
   ld hl,sprite_tiles
   call load_vram
   ; Set border color.
-  ld a,BLUE
+  ld a,INDIGO
   ld b,REGISTER_7
   call set_register
   ; Wipe sprites.
