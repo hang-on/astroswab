@@ -18,6 +18,11 @@ prepare_hiscore:
   ld hl,alternative_font_table
   call load_vram_from_table
   ;
+  ; Set border color.
+  ld a,INDIGO
+  ld b,REGISTER_7
+  call set_register
+  ;
   SELECT_BANK SPRITE_BANK
   ld bc,sprite_tiles_end-sprite_tiles
   ld de,SPRITE_BANK_START

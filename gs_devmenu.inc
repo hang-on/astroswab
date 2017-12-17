@@ -14,6 +14,12 @@ prepare_devmenu:
   ld a,ASCII_SPACE
   ld b,TILE_BANK_1
   call reset_name_table
+  ;
+  ; Load the font tiles.
+  SELECT_BANK FONT_BANK
+  ld hl,font_table
+  call load_vram_from_table
+  ;
   ld ix,batch_print_table
   ld a,(batch_print_table_end-batch_print_table)/4
   call batch_print
