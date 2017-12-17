@@ -13,6 +13,11 @@ prepare_hiscore:
   ld b,TILE_BANK_1
   call reset_name_table
   ;
+  ; Load the font tiles.
+  SELECT_BANK FONT_BANK
+  ld hl,alternative_font_table
+  call load_vram_from_table
+  ;
   SELECT_BANK SPRITE_BANK
   ld bc,sprite_tiles_end-sprite_tiles
   ld de,SPRITE_BANK_START

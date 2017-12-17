@@ -113,6 +113,6 @@
 ; Tile index $098
 .db $FF $03 $F8 $FB $FF $03 $F8 $FB $FF $03 $E0 $E3 $FF $1F $1C $03 $FF $FF $E0 $1F $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF
 ; Tile index $099
-.db $FF $FF $00 $FF $FF $FF $00 $00 $FF $00 $FF $00 $FF $00 $FF $00 $FF $00 $00 $00 $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $FF $FF $00 $FF $FF $FF $00 $00 $FF $00 $FF $00 $FF $00 $FF $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00
 ; Tile index $09A
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00

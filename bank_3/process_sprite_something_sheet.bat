@@ -7,8 +7,10 @@ echo off
 :: being present in the tools folder.
 
 SET folder="C:\Users\ANSJ\Dropbox\Apps\Sprite Something\"
-SET filename1=astro_sheet_1.png
-SET filename2=astro_sheet_2.png
+::SET filename1=astro_sheet_1.png
+::SET filename2=astro_sheet_2.png
+SET filename1=astroswab-1.png
+SET filename2=astroswab-2.png
 SET output=spritesheet.png
 
 :: Copy to this folder.
