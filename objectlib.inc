@@ -19,6 +19,8 @@
   anim_counter db
   anim_pointer dw
   id db
+  ;reserved_word dw
+  ;reserved_byte db
 .endst
 ;
 .equ GAME_OBJECT_ACTIVE 1

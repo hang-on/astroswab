@@ -100,6 +100,7 @@
       ld (hl),a
       -:
         dec hl
+        ;inc hl ??
         inc (hl)
         ld a,(hl)
         cp ASCII_ZERO+10
@@ -139,7 +140,8 @@
         add a,10
         ld (hl),a
         -:
-          dec hl
+          ;dec hl
+          ;inc hl
           dec (hl)
           ld a,(hl)
           cp ASCII_ZERO

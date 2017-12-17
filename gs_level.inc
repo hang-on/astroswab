@@ -83,6 +83,11 @@
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
     call batch_initialize_game_objects
+    ; Init swabby death explosion (fixme: should be done in run_level)
+    ld ix,swabby_death
+    ld hl,swabby_death_anim_table
+    call load_animation_game_object
+    ;
     ; Initialize gun (use the current gun level)
     ld a,(gun_level)
     ld b,a
@@ -520,7 +525,7 @@
       ;ld hl,spinner_hits_ground
       ;call horizontal_zone_send_to_handler
       ;
-      ;call animate_game_object
+      call animate_game_object
       call draw_game_object              ; Put it in the SAT.
       ;call add_game_object_to_collision_table
     +:
