@@ -182,6 +182,7 @@
     .dw asteroid, asteroid_init_table, ASTEROID_MAX
     .dw shard, shard_init_table, SHARD_MAX
     .dw bee, bee_init_table, 1
+    .dw swabby_death, swabby_death_init_table, 1
   batch_game_object_init_table_end:
   ;
   asteroid_init_table:
@@ -256,6 +257,29 @@
     .dw spinner, 1
     .dw booster, 1
   swabby_collision_table_end:
+  ;
+  swabby_death_init_table:
+    .db SWABBY_DEATH_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
+    .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
+    .db %00000001, 1, 0, 15, 14, SWABBY_DEATH
+  ;
+  swabby_death_anim_table:
+  .rept 8
+    .rept 8
+      .db SPRITE_25
+    .endr
+    .rept 8
+      .db SPRITE_26
+    .endr
+    .rept 8
+      .db SPRITE_27
+    .endr
+    .rept 8
+      .db SPRITE_25
+    .endr
+  .endr
+  ;
+
   ;
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL

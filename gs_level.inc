@@ -508,6 +508,23 @@
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
     +:
+    ; -------------------------------------------------------------------------
+    ; Swabby death.
+    ld ix,swabby_death
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      ;call move_game_object              ; Move
+      ;ld a,SPINNER_DEACTIVATE_ZONE_START
+      ;ld b,SPINNER_DEACTIVATE_ZONE_END
+      ;ld hl,spinner_hits_ground
+      ;call horizontal_zone_send_to_handler
+      ;
+      ;call animate_game_object
+      call draw_game_object              ; Put it in the SAT.
+      ;call add_game_object_to_collision_table
+    +:
+
     ; ---------------------------------------------------------------------------
     ; Handle booster and trigger.
     ld ix,booster

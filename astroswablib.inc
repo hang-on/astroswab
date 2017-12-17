@@ -116,7 +116,7 @@
   ret
   ;
   reset_scores:
-    ; 
+    ;
     ld hl,player_score_init
     ld de,player_score
     call copy_score_and_increment_pointers
@@ -157,6 +157,15 @@
 .equ SPRITE_20 74
 .equ SPRITE_21 80
 .equ SPRITE_22 82
+
+.equ SPRITE_23 88
+.equ SPRITE_24 90
+.equ SPRITE_25 96
+.equ SPRITE_26 98
+.equ SPRITE_27 104
+.equ SPRITE_28 106
+
+
 ; . . .
 .equ FIRST_8x8_SPRITE 168
 .equ SPRITE_43 FIRST_8x8_SPRITE

@@ -97,6 +97,7 @@
   .equ BEE 8
   .equ CURSOR_EFFECT 9
   .equ NOT_MOVING 0
+  .equ SWABBY_DEATH 10
 ;
 ; How many different kinds of triggers to initialize on level init?
 ; shard, missile, booster, spinner = 4
@@ -127,6 +128,8 @@
   .equ SWABBY_LEFT_SPRITE SPRITE_2
   .equ SWABBY_IDLE_SPRITE SPRITE_3
   .equ SWABBY_LIFE_CHAR 175
+; Swabby death:
+  .equ SWABBY_DEATH_SPRITE SPRITE_25
 ; Score:
   .equ SCORE_VRAM_ADDRESS $3d92
   .equ PEAK_SCORE_VRAM_ADDRESS $3d92+12
@@ -268,6 +271,7 @@
   transition_trigger instanceof trigger
   ;
   swabby instanceof game_object
+  swabby_death instanceof game_object
   player_score instanceof score_struct
   peak_score instanceof score_struct
   transition_score instanceof score_struct
