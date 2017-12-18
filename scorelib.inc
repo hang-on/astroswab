@@ -119,9 +119,11 @@
     ;         B = Number to subtract (non-ascii!).
     ;        HL = Pointer to score struct.
     ; Exit:
-    ; Uses: AF, BC, DE, HL
+    ; Uses: AF, BC, DE, HL, IX
     ;
-    push hl               ; Save ten thousands for underflow test.
+    push hl
+    pop ix                ; Save pointer in IX for out of bounds test.
+    push hl               ; Save pointer to ten thousands for underflow test.
       ld d,0
       ld e,score_struct.ten_thousands
       add hl,de
@@ -140,9 +142,17 @@
         add a,10
         ld (hl),a
         -:
-          ;dec hl
-          ;inc hl
-          dec (hl)
+          ; Out of bounds test:
+          push ix
+          pop de
+          push hl
+            inc hl
+            sbc hl,de
+          pop hl
+          jp z,+            ; Not working yet!!!
+          ;
+          dec hl            ; The test above should have stopped the following
+          dec (hl)          ; code frm going out of bounds in ram.
           ld a,(hl)
           cp ASCII_ZERO
           jp nc,+
@@ -150,22 +160,22 @@
             ld (hl),a
         jp -
       +:
-      pop hl                  ; Get the score struct pointer back.
-        ; Underflow test - prevent score from going below zero to 9????.
-        ld d,0
-        ld e,score_struct.ten_thousands
-        add hl,de
-        ld a,(hl)
-        ;                                       ; Test 1: Is the ten thousands
-        cp ASCII_ZERO+9                         ; digit now "9"?
-        ret nz                                  ; Yes? - proceed to test 2.
-          ld a,ASCII_ZERO                       ; Test 2: Was this digit "0"
-          cp c                                  ; before subtraction?
-          ret nz                                ; Yes? - reset score.
-            ex de,hl                            ; Switch to destination (DE).
-            ld hl,reset_score_data              ; Point to reset data.
-            ld bc,SCORE_DIGITS_TOTAL            ; Number of digits to reset.
-            ldir                                ; Do it.
+    pop hl                  ; Get the score struct pointer back.
+    ; Underflow test - prevent score from going below zero to 9????.
+    ld d,0
+    ld e,score_struct.ten_thousands
+    add hl,de
+    ld a,(hl)
+    ;                                       ; Test 1: Is the ten thousands
+    cp ASCII_ZERO+9                         ; digit now "9"?
+    ret nz                                  ; Yes? - proceed to test 2.
+      ld a,ASCII_ZERO                       ; Test 2: Was this digit "0"
+      cp c                                  ; before subtraction?
+      ret nz                                ; Yes? - reset score.
+        ex de,hl                            ; Switch to destination (DE).
+        ld hl,reset_score_data              ; Point to reset data.
+        ld bc,SCORE_DIGITS_TOTAL            ; Number of digits to reset.
+        ldir                                ; Do it.
   ret
     reset_score_data:
       .rept SCORE_DIGITS_TOTAL
