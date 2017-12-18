@@ -13,8 +13,8 @@
 .equ LETTERS_IN_INITIALS 3
 ;
 .struct score_struct
-  ten_thousands db
-  thousands db
+  ten_thousands db                ; Must be the first item in the score struct!
+  thousands db                    ; subtract_from_score depends on it.
   hundreds db
   tens db
   ones db
@@ -122,45 +122,45 @@
     ; Uses: AF, BC, DE, HL, IX
     ;
     push hl
-    pop ix                ; Save pointer in IX for out of bounds test.
-    push hl               ; Save pointer to ten thousands for underflow test.
-      ld d,0
-      ld e,score_struct.ten_thousands
-      add hl,de
-      ld c,(hl)
+    pop ix                            ; Save score pointer in IX
+    ld d,0
+    ld e,score_struct.ten_thousands
+    add hl,de                         ; HL now points to ten thousands.
+    ld c,(hl)                         ; Store this (for underflow test).
+    push ix                           ; Retrieve original pointer.
     pop hl
-    push hl               ; Save pointer to score struct for underflow test.
-      ld d,0
-      add a,score_struct.ten_thousands
-      ld e,a
-      add hl,de
-      ld a,(hl)
-      sub b
-      ld (hl),a
-      cp ASCII_ZERO
-      jp nc,+
-        add a,10
-        ld (hl),a
-        -:
-          ; Out of bounds test:
-          push ix
-          pop de
-          push hl
-            inc hl
-            sbc hl,de
-          pop hl
-          jp z,+            ; Not working yet!!!
-          ;
-          dec hl            ; The test above should have stopped the following
-          dec (hl)          ; code frm going out of bounds in ram.
-          ld a,(hl)
-          cp ASCII_ZERO
-          jp nc,+
-            add a,10
-            ld (hl),a
-        jp -
-      +:
-    pop hl                  ; Get the score struct pointer back.
+    ld d,0
+    add a,score_struct.ten_thousands
+    ld e,a
+    add hl,de                         ; Point HL to digit to subtract from.
+    ld a,(hl)                         ; Get current value of digit.
+    sub b                             ; Subtract the required number.
+    ld (hl),a                         ; Store it back into the digit.
+    cp ASCII_ZERO                     ; Is this digit now below zero?
+    jp nc,+                           ;
+      add a,10                        ; Yes? - 'borrow' from next digit.
+      ld (hl),a                       ; Save in this digit.
+      -:
+        ; Out of bounds test:         ; Are we going below 00000 now?
+        push ix                       ; Get the original pointer.
+        pop de                        ; Store in DE.
+        push hl                       ; Save pointer to current digit.
+          inc hl                      ; Increment pointer.
+          sbc hl,de                   ; Are we at the first digit now?
+        pop hl                        ; Retrieve pointer to digit.
+        jp z,+                        ; Skip forward if HL = DE.
+        ;                             ; 'Borrow' from next digit (1>10>100>1.000>10.000).
+        dec hl                        ; Point to this digit.
+        dec (hl)                      ; Decrement it (perform the borrow).
+        ld a,(hl)                     ; Is this digit now below zero?
+        cp ASCII_ZERO
+        jp nc,+                       ; If not, then proceed to finish.
+          add a,10                    ; Else, perform another borrow...
+          ld (hl),a
+      jp -
+    +:
+    push ix
+    pop hl
     ; Underflow test - prevent score from going below zero to 9????.
     ld d,0
     ld e,score_struct.ten_thousands
