@@ -9,7 +9,7 @@
     .db $00 $10 $12 $18 $06 $15 $2A $3F $13 $0B $0F $0C $38 $26 $27 $2F
   ;
   dummy_text:
-    .asc "  Score:-----*----- POW:#"
+    .asc "  Score:-----*-----#"
   ;
   ; Init and dummy data for testing hiscore table functionality.
   player_score_init:

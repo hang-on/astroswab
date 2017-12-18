@@ -47,6 +47,10 @@
     ld c,DUMMY_TEXT_COLUMN
     ld hl,dummy_text
     call print
+    ; Print the gun level meter.
+    ld hl,gun_level_string
+    ld b,(gun_level_string_end-gun_level_string-2)/2
+    call put_string
     ; Print the lives meter.
     ld hl,lives_string
     ld b,(lives_string_end-lives_string-2)/2
