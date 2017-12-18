@@ -112,6 +112,22 @@
   ret
   ;
   subtract_from_score:
+    ; New version.
+    ; Entry:  A = Digit to subtract from.
+    ;         B = Number to subtract (non-ascii!).
+    ;        HL = Pointer to score struct.
+    ld d,0
+    ld e,a
+    add hl,de
+    ;
+    ld a,(hl)
+    cp ASCII_ZERO
+    ret z
+    dec (hl)
+  ret
+
+
+  subtract_from_score_old:
     ; Subtract a number passed in B from the digit specified in A. Update the
     ; other digits in the score struct as necessary. Prevents score from going
     ; below zero.
@@ -141,14 +157,14 @@
       add a,10                        ; Yes? - 'borrow' from next digit.
       ld (hl),a                       ; Save in this digit.
       -:
-        ; Out of bounds test:         ; Are we going below 00000 now?
-        push ix                       ; Get the original pointer.
-        pop de                        ; Store in DE.
-        push hl                       ; Save pointer to current digit.
-          inc hl                      ; Increment pointer.
-          sbc hl,de                   ; Are we at the first digit now?
-        pop hl                        ; Retrieve pointer to digit.
-        jp z,+                        ; Skip forward if HL = DE.
+        ; Out of bounds test:         ; Are we pointing outside the score struct now?
+        ;push ix                       ; Get the original pointer.
+        ;pop de                        ; Store in DE.
+        ;push hl                       ; Save pointer to current digit.
+          ;inc hl                      ; Increment pointer.
+          ;sbc hl,de                   ; Are we at the first digit now?
+        ;pop hl                        ; Retrieve pointer to digit.
+        ;jp z,+                        ; Skip forward if HL = DE.
         ;                             ; 'Borrow' from next digit (1>10>100>1.000>10.000).
         dec hl                        ; Point to this digit.
         dec (hl)                      ; Decrement it (perform the borrow).
