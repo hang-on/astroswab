@@ -278,8 +278,10 @@
       .db SPRITE_25
     .endr
   .endr
-
   ;
+  swabby_death_trigger_init_table:
+    .db 255, SWABBY_DEATH_TRIGGER_INTERVAL
+    .db ENABLED, DEFAULT_CYCLE_VALUE
 
   ;
   bullet_init_table:

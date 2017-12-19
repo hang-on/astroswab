@@ -57,6 +57,10 @@
     ld hl,transition_trigger_init_table
     ld ix,transition_trigger
     call initialize_trigger
+    ; Swabby death trigger.
+    ld hl,swabby_death_trigger_init_table
+    ld ix,swabby_death_trigger
+    call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
     ld a,(difficulty)                         ; Get current difficulty.

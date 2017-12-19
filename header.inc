@@ -130,6 +130,7 @@
   .equ SWABBY_LIFE_CHAR 175
 ; Swabby death:
   .equ SWABBY_DEATH_SPRITE SPRITE_25
+  .equ SWABBY_DEATH_TRIGGER_INTERVAL 150
 ; Score:
   .equ SCORE_VRAM_ADDRESS $3d92
   .equ PEAK_SCORE_VRAM_ADDRESS $3d92+12
@@ -272,6 +273,7 @@
   ;
   swabby instanceof game_object
   swabby_death instanceof game_object
+  swabby_death_trigger instanceof trigger
   player_score instanceof score_struct
   peak_score instanceof score_struct
   transition_score instanceof score_struct
