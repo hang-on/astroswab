@@ -1,3 +1,72 @@
+; 2017-12-19
+subtract_from_score_old:
+  ; Subtract a number passed in B from the digit specified in A. Update the
+  ; other digits in the score struct as necessary. Prevents score from going
+  ; below zero.
+  ; Entry:  A = Digit to subtract from.
+  ;         B = Number to subtract (non-ascii!).
+  ;        HL = Pointer to score struct.
+  ; Exit:
+  ; Uses: AF, BC, DE, HL, IX
+  ;
+  push hl
+  pop ix                            ; Save score pointer in IX
+  ld d,0
+  ld e,score_struct.ten_thousands
+  add hl,de                         ; HL now points to ten thousands.
+  ld c,(hl)                         ; Store this (for underflow test).
+  push ix                           ; Retrieve original pointer.
+  pop hl
+  ld d,0
+  add a,score_struct.ten_thousands
+  ld e,a
+  add hl,de                         ; Point HL to digit to subtract from.
+  ld a,(hl)                         ; Get current value of digit.
+  sub b                             ; Subtract the required number.
+  ld (hl),a                         ; Store it back into the digit.
+  cp ASCII_ZERO                     ; Is this digit now below zero?
+  jp nc,+                           ;
+    add a,10                        ; Yes? - 'borrow' from next digit.
+    ld (hl),a                       ; Save in this digit.
+    -:
+      ; Out of bounds test:         ; Are we pointing outside the score struct now?
+      ;push ix                       ; Get the original pointer.
+      ;pop de                        ; Store in DE.
+      ;push hl                       ; Save pointer to current digit.
+        ;inc hl                      ; Increment pointer.
+        ;sbc hl,de                   ; Are we at the first digit now?
+      ;pop hl                        ; Retrieve pointer to digit.
+      ;jp z,+                        ; Skip forward if HL = DE.
+      ;                             ; 'Borrow' from next digit (1>10>100>1.000>10.000).
+      dec hl                        ; Point to this digit.
+      dec (hl)                      ; Decrement it (perform the borrow).
+      ld a,(hl)                     ; Is this digit now below zero?
+      cp ASCII_ZERO
+      jp nc,+                       ; If not, then proceed to finish.
+        add a,10                    ; Else, perform another borrow...
+        ld (hl),a
+    jp -
+  +:
+  push ix
+  pop hl
+  ; Underflow test - prevent score from going below zero to 9????.
+  ld d,0
+  ld e,score_struct.ten_thousands
+  add hl,de
+  ld a,(hl)
+  ;                                       ; Test 1: Is the ten thousands
+  cp ASCII_ZERO+9                         ; digit now "9"?
+  ret nz                                  ; Yes? - proceed to test 2.
+    ld a,ASCII_ZERO                       ; Test 2: Was this digit "0"
+    cp c                                  ; before subtraction?
+    ret nz                                ; Yes? - reset score.
+      ex de,hl                            ; Switch to destination (DE).
+      ld hl,reset_score_data              ; Point to reset data.
+      ld bc,SCORE_DIGITS_TOTAL            ; Number of digits to reset.
+      ldir                                ; Do it.
+ret
+
+
 ;2017-12-10
 ;
 ; Preset peak score for testing.

@@ -271,6 +271,16 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Game object implementations" free
 ; -----------------------------------------------------------------------------
+  missile_hits_ground:
+    ; IX points to missile structure.
+    call deactivate_game_object
+    ;call PSGStop
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+ret
+;
   spinner_hits_ground:
       ; IX points to spinner structure.
       call deactivate_game_object
@@ -285,16 +295,7 @@ tall_meta_sprite_table:
       call subtract_from_score
   ret
   ;
-  missile_hits_ground:
-      ; IX points to missile structure.
-      call deactivate_game_object
-      ;call PSGStop
-      SELECT_BANK SOUND_BANK
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
-  ret
-  ;
+
   shard_hits_ground:
     ; IX points to shard object.
     call deactivate_game_object

@@ -166,11 +166,15 @@
   push bc
   push de
   push hl
+  push ix
+  push iy
 .endm
 ; -----------------------------------------------------------------------------
 .macro RESTORE_REGISTERS
 ; -----------------------------------------------------------------------------
   ; Restore all registers, except IX and IY
+  pop iy
+  pop ix
   pop hl
   pop de
   pop bc
