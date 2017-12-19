@@ -438,6 +438,26 @@ ret
         ld (gun_level_flag),a
         ret
     +:
+    ; All other game objects means death to Swabby!
+    ld ix,swabby_death
+    ld hl,swabby_death_anim_table
+    call load_animation_game_object
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+    ;
+    ld iy,swabby_death
+    ld ix,swabby
+    call position_game_object_in_relation_to_game_object
+    ;
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    ;
+    ld hl,swabby_death_trigger_init_table
+    ld ix,swabby_death_trigger
+    call initialize_trigger
+    ld a,ENABLED
+    ld (ix+trigger.state),a
+
     ; cp ANOTHER_GAME_OBJECT...
   ret
   ;

@@ -260,7 +260,7 @@
   ;
   swabby_death_init_table:
     .db SWABBY_DEATH_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
+    .db SWABBY_Y_INIT, SWABBY_X_INIT+20, GAME_OBJECT_INACTIVE
     .db %00000001, 1, 0, 15, 14, SWABBY_DEATH
   ;
   swabby_death_anim_table:
@@ -281,8 +281,7 @@
   ;
   swabby_death_trigger_init_table:
     .db 255, SWABBY_DEATH_TRIGGER_INTERVAL
-    .db ENABLED, DEFAULT_CYCLE_VALUE
-
+    .db DISABLED, DEFAULT_CYCLE_VALUE
   ;
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
