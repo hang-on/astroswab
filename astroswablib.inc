@@ -455,6 +455,9 @@ ret
     ;
     ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
+    ld a,FALSE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
     ;
     ld hl,swabby_death_trigger_init_table
     ld ix,swabby_death_trigger

@@ -245,100 +245,107 @@
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
     ld (ix+game_object.sprite),a
-    call is_right_pressed             ; Check if player press right.
-    ld a,0
-    jp nc,+
-      ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
-      ld (ix+game_object.sprite),a
-      ld a,(ix+game_object.xspeed)
-      cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
-      jp z,++                         ; If we are already there, skip ahead...
-        inc a                         ; If not, then accelerate a bit.
-        jp ++                         ; Skip over the dpad-left check below.
-    +:
-    ld a,0
-    call is_left_pressed              ; Check if player press left.
-    ld a,0
-    jp nc,++
-      ld a,SWABBY_LEFT_SPRITE
-      ld (ix+game_object.sprite),a
-      ld a,(ix+game_object.xspeed)
-      cp -(SWABBY_X_SPEED_MAX)
-      jp z,++
-        dec a
-    ++:
-    ld (ix+game_object.xspeed),a
-    call move_game_object
     ;
-    ld a,(ix+game_object.x)         ; Get Swabby X (after movement).
-    cp SWABBY_X_MAX                 ; Compare it to max X (right border)
-    jp c,+                          ; If Swabby has moved beyond this border,
-      ld a,SWABBY_X_MAX             ; set his X to max.
-      ld (ix+game_object.x),a
-      jp ++
-    +:
-    cp SWABBY_X_MIN                 ; Do the same test for the left border...
-    jp nc,++
-      ld a,SWABBY_X_MIN
-      ld (ix+game_object.x),a
-    ++:
+    ld a,(swabby_responds_to_player_input)  ; If this flag is FALSE then Swabby
+    cp TRUE                                 ; will remain idle in place, cannot
+    jp nz,skip_swabby_input                 ; move or fire.
+    ;
+      call is_right_pressed             ; Check if player press right.
+      ld a,0
+      jp nc,+
+        ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
+        ld (ix+game_object.sprite),a
+        ld a,(ix+game_object.xspeed)
+        cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
+        jp z,++                         ; If we are already there, skip ahead...
+          inc a                         ; If not, then accelerate a bit.
+          jp ++                         ; Skip over the dpad-left check below.
+      +:
+      ld a,0
+      call is_left_pressed              ; Check if player press left.
+      ld a,0
+      jp nc,++
+        ld a,SWABBY_LEFT_SPRITE
+        ld (ix+game_object.sprite),a
+        ld a,(ix+game_object.xspeed)
+        cp -(SWABBY_X_SPEED_MAX)
+        jp z,++
+          dec a
+      ++:
+      ld (ix+game_object.xspeed),a
+      call move_game_object
+      ;
+      ld a,(ix+game_object.x)         ; Get Swabby X (after movement).
+      cp SWABBY_X_MAX                 ; Compare it to max X (right border)
+      jp c,+                          ; If Swabby has moved beyond this border,
+        ld a,SWABBY_X_MAX             ; set his X to max.
+        ld (ix+game_object.x),a
+        jp ++
+      +:
+      cp SWABBY_X_MIN                 ; Do the same test for the left border...
+      jp nc,++
+        ld a,SWABBY_X_MIN
+        ld (ix+game_object.x),a
+      ++:
+      ; -------------------------------------------------------------------------
+      ; Gun and bullets.
+      call is_button_1_pressed        ;
+      jp c,+                          ; Is the player pressing the fire button?
+        ld a,TRUE                     ; No - then set gun flag (to prevent
+        ld (gun_released),a           ; auto fire).
+        ;add a,(hl)                   ; This caused a bug with scoring!?
+        ;ld (hl),a
+      +:
+      ; Process gun timer.
+      ld a,(gun_timer)                ; If gun_timer is not already zero then
+      or a                            ; decrement it.
+      jp z,+                          ;
+        dec a                         ;
+        ld (gun_timer),a              ;
+      +:                              ;
+      call is_button_1_pressed        ; Test for fire button press...
+      jp nc,activate_bullet_end       ; If the fire button is not pressed, skip...
+        call get_random_number        ; Re-seed random number generator!
+        ld a,(gun_timer)              ; Check gun timer (delay between shots).
+        or a                          ;
+        jp nz,activate_bullet_end     ; If timer not set, skip...
+          ld a,(gun_released)         ; Is gun released? (no autofire!)
+          cp TRUE                     ;
+          jp nz,activate_bullet_end   ; If not, skip...
+            ; If we get here, it is time to reset and activate a new bullet.
+            ld a,(gun_delay)          ; Make gun wait a little (load time)!
+            ld (gun_timer),a          ;
+            ld a,FALSE                ; Lock gun (released on fire button release).
+            ld (gun_released),a       ;
+            ld ix,bullet
+            ld a,BULLET_MAX
+            call get_inactive_game_object ; Let IX point to first inactive bullet.
+            jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
+              call activate_game_object
+              push ix                     ; Save pointer to bullet.
+                ld ix,swabby
+                ld a,(ix+game_object.y)   ; Get Swabby y.
+                sub BULLET_Y_OFFSET       ; Apply bullet offset.
+                ld b,a
+                ld a,(ix+game_object.x)   ; Get Swabby x.
+                add a,BULLET_X_OFFSET     ; Apply offset.
+              pop ix                      ; Restore pointer to bullet.
+              ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
+              ld (ix+game_object.x),a
+              ;
+              call PSGSFXGetStatus
+              cp PSG_PLAYING
+              jp z,+
+                SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+                ld c,SFX_CHANNELS2AND3
+                ld hl,shot_1
+                call PSGSFXPlay           ; Play the swabby shot sound effect.
+              +:
+              ;
+      activate_bullet_end:              ; End of bullet activation code.
+    skip_swabby_input:
+    ld ix,swabby
     call draw_game_object           ; At last! Draw Swabby at final position.
-    ; -------------------------------------------------------------------------
-    ; Gun and bullets.
-    call is_button_1_pressed        ;
-    jp c,+                          ; Is the player pressing the fire button?
-      ld a,TRUE                     ; No - then set gun flag (to prevent
-      ld (gun_released),a           ; auto fire).
-      ;add a,(hl)                   ; This caused a bug with scoring!?
-      ;ld (hl),a
-    +:
-    ; Process gun timer.
-    ld a,(gun_timer)                ; If gun_timer is not already zero then
-    or a                            ; decrement it.
-    jp z,+                          ;
-      dec a                         ;
-      ld (gun_timer),a              ;
-    +:                              ;
-    call is_button_1_pressed        ; Test for fire button press...
-    jp nc,activate_bullet_end       ; If the fire button is not pressed, skip...
-      call get_random_number        ; Re-seed random number generator!
-      ld a,(gun_timer)              ; Check gun timer (delay between shots).
-      or a                          ;
-      jp nz,activate_bullet_end     ; If timer not set, skip...
-        ld a,(gun_released)         ; Is gun released? (no autofire!)
-        cp TRUE                     ;
-        jp nz,activate_bullet_end   ; If not, skip...
-          ; If we get here, it is time to reset and activate a new bullet.
-          ld a,(gun_delay)          ; Make gun wait a little (load time)!
-          ld (gun_timer),a          ;
-          ld a,FALSE                ; Lock gun (released on fire button release).
-          ld (gun_released),a       ;
-          ld ix,bullet
-          ld a,BULLET_MAX
-          call get_inactive_game_object ; Let IX point to first inactive bullet.
-          jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
-            call activate_game_object
-            push ix                     ; Save pointer to bullet.
-              ld ix,swabby
-              ld a,(ix+game_object.y)   ; Get Swabby y.
-              sub BULLET_Y_OFFSET       ; Apply bullet offset.
-              ld b,a
-              ld a,(ix+game_object.x)   ; Get Swabby x.
-              add a,BULLET_X_OFFSET     ; Apply offset.
-            pop ix                      ; Restore pointer to bullet.
-            ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
-            ld (ix+game_object.x),a
-            ;
-            call PSGSFXGetStatus
-            cp PSG_PLAYING
-            jp z,+
-              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-              ld c,SFX_CHANNELS2AND3
-              ld hl,shot_1
-              call PSGSFXPlay           ; Play the swabby shot sound effect.
-            +:
-            ;
-    activate_bullet_end:              ; End of bullet activation code.
     ; Process all bullets.
     ld ix,bullet
     ld b,BULLET_MAX
