@@ -61,6 +61,10 @@
     ld hl,swabby_death_trigger_init_table
     ld ix,swabby_death_trigger
     call initialize_trigger
+    ; Swabby respawn trigger.
+    ld hl,swabby_respawn_trigger_init_table
+    ld ix,swabby_respawn_trigger
+    call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
     ld a,(difficulty)                         ; Get current difficulty.
