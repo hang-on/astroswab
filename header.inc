@@ -276,6 +276,7 @@
   swabby_responds_to_player_input db          ; TRUE/FALSE
   swabby_can_collide_with_objects db    ; TRUE/FALSE
   swabby_death instanceof game_object
+  dev_buffer dsb 4
   swabby_death_trigger instanceof trigger
   swabby_respawn_trigger instanceof trigger
   player_score instanceof score_struct
