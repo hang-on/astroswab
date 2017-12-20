@@ -611,6 +611,9 @@
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
     jp nz,missile_loop_end
+      ld a,(ix+game_object.y)
+      cp MISSILE_TRACKING_LINE
+      jp c,++
       ; Make missile track/follow Swabby.
       ld iy,swabby
       ld a,(iy+game_object.x)
