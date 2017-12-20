@@ -73,7 +73,7 @@
     inc hl                                    ; init table into HL.
     ld h,(hl)
     ld l,a
-    ; Initialize the triggers.
+    ; Initialize the difficulty-dependant triggers.
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
     ; Set transition score (when to transition to next difficulty).
@@ -87,10 +87,14 @@
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
     call batch_initialize_game_objects
-    ; Init swabby death explosion (fixme: should be done in run_level)
+    ; Init swabby death explosion
     ld ix,swabby_death
     ld hl,swabby_death_anim_table
     call load_animation_game_object
+    ; Inititalize misc. Swabby dashboard variables.
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
     ;
     ; Initialize gun (use the current gun level)
     ld a,(gun_level)
@@ -226,9 +230,13 @@
       pop bc
     djnz bullet_collision_loop
     ; Resolve possible swabby collisions.
-    ld ix,swabby
-    call detect_collision_using_collision_table
-    call c,handle_swabby_collision
+    ld a,(swabby_can_collide_with_objects)
+    cp TRUE
+    jp nz,+
+      ld ix,swabby
+      call detect_collision_using_collision_table
+      call c,handle_swabby_collision
+    +:
     ; End of collision tests for this frame.
     ; -------------------------------------------------------------------------
     call begin_collision_tables       ; Restart filling the coll.tables.
