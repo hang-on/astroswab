@@ -9,7 +9,7 @@
     .db $00 $10 $12 $18 $06 $15 $2A $3F $13 $0B $0F $0C $38 $26 $27 $2F
   ;
   dummy_text:
-    .asc "  Score:-----*----- POW:#"
+    .asc " Score:-----*-----     POW:#"
   ;
   ; Init and dummy data for testing hiscore table functionality.
   player_score_init:
@@ -37,7 +37,7 @@
     .db ASCII_ZERO, CHAR_FROM_BACKGROUND_BANK
   gun_level_string_end:
   lives_string:
-    .dw GUN_LEVEL_NAMETABLE_ADDRESS+4
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS-16
     .db SWABBY_LIFE_CHAR, CHAR_FROM_SPRITE_BANK
     .db ASCII_LOWERCASE_X, CHAR_FROM_BACKGROUND_BANK
     .db ASCII_ZERO+3, CHAR_FROM_BACKGROUND_BANK
