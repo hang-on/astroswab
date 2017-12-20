@@ -89,6 +89,9 @@
     ld (swabby_can_collide_with_objects),a
     ;
     ; Initialize gun (use the current gun level)
+    ld a,TRUE
+    ld (gun_level_flag),a
+
     ld a,(gun_level)
     ld b,a
     ld a,GUN_DELAY_INIT
@@ -140,12 +143,29 @@
     ;
     ld a,(gun_level_flag)         ; Check flag to see if gun level has changed
     cp TRUE                       ; and thus a char update is needed...
-    jp nz,+
+    jp nz,++
+      ld a,(gun_level)
+      cp GUN_LEVEL_MAX
+      jp nz,+
+        ld hl,gun_level_max_string
+        ld b,((gun_level_max_string_end-gun_level_max_string)-2)/2
+        call put_string
+        jp ++
+        gun_level_max_string:
+          .dw GUN_LEVEL_NAMETABLE_ADDRESS
+          .asc "M"
+          .db GUN_LEVEL_NAMETABLE_FLAGS
+          .asc "A"
+          .db GUN_LEVEL_NAMETABLE_FLAGS
+          .asc "X"
+          .db GUN_LEVEL_NAMETABLE_FLAGS
+        gun_level_max_string_end:
+      +:
       ld hl,gun_level_char_data
       call fast_put_char
       ld a,FALSE
       ld (gun_level_flag),a
-    +:
+    ++:
     ; -------------------------------------------------------------------------
     ; Fast output score digits.
     ld hl,SCORE_VRAM_ADDRESS

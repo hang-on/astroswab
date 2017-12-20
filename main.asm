@@ -97,7 +97,7 @@
     ld a,INITIAL_DIFFICULTY           ; Set difficulty.
     ld (difficulty),a
     ;
-    xor a                             ; Reset gun
+    ld a,GUN_LEVEL_INIT                            ; Reset gun
     ld (gun_level),a
     ld a,TRUE
     ld (gun_level_flag),a             ; Update the gun level counter gfx.

@@ -857,6 +857,22 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "set_vram_address" free
+; -----------------------------------------------------------------------------
+  ; Set vram address.
+  ; Entry: HL = Address.
+  ; Exit:
+  ; Uses:
+  set_vram_address:
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+  ret
+.ends
+
+; -----------------------------------------------------------------------------
 .section "Wait for scanline" free
 ; -----------------------------------------------------------------------------
   ; Wait for a specific scanline passed in A.
