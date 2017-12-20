@@ -67,19 +67,7 @@
     call initialize_trigger
     ; -------------------------------------------------------------------------
     ; Depending on difficulty.
-    ld a,(difficulty)                         ; Get current difficulty.
-    add a,a                                   ; Word-sized table items.
-    ld e,a
-    ld d,0
-    ld hl,difficulty_to_trigger_init_tables   ; Base of batch init tables.
-    add hl,de                                 ; Apply difficulty offset.
-    ld a,(hl)                                 ; Read pointer to trigger batch
-    inc hl                                    ; init table into HL.
-    ld h,(hl)
-    ld l,a
-    ; Initialize the difficulty-dependant triggers.
-    ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
-    call batch_initialize_triggers
+    call init_triggers_according_to_difficulty
     ; Set transition score (when to transition to next difficulty).
     ld a,(difficulty)
     ld hl,transition_score_init_table
@@ -658,6 +646,21 @@
       ld de,peak_score
       call copy_score_and_increment_pointers
     +:
+    ; Process the respawn trigger.
+    ld ix,swabby_respawn_trigger
+    call process_trigger
+    jp nc,+
+      ld a,DISABLED
+      ld (ix+trigger.state),a
+      ld ix,swabby
+      ld hl,swabby_init_table
+      call initialize_game_object
+      ld a,TRUE
+      ld (swabby_responds_to_player_input),a
+      ld (swabby_can_collide_with_objects),a
+      call init_triggers_according_to_difficulty
+    +:
+    ;
     ; Is it time to transition to next difficulty?
     ld a,(difficulty)
     cp DIFFICULTY_MAX

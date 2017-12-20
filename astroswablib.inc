@@ -130,6 +130,26 @@
     ld a,FALSE
     ld (new_hiscore),a
   ret
+  ;
+  init_triggers_according_to_difficulty:
+    ;
+    ; Entry: None.
+    ; Exit:
+    ; Uses:
+    ld a,(difficulty)                         ; Get current difficulty.
+    add a,a                                   ; Word-sized table items.
+    ld e,a
+    ld d,0
+    ld hl,difficulty_to_trigger_init_tables   ; Base of batch init tables.
+    add hl,de                                 ; Apply difficulty offset.
+    ld a,(hl)                                 ; Read pointer to trigger batch
+    inc hl                                    ; init table into HL.
+    ld h,(hl)
+    ld l,a
+    ; Initialize the difficulty-dependant triggers.
+    ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
+    call batch_initialize_triggers
+  ret
 .ends
 ;
 ; -----------------------------------------------------------------------------
