@@ -458,7 +458,9 @@ ret
     ld a,FALSE
     ld (swabby_responds_to_player_input),a
     ld (swabby_can_collide_with_objects),a
-    
+    ;
+    ld ix,swabby_respawn_trigger
+    call batch_wipe_all_object_triggers_and_enable_trigger
     ;
     ld hl,swabby_death_trigger_init_table
     ld ix,swabby_death_trigger
