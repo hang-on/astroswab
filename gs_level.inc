@@ -654,7 +654,9 @@
       ld iy,peak_score
       ld ix,transition_score
       call compare_scores
-      call c,begin_transition
+      jp nc,+
+        ld ix,transition_trigger
+        call batch_wipe_all_object_triggers_and_enable_trigger
     +:
     ;
     ; Process transition to next difficulty timer.
@@ -666,11 +668,8 @@
     jp z,+
       inc a
       ld (difficulty),a
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
       ld a,GS_PREPARE_LEVEL
-      ld (game_state),a
+      call transition_to_gamestate
     +:
     ;
     call PSGSFXFrame
@@ -695,7 +694,9 @@
       jp nc,+
         ld a,(difficulty)
         cp DIFFICULTY_MAX
-        call nz,begin_transition
+        jp z,+
+          ld ix,transition_trigger
+          call batch_wipe_all_object_triggers_and_enable_trigger
       +:
       ; Put the profiler bee in the SAT.
       ld ix,bee

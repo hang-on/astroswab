@@ -91,11 +91,15 @@
       ;
   ret
   ;
-  begin_transition:
-    ; Start transition timed trigger and stop spawning of new enemies.
-    ; DRY-fix for transition from both plr2 button 1 and score.
+  batch_wipe_all_object_triggers_and_enable_trigger:
+    ; Enable specific trigger passed in IX.
+    ; Wipe and disable a set list of object respawn triggers (controlling
+    ; asteroids, shards, etc.)
+    ; Entry: IX = Pointer to trigger to enable.
+    ; Exit: None.
+    ; Uses:
     ld a,ENABLED
-    ld (transition_trigger.state),a
+    ld (ix+trigger.state),a
     ;
     ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
     ld hl,batch_wipe_and_disable_all_triggers
