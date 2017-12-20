@@ -21,11 +21,11 @@
     .dw difficulty_0_transition_score, difficulty_1_transition_score
     .dw difficulty_2_transition_score
   difficulty_0_transition_score:
-    .asc "00500"
+    .asc "00400"
   difficulty_1_transition_score:
     .asc "01500"
   difficulty_2_transition_score:
-    .asc "03000"
+    .asc "02800"
     ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
@@ -311,13 +311,13 @@
     .dw difficulty_3_batch_trigger_init_table
   ;
   ; Triggers are batch-disabled to stop enemy spawning.
-  batch_wipe_and_disable_all_triggers:
+  batch_wipe_and_disable_all_triggers_table:
     .dw spinner_trigger, trigger_wipe_table
     .dw booster_trigger, trigger_wipe_table
     .dw missile_trigger, trigger_wipe_table
     .dw shard_trigger, trigger_wipe_table
     .dw asteroid_trigger, trigger_wipe_table
-  batch_wipe_and_disable_all_triggers_end:
+  batch_wipe_and_disable_all_triggers_table_end:
   trigger_wipe_table:
     .db 0, 0, DISABLED
   ;

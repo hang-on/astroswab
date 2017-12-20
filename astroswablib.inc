@@ -101,8 +101,8 @@
     ld a,ENABLED
     ld (ix+trigger.state),a
     ;
-    ld a,(batch_wipe_and_disable_all_triggers_end-batch_wipe_and_disable_all_triggers)/2
-    ld hl,batch_wipe_and_disable_all_triggers
+    ld a,(batch_wipe_and_disable_all_triggers_table_end-batch_wipe_and_disable_all_triggers_table)/2
+    ld hl,batch_wipe_and_disable_all_triggers_table
     call batch_initialize_triggers
   ret
   ;
