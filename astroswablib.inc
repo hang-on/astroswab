@@ -5,10 +5,6 @@
 ; -----------------------------------------------------------------------------
 .section "Misc functions" free
 ; -----------------------------------------------------------------------------
-  ;
-  ;=================================================================================
-  ; Quick palette fade
-  ;=================================================================================
   ; (c) Kagesan of SMS-Power.
   FadeInScreen:
       halt                   ; wait for Vblank
@@ -91,87 +87,15 @@
       ;
   ret
   ;
-  blast_screen_effect:
-      halt                   ; wait for Vblank
-      ;
-      xor a
-      out ($bf),a            ; palette index (0)
-      ld a,$c0
-      out ($bf),a            ; palette write identifier
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms   ; source
-   -: ld a,(hl)              ; load raw palette data
-      add a,60
-      cp $ff
-      jp c,+
-        ld a,$ff
-      +:
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld a,8                 ; delay 8 frames
-      call halt_and_process_psg
-      ;
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms   ; source
-   -: ld a,(hl)              ; load raw palette data
-      add a,110
-      cp $ff
-      jp c,+
-        ld a,$ff
-      +:
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld a,8                 ; delay 8 frames
-      call halt_and_process_psg
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      add a,170
-      cp $ff
-      jp c,+
-        ld a,$ff
-      +:
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld a,8                 ; delay 8 frames
-      call halt_and_process_psg
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld a,$ff
-      -:
-      out ($be),a            ; write unfodified data to CRAM, palette load complete
-      inc hl
-      djnz -
-      ;
-      ld a,16                 ; delay 8 frames
-      call halt_and_process_psg
-      ;
-      ;call FadeOutScreen
-      call FadeInScreen
-
+  halt_and_process_psg:
+    ; Entry: A = frames to halt while processing.
+    ld b,a
+    -:
+      halt
+      call PSGFrame
+      call PSGSFXFrame
+    djnz -
   ret
-    halt_and_process_psg:
-      ; Entry: A = frames to halt while processing.
-      ld b,a
-      -:
-        halt
-        call PSGFrame
-        call PSGSFXFrame
-      djnz -
-    ret
-    blast_effect_palette:
-      .db $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff
-      .db $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff $ff
-      ;
   ;
   batch_wipe_all_object_triggers_and_enable_trigger:
     ; Enable specific trigger passed in IX.
@@ -385,31 +309,29 @@ tall_meta_sprite_table:
     ld hl,explosion
     ld c,SFX_CHANNELS2AND3
     call PSGSFXPlay
-ret
-;
-  spinner_hits_ground:
-      ; IX points to spinner structure.
-      call deactivate_game_object
-      ;
-      ld a,(swabby_respawn_trigger.state)
-      cp ENABLED
-      ret z
-      ;
-      call kill_swabby
-      ;
-      ld hl,player_score
-      ld a,SCORE_HUNDREDS
-      ld b,1
-      call subtract_from_score
-      ;
-      SELECT_BANK SOUND_BANK
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
-
   ret
   ;
-
+  spinner_hits_ground:
+    ; IX points to spinner structure.
+    call deactivate_game_object
+    ;
+    ld a,(swabby_respawn_trigger.state)
+    cp ENABLED
+    ret z
+    ;
+    call kill_swabby
+    ;
+    ld hl,player_score
+    ld a,SCORE_HUNDREDS
+    ld b,1
+    call subtract_from_score
+    ;
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+  ret
+  ;
   shard_hits_ground:
     ; IX points to shard object.
     call deactivate_game_object
@@ -522,7 +444,6 @@ ret
   handle_swabby_collision:
     ; Placeholder function for handling what happens when swabby collides with
     ; other objects.
-    ; TODO: Implement DEATH!
     ; IX = swabby, IY other object..
     ld a,GAME_OBJECT_INACTIVE
     ld (iy+game_object.state),a
@@ -552,15 +473,15 @@ ret
         ld (gun_level_flag),a
         ret
     +:
-    ; All other game objects means death to Swabby!
-    ;SELECT_BANK SOUND_BANK
-    ;ld hl,explosion
-    ;ld c,SFX_CHANNELS2AND3
-    ;call PSGSFXPlay
-
-    call kill_swabby
-
     ; cp ANOTHER_GAME_OBJECT...
+    ;
+    ; All other game objects means death to Swabby!
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+    ;
+    call kill_swabby
   ret
   ;
   kill_swabby:

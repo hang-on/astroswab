@@ -255,45 +255,42 @@
     ; -------------------------------------------------------------------------
     call begin_collision_tables       ; Restart filling the coll.tables.
     ;
-    ; -----------------
-    ld a,(kill_swabby_flag)
+    ; First, see if the collision tests resulted in flipping the kill switch.
+    ld a,(kill_swabby_flag)             ; Test flag - should we kill Swabby?
     cp TRUE
     jp nz,+
-      cpl
+      cpl                               ; Toggle the flag (== FALSE).
       ld (kill_swabby_flag),a
+      ; Prepare the death animation game object.
+      ld ix,swabby_death
+      ld hl,swabby_death_anim_table
+      call load_animation_game_object
+      ld a,GAME_OBJECT_ACTIVE
+      ld (ix+game_object.state),a
       ;
-      ;ld ix,swabby_death
-      ;ld hl,swabby_death_anim_table
-      ;call load_animation_game_object
-      ;ld a,GAME_OBJECT_ACTIVE
-      ;ld (ix+game_object.state),a
+      ld iy,swabby_death                ; Position death anim. object where
+      ld ix,swabby                      ; Swabby is now.
+      call position_game_object_in_relation_to_game_object
       ;
-      ;ld iy,swabby_death
-      ;ld ix,swabby
-      ;call position_game_object_in_relation_to_game_object
+      ld hl,swabby_death_trigger_init_table ; When the timer in this trigger is
+      ld ix,swabby_death_trigger            ; up, the death animation object
+      call initialize_trigger               ; will be deactivated.
+      ld a,ENABLED
+      ld (ix+trigger.state),a
       ;
+      ; Deativate Swabby and player control.
       ld ix,swabby
       ld a,GAME_OBJECT_INACTIVE
       ld (ix+game_object.state),a
       ld a,FALSE
-      ld (swabby_responds_to_player_input),a
-      ld (swabby_can_collide_with_objects),a
+      ld (swabby_responds_to_player_input),a  ; Swabby cannot be controlled.
+      ld (swabby_can_collide_with_objects),a  ; Swabby cannot be hit.
       ;
-      ld a,ENABLED
-      ld (swabby_respawn_trigger.state),a
-
       ld ix,swabby_respawn_trigger
       call batch_wipe_all_object_triggers_and_enable_trigger
       ;
-      ld hl,swabby_death_trigger_init_table
-      ld ix,swabby_death_trigger
-      call initialize_trigger
-      ld a,ENABLED
-      ld (ix+trigger.state),a
     +:
-
-    ; ----------------
-
+    ; -------------------------------------------------------------------------
     ; Handle Swabby sprite and movement:
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
@@ -592,20 +589,19 @@
       call add_game_object_to_collision_table
     +:
     ; -------------------------------------------------------------------------
-    ; Swabby death trigger.
+    ; Swabby death trigger: Removes the death animation.
     ld ix,swabby_death_trigger
     call process_trigger
     jp nc,+
-      ;
-      ld a,DISABLED
+      ld a,DISABLED                   ; Switch off trigger.
       ld (ix+trigger.state),a
       ;
-      ld ix,swabby_death
+      ld ix,swabby_death              ; Remove the death animation object.
       ld a,GAME_OBJECT_INACTIVE
       ld (ix+game_object.state),a
     +:
     ;
-    ; Swabby death game object.
+    ; Swabby death game object: The death animation (little explosion).
     ld ix,swabby_death
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
@@ -614,7 +610,6 @@
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
     +:
-
     ; ---------------------------------------------------------------------------
     ; Handle booster and trigger.
     ld ix,booster
