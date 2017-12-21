@@ -104,6 +104,8 @@
 .equ FALSE 0
 .equ ENABLED $ff
 .equ DISABLED 0
+.equ FLAG_SET $ff
+.equ FLAG_RESET $00
 .equ PAUSE_FLAG_RESET $00
 .equ PAUSE_FLAG_SET $ff
 

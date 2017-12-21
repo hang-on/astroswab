@@ -99,6 +99,8 @@
   .equ NOT_MOVING 0
   .equ SWABBY_DEATH 10
 ;
+  .equ RUMBLE_END_TRIGGER_INTERVAL 45
+;
 ; How many different kinds of triggers to initialize on level init?
 ; shard, missile, booster, spinner = 4
   .equ NUMBER_OF_TRIGGERS 4 ; FIXME? Could be calc. from one of the diffi.tables??
@@ -197,7 +199,7 @@
 .equ TRANSITION_TRIGGER_CYCLE_INIT 1
 ;
 ; Difficulty 0
-.equ SPINNER_TRIGGER_CHANCE_INIT_0 50 ; 50
+.equ SPINNER_TRIGGER_CHANCE_INIT_0 70 ; 50
 .equ SPINNER_TRIGGER_INTERVAL_INIT_0 200 ;230
 .equ BOOSTER_TRIGGER_CHANCE_INIT_0 90 ; 190  1 to turn off
 .equ BOOSTER_TRIGGER_INTERVAL_INIT_0 210
@@ -314,6 +316,10 @@
   objects_in_top_collision_table db
   bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
   objects_in_bottom_collision_table db
+  ;
+  rumble_flag db
+  vscroll_value db
+  rumble_end_trigger instanceof trigger
   ;
   bee instanceof game_object
   ;

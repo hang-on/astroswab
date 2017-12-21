@@ -42,7 +42,10 @@
     .db ASCII_LOWERCASE_X, CHAR_FROM_BACKGROUND_BANK
     .db ASCII_ZERO+3, CHAR_FROM_BACKGROUND_BANK
   lives_string_end:
-
+  ;
+  rumble_end_trigger_init_table:
+    .db 255, RUMBLE_END_TRIGGER_INTERVAL
+    .db DISABLED, DEFAULT_CYCLE_VALUE
   ;
   game_state_jump_table:
     ; Check the game state constants in header.inc!

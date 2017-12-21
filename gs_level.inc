@@ -90,6 +90,12 @@
     ld a,FALSE
     ld (kill_swabby_flag),a
     ;
+    ld a,FLAG_RESET
+    ld (rumble_flag),a
+    ld ix,rumble_end_trigger
+    ld hl,rumble_end_trigger_init_table
+    call initialize_trigger
+    ;
     ; Initialize gun (use the current gun level)
     ld a,TRUE
     ld (gun_level_flag),a
@@ -203,6 +209,14 @@
       out (DATA_PORT),a           ; Write 2nd byte to name table.
     djnz -
     ; -------------------------------------------------------------------------
+    ; The rumble effect when asteroid hits ground.
+    ;ld a,(rumble_flag)
+    ;cp FLAG_SET
+    ;jp nz,+
+    ld a,(vscroll_value)      ; Move this rnd out of vblank!
+    ld b,VERTICAL_SCROLL_REGISTER
+    call set_register
+    ;+:
     ;
     ; End of VDP-updating...
     .ifdef DEVELOPER_MODE
@@ -725,6 +739,28 @@
       ld (swabby_responds_to_player_input),a
       ld (swabby_can_collide_with_objects),a
       call init_triggers_according_to_difficulty
+    +:
+    ; Rumble effect.
+    ld ix,rumble_end_trigger
+    call process_trigger
+    jp nc,+
+      ld a,DISABLED
+      ld (ix+trigger.state),a
+      ld a,FLAG_RESET
+      ld (rumble_flag),a
+      xor a
+      ld (vscroll_value),a
+    +:
+    ;
+    ld a,(rumble_flag)
+    cp FLAG_SET
+    jp nz,+
+      ;ld a,(vscroll_value)      ; Move this rnd out of vblank!
+      ;ld b,a
+      call get_random_number
+      and %00000011
+      add a,b
+      ld (vscroll_value),a
     +:
     ;
     ; Is it time to transition to next difficulty?

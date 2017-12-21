@@ -321,6 +321,8 @@ tall_meta_sprite_table:
     ;
     call kill_swabby
     ;
+    call start_rumble
+    ;
     ld hl,player_score
     ld a,SCORE_HUNDREDS
     ld b,1
@@ -473,6 +475,11 @@ tall_meta_sprite_table:
         ld (gun_level_flag),a
         ret
     +:
+    cp SPINNER
+    jp nz,+
+      call start_rumble
+      ; Fall through to kill, sound effect etc.
+    +:
     ; cp ANOTHER_GAME_OBJECT...
     ;
     ; All other game objects means death to Swabby!
@@ -487,6 +494,13 @@ tall_meta_sprite_table:
   kill_swabby:
     ld a,TRUE
     ld (kill_swabby_flag),a
+  ret
+  ;
+  start_rumble:
+    ld a,FLAG_SET
+    ld (rumble_flag),a
+    ld a,ENABLED
+    ld (rumble_end_trigger.state),a
   ret
   ;
   .equ SHARD_X_OFFSET_1 (-3)
