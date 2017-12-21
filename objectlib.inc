@@ -529,6 +529,7 @@
     ; then we have collision, and return with carry set.
     ;
     ; Entry: IX = Pointer to game object.
+    ; Exit:  IY = Pointer to object colliding, carry set/reset.
     ; Uses: AF, B, HL, IY.
     ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
     add a,(ix+game_object.y)

@@ -145,7 +145,7 @@
   .equ BULLET_DEACTIVATE_ZONE_START INVISIBLE_AREA_TOP_BORDER
   .equ BULLET_DEACTIVATE_ZONE_END INVISIBLE_AREA_BOTTOM_BORDER
   .equ GUN_DELAY_INIT 12
-  .equ GUN_LEVEL_INIT 6
+  .equ GUN_LEVEL_INIT 0
   .equ GUN_LEVEL_MAX 8
   .equ GUN_LEVEL_NAMETABLE_ADDRESS $3dae+10
   .equ GUN_LEVEL_NAMETABLE_FLAGS %00000000
@@ -276,7 +276,6 @@
   swabby_responds_to_player_input db          ; TRUE/FALSE
   swabby_can_collide_with_objects db    ; TRUE/FALSE
   swabby_death instanceof game_object
-  dev_buffer dsb 4
   swabby_death_trigger instanceof trigger
   swabby_respawn_trigger instanceof trigger
   player_score instanceof score_struct

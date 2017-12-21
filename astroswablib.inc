@@ -462,6 +462,10 @@ ret
         ld (gun_level_flag),a
         ret
     +:
+    ;cp SPINNER
+    ;jp nz,+
+    ;  nop
+    ; +:
     ; All other game objects means death to Swabby!
     ld ix,swabby_death
     ld hl,swabby_death_anim_table
@@ -469,9 +473,11 @@ ret
     ld a,GAME_OBJECT_ACTIVE
     ld (ix+game_object.state),a
     ;
-    ld iy,swabby_death
-    ld ix,swabby
-    call position_game_object_in_relation_to_game_object
+    ;push iy
+      ld iy,swabby_death
+      ld ix,swabby
+      call position_game_object_in_relation_to_game_object
+    ;pop iy
     ;
     ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
@@ -487,6 +493,7 @@ ret
     call initialize_trigger
     ld a,ENABLED
     ld (ix+trigger.state),a
+
 
     ; cp ANOTHER_GAME_OBJECT...
   ret
