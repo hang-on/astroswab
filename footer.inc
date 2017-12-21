@@ -302,6 +302,16 @@
     .dw booster, 1
   bullet_collision_table_end:
   ;
+  gun_level_max_string:
+    .dw GUN_LEVEL_NAMETABLE_ADDRESS
+    .asc "M"
+    .db GUN_LEVEL_NAMETABLE_FLAGS
+    .asc "A"
+    .db GUN_LEVEL_NAMETABLE_FLAGS
+    .asc "X"
+    .db GUN_LEVEL_NAMETABLE_FLAGS
+  gun_level_max_string_end:
+  ;
   bee_init_table:
     .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db 0, 8, GAME_OBJECT_ACTIVE
