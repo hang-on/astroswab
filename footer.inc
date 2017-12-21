@@ -217,7 +217,7 @@
   ;
   ;
   spinner_init_table:
-    .db SPRITE_12, 1, 0, GAME_OBJECT_SHAPE_TALL
+    .db SPRITE_12, SPINNER_YSPEED_INIT, 0, GAME_OBJECT_SHAPE_TALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 24, SPINNER
   spinner_anim_table:

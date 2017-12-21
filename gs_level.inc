@@ -279,6 +279,8 @@
       ld ix,swabby_death
       ld hl,swabby_death_anim_table
       call load_animation_game_object
+      xor a
+      ld (ix+game_object.anim_counter),a
       ld a,GAME_OBJECT_ACTIVE
       ld (ix+game_object.state),a
       ;
