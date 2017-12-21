@@ -1,6 +1,11 @@
 ; gs_warning.inc
-;
+; This file includes code to prepare and run a warning screen that displays
+; if the user boots Astroswab on a 60 Hz system (NTSC). Astroswab can indeed
+; run on a 60 Hz system, but the gameplay and music is coded/made with 50 Hz
+; in mind.
+; -----------------------------------------------------------------------------
 prepare_warning:
+; -----------------------------------------------------------------------------
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
@@ -48,12 +53,13 @@ prepare_warning:
   ei
   ;
   ; When all is set, change the game state.
-  ;
   ld a,GS_RUN_WARNING
   ld (game_state),a
 jp main_loop
 ;
+; -----------------------------------------------------------------------------
 run_warning:
+; -----------------------------------------------------------------------------
   ;
   -:
     call await_frame_interrupt
@@ -78,7 +84,6 @@ run_warning:
       ld a,GS_PREPARE_TITLESCREEN
       call transition_to_gamestate
   +:
-  ;
   ;
   call PSGSFXFrame
   call PSGFrame

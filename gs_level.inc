@@ -1,144 +1,133 @@
 ; gs_level.inc
-; .
-; ---------------------------------------------------------------------------
-; L E V E L                                                        (gameplay)
-; ---------------------------------------------------------------------------
 ; This section contains code for two different game states that handles
 ; preparing and running a level.
-  prepare_level:
-    di
-    ; Turn off display and frame interrupts.
-    ld a,DISPLAY_0_FRAME_0_SIZE_0
-    ld b,1
-    call set_register
-    ; Load a random background depending on difficulty.
-    ld a,(difficulty)
-    ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
-    ld hl,difficulty_to_background_bank_table
-    call convert_byte
-    ld (SLOT_2_CONTROL),a
-    ;
-    ld a,(difficulty)               ; Get current difficulty as index.
-    ld hl,meta_background_table     ; Point HL to base of meta pointer table.
-    call get_word_from_table        ; Point HL to base of table of backgrounds.
-    push hl                         ; Save this pointer.
-      call get_random_number        ; Get random number.
-    pop hl                          ; Restore pointer.
-    and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
-    call get_word_from_table        ; Point HL to random background table at
-                                    ; this difficulty.
-    ;
-    ;
-    call load_vram_from_table       ; Load the tiles.
-    call load_vram_from_table       ; Load the tilemap.
-    ;
-    SELECT_BANK SPRITE_BANK
-    ld bc,sprite_tiles_end-sprite_tiles
-    ld de,SPRITE_BANK_START
-    ld hl,sprite_tiles
-    call load_vram
-    ; Set border color.
-    ld a,DARK_BLUE
-    ld b,REGISTER_7
-    call set_register
-    ;
-    ; Print the dummy text under the playfield.
-    ld b,DUMMY_TEXT_ROW
-    ld c,DUMMY_TEXT_COLUMN
-    ld hl,dummy_text
-    call print
-    ; Print the lives meter.
-    ld hl,lives_string
-    ld b,(lives_string_end-lives_string-2)/2
-    call put_string
-    ;
-    ;call randomize  ; FIXME! Base on player input (titlescreen).
-    ; Reset the transition trigger.
-    ld hl,transition_trigger_init_table
-    ld ix,transition_trigger
-    call initialize_trigger
-    ; Swabby death trigger.
-    ld hl,swabby_death_trigger_init_table
-    ld ix,swabby_death_trigger
-    call initialize_trigger
-    ; Swabby respawn trigger.
-    ld hl,swabby_respawn_trigger_init_table
-    ld ix,swabby_respawn_trigger
-    call initialize_trigger
-    ; -------------------------------------------------------------------------
-    ; Depending on difficulty.
-    call init_triggers_according_to_difficulty
-    ; Set transition score (when to transition to next difficulty).
-    ld a,(difficulty)
-    ld hl,transition_score_init_table
-    call get_word_from_table
-    ld de,transition_score
-    call copy_score_and_increment_pointers
-    ; -------------------------------------------------------------------------
-    ; Initialize the various game objects.
-    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
-    ld hl,batch_game_object_init_table
-    call batch_initialize_game_objects
-    ; Init swabby death explosion
-    ld ix,swabby_death
-    ld hl,swabby_death_anim_table
-    call load_animation_game_object
-    ; Inititalize misc. Swabby dashboard variables.
-    ld a,TRUE
-    ld (swabby_responds_to_player_input),a
-    ld (swabby_can_collide_with_objects),a
-    ld a,FALSE
-    ld (kill_swabby_flag),a
-    ;
-    ld a,FLAG_RESET
-    ld (rumble_flag),a
-    ld ix,rumble_end_trigger
-    ld hl,rumble_end_trigger_init_table
-    call initialize_trigger
-    ;
-    ; Initialize gun (use the current gun level)
-    ld a,TRUE
-    ld (gun_level_flag),a
+;
+; ---------------------------------------------------------------------------
+prepare_level:
+; ---------------------------------------------------------------------------
+  di
+  ; Turn off display and frame interrupts.
+  ld a,DISPLAY_0_FRAME_0_SIZE_0
+  ld b,REGISTER_1
+  call set_register
+  ; Load a random background depending on difficulty.
+  ld a,(difficulty)
+  ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
+  ld hl,difficulty_to_background_bank_table
+  call convert_byte
+  ld (SLOT_2_CONTROL),a           ; Page-in the correct background bank.
+  ;
+  ld a,(difficulty)               ; Get current difficulty as index.
+  ld hl,meta_background_table     ; Point HL to base of meta pointer table.
+  call get_word_from_table        ; Point HL to base of table of backgrounds.
+  push hl                         ; Save this pointer.
+    call get_random_number        ; Get random number.
+  pop hl                          ; Restore pointer.
+  and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
+  call get_word_from_table        ; Point HL to random background table at
+                                  ; this difficulty.
+  ;
+  ;
+  call load_vram_from_table       ; Load the tiles.
+  call load_vram_from_table       ; Load the tilemap.
+  ;
+  SELECT_BANK SPRITE_BANK
+  ld bc,sprite_tiles_end-sprite_tiles
+  ld de,SPRITE_BANK_START
+  ld hl,sprite_tiles
+  call load_vram
+  ; Set border color.
+  ld a,DARK_BLUE
+  ld b,REGISTER_7
+  call set_register
+  ;
+  ; Print the dummy text under the playfield.
+  ld b,DUMMY_TEXT_ROW
+  ld c,DUMMY_TEXT_COLUMN
+  ld hl,dummy_text
+  call print
+  ; Print the lives meter.
+  ld hl,lives_string
+  ld b,(lives_string_end-lives_string-2)/2
+  call put_string
+  ;
+  ld hl,general_triggers_batch_init_table
+  ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
+  call batch_initialize_triggers
+  ; -------------------------------------------------------------------------
+  ; Depending on difficulty.
+  call init_triggers_according_to_difficulty
+  ; Set transition score (when to transition to next difficulty).
+  ld a,(difficulty)
+  ld hl,transition_score_init_table
+  call get_word_from_table
+  ld de,transition_score
+  call copy_score_and_increment_pointers
+  ; -------------------------------------------------------------------------
+  ; Initialize the various game objects.
+  ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
+  ld hl,batch_game_object_init_table
+  call batch_initialize_game_objects
+  ; Init swabby death explosion
+  ld ix,swabby_death
+  ld hl,swabby_death_anim_table
+  call load_animation_game_object
+  ; Inititalize misc. Swabby dashboard variables.
+  ld a,TRUE
+  ld (swabby_responds_to_player_input),a
+  ld (swabby_can_collide_with_objects),a
+  ld a,FALSE
+  ld (kill_swabby_flag),a
+  ;
+  ld a,FLAG_RESET
+  ld (rumble_flag),a
+  ld ix,rumble_end_trigger
+  ld hl,rumble_end_trigger_init_table
+  call initialize_trigger
+  ;
+  ; Initialize gun (use the current gun level)
+  ld a,TRUE
+  ld (gun_level_flag),a
 
-    ld a,(gun_level)
-    ld b,a
-    ld a,GUN_DELAY_INIT
-    sub b
-    ld (gun_delay),a
-    xor a
-    ld (gun_timer),a
-    ld a,TRUE
-    ld (gun_released),a
-    ;
-    ld hl,gun_level_char_data         ; Update gun level gfx.
-    call fast_put_char
-    ;
-    ; Reset debug meters:
-    call reset_vblank_profiler
-    ; Wipe sprites.
-    call begin_sprites
-    call load_sat
-    ;
-    ld a,FALSE
-    ld (pause_flag),a                 ; Reset pause flag.
-    ;
-    call PSGSFXStop
-    call PSGStop
-    ; Turn on screen, frame interrupts and blank left column.
-    ld a,DISPLAY_1_FRAME_1_SIZE_0
-    ld b,1
-    call set_register
-    ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
-    ld b,0
-    call set_register
-    ei
-    call FadeInScreen
-    ; When all is set, change the game state.
-    ld a,GS_RUN_LEVEL
-    ld (game_state),a
-    call await_frame_interrupt                ; To avoid profiler failsafe!
-    ;
-  jp main_loop
+  ld a,(gun_level)
+  ld b,a
+  ld a,GUN_DELAY_INIT
+  sub b
+  ld (gun_delay),a
+  xor a
+  ld (gun_timer),a
+  ld a,TRUE
+  ld (gun_released),a
+  ;
+  ld hl,gun_level_char_data         ; Update gun level gfx.
+  call fast_put_char
+  ;
+  ; Reset debug meters:
+  call reset_vblank_profiler
+  ; Wipe sprites.
+  call begin_sprites
+  call load_sat
+  ;
+  ld a,FALSE
+  ld (pause_flag),a                 ; Reset pause flag.
+  ;
+  call PSGSFXStop
+  call PSGStop
+  ; Turn on screen, frame interrupts and blank left column.
+  ld a,DISPLAY_1_FRAME_1_SIZE_0
+  ld b,1
+  call set_register
+  ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
+  ld b,0
+  call set_register
+  ei
+  call FadeInScreen
+  ; When all is set, change the game state.
+  ld a,GS_RUN_LEVEL
+  ld (game_state),a
+  call await_frame_interrupt                ; To avoid profiler failsafe!
+  ;
+jp main_loop
   ; ---------------------------------------------------------------------------
   ; ---------------------------------------------------------------------------
   run_level:

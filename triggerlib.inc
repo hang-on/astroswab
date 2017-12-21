@@ -6,6 +6,7 @@
 ; Triggers have....
 ;
 .equ DEFAULT_CYCLE_VALUE 1
+.equ TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE 4
 ;
 .struct trigger
   timer db                        ; Curent timer value.

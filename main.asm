@@ -97,7 +97,7 @@
     ld a,INITIAL_DIFFICULTY           ; Set difficulty.
     ld (difficulty),a
     ;
-    ld a,GUN_LEVEL_INIT                            ; Reset gun
+    ld a,GUN_LEVEL_INIT               ; Reset gun
     ld (gun_level),a
     ld a,TRUE
     ld (gun_level_flag),a             ; Update the gun level counter gfx.
@@ -105,8 +105,8 @@
     ld de,gun_level_char_data
     ld bc,4
     ldir
-    ; Reset player and peak score.
-    call reset_scores
+    ;
+    call reset_scores                 ; Reset player and peak score.
     ;
     ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
     ld (game_state),a                 ; on and prepare a relevant level...

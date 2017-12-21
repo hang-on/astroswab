@@ -1,6 +1,7 @@
 ; gs_titlescreen.inc
-;
+; -----------------------------------------------------------------------------
 prepare_titlescreen:
+; -----------------------------------------------------------------------------
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
@@ -40,10 +41,9 @@ prepare_titlescreen:
   call PSGSFXStop
   call PSGStop
   ;
-  ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
-  ld b,1
+  ld b,REGISTER_1
   call set_register
   ei
   call FadeInScreen
@@ -54,8 +54,10 @@ prepare_titlescreen:
   ld (game_state),a
 jp main_loop
 ;
+; -----------------------------------------------------------------------------
 run_titlescreen:
-  ;
+; -----------------------------------------------------------------------------
+  ; Make sure we start at the first line of vblank.
   -:
     call await_frame_interrupt
     in a,(V_COUNTER_PORT)
@@ -65,21 +67,20 @@ run_titlescreen:
   call load_sat
   ;
   ; End of (unsafe) VDP-updating...
-  ;
+  ; ---------------------------------------------------------------------------
   call get_input_ports
   call begin_sprites
   ;
-  call get_random_number
+  call get_random_number        ; Randomness based on user input.
   ;
   call is_button_1_pressed
   jp c,+
   call is_button_2_pressed
   jp nc,++
     +:
-    call FadeOutScreen
-    jp setup_new_game
+    call FadeOutScreen          ; If either button is pressed, begin setting
+    jp setup_new_game           ; up a new game.
   ++:
-  ;
   ;
   call PSGSFXFrame
   call PSGFrame
@@ -88,3 +89,4 @@ run_titlescreen:
   inc (hl)
   ;
 jp main_loop
+; -----------------------------------------------------------------------------
