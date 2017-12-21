@@ -11,7 +11,7 @@
   timer db                        ; Curent timer value.
   interval db                     ; Timer value when reset.
   chance db                       ; Chance of carry being set when time is up.
-  state db                        ; ENALED or DISABLED
+  state db                        ; ENABLED or DISABLED
   cycle db                        ; Current cycle counter.
   cycle_reset db                  ; Cycle value when reset.
 .endst

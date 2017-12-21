@@ -262,24 +262,26 @@
       cpl
       ld (kill_swabby_flag),a
       ;
-      ld ix,swabby_death
-      ld hl,swabby_death_anim_table
-      call load_animation_game_object
-      ld a,GAME_OBJECT_ACTIVE
-      ld (ix+game_object.state),a
+      ;ld ix,swabby_death
+      ;ld hl,swabby_death_anim_table
+      ;call load_animation_game_object
+      ;ld a,GAME_OBJECT_ACTIVE
+      ;ld (ix+game_object.state),a
       ;
-      ;push iy
-        ld iy,swabby_death
-        ld ix,swabby
-        call position_game_object_in_relation_to_game_object
-      ;pop iy
+      ;ld iy,swabby_death
+      ;ld ix,swabby
+      ;call position_game_object_in_relation_to_game_object
       ;
+      ld ix,swabby
       ld a,GAME_OBJECT_INACTIVE
       ld (ix+game_object.state),a
       ld a,FALSE
       ld (swabby_responds_to_player_input),a
       ld (swabby_can_collide_with_objects),a
       ;
+      ld a,ENABLED
+      ld (swabby_respawn_trigger.state),a
+
       ld ix,swabby_respawn_trigger
       call batch_wipe_all_object_triggers_and_enable_trigger
       ;
@@ -595,12 +597,11 @@
     call process_trigger
     jp nc,+
       ;
-      push ix
-        ld ix,swabby_death
-        ld a,GAME_OBJECT_INACTIVE
-        ld (ix+game_object.state),a
-      pop ix
       ld a,DISABLED
+      ld (ix+trigger.state),a
+      ;
+      ld ix,swabby_death
+      ld a,GAME_OBJECT_INACTIVE
       ld (ix+game_object.state),a
     +:
     ;

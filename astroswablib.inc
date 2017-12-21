@@ -183,7 +183,7 @@
     ld a,ENABLED
     ld (ix+trigger.state),a
     ;
-    ld a,(batch_wipe_and_disable_all_triggers_table_end-batch_wipe_and_disable_all_triggers_table)/2
+    ld a,(batch_wipe_and_disable_all_triggers_table_end-batch_wipe_and_disable_all_triggers_table)/4
     ld hl,batch_wipe_and_disable_all_triggers_table
     call batch_initialize_triggers
   ret
@@ -395,8 +395,7 @@ ret
       cp ENABLED
       ret z
       ;
-      ;call kill_swabby
-      ;call blast_screen_effect
+      call kill_swabby
       ;
       ld hl,player_score
       ld a,SCORE_HUNDREDS
@@ -553,15 +552,13 @@ ret
         ld (gun_level_flag),a
         ret
     +:
-    ;cp SPINNER
-    ;jp nz,+
-    ;  nop
-    ; +:
     ; All other game objects means death to Swabby!
+    ;SELECT_BANK SOUND_BANK
+    ;ld hl,explosion
+    ;ld c,SFX_CHANNELS2AND3
+    ;call PSGSFXPlay
 
     call kill_swabby
-
-
 
     ; cp ANOTHER_GAME_OBJECT...
   ret

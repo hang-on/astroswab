@@ -200,6 +200,10 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.id),a
+    xor a
+    ld (ix+game_object.anim_counter),a
+    ld (ix+game_object.anim_pointer),a
+    ld (ix+game_object.anim_pointer+1),a
     pop hl
   ret
   ;
