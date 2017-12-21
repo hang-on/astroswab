@@ -272,10 +272,13 @@
   difficulty db
   transition_trigger instanceof trigger
   ;
+  ;dev_buffer_2 dsb 4
   swabby instanceof game_object
   swabby_responds_to_player_input db          ; TRUE/FALSE
   swabby_can_collide_with_objects db    ; TRUE/FALSE
   swabby_death instanceof game_object
+  kill_swabby_flag db
+  ;dev_buffer_1 dsb 4
   swabby_death_trigger instanceof trigger
   swabby_respawn_trigger instanceof trigger
   player_score instanceof score_struct

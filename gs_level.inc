@@ -87,6 +87,8 @@
     ld a,TRUE
     ld (swabby_responds_to_player_input),a
     ld (swabby_can_collide_with_objects),a
+    ld a,FALSE
+    ld (kill_swabby_flag),a
     ;
     ; Initialize gun (use the current gun level)
     ld a,TRUE
@@ -253,6 +255,43 @@
     ; -------------------------------------------------------------------------
     call begin_collision_tables       ; Restart filling the coll.tables.
     ;
+    ; -----------------
+    ld a,(kill_swabby_flag)
+    cp TRUE
+    jp nz,+
+      cpl
+      ld (kill_swabby_flag),a
+      ;
+      ld ix,swabby_death
+      ld hl,swabby_death_anim_table
+      call load_animation_game_object
+      ld a,GAME_OBJECT_ACTIVE
+      ld (ix+game_object.state),a
+      ;
+      ;push iy
+        ld iy,swabby_death
+        ld ix,swabby
+        call position_game_object_in_relation_to_game_object
+      ;pop iy
+      ;
+      ld a,GAME_OBJECT_INACTIVE
+      ld (ix+game_object.state),a
+      ld a,FALSE
+      ld (swabby_responds_to_player_input),a
+      ld (swabby_can_collide_with_objects),a
+      ;
+      ld ix,swabby_respawn_trigger
+      call batch_wipe_all_object_triggers_and_enable_trigger
+      ;
+      ld hl,swabby_death_trigger_init_table
+      ld ix,swabby_death_trigger
+      call initialize_trigger
+      ld a,ENABLED
+      ld (ix+trigger.state),a
+    +:
+
+    ; ----------------
+
     ; Handle Swabby sprite and movement:
     ld ix,swabby
     ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
@@ -423,10 +462,12 @@
         cp GAME_OBJECT_ACTIVE
         jp nz,+
           call move_game_object
-          ld a,ASTEROID_DEACTIVATE_ZONE_START
-          ld b,ASTEROID_DEACTIVATE_ZONE_END
-          ld hl,asteroid_hits_ground
-          call horizontal_zone_send_to_handler
+          push ix
+            ld a,ASTEROID_DEACTIVATE_ZONE_START
+            ld b,ASTEROID_DEACTIVATE_ZONE_END
+            ld hl,asteroid_hits_ground
+            call horizontal_zone_send_to_handler
+          pop ix
           ;call horizontal_zone_deactivate_game_object
           ld a,VERTICAL_DEACTIVATE_ZONE_START
           ld b,VERTICAL_DEACTIVATE_ZONE_END
@@ -487,10 +528,12 @@
       cp GAME_OBJECT_ACTIVE
       jp nz,+
         call move_game_object              ; Move shard.
+        push ix
         ld a,SHARD_DEACTIVATE_ZONE_START
         ld b,SHARD_DEACTIVATE_ZONE_END
         ld hl,shard_hits_ground
         call horizontal_zone_send_to_handler
+        pop ix
         ;call horizontal_zone_deactivate_game_object
         ld a,VERTICAL_DEACTIVATE_ZONE_START
         ld b,VERTICAL_DEACTIVATE_ZONE_END
@@ -535,10 +578,12 @@
     cp GAME_OBJECT_ACTIVE
     jp nz,+
       call move_game_object              ; Move
-      ld a,SPINNER_DEACTIVATE_ZONE_START
-      ld b,SPINNER_DEACTIVATE_ZONE_END
-      ld hl,spinner_hits_ground
-      call horizontal_zone_send_to_handler
+      push ix
+        ld a,SPINNER_DEACTIVATE_ZONE_START
+        ld b,SPINNER_DEACTIVATE_ZONE_END
+        ld hl,spinner_hits_ground
+        call horizontal_zone_send_to_handler
+      pop ix
       ;
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
@@ -651,10 +696,12 @@
     +++:
       ld (ix+game_object.xspeed),a
       call move_game_object
-      ld a,ASTEROID_DEACTIVATE_ZONE_START
-      ld b,ASTEROID_DEACTIVATE_ZONE_END
-      ld hl,missile_hits_ground
-      call horizontal_zone_send_to_handler
+      push ix
+        ld a,ASTEROID_DEACTIVATE_ZONE_START
+        ld b,ASTEROID_DEACTIVATE_ZONE_END
+        ld hl,missile_hits_ground
+        call horizontal_zone_send_to_handler
+      pop ix
       call draw_game_object              ; Put it in the SAT.
       call add_game_object_to_collision_table
     missile_loop_end:

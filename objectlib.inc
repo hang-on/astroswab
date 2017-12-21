@@ -102,6 +102,7 @@
   horizontal_zone_send_to_handler:
     ; Test enemy object y to see if it is within the horizontal zone defined
     ; the borders passed in A and B. If true, then jump to handler.
+    ; SAVE IX!!!!!!
     ; Entry: IX = Pointer to struct.
     ;        A = Zone start. B = Zone end.
     ;        HL = Pointer to handler.
