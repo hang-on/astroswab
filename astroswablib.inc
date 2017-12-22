@@ -4,6 +4,12 @@
 ; game-specific variables.
 ;
 ; -----------------------------------------------------------------------------
+.ramsection "Astroswab library variables" slot 3
+; -----------------------------------------------------------------------------
+  rnd_seed dw         ; Random number generation.
+.ends
+;
+; -----------------------------------------------------------------------------
 .section "Misc functions" free
 ; -----------------------------------------------------------------------------
   asteroid_hits_ground:
@@ -24,6 +30,14 @@
     ; Entry: IX = Pointer to trigger to enable.
     ; Exit: None.
     ; Uses:
+    .equ SHARD_X_OFFSET_1 (-3)
+    .equ SHARD_Y_OFFSET_1 2
+    .equ SHARD_X_OFFSET_2 10
+    .equ SHARD_Y_OFFSET_2 16
+    .equ SHARD_MOVE_LEFT 0
+    .equ SHARD_MOVE_RIGHT 1
+    .equ SHARD_XSPEED 1
+    ;
     ld a,ENABLED
     ld (ix+trigger.state),a
     ;
@@ -33,6 +47,67 @@
   ret
   ;
   ;
+  explode_asteroid_into_shards:
+    ; Deactivate the asteroid pointed to by IX. Create two shards relative to
+    ; the asteroid's position, and transfer the asteroid's yspeed to the two
+    ; shards. One shard moves left. The other moves right. Fixed xspeed = 1.
+    ; Entry: IX = Pointer to asteroid to explode.
+    ; Exit: None.
+    ; Uses: AF, BC, HL, IY.
+    ld a,GAME_OBJECT_INACTIVE         ; Deactivate the asteroid.
+    ld (ix+game_object.state),a
+    ;
+    push ix                           ; Temporarily store pointer to asteroid
+    pop hl                            ; in HL.
+    .rept 2                           ; Get two deactivated shards...
+      ld ix,shard
+      ld a,SHARD_MAX
+      call get_inactive_game_object   ; Return with IX = Pointer to shard.
+      ld a,GAME_OBJECT_ACTIVE         ; Activate this shard.
+      ld (ix+game_object.state),a
+      push ix                         ; And store it on the stack.
+    .endr                             ; Get one more shard.
+    push hl
+    pop ix                            ; Restore pointer to asteroid.
+    ;
+    ld hl,shard_offset_table          ; Point to the shard offset table.
+    .rept 2                           ; For both shards, do...
+      pop iy                          ; Retrieve pointer to shard from stack.
+      ld a,(hl)                       ; Get horizontal direction from table.
+      inc hl
+      ;
+      cp SHARD_MOVE_RIGHT             ; Move downwards and right...?
+      jp nz,+
+        ld a,(ix+game_object.yspeed)  ; Get asteroid yspeed.
+        ld (iy+game_object.yspeed),a  ; Copy asteroid's yspeed to the shard.
+        ld a,SHARD_XSPEED             ; Get fixed xspeed.
+        ld (iy+game_object.xspeed),a  ; And apply it to the shard.
+        jp ++
+      +:                              ; Move downwards and left!
+        ld a,(ix+game_object.yspeed)  ; Just like above...
+        ld (iy+game_object.yspeed),a
+        ld a,-(SHARD_XSPEED)          ; Negated xspeed for left movement.
+        ld (iy+game_object.xspeed),a
+      ++:
+      ld b,(hl)                       ; Get y-offset from table
+      inc hl
+      ld c,(hl)                       ; Get x-offset from table.
+      inc hl
+      call position_game_object_in_relation_to_game_object
+      push hl
+        ld a,(ix+game_object.sprite)
+        ld b,(shard_conversion_table_end-shard_conversion_table)/2
+        ld hl,shard_conversion_table
+        call convert_byte
+        ld (iy+game_object.sprite),a
+      pop hl
+    .endr
+  ret
+    shard_offset_table:
+      .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
+      .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
+      ;
+      ;
   FadeInScreen:
     ; (c) Kagesan of SMS-Power.
     halt                   ; wait for Vblank
@@ -116,6 +191,34 @@
     djnz -
     ;
   ret
+  ;
+  ;
+  get_random_number:
+    ; SMS-Power!
+    ; Returns an 8-bit pseudo-random number in a
+    push hl
+    ld hl,(rnd_seed)
+    ld a,h         ; get high byte
+    rrca           ; rotate right by 2
+    rrca
+    xor h          ; xor with original
+    rrca           ; rotate right by 1
+    xor l          ; xor with low byte
+    rrca           ; rotate right by 4
+    rrca
+    rrca
+    rrca
+    xor l          ; xor again
+    rra            ; rotate right by 1 through carry
+    adc hl,hl      ; add RandomNumberGeneratorWord to itself
+    jr nz,+
+      ld hl,$733c  ; if last xor resulted in zero then re-seed.
+    +:
+    ld a,r         ; r = refresh register = semi-random number
+    xor l          ; xor with l which is fairly random
+    ld (rnd_seed),hl
+    pop hl
+  ret              ; return random number in a
   ;
   ;
   halt_and_process_psg:
@@ -308,6 +411,43 @@
   ret
   ;
   ;
+  profile_vblank:
+    ; Set debug meter for profiling the amount of lines consumed by functions
+    ; operating on the graphics and expecting to work with the screen blanked.
+    ; Make sure this meter shows a line number within the vblank period!
+    in a,(V_COUNTER_PORT)                   ; Get current line number.
+    .ifdef DEVELOPER_MODE
+      cp 185                                  ; Failsafe, go into an endless
+      jp nc,+                                 ; loop if we are in the active
+        -:                                    ; display (both NTSC and PAL)
+          nop
+        jp -
+      +:                                      ; We are somewhere in vblank...
+    .endif
+    ld b,a                                  ; Store line number in B.
+    ld a,(vblank_update_finished_line)      ; Get highest line number yet.
+    cp b                                    ; Is the current line higher?
+    ret nc                                  ; No, skip forward.
+    ld a,b                                  ; Yes, save current line number as
+    ld (vblank_update_finished_line),a      ; the new 'high score'.
+  ret                                       ;
+  ;
+  ;
+  randomize:
+    ; FIXME: Randomize based on player input instead!
+    ld hl,randomizer_table
+    ld a,(rnd_seed)
+    add a,(hl)
+    ld (rnd_seed),a
+    ld hl,randomizer_table+1
+    ld a,(rnd_seed+1)
+    add a,(hl)
+    ld (rnd_seed+1),a
+  ret
+    randomizer_table:
+      .dbrnd 2,1,254
+      ;
+      ;
   reset_scores:
     ; Take the player_score_init string (located in the footer) and use it to
     ; overwrite both player score and peak score.
@@ -319,6 +459,12 @@
     call copy_score_and_increment_pointers
     ld a,FALSE
     ld (new_hiscore),a
+  ret
+  ;
+  ;
+  reset_vblank_profiler:
+    ld a,FIRST_LINE_OF_VBLANK
+    ld (vblank_update_finished_line),a
   ret
   ;
   ;
@@ -526,181 +672,42 @@ tall_meta_sprite_table:
 .ends
 ;
 ; -----------------------------------------------------------------------------
-.section "Game object implementations" free
+.section "Empty section" free
 ; -----------------------------------------------------------------------------
-  ;
-  ;
-  ;
-  ;
-  ;
-  ;
-  .equ SHARD_X_OFFSET_1 (-3)
-  .equ SHARD_Y_OFFSET_1 2
-  .equ SHARD_X_OFFSET_2 10
-  .equ SHARD_Y_OFFSET_2 16
-  .equ SHARD_MOVE_LEFT 0
-  .equ SHARD_MOVE_RIGHT 1
-  .equ SHARD_XSPEED 1
-  ;
-  explode_asteroid_into_shards:
-    ; Deactivate the asteroid pointed to by IX. Create two shards relative to
-    ; the asteroid's position, and transfer the asteroid's yspeed to the two
-    ; shards. One shard moves left. The other moves right. Fixed xspeed = 1.
-    ; Entry: IX = Pointer to asteroid to explode.
-    ; Exit: None.
-    ; Uses: AF, BC, HL, IY.
-    ld a,GAME_OBJECT_INACTIVE         ; Deactivate the asteroid.
-    ld (ix+game_object.state),a
-    ;
-    push ix                           ; Temporarily store pointer to asteroid
-    pop hl                            ; in HL.
-    .rept 2                           ; Get two deactivated shards...
-      ld ix,shard
-      ld a,SHARD_MAX
-      call get_inactive_game_object   ; Return with IX = Pointer to shard.
-      ld a,GAME_OBJECT_ACTIVE         ; Activate this shard.
-      ld (ix+game_object.state),a
-      push ix                         ; And store it on the stack.
-    .endr                             ; Get one more shard.
-    push hl
-    pop ix                            ; Restore pointer to asteroid.
-    ;
-    ld hl,shard_offset_table          ; Point to the shard offset table.
-    .rept 2                           ; For both shards, do...
-      pop iy                          ; Retrieve pointer to shard from stack.
-      ld a,(hl)                       ; Get horizontal direction from table.
-      inc hl
-      ;
-      cp SHARD_MOVE_RIGHT             ; Move downwards and right...?
-      jp nz,+
-        ld a,(ix+game_object.yspeed)  ; Get asteroid yspeed.
-        ld (iy+game_object.yspeed),a  ; Copy asteroid's yspeed to the shard.
-        ld a,SHARD_XSPEED             ; Get fixed xspeed.
-        ld (iy+game_object.xspeed),a  ; And apply it to the shard.
-        jp ++
-      +:                              ; Move downwards and left!
-        ld a,(ix+game_object.yspeed)  ; Just like above...
-        ld (iy+game_object.yspeed),a
-        ld a,-(SHARD_XSPEED)          ; Negated xspeed for left movement.
-        ld (iy+game_object.xspeed),a
-      ++:
-      ld b,(hl)                       ; Get y-offset from table
-      inc hl
-      ld c,(hl)                       ; Get x-offset from table.
-      inc hl
-      call position_game_object_in_relation_to_game_object
-      push hl
-        ld a,(ix+game_object.sprite)
-        ld b,(shard_conversion_table_end-shard_conversion_table)/2
-        ld hl,shard_conversion_table
-        call convert_byte
-        ld (iy+game_object.sprite),a
-      pop hl
-    .endr
-  ret
-    shard_offset_table:
-      .db -1, SHARD_Y_OFFSET_1, SHARD_X_OFFSET_1
-      .db 1, SHARD_Y_OFFSET_2, SHARD_X_OFFSET_2
+  ; For future use..?!
   ;
 
 .ends
 ;
 ; ---------------------------------------------------------------------------
-.section "vblank profiler" free
+.section "Empty section 2" free
 ; ---------------------------------------------------------------------------
-  profile_vblank:
-    ; Set debug meter for profiling the amount of lines consumed by functions
-    ; operating on the graphics and expecting to work with the screen blanked.
-    ; Make sure this meter shows a line number within the vblank period!
-    in a,(V_COUNTER_PORT)                   ; Get current line number.
-    .ifdef DEVELOPER_MODE
-      cp 185                                  ; Failsafe, go into an endless
-      jp nc,+                                 ; loop if we are in the active
-        -:                                    ; display (both NTSC and PAL)
-          nop
-        jp -
-      +:                                      ; We are somewhere in vblank...
-    .endif
-    ld b,a                                  ; Store line number in B.
-    ld a,(vblank_update_finished_line)      ; Get highest line number yet.
-    cp b                                    ; Is the current line higher?
-    ret nc                                  ; No, skip forward.
-    ld a,b                                  ; Yes, save current line number as
-    ld (vblank_update_finished_line),a      ; the new 'high score'.
-  ret                                       ;
   ;
-  reset_vblank_profiler:
-    ld a,FIRST_LINE_OF_VBLANK
-    ld (vblank_update_finished_line),a
-  ret
+  ;
 .ends
 ;
-; -----------------------------------------------------------------------------
-.ramsection "random number generation" slot 3
-; -----------------------------------------------------------------------------
-  rnd_seed dw
-.ends
-; -----------------------------------------------------------------------------
-.section "random number generation functions" free
-  get_random_number:
-    ; SMS-Power!
-    ; Returns an 8-bit pseudo-random number in a
-    push hl
-    ld hl,(rnd_seed)
-    ld a,h         ; get high byte
-    rrca           ; rotate right by 2
-    rrca
-    xor h          ; xor with original
-    rrca           ; rotate right by 1
-    xor l          ; xor with low byte
-    rrca           ; rotate right by 4
-    rrca
-    rrca
-    rrca
-    xor l          ; xor again
-    rra            ; rotate right by 1 through carry
-    adc hl,hl      ; add RandomNumberGeneratorWord to itself
-    jr nz,+
-      ld hl,$733c  ; if last xor resulted in zero then re-seed.
-    +:
-    ld a,r         ; r = refresh register = semi-random number
-    xor l          ; xor with l which is fairly random
-    ld (rnd_seed),hl
-    pop hl
-  ret              ; return random number in a
-  ;
-  randomize:
-    ; FIXME: Randomize based on player input instead!
-    ld hl,randomizer_table
-    ld a,(rnd_seed)
-    add a,(hl)
-    ld (rnd_seed),a
-    ld hl,randomizer_table+1
-    ld a,(rnd_seed+1)
-    add a,(hl)
-    ld (rnd_seed+1),a
-  ret
-  ;
-  randomizer_table:
-    .dbrnd 2,1,254
-.ends
-
-
+;
+;
 ; -----------------------------------------------------------------------------
 ; SANDBOX
 ; -----------------------------------------------------------------------------
-; Work- and testbench.
+; Work- and testbench. Here we can develop and test new functions before they
+; are integrated into the astroswablib or other libraries.
+; -----------------------------------------------------------------------------
+  ;
   .equ SANDBOX_LOGGER_START_ROW 19
-  ; ---
+  ;
+  ;
 ; -----------------------------------------------------------------------------
 .ramsection "Sandbox variables" slot 3
-; -----------------------------------------------------------------------------
   ;
   ;
 .ends
 ;
+;
+; -----------------------------------------------------------------------------
 .section "Sandbox functions" free
-  ; Short text here...
+  ;
   sandbox_function_1:
     ; ...
   ret
