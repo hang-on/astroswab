@@ -1,12 +1,11 @@
 ; gs_hiscore.inc
 ; ---------------------------------------------------------------------------
-; H I S C O R E
-; ---------------------------------------------------------------------------
 prepare_hiscore:
+; ---------------------------------------------------------------------------
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
+  ld b,REGISTER_1
   call set_register
   ;
   ld a,ASCII_SPACE
@@ -49,32 +48,33 @@ prepare_hiscore:
   ld hl,cursor_effect_trigger_init_table
   call initialize_trigger
   ;
-  ; Point to the last hiscore item...
-  ld de,_sizeof_score_struct
-  ld b,NUMBER_OF_HISCORE_ITEMS-1  ; Check if this is correct.
+  ; --------------------------------------------------------------------------
+  ; Test: Is the player's peak score at least equal to the bottommost entry in
+  ; the hiscore table?
+  ld de,_sizeof_score_struct        ; Point HL to the last hiscore item...
+  ld b,NUMBER_OF_HISCORE_ITEMS-1
   ld hl,hiscore_item.1
   -:
     add hl,de
   djnz -
-  ; Now hl points to the last hiscore item.
-  ; Compare against peak score.
-  ld iy,peak_score
-  push hl
+  ;                                 ;
+  ld iy,peak_score                  ; Put ptr to peak_score in IY.
+  push hl                           ; Put ptr to last hiscore table item in IX.
   pop ix
-  call compare_scores
+  call compare_scores               ; And compare them...
   jp nc,+
-    ; Player broke on one the highscores -> enter new hiscore mode
+    ; Player broke on one the highscores -> enter new hiscore mode.
     ld a,TRUE
     ld (new_hiscore),a
     jp ++
   +:
-    ; Player did not break hiscore -> read-only mode
+    ; Player did not break hiscore -> read-only mode.
     ld a,FALSE
     ld (new_hiscore),a
-    ld hl,transition_trigger_init_table
-    ld ix,transition_trigger
-    call initialize_trigger
-    call enable_trigger
+    ld hl,transition_trigger_init_table ; In read-only mode, the hiscore table
+    ld ix,transition_trigger            ; displays for a short period of time,
+    call initialize_trigger             ; and then we make a transition back
+    call enable_trigger                 ; to te title screen.
   ++:
   ;
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
@@ -84,6 +84,10 @@ prepare_hiscore:
   ld b,HISCORE_TABLE_COLUMN
   call print_hiscore_table
   ;
+  ;
+  ;
+  ; ---------------------------------------------------------------------------
+  ; Only when we have a new hiscore - and the player must enter initials...
   ld a,(new_hiscore)
   cp TRUE
   jp nz,end_new_hiscore_prep
@@ -105,10 +109,6 @@ prepare_hiscore:
     ld hl,cursor_effect_init_table
     call initialize_game_object
     ;
-    ld ix,release_keys_trigger
-    ld hl,release_keys_trigger_init_table
-    call initialize_trigger
-    ;
     ; Position the cursor effect over the first char in initials.
     ld hl,peak_score
     call get_hiscore_table_postion_from_score
@@ -126,21 +126,32 @@ prepare_hiscore:
     call convert_and_put_selected_char
     ld hl,cursor_x
     dec (hl)
+    ;
+    ; Debouncing keys.
+    ld ix,release_keys_trigger
+    ld hl,release_keys_trigger_init_table
+    call initialize_trigger
+    ;
   end_new_hiscore_prep:
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
-  ld b,1
+  ld b,REGISTER_1
   call set_register
+  ;
   ei
   call FadeInScreen
+  ;
   ; When all is set, change the game state.
   ld a,GS_RUN_HISCORE
   ld (game_state),a
 jp main_loop
 ;
+;
+;
 ; ---------------------------------------------------------------------------
 run_hiscore:
+; ---------------------------------------------------------------------------
   ;
   -:
     call await_frame_interrupt
@@ -187,6 +198,8 @@ run_hiscore:
       ; -----------------------------------------------------------------------
       call is_button_1_pressed
       ; -----------------------------------------------------------------------
+      ; Button 1 means: Stamp out currently selected char. Save and switch to
+      ; read-only mode if we are at the last initial.
       jp nc,+
         ld a,(active_initial)
         cp LETTERS_IN_INITIALS
@@ -222,7 +235,7 @@ run_hiscore:
             call save_hiscore_table_to_extram
             ;
             ld a,FALSE
-            ld (new_hiscore),a ; Maybe change this to read_only_mode ?
+            ld (new_hiscore),a
             ;
             ld hl,transition_trigger_init_table
             ld ix,transition_trigger
@@ -236,6 +249,7 @@ run_hiscore:
     ; -----------------------------------------------------------------------
     call is_right_pressed
     ; -----------------------------------------------------------------------
+    ; Right means: Select next char.
     jp nc,+
       ld ix,release_keys_trigger
       ld a,ENABLED
@@ -258,6 +272,7 @@ run_hiscore:
     ; -----------------------------------------------------------------------
     call is_left_pressed
     ; -----------------------------------------------------------------------
+    ; Left means: Select previous char.
     jp nc,+
       ld ix,release_keys_trigger
       ld a,ENABLED
@@ -280,6 +295,7 @@ run_hiscore:
     ; -----------------------------------------------------------------------
     call is_button_2_pressed
     ; -----------------------------------------------------------------------
+    ; Button 2: Backspace/delete currently selected char.
     jp nc,+
       ld a,(active_initial)
       cp 1
@@ -313,7 +329,7 @@ run_hiscore:
         ld hl, ascii_to_selected_char_table
         call convert_byte                     ; Now A holds the selected char.
         ld (selected_char),a
-        ; ------------------
+        ;
         ; Write the selected char to
         call convert_and_put_selected_char
         ld hl,cursor_x
@@ -339,7 +355,10 @@ run_hiscore:
     ; Display hiscore table until timer depletes, then transition...
     ld ix,transition_trigger
     call process_trigger
-    call c,transition_to_devmenu
+    jp nc,+
+      ld a,GS_PREPARE_TITLESCREEN
+      call transition_to_gamestate
+    +:
     ;
 ; *****************************************************************************
   finish_hiscore_loop:
@@ -350,10 +369,6 @@ run_hiscore:
   ;
   ld hl,frame_counter
   inc (hl)
-  .ifdef DEVELOPER_MODE
-    call is_reset_pressed
-    call c,transition_to_devmenu
-  .endif
   ;
 jp main_loop
   ; ---------------------------------------------------------------------------
@@ -396,10 +411,3 @@ jp main_loop
     ld a,(hl)
   ret
   ;
-  transition_to_devmenu: ; TODO: Make game state transition func.
-    call PSGSFXStop
-    call PSGStop
-    call FadeOutScreen
-    ld a,GS_PREPARE_DEVMENU
-    ld (game_state),a
-  ret
