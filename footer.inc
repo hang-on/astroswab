@@ -697,10 +697,10 @@ titlescreen_background_table:
 ; -----------------------------------------------------------------------------
 ;
 warning_background_tiles:
-  .include "bank_11\warning_background_tiles.inc"
+  .include "bank_3\warning_background_tiles.inc"
 warning_background_tiles_end:
 warning_background_tilemap:
-  .include "bank_11\warning_background_tilemap.inc"
+  .include "bank_3\warning_background_tilemap.inc"
 warning_background_table:
   .dw NON_ASCII_AREA_START,
   .dw warning_background_tiles_end-warning_background_tiles,

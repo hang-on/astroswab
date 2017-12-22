@@ -22,7 +22,7 @@
 ; Title screen:
   .equ TITLESCREEN_BANK 10
 ; Warning (wrong tv-type)
-  .equ WARNING_BANK 11
+  .equ WARNING_BANK 3
   ;
 ; Pico-related definitions:
   .equ PICO8_PALETTE_SIZE 16
