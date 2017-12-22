@@ -399,6 +399,16 @@
   ret
   ;
   ;
+  load_sprites:
+    ; Load the sprite sheet into vram.
+    SELECT_BANK SPRITE_BANK
+    ld bc,sprite_tiles_end-sprite_tiles
+    ld de,SPRITE_BANK_START
+    ld hl,sprite_tiles
+    call load_vram
+  ret
+  ;
+  ;
   missile_hits_ground:
     ; What happens when a missile hits ground?
     ; Entry: IX points to missile structure.

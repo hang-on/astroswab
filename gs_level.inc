@@ -31,11 +31,8 @@ prepare_level:
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
+  call load_sprites
+  ;
   ; Set border color.
   ld a,DARK_BLUE
   ld b,REGISTER_7
