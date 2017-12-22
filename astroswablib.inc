@@ -1,101 +1,21 @@
 ; astroswablib.inc
 ; Functions related specifically to astroswab, or with significant dependencies
-; on local/contextual design choices.
+; on local/contextual design choices, i.e. works on instants of structs and
+; game-specific variables.
 ;
 ; -----------------------------------------------------------------------------
 .section "Misc functions" free
 ; -----------------------------------------------------------------------------
-  ; (c) Kagesan of SMS-Power.
-  FadeInScreen:
-      halt                   ; wait for Vblank
-      ;
-      xor a
-      out ($bf),a            ; palette index (0)
-      ld a,$c0
-      out ($bf),a            ; palette write identifier
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
-      srl a                  ; modify color values: 2 becomes 1
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld b,4                 ; delay 4 frames
-   -: halt
-      djnz -
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld b,4                 ; delay 4 frames
-   -: halt
-      djnz -
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      out ($be),a            ; write unfodified data to CRAM, palette load complete
-      inc hl
-      djnz -
-      ;
-  ret
-  ;---------------------------------------------------------------------------------
-  FadeOutScreen:
-      halt                   ; wait for Vblank
-      xor a
-      out ($bf),a            ; palette index (0)
-      ld a,$c0
-      out ($bf),a            ; palette write identifier
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld b,4                 ; delay 4 frames
-   -: halt
-      djnz -
-      ;
-      ld b,32                ; number of palette entries: 32 (full palette)
-      ld hl,pico8_palette_sms    ; source
-   -: ld a,(hl)              ; load raw palette data
-      and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
-      srl a                  ; modify color values: 2 becomes 1
-      out ($be),a            ; write modified data to CRAM
-      inc hl
-      djnz -
-      ;
-      ld b,4                 ; delay 4 frames
-   -: halt
-      djnz -
-      ;
-      ld b, 32               ; number of palette entries: 32 (full palette)
-      xor a                  ; we want to blacken the palette, so a is set to 0
-   -: out ($be), a           ; write zeros to CRAM, palette fade complete
-      djnz -
-      ;
+  asteroid_hits_ground:
+    ; What happens when an asteroid hits the ground?
+    ; Entry: IX points to asteroid object.
+    call deactivate_game_object
+    ld hl,player_score
+    ld a,SCORE_ONES
+    ld b,5
+    call subtract_from_score
   ret
   ;
-  halt_and_process_psg:
-    ; Entry: A = frames to halt while processing.
-    ld b,a
-    -:
-      halt
-      call PSGFrame
-      call PSGSFXFrame
-    djnz -
-  ret
   ;
   batch_wipe_all_object_triggers_and_enable_trigger:
     ; Enable specific trigger passed in IX.
@@ -112,33 +32,251 @@
     call batch_initialize_triggers
   ret
   ;
-  transition_to_gamestate:
-    ; Transition to a gamestate passed in A.
-    ; Entry: A = Game state.
-    ; Exit: None
-    ; Uses: ?
-    push af
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-    pop af              ;ld a,GS_PREPARE_DEVMENU
-    ld (game_state),a
+  ;
+  FadeInScreen:
+    ; (c) Kagesan of SMS-Power.
+    halt                   ; wait for Vblank
+    ;
+    xor a
+    out ($bf),a            ; palette index (0)
+    ld a,$c0
+    out ($bf),a            ; palette write identifier
+    ;
+    ld b,32                ; number of palette entries: 32 (full palette)
+    ld hl,pico8_palette_sms    ; source
+ -: ld a,(hl)              ; load raw palette data
+    and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
+    srl a                  ; modify color values: 2 becomes 1
+    out ($be),a            ; write modified data to CRAM
+    inc hl
+    djnz -
+    ;
+    ld b,4                 ; delay 4 frames
+ -: halt
+    djnz -
+    ;
+    ld b,32                ; number of palette entries: 32 (full palette)
+    ld hl,pico8_palette_sms    ; source
+ -: ld a,(hl)              ; load raw palette data
+    and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
+    out ($be),a            ; write modified data to CRAM
+    inc hl
+    djnz -
+    ;
+    ld b,4                 ; delay 4 frames
+ -: halt
+    djnz -
+    ;
+    ld b,32                ; number of palette entries: 32 (full palette)
+    ld hl,pico8_palette_sms    ; source
+ -: ld a,(hl)              ; load raw palette data
+    out ($be),a            ; write unfodified data to CRAM, palette load complete
+    inc hl
+    djnz -
+    ;
   ret
   ;
-  reset_scores:
+  ;
+  FadeOutScreen:
+  ; (c) Kagesan of SMS-Power.
+    halt                   ; wait for Vblank
+    xor a
+    out ($bf),a            ; palette index (0)
+    ld a,$c0
+    out ($bf),a            ; palette write identifier
     ;
-    ld hl,player_score_init
-    ld de,player_score
-    call copy_score_and_increment_pointers
-    ld hl,player_score_init
-    ld de,peak_score
-    call copy_score_and_increment_pointers
-    ld a,FALSE
-    ld (new_hiscore),a
+    ld b,32                ; number of palette entries: 32 (full palette)
+    ld hl,pico8_palette_sms    ; source
+ -: ld a,(hl)              ; load raw palette data
+    and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
+    out ($be),a            ; write modified data to CRAM
+    inc hl
+    djnz -
+    ;
+    ld b,4                 ; delay 4 frames
+ -: halt
+    djnz -
+    ;
+    ld b,32                ; number of palette entries: 32 (full palette)
+    ld hl,pico8_palette_sms    ; source
+ -: ld a,(hl)              ; load raw palette data
+    and %00101010          ; modify color values: 3 becomes 2, 1 becomes 0
+    srl a                  ; modify color values: 2 becomes 1
+    out ($be),a            ; write modified data to CRAM
+    inc hl
+    djnz -
+    ;
+    ld b,4                 ; delay 4 frames
+ -: halt
+    djnz -
+    ;
+    ld b, 32               ; number of palette entries: 32 (full palette)
+    xor a                  ; we want to blacken the palette, so a is set to 0
+ -: out ($be), a           ; write zeros to CRAM, palette fade complete
+    djnz -
+    ;
   ret
+  ;
+  ;
+  halt_and_process_psg:
+    ; Skip a specified number of frames while sound is playing.
+    ; Entry: A = frames to halt while processing.
+    ld b,a
+    -:
+      halt
+      call PSGFrame
+      call PSGSFXFrame
+    djnz -
+  ret
+  ;
+  ;
+  handle_bullet_collision:
+    ; Function for handling what happens when bullet collides with other
+    ; objects.
+    ; Entry: IX = bullet.
+    ;        IY = game object that collides with bullet.
+    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating both items.
+    ld (ix+game_object.state),a
+    ld (iy+game_object.state),a
+    ;
+    ld a,(iy+game_object.id)      ; Do different stuff depending on id.
+    cp SHARD                      ; Does bullet collide with a shard?
+    jp nz,+                       ; No? - skip forward to next id test.
+      ld hl,player_score          ; Yes? - award the player some points.
+      ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
+      ld b,2
+      call add_to_score
+      ret
+    +:
+    cp ASTEROID
+    jp nz,+
+      push ix
+        call get_random_number
+        cp ASTEROIDS_INTO_SHARDS_CHANCE
+        jp c,skip_explode
+          push iy
+          pop ix
+          call explode_asteroid_into_shards
+        skip_explode:
+        SELECT_BANK SOUND_BANK
+        call PSGSFXStop
+        ld hl,explosion
+        ld c,SFX_CHANNELS2AND3
+        call PSGSFXPlay
+        ;
+        ld hl,player_score
+        ld a,SCORE_TENS
+        ld b,1
+        call add_to_score
+
+      pop ix
+      ret
+    +:
+    cp SPINNER
+    jp nz,+
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ;
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,4
+      call add_to_score
+      ;
+      ret
+    +:
+    cp BOOSTER
+    jp nz,+
+      ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,5
+      call subtract_from_score
+      ;
+      call PSGGetStatus
+      cp PSG_PLAYING
+      ret z
+        SELECT_BANK SOUND_BANK
+        ld hl,shot_booster
+        ;ld c,SFX_CHANNELS2AND3
+        call PSGPlayNoRepeat
+        ret
+    +:
+    cp MISSILE
+    jp nz,+
+      ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_TENS
+      ld b,8
+      call add_to_score
+      ;
+      call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+    +:
+  ret
+  ;
+  ;
+  handle_swabby_collision:
+    ; Placeholder function for handling what happens when swabby collides with
+    ; other objects.
+    ; IX = swabby, IY other object..
+    ld a,GAME_OBJECT_INACTIVE
+    ld (iy+game_object.state),a
+    ;
+    ld a,(iy+game_object.id)
+    cp BOOSTER
+    jp nz,+
+      SELECT_BANK SOUND_BANK
+      ld hl,got_booster
+      call PSGPlayNoRepeat
+      ;
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,1
+      call add_to_score
+      ;
+      ld a,(gun_level)
+      cp GUN_LEVEL_MAX
+      ret z
+        inc a
+        ld (gun_level),a
+        ld hl,gun_delay
+        dec (hl)
+        ld hl,gun_level_char_data+FAST_PUT_CHAR_OFFSET
+        inc (hl)
+        ld a,TRUE               ; Signal that we should update the counter.
+        ld (gun_level_flag),a
+        ret
+    +:
+    cp SPINNER
+    jp nz,+
+      call start_rumble
+      ; Fall through to kill, sound effect etc.
+    +:
+    ; cp ANOTHER_GAME_OBJECT...
+    ;
+    ; All other game objects means death to Swabby!
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+    ;
+    ld a,TRUE
+    ld (kill_swabby_flag),a
+  ret
+  ;
   ;
   init_triggers_according_to_difficulty:
-    ;
+    ; Depending on the value stored in the variable [difficulty], calculate a
+    ; pointer to a relevant batch trigger init table, and use this pointer to
+    ; batch initialize some triggers!
     ; Entry: None.
     ; Exit:
     ; Uses:
@@ -156,7 +294,96 @@
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
   ret
+  ;
+  ;
+  missile_hits_ground:
+    ; What happens when a missile hits ground?
+    ; Entry: IX points to missile structure.
+    call deactivate_game_object
+    ;call PSGStop
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+  ret
+  ;
+  ;
+  reset_scores:
+    ; Take the player_score_init string (located in the footer) and use it to
+    ; overwrite both player score and peak score.
+    ld hl,player_score_init
+    ld de,player_score
+    call copy_score_and_increment_pointers
+    ld hl,player_score_init
+    ld de,peak_score
+    call copy_score_and_increment_pointers
+    ld a,FALSE
+    ld (new_hiscore),a
+  ret
+  ;
+  ;
+  shard_hits_ground:
+    ; IX points to shard object.
+    call deactivate_game_object
+    ld hl,player_score
+    ld a,SCORE_TENS
+    ld b,1
+    call subtract_from_score
+  ret
+  ;
+  ;
+  spinner_hits_ground:
+    ; What happens when a flaming asteroid (a so-called spinner) hit ground?
+    ; Entry: IX points to spinner structure.
+    call deactivate_game_object
+    ;
+    ld a,(swabby_respawn_trigger.state)
+    cp ENABLED
+    ret z
+    ;
+    ld a,TRUE
+    ld (kill_swabby_flag),a
+    ;
+    call start_rumble
+    ;
+    ld hl,player_score
+    ld a,SCORE_HUNDREDS
+    ld b,1
+    call subtract_from_score
+    ;
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+  ret
+  ;
+  ;
+  start_rumble:
+    ; Set the rumble flag and enable the rumble end trigger.
+    ld a,FLAG_SET
+    ld (rumble_flag),a
+    ld a,ENABLED
+    ld (rumble_end_trigger.state),a
+  ret
+  ;
+  ;
+  transition_to_gamestate:
+    ; Transition to a gamestate passed in A.
+    ; Entry: A = Game state.
+    ; Exit: None
+    ; Uses: ?
+    push af
+      call PSGSFXStop
+      call PSGStop
+      call FadeOutScreen
+    pop af              ;ld a,GS_PREPARE_DEVMENU
+    ld (game_state),a
+  ret
+  ;
+  ;
 .ends
+;
+;
 ;
 ; -----------------------------------------------------------------------------
 ; Metasprites
@@ -301,207 +528,11 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Game object implementations" free
 ; -----------------------------------------------------------------------------
-  missile_hits_ground:
-    ; IX points to missile structure.
-    call deactivate_game_object
-    ;call PSGStop
-    SELECT_BANK SOUND_BANK
-    ld hl,explosion
-    ld c,SFX_CHANNELS2AND3
-    call PSGSFXPlay
-  ret
   ;
-  spinner_hits_ground:
-    ; IX points to spinner structure.
-    call deactivate_game_object
-    ;
-    ld a,(swabby_respawn_trigger.state)
-    cp ENABLED
-    ret z
-    ;
-    call kill_swabby
-    ;
-    call start_rumble
-    ;
-    ld hl,player_score
-    ld a,SCORE_HUNDREDS
-    ld b,1
-    call subtract_from_score
-    ;
-    SELECT_BANK SOUND_BANK
-    ld hl,explosion
-    ld c,SFX_CHANNELS2AND3
-    call PSGSFXPlay
-  ret
   ;
-  shard_hits_ground:
-    ; IX points to shard object.
-    call deactivate_game_object
-    ld hl,player_score
-    ld a,SCORE_TENS
-    ld b,1
-    call subtract_from_score
-  ret
   ;
-  asteroid_hits_ground:
-    ; IX points to asteroid object.
-    call deactivate_game_object
-    ld hl,player_score
-    ld a,SCORE_ONES
-    ld b,5
-    call subtract_from_score
-  ret
   ;
-  handle_bullet_collision:
-    ; Function for handling what happens when bullet collides with other
-    ; objects.
-    ; Entry: IX = bullet.
-    ;        IY = game object that collides with bullet.
-    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating both items.
-    ld (ix+game_object.state),a
-    ld (iy+game_object.state),a
-    ;
-    ld a,(iy+game_object.id)      ; Do different stuff depending on id.
-    cp SHARD                      ; Does bullet collide with a shard?
-    jp nz,+                       ; No? - skip forward to next id test.
-      ld hl,player_score          ; Yes? - award the player some points.
-      ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
-      ld b,2
-      call add_to_score
-      ret
-    +:
-    cp ASTEROID
-    jp nz,+
-      push ix
-        call get_random_number
-        cp ASTEROIDS_INTO_SHARDS_CHANCE
-        jp c,skip_explode
-          push iy
-          pop ix
-          call explode_asteroid_into_shards
-        skip_explode:
-        SELECT_BANK SOUND_BANK
-        call PSGSFXStop
-        ld hl,explosion
-        ld c,SFX_CHANNELS2AND3
-        call PSGSFXPlay
-        ;
-        ld hl,player_score
-        ld a,SCORE_TENS
-        ld b,1
-        call add_to_score
-
-      pop ix
-      ret
-    +:
-    cp SPINNER
-    jp nz,+
-      call PSGStop
-      SELECT_BANK SOUND_BANK
-      call PSGSFXStop
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
-      ;
-      ld hl,player_score
-      ld a,SCORE_TENS
-      ld b,4
-      call add_to_score
-      ;
-      ret
-    +:
-    cp BOOSTER
-    jp nz,+
-      ; Points and stuff here...
-      ld hl,player_score
-      ld a,SCORE_TENS
-      ld b,5
-      call subtract_from_score
-      ;
-      call PSGGetStatus
-      cp PSG_PLAYING
-      ret z
-        SELECT_BANK SOUND_BANK
-        ld hl,shot_booster
-        ;ld c,SFX_CHANNELS2AND3
-        call PSGPlayNoRepeat
-        ret
-    +:
-    cp MISSILE
-    jp nz,+
-      ; Points and stuff here...
-      ld hl,player_score
-      ld a,SCORE_TENS
-      ld b,8
-      call add_to_score
-      ;
-      call PSGStop
-      SELECT_BANK SOUND_BANK
-      call PSGSFXStop
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
-    +:
-  ret
-  handle_swabby_collision:
-    ; Placeholder function for handling what happens when swabby collides with
-    ; other objects.
-    ; IX = swabby, IY other object..
-    ld a,GAME_OBJECT_INACTIVE
-    ld (iy+game_object.state),a
-    ;
-    ld a,(iy+game_object.id)
-    cp BOOSTER
-    jp nz,+
-      SELECT_BANK SOUND_BANK
-      ld hl,got_booster
-      call PSGPlayNoRepeat
-      ;
-      ld hl,player_score
-      ld a,SCORE_HUNDREDS
-      ld b,1
-      call add_to_score
-      ;
-      ld a,(gun_level)
-      cp GUN_LEVEL_MAX
-      ret z
-        inc a
-        ld (gun_level),a
-        ld hl,gun_delay
-        dec (hl)
-        ld hl,gun_level_char_data+FAST_PUT_CHAR_OFFSET
-        inc (hl)
-        ld a,TRUE               ; Signal that we should update the counter.
-        ld (gun_level_flag),a
-        ret
-    +:
-    cp SPINNER
-    jp nz,+
-      call start_rumble
-      ; Fall through to kill, sound effect etc.
-    +:
-    ; cp ANOTHER_GAME_OBJECT...
-    ;
-    ; All other game objects means death to Swabby!
-    SELECT_BANK SOUND_BANK
-    ld hl,explosion
-    ld c,SFX_CHANNELS2AND3
-    call PSGSFXPlay
-    ;
-    call kill_swabby
-  ret
   ;
-  kill_swabby:
-    ld a,TRUE
-    ld (kill_swabby_flag),a
-  ret
-  ;
-  start_rumble:
-    ld a,FLAG_SET
-    ld (rumble_flag),a
-    ld a,ENABLED
-    ld (rumble_end_trigger.state),a
-  ret
   ;
   .equ SHARD_X_OFFSET_1 (-3)
   .equ SHARD_Y_OFFSET_1 2
