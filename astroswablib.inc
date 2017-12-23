@@ -47,6 +47,32 @@
   ret
   ;
   ;
+  difficulty_to_random_background:
+    ; Load a random background depending on difficulty.
+    ; Entry: None. (Uses the difficulty global variable).
+    ; Exit: None.
+    ; Uses: Everything except index registers.
+    ;
+    ld a,(difficulty)
+    ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
+    ld hl,difficulty_to_background_bank_table
+    call convert_byte
+    ld (SLOT_2_CONTROL),a           ; Page-in the correct background bank.
+    ;
+    ld a,(difficulty)               ; Get current difficulty as index.
+    ld hl,meta_background_table     ; Point HL to base of meta pointer table.
+    call get_word_from_table        ; Point HL to base of table of backgrounds.
+    push hl                         ; Save this pointer.
+      call get_random_number        ; Get random number.
+    pop hl                          ; Restore pointer.
+    and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
+    call get_word_from_table        ; Point HL to random background table at
+    ;                               ; this difficulty.
+    call load_vram_from_table       ; Load the tiles.
+    call load_vram_from_table       ; Load the tilemap.
+  ret
+  ;
+  ;
   explode_asteroid_into_shards:
     ; Deactivate the asteroid pointed to by IX. Create two shards relative to
     ; the asteroid's position, and transfer the asteroid's yspeed to the two
@@ -190,6 +216,31 @@
  -: out ($be), a           ; write zeros to CRAM, palette fade complete
     djnz -
     ;
+  ret
+  ;
+  ;
+  fast_print_score:
+    ; Print the digits in a score object to the name table.
+    ; Entry: HL = VRAM address.
+    ;        IX = Score object.
+    ; Exit: None.
+    ; Uses: ?
+    ;
+    ld a,l
+    out (CONTROL_PORT),a
+    ld a,h
+    or VRAM_WRITE_COMMAND
+    out (CONTROL_PORT),a
+    push ix
+    pop hl
+    ld b,SCORE_DIGITS_TOTAL
+    -:
+      ld a,(hl)
+      inc hl
+      out (DATA_PORT),a           ; Write it to name table.
+      ld a,%00000000              ; Select background palette for this char.
+      out (DATA_PORT),a           ; Write 2nd byte to name table.
+    djnz -
   ret
   ;
   ;
@@ -421,6 +472,33 @@
   ret
   ;
   ;
+  print_gun_level:
+    ; Print the ASCII version of the current gun level (POW:) to the name table.
+    ; If we are at max gun level, print the word defined in gun_level_max_string.
+    ; It is set up to be "MAX" but can be changed.
+    ; Entry: None.
+    ; Exit: None.
+    ; Uses: ?
+    ;
+    ld a,(gun_level)
+    cp GUN_LEVEL_MAX
+    jp nz,+                     ; If gun max level is reached, print "MAX".
+      ld hl,gun_level_max_string
+      ld b,((gun_level_max_string_end-gun_level_max_string)-2)/2
+      call put_string
+      ret
+    +:                          ; Else, just print the new gun level.
+    ld hl,GUN_LEVEL_NAMETABLE_ADDRESS
+    call set_vram_address
+    ld a,(gun_level)
+    add a,ASCII_ZERO
+    out (DATA_PORT),a
+    ;
+    ld a,FALSE
+    ld (gun_level_flag),a
+  ret
+  ;
+  ;
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
     ; operating on the graphics and expecting to work with the screen blanked.
@@ -475,6 +553,30 @@
   reset_vblank_profiler:
     ld a,FIRST_LINE_OF_VBLANK
     ld (vblank_update_finished_line),a
+  ret
+  ;
+  ;
+  setup_level_graphics:
+    ; Load various assets into vram.
+    ; Entry: None - uses consts and globals.
+    ; Exit: None.
+    ; Uses: ?
+    ;
+    call difficulty_to_random_background
+    call load_sprites
+    ; Set border color.
+    ld a,DARK_BLUE
+    ld b,REGISTER_7
+    call set_register
+    ; Print the dummy text under the playfield.
+    ld b,DUMMY_TEXT_ROW
+    ld c,DUMMY_TEXT_COLUMN
+    ld hl,dummy_text
+    call print
+    ; Print the lives meter.
+    ld hl,lives_string
+    ld b,(lives_string_end-lives_string-2)/2
+    call put_string
   ret
   ;
   ;
@@ -534,6 +636,27 @@
       call FadeOutScreen
     pop af              ;ld a,GS_PREPARE_DEVMENU
     ld (game_state),a
+  ret
+  ;
+  ;
+  update_dashboard:
+    ; Collection of calls to functions that update/refresh info on the dashboard.
+    ; I.e. score, peak score, lives, gun level...
+    ; Entry: None.
+    ; Exit: None.
+    ; Uses: ?
+    ;
+    ; Gun level.
+    ld a,(gun_level_flag)
+    cp TRUE
+    call z,print_gun_level
+    ; Score and peak score.
+    ld hl,SCORE_VRAM_ADDRESS
+    ld ix,player_score
+    call fast_print_score
+    ld hl,PEAK_SCORE_VRAM_ADDRESS
+    ld ix,peak_score
+    call fast_print_score
   ret
   ;
   ;
