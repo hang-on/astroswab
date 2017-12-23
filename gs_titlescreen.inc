@@ -37,6 +37,13 @@ prepare_titlescreen:
   ;
   call randomize                  ; Seed the random number generator.
   ;
+  ; Testing!
+  ld b,DUMMY_TEXT_ROW
+  ld c,DUMMY_TEXT_COLUMN
+  ld hl,dummy_text
+  call print
+
+
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop

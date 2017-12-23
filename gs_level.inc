@@ -11,45 +11,7 @@ prepare_level:
   ld b,REGISTER_1
   call set_register
 
-
-  ; Load a random background depending on difficulty.
-  ld a,(difficulty)
-  ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
-  ld hl,difficulty_to_background_bank_table
-  call convert_byte
-  ld (SLOT_2_CONTROL),a           ; Page-in the correct background bank.
-  ;
-  ld a,(difficulty)               ; Get current difficulty as index.
-  ld hl,meta_background_table     ; Point HL to base of meta pointer table.
-  call get_word_from_table        ; Point HL to base of table of backgrounds.
-  push hl                         ; Save this pointer.
-    call get_random_number        ; Get random number.
-  pop hl                          ; Restore pointer.
-  and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
-  call get_word_from_table        ; Point HL to random background table at
-                                  ; this difficulty.
-  ;
-  ;
-  call load_vram_from_table       ; Load the tiles.
-  call load_vram_from_table       ; Load the tilemap.
-  ;
-  call load_sprites
-  ;
-  ; Set border color.
-  ld a,DARK_BLUE
-  ld b,REGISTER_7
-  call set_register
-  ;
-  ; Print the dummy text under the playfield.
-  ld b,DUMMY_TEXT_ROW
-  ld c,DUMMY_TEXT_COLUMN
-  ld hl,dummy_text
-  call print
-  ; Print the lives meter.
-  ld hl,lives_string
-  ld b,(lives_string_end-lives_string-2)/2
-  call put_string
-
+  call setup_level_graphics
   ;
   ld hl,general_triggers_batch_init_table
   ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
@@ -139,44 +101,7 @@ run_level:
   ;
   call load_sat
   ;
-  ; Gun level dashboard (POW: X).
-  ld a,(gun_level_flag)         ; Check flag to see if gun level has changed
-  cp TRUE                       ; and thus a gfx update is needed...
-  call z,print_gun_level
-  ;
-  ; Fast output score digits.
-  ld hl,SCORE_VRAM_ADDRESS
-  ld a,l
-  out (CONTROL_PORT),a
-  ld a,h
-  or VRAM_WRITE_COMMAND
-  out (CONTROL_PORT),a
-  ld hl,player_score+score_struct.ten_thousands
-  ld b,SCORE_DIGITS_TOTAL
-  -:
-    ld a,(hl)
-    inc hl
-    out (DATA_PORT),a           ; Write it to name table.
-    ld a,%00000000              ; Select background palette for this char.
-    out (DATA_PORT),a           ; Write 2nd byte to name table.
-  djnz -
-  ;
-  ; Fast output peak score digits.
-  ld hl,PEAK_SCORE_VRAM_ADDRESS
-  ld a,l
-  out (CONTROL_PORT),a
-  ld a,h
-  or VRAM_WRITE_COMMAND
-  out (CONTROL_PORT),a
-  ld hl,peak_score+score_struct.ten_thousands
-  ld b,SCORE_DIGITS_TOTAL
-  -:
-    ld a,(hl)
-    inc hl
-    out (DATA_PORT),a           ; Write it to name table.
-    ld a,%00000000              ; Select background palette for this char.
-    out (DATA_PORT),a           ; Write 2nd byte to name table.
-  djnz -
+  call update_dashboard
   ; ---------------------------------------------------------------------------
   ; The rumble effect when asteroid hits ground.
   ld a,(vscroll_value)      ; Move this rnd out of vblank!
