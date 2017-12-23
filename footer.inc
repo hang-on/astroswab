@@ -54,6 +54,7 @@
     .dw prepare_titlescreen, run_titlescreen, setup_new_game
     .dw prepare_hiscore, run_hiscore
     .dw prepare_warning, run_warning
+    .dw prepare_console, run_console
   ;
   meta_background_table:
     ; Used when preparing a level.

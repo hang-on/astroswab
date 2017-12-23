@@ -135,9 +135,10 @@
   .include "gs_warning.inc"
   ;
   ; ---------------------------------------------------------------------------
-  ; S A N D B O X
+  ; S A N D B O X  A N D  C O N S O L E
   ; ---------------------------------------------------------------------------
   .include "gs_sandbox.inc"
+  .include "gs_console.inc"
 .ends
 ;
 .include "footer.inc"
