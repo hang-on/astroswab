@@ -437,7 +437,7 @@
   menu_title:
     .asc "ASTROSWAB! debug menu#"
   item_1:
-    .asc "Start new game#"
+    .asc "Titlescreen#"
   item_2:
     .asc "Hiscore table#"
   item_3:

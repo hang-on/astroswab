@@ -156,9 +156,8 @@ run_devmenu:
       dec a
       jp p,++
         ; Menu item 0:
-        call FadeOutScreen
-        ld a,GS_SETUP_NEW_GAME
-        ld (game_state),a                 ; Load game state for next loop,
+        ld a,GS_PREPARE_TITLESCREEN
+        call transition_to_gamestate
         jp main_loop                      ; OK, because we jumped here.
       ++:
       dec a

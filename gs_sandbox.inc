@@ -10,7 +10,6 @@ prepare_sandbox:
   ld b,1
   call set_register
   ;
-
   ; Initialize variables.
   ld a,INITIAL_DIFFICULTY           ; Set difficulty.
   ld (difficulty),a
@@ -18,17 +17,8 @@ prepare_sandbox:
   ld (gun_level_flag),a
   ld a,GUN_LEVEL_INIT               ; Reset gun
   ld (gun_level),a
-
   ;
   call setup_level_graphics
-
-
-  ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
   ; Wipe sprites.
   call begin_sprites
   call load_sat

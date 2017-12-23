@@ -577,6 +577,12 @@
     ld hl,lives_string
     ld b,(lives_string_end-lives_string-2)/2
     call put_string
+    ;
+    SELECT_BANK SPRITE_BANK
+    ld bc,sprite_tiles_end-sprite_tiles
+    ld de,SPRITE_BANK_START
+    ld hl,sprite_tiles
+    call load_vram
   ret
   ;
   ;

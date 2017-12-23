@@ -60,9 +60,6 @@ prepare_level:
   ld a,TRUE
   ld (gun_released),a
   ;
-  ld hl,gun_level_char_data         ; Update gun level gfx.
-  call fast_put_char
-  ;
   ; Reset debug meters:
   call reset_vblank_profiler
   ; Wipe sprites.
