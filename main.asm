@@ -101,12 +101,6 @@
     ;
     ld a,GUN_LEVEL_INIT               ; Reset gun
     ld (gun_level),a
-    ld a,TRUE
-    ld (gun_level_flag),a             ; Update the gun level counter gfx.
-    ld hl,gun_level_char_data_init
-    ld de,gun_level_char_data
-    ld bc,4
-    ldir
     ;
     call reset_scores                 ; Reset player and peak score.
     ;

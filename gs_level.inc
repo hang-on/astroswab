@@ -11,24 +11,7 @@ prepare_level:
   ld b,REGISTER_1
   call set_register
   ;
-  call difficulty_to_random_background
-  ;
-  call load_sprites
-  ;
-  ; Set border color.
-  ld a,DARK_BLUE
-  ld b,REGISTER_7
-  call set_register
-  ;
-  ; Print the dummy text under the playfield.
-  ld b,DUMMY_TEXT_ROW
-  ld c,DUMMY_TEXT_COLUMN
-  ld hl,dummy_text
-  call print
-  ; Print the lives meter.
-  ld hl,lives_string
-  ld b,(lives_string_end-lives_string-2)/2
-  call put_string
+  call setup_level_graphics
   ;
   ld hl,general_triggers_batch_init_table
   ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
@@ -117,25 +100,12 @@ run_level:
   jp nz,-
   ;
   call load_sat
-  ; ---------------------------------------------------------------------------
+  ;
   ; Gun level dashboard (POW: X).
   ld a,(gun_level_flag)         ; Check flag to see if gun level has changed
   cp TRUE                       ; and thus a gfx update is needed...
-  jp nz,++
-    ld a,(gun_level)
-    cp GUN_LEVEL_MAX
-    jp nz,+                     ; If gun max level is reached, print "MAX".
-      ld hl,gun_level_max_string
-      ld b,((gun_level_max_string_end-gun_level_max_string)-2)/2
-      call put_string
-      jp ++
-    +:                          ; Else, just print the new gun level.
-    ld hl,gun_level_char_data
-    call fast_put_char
-    ld a,FALSE
-    ld (gun_level_flag),a
-  ++:
-  ; -------------------------------------------------------------------------
+  call z,print_gun_level
+  ;
   ; Fast output score digits.
   ld hl,SCORE_VRAM_ADDRESS
   ld a,l
