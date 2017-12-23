@@ -43,6 +43,7 @@ prepare_sandbox:
   ld b,1
   call set_register
   ei
+  call FadeInScreen
   ; When all is set, change the game state.
   ld a,GS_RUN_SANDBOX
   ld (game_state),a
@@ -71,6 +72,13 @@ run_sandbox:
   ; Tests below:
   ;call test_rebuild_hiscore_table_against_fine_score
   ;call test_rebuild_against_fine_and_print
+  ;
+  call is_reset_pressed
+  jp nc,+
+    ld a,GS_PREPARE_DEVMENU
+    call transition_to_gamestate
+  +:
+
   ;
 jp main_loop
 ;

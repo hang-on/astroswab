@@ -40,6 +40,7 @@ prepare_console:
   ld b,1
   call set_register
   ei
+  call FadeInScreen
   ; When all is set, change the game state.
   ld a,GS_RUN_CONSOLE
   ld (game_state),a
@@ -63,6 +64,11 @@ run_console:
   call begin_sprites
   ;
   ;
+  call is_reset_pressed
+  jp nc,+
+    ld a,GS_PREPARE_DEVMENU
+    call transition_to_gamestate
+  +:
 jp main_loop
 ;
 ; Tests for the console (run-once)
