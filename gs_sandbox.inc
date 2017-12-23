@@ -66,11 +66,11 @@ jp main_loop
 init_tests:
 ; -----------------------------------------------------------------------------
   ; Tests below:
-  call test_rebuild_and_print
+
   ;
 ret
 ; -----------------------------------------------------------------------------
-test_rebuild_and_print:
+; Update() tests:
 
 
 ;

@@ -44,13 +44,15 @@
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
     ;
-    ; If we are on an NTSC system, display warning instead of title screen.
-    ld a,(tv_type)
-    cp NTSC
-    jp nz,+
-      ld a,GS_PREPARE_WARNING
-      ld (game_state),a
-    +:
+    .ifndef DISABLE_NTSC_WARNING
+      ; If we are on an NTSC system, display warning instead of title screen.
+      ld a,(tv_type)
+      cp NTSC
+      jp nz,+
+        ld a,GS_PREPARE_WARNING
+        ld (game_state),a
+      +:
+    .endif
   jp main_loop
   ;
   ; ---------------------------------------------------------------------------

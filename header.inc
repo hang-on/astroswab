@@ -1,6 +1,7 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
   .equ DEVELOPER_MODE ; Comment out for consumer mode.
+  .equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
@@ -67,10 +68,10 @@
   .equ GS_RUN_WARNING 12
   ;
   .ifdef DEVELOPER_MODE
-    .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ;GS_SETUP_NEW_GAME ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
-    ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
+    .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
   .else
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?
