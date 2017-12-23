@@ -11,9 +11,12 @@ prepare_level:
   ld b,REGISTER_1
   call set_register
 <<<<<<< HEAD
+<<<<<<< HEAD
   ;
   call setup_level_graphics
 =======
+=======
+>>>>>>> parent of c875fd5... Add console and sandbox to dev menu
   ; Load a random background depending on difficulty.
   ld a,(difficulty)
   ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2

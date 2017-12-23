@@ -11,6 +11,7 @@ prepare_sandbox:
   call set_register
   ;
 <<<<<<< HEAD
+<<<<<<< HEAD
   ; Initialize variables.
   ld a,INITIAL_DIFFICULTY           ; Set difficulty.
   ld (difficulty),a
@@ -21,6 +22,11 @@ prepare_sandbox:
 
   ;
   call setup_level_graphics
+=======
+  ld a,ASCII_SPACE
+  ld b,TILE_BANK_1
+  call reset_name_table
+>>>>>>> parent of c875fd5... Add console and sandbox to dev menu
 =======
   ld a,ASCII_SPACE
   ld b,TILE_BANK_1
@@ -89,9 +95,12 @@ ret
 ; Update() tests:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ;
 ;
 =======
+=======
+>>>>>>> parent of c875fd5... Add console and sandbox to dev menu
 
 >>>>>>> parent of c875fd5... Add console and sandbox to dev menu
 ;
