@@ -24,8 +24,16 @@ prepare_console:
   ; Stop music and sound effects.
   call PSGSFXStop
   call PSGStop
+  ;
+  ld b,3
+  ld c,0
+  ld hl,console_title_string
+  call print
+  ;
+  ld b,CONSOLE_LOGGER_START_ROW
+  call reset_logger
   ; ----------------------------------------------------------
-  call init_console_tests
+  call console_tests
   ; ----------------------------------------------------------
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -36,6 +44,9 @@ prepare_console:
   ld a,GS_RUN_CONSOLE
   ld (game_state),a
 jp main_loop
+  ;
+  console_title_string:
+    .asc "  Astroswab unit test console#"
 ; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
 run_console:
@@ -51,25 +62,22 @@ run_console:
   call get_input_ports
   call begin_sprites
   ;
-  ld b,SANDBOX_LOGGER_START_ROW
-  call reset_logger
-  ;
-  ; Tests below:
-  ;call test_rebuild_hiscore_table_against_fine_score
-  ;call test_rebuild_against_fine_and_print
   ;
 jp main_loop
 ;
-; Tests for the sandbox:
+; Tests for the console (run-once)
 ; -----------------------------------------------------------------------------
-init_console_tests:
+console_tests:
 ; -----------------------------------------------------------------------------
-  ; Tests below:
+  ; call console_test_1
+  ; ld a,1
+  ; call console_test_2
 
   ;
 ret
 ; -----------------------------------------------------------------------------
-; Update() tests:
-
-
+;
+; console_test_1:
+;
+; ret
 ;

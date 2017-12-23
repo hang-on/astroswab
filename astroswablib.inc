@@ -699,24 +699,24 @@ tall_meta_sprite_table:
 ;
 ;
 ; -----------------------------------------------------------------------------
-; SANDBOX
+; SANDBOX AND CONSOLE
 ; -----------------------------------------------------------------------------
 ; Work- and testbench. Here we can develop and test new functions before they
 ; are integrated into the astroswablib or other libraries.
 ; -----------------------------------------------------------------------------
   ;
-  .equ SANDBOX_LOGGER_START_ROW 19
+
   ;
   ;
 ; -----------------------------------------------------------------------------
-.ramsection "Sandbox variables" slot 3
+.ramsection "Sandbox and console variables" slot 3
   ;
   ;
 .ends
 ;
 ;
 ; -----------------------------------------------------------------------------
-.section "Sandbox functions" free
+.section "Sandbox and console functions" free
   ;
   sandbox_function_1:
     ; ...

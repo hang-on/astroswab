@@ -25,6 +25,9 @@
 ; Warning (wrong tv-type)
   .equ WARNING_BANK 3
   ;
+; Sandbox and console:
+  .equ CONSOLE_LOGGER_START_ROW 4
+  ;
 ; Pico-related definitions:
   .equ PICO8_PALETTE_SIZE 16
   .equ BLACK 0
@@ -73,8 +76,8 @@
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ;GS_SETUP_NEW_GAME ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
-    ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
-    .equ INITIAL_GAME_STATE GS_PREPARE_CONSOLE
+    .equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_CONSOLE
   .else
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLE_SCREEN ; Where to go after boot?

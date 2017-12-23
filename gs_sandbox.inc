@@ -52,8 +52,6 @@ run_sandbox:
   call get_input_ports
   call begin_sprites
   ;
-  ld b,SANDBOX_LOGGER_START_ROW
-  call reset_logger
   ;
   ; Tests below:
   ;call test_rebuild_hiscore_table_against_fine_score
