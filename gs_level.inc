@@ -10,13 +10,8 @@ prepare_level:
   ld a,DISPLAY_0_FRAME_0_SIZE_0
   ld b,REGISTER_1
   call set_register
-<<<<<<< HEAD
-<<<<<<< HEAD
-  ;
-  call setup_level_graphics
-=======
-=======
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
+
+
   ; Load a random background depending on difficulty.
   ld a,(difficulty)
   ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
@@ -54,7 +49,7 @@ prepare_level:
   ld hl,lives_string
   ld b,(lives_string_end-lives_string-2)/2
   call put_string
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
+
   ;
   ld hl,general_triggers_batch_init_table
   ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE

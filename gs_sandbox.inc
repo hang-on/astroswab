@@ -10,8 +10,7 @@ prepare_sandbox:
   ld b,1
   call set_register
   ;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
   ; Initialize variables.
   ld a,INITIAL_DIFFICULTY           ; Set difficulty.
   ld (difficulty),a
@@ -22,16 +21,8 @@ prepare_sandbox:
 
   ;
   call setup_level_graphics
-=======
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
-=======
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
+
+
   ;
   SELECT_BANK SPRITE_BANK
   ld bc,sprite_tiles_end-sprite_tiles
@@ -93,14 +84,3 @@ init_tests:
 ret
 ; -----------------------------------------------------------------------------
 ; Update() tests:
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-;
-;
-=======
-=======
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
-
->>>>>>> parent of c875fd5... Add console and sandbox to dev menu
-;
