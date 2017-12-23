@@ -172,13 +172,13 @@ run_devmenu:
       dec a
       jp p,++
         ; Menu item 2:
-        ld a,GS_PREPARE_SANDBOX
-        call transition_to_gamestate
+        ;ld a,2
+        ;ld (difficulty),a
         jp main_loop
       ++:
       ; Menu item 3 (fall through):
-      ld a,GS_PREPARE_CONSOLE
-      call transition_to_gamestate
+      ;ld a,3
+      ;ld (difficulty),a
     jp main_loop
 
     ;

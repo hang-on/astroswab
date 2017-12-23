@@ -10,6 +10,7 @@ prepare_sandbox:
   ld b,1
   call set_register
   ;
+<<<<<<< HEAD
   ; Initialize variables.
   ld a,INITIAL_DIFFICULTY           ; Set difficulty.
   ld (difficulty),a
@@ -20,7 +21,17 @@ prepare_sandbox:
 
   ;
   call setup_level_graphics
+=======
+  ld a,ASCII_SPACE
+  ld b,TILE_BANK_1
+  call reset_name_table
+>>>>>>> parent of c875fd5... Add console and sandbox to dev menu
   ;
+  SELECT_BANK SPRITE_BANK
+  ld bc,sprite_tiles_end-sprite_tiles
+  ld de,SPRITE_BANK_START
+  ld hl,sprite_tiles
+  call load_vram
   ; Wipe sprites.
   call begin_sprites
   call load_sat
@@ -35,9 +46,6 @@ prepare_sandbox:
   ld b,1
   call set_register
   ei
-  ;
-  call FadeInScreen
-  ;
   ; When all is set, change the game state.
   ld a,GS_RUN_SANDBOX
   ld (game_state),a
@@ -67,11 +75,6 @@ run_sandbox:
   ;call test_rebuild_hiscore_table_against_fine_score
   ;call test_rebuild_against_fine_and_print
   ;
-  call is_reset_pressed
-  jp nc,+
-    ld a,GS_PREPARE_DEVMENU
-    call transition_to_gamestate
-  +:
 jp main_loop
 ;
 ; Tests for the sandbox:
@@ -85,6 +88,10 @@ ret
 ; -----------------------------------------------------------------------------
 ; Update() tests:
 
+<<<<<<< HEAD
 ;
 ;
+=======
+
+>>>>>>> parent of c875fd5... Add console and sandbox to dev menu
 ;
