@@ -10,26 +10,8 @@ prepare_level:
   ld a,DISPLAY_0_FRAME_0_SIZE_0
   ld b,REGISTER_1
   call set_register
-  ; Load a random background depending on difficulty.
-  ld a,(difficulty)
-  ld b,(difficulty_to_background_bank_table_end-difficulty_to_background_bank_table)/2
-  ld hl,difficulty_to_background_bank_table
-  call convert_byte
-  ld (SLOT_2_CONTROL),a           ; Page-in the correct background bank.
   ;
-  ld a,(difficulty)               ; Get current difficulty as index.
-  ld hl,meta_background_table     ; Point HL to base of meta pointer table.
-  call get_word_from_table        ; Point HL to base of table of backgrounds.
-  push hl                         ; Save this pointer.
-    call get_random_number        ; Get random number.
-  pop hl                          ; Restore pointer.
-  and BACKGROUND_TABLE_MASK       ; Apply mask to random number to get index.
-  call get_word_from_table        ; Point HL to random background table at
-                                  ; this difficulty.
-  ;
-  ;
-  call load_vram_from_table       ; Load the tiles.
-  call load_vram_from_table       ; Load the tilemap.
+  call difficulty_to_random_background
   ;
   call load_sprites
   ;

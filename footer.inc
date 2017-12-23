@@ -446,9 +446,9 @@
   item_2:
     .asc "Hiscore table#"
   item_3:
-    .asc "- unused - #"
+    .asc "Sandbox#"
   item_4:
-    .asc "- unused -#"
+    .asc "Console#"
   menu_footer:
     .asc "---------------------#"
   extram_counter_label:
