@@ -7,7 +7,7 @@ prepare_sandbox:
   di
   ; Turn off display and frame interrupts.
   ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
+  ld b,REGISTER_1
   call set_register
   ;
   ; Initialize variables.
