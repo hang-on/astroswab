@@ -78,8 +78,10 @@ run_titlescreen:
   call is_button_2_pressed
   jp nc,++
     +:
-    call FadeOutScreen          ; If either button is pressed, begin setting
-    jp setup_new_game           ; up a new game.
+    call initialize_variables_once_per_game
+    ld a,GS_PREPARE_LEVEL
+    call transition_to_gamestate
+    ;jp setup_new_game           ; up a new game.
   ++:
   ;
   call PSGSFXFrame

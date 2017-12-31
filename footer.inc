@@ -46,7 +46,7 @@
     ; Check the game state constants in header.inc!
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level
     .dw prepare_sandbox, run_sandbox,
-    .dw prepare_titlescreen, run_titlescreen, setup_new_game
+    .dw prepare_titlescreen, run_titlescreen
     .dw prepare_hiscore, run_hiscore
     .dw prepare_warning, run_warning
     .dw prepare_console, run_console

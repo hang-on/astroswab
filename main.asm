@@ -38,11 +38,30 @@
     ld hl,font_table
     call load_vram_from_table
     ;
+    ; Perform test: Is this the first time ever this game is run?
+    SELECT_EXTRAM
+      ld a,(FIRST_GAME_BYTE)
+    SELECT_ROM
+    cp FIRST_GAME_ID
+    jp z,+
+      ; Game is running for the first time...
+      ld a,FIRST_GAME_ID
+      SELECT_EXTRAM
+        ld (FIRST_GAME_BYTE),a      ; Stamp EXTRAM byte.
+      SELECT_ROM
+      ;
+      SELECT_BANK HISCORE_BANK
+        ld hl,hiscore_init        ; Hiscore initialization data.
+        ld de,hiscore_item.1      ; Start of hiscore table.
+        call copy_hiscore_table   ; Initialize hiscore table.
+      ;
+      ld hl,HISCORE_EXTRAM_ADDRESS
+      call save_hiscore_table_to_extram
+    +:
+    ;
+    call initialize_variables_once_per_gaming_session
     ;
     call PSGInit
-    ; Go to the initial game state specified in the header.
-    ld a,INITIAL_GAME_STATE
-    ld (game_state),a
     ;
     .ifndef DISABLE_NTSC_WARNING
       ; If we are on an NTSC system, display warning instead of title screen.
@@ -74,39 +93,6 @@
   ; S E T U P  G A M E  A N D  S E T U P / R U N  L E V E L                                                        (gameplay)
   ; ---------------------------------------------------------------------------
   .include "gs_level.inc"             ; Prepare and run levels.
-  ;
-  setup_new_game:
-    ;
-    ; Perform test: Is this the first time ever this game is run?
-    SELECT_EXTRAM
-      ld a,(FIRST_GAME_BYTE)
-      cp FIRST_GAME_ID
-      jp z,+
-        ; Game is running for the first time...
-        ld a,FIRST_GAME_ID
-        ld (FIRST_GAME_BYTE),a      ; Stamp EXTRAM byte.
-        SELECT_ROM
-        SELECT_BANK HISCORE_BANK
-          ld hl,hiscore_init        ; Hiscore initialization data.
-          ld de,hiscore_item.1      ; Start of hiscore table.
-          call copy_hiscore_table   ; Initialize hiscore table.
-        SELECT_EXTRAM
-        ld hl,HISCORE_EXTRAM_ADDRESS
-        call save_hiscore_table_to_extram
-      +:
-    SELECT_ROM
-    ; -------------------------------------------------------------------------
-    ld a,INITIAL_DIFFICULTY           ; Set difficulty.
-    ld (difficulty),a
-    ;
-    ld a,GUN_LEVEL_INIT               ; Reset gun
-    ld (gun_level),a
-    ;
-    call reset_scores                 ; Reset player and peak score.
-    ;
-    ld a,GS_PREPARE_LEVEL             ; When this game session is set up, go
-    ld (game_state),a                 ; on and prepare a relevant level...
-  jp main_loop
   ;
   ; ---------------------------------------------------------------------------
   ; D E V E L O P M E N T  M E N U
