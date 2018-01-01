@@ -23,6 +23,7 @@
 .equ SPRITE_TERMINATOR $d0
 .equ NTSC 0
 .equ PAL 1
+.equ FIRST_LINE_OF_VBLANK 192
 ;
 .equ REGISTER_0 0
 .equ REGISTER_1 1
@@ -296,8 +297,12 @@
         ld a,(VDPStatus)
         bit 7,a
       jp z,-
-      res 7,a
-      ld (VDPStatus),a
+      in a,(V_COUNTER_PORT)
+      ; Check this post: http://www.smspower.org/forums/8113-WaitForVBlankSlowerOnNTSCThanPALSystematicProblemWithWaitForVBlankNoInt
+      cp FIRST_LINE_OF_VBLANK+1
+      jp nz,-
+        res 7,a
+        ld (VDPStatus),a
     pop af
   ret
 .ends
