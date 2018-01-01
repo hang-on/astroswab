@@ -31,24 +31,25 @@ run_sandbox:
   call await_frame_interrupt
   ;
   call load_sat
-  call update_dashboard
-  ; End of VDP-updating...
   ;
+  call update_dashboard
+  ;
+  ; End of VDP-updating...
   call get_input_ports
   call begin_sprites
   ;
   ;
-  call update_swabby_and_gun
-  ;
-  call update_bullets
-  ;
+  ; Tests below:
+  ;call test_rebuild_hiscore_table_against_fine_score
+  ;call test_rebuild_against_fine_and_print
   ;
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_DEVMENU
     call transition_to_gamestate
   +:
+
   ;
 jp main_loop
 ;
-;
+; Tests for the sandbox:

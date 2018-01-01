@@ -106,6 +106,9 @@
 ;
   .equ RUMBLE_END_TRIGGER_INTERVAL 45
 ;
+; How many different kinds of triggers to initialize on level init?
+; shard, missile, booster, spinner = 4
+  .equ NUMBER_OF_TRIGGERS 4 ; FIXME? Could be calc. from one of the diffi.tables??
 ;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4

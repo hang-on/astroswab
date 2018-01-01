@@ -96,9 +96,179 @@ run_level:
   call begin_collision_tables     ; Restart filling the coll.tables.
   ; -------------------------------------------------------------------------
   ;
-  call update_swabby_and_gun
   ;
-  call update_bullets
+  ;
+  ; First, see if the collision tests resulted in flipping the kill switch.
+  ld a,(kill_swabby_flag)             ; Test flag - should we kill Swabby?
+  cp TRUE
+  jp nz,+
+    cpl                               ; Toggle the flag (== FALSE).
+    ld (kill_swabby_flag),a
+    ; Prepare the death animation game object.
+    ld ix,swabby_death
+    ld hl,swabby_death_anim_table
+    call load_animation_game_object
+    xor a
+    ld (ix+game_object.anim_counter),a
+    ld a,GAME_OBJECT_ACTIVE
+    ld (ix+game_object.state),a
+    ;
+    ld iy,swabby_death                ; Position death anim. object where
+    ld ix,swabby                      ; Swabby is now.
+    call position_game_object_in_relation_to_game_object
+    ;
+    ld hl,swabby_death_trigger_init_table ; When the timer in this trigger is
+    ld ix,swabby_death_trigger            ; up, the death animation object
+    call initialize_trigger               ; will be deactivated.
+    ld a,ENABLED
+    ld (ix+trigger.state),a
+    ;
+    ; Deativate Swabby and player control.
+    ld ix,swabby
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+    ld a,FALSE
+    ld (swabby_responds_to_player_input),a  ; Swabby cannot be controlled.
+    ld (swabby_can_collide_with_objects),a  ; Swabby cannot be hit.
+    ;
+    ld ix,swabby_respawn_trigger
+    call batch_wipe_all_object_triggers_and_enable_trigger
+    ;
+  +:
+  ;
+  ;
+  ; -------------------------------------------------------------------------
+  ; Handle Swabby sprite and movement:
+  ld ix,swabby
+  ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
+  ld (ix+game_object.sprite),a
+  ;
+  ld a,(swabby_responds_to_player_input)  ; If this flag is FALSE then Swabby
+  cp TRUE                                 ; will remain idle in place, cannot
+  jp nz,skip_swabby_input                 ; move or fire.
+  ;
+    call is_right_pressed             ; Check if player press right.
+    ld a,0
+    jp nc,+
+      ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
+      cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
+      jp z,++                         ; If we are already there, skip ahead...
+        inc a                         ; If not, then accelerate a bit.
+        jp ++                         ; Skip over the dpad-left check below.
+    +:
+    ld a,0
+    call is_left_pressed              ; Check if player press left.
+    ld a,0
+    jp nc,++
+      ld a,SWABBY_LEFT_SPRITE
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
+      cp -(SWABBY_X_SPEED_MAX)
+      jp z,++
+        dec a
+    ++:
+    ld (ix+game_object.xspeed),a
+    call move_game_object
+    ;
+    ld a,(ix+game_object.x)         ; Get Swabby X (after movement).
+    cp SWABBY_X_MAX                 ; Compare it to max X (right border)
+    jp c,+                          ; If Swabby has moved beyond this border,
+      ld a,SWABBY_X_MAX             ; set his X to max.
+      ld (ix+game_object.x),a
+      jp ++
+    +:
+    cp SWABBY_X_MIN                 ; Do the same test for the left border...
+    jp nc,++
+      ld a,SWABBY_X_MIN
+      ld (ix+game_object.x),a
+    ++:
+    ; -------------------------------------------------------------------------
+    ; Gun and bullets.
+    call is_button_1_pressed        ;
+    jp c,+                          ; Is the player pressing the fire button?
+      ld a,TRUE                     ; No - then set gun flag (to prevent
+      ld (gun_released),a           ; auto fire).
+    +:
+    ; Process gun timer.
+    ld a,(gun_timer)                ; If gun_timer is not already zero then
+    or a                            ; decrement it.
+    jp z,+                          ;
+      dec a                         ;
+      ld (gun_timer),a              ;
+    +:                              ;
+    call is_button_1_pressed        ; Test for fire button press...
+    jp nc,activate_bullet_end       ; If the fire button is not pressed, skip...
+      call get_random_number        ; Re-seed random number generator!
+      ld a,(gun_timer)              ; Check gun timer (delay between shots).
+      or a                          ;
+      jp nz,activate_bullet_end     ; If timer not set, skip...
+        ld a,(gun_released)         ; Is gun released? (no autofire!)
+        cp TRUE                     ;
+        jp nz,activate_bullet_end   ; If not, skip...
+          ; If we get here, it is time to reset and activate a new bullet.
+          ld a,(gun_delay)          ; Make gun wait a little (load time)!
+          ld (gun_timer),a          ;
+          ld a,FALSE                ; Lock gun (released on fire button release).
+          ld (gun_released),a       ;
+          ld ix,bullet
+          ld a,BULLET_MAX
+          call get_inactive_game_object ; Let IX point to first inactive bullet.
+          jp c,activate_bullet_end      ; Skip on no inactive bullets (!).
+            call activate_game_object
+            push ix                     ; Save pointer to bullet.
+              ld ix,swabby
+              ld a,(ix+game_object.y)   ; Get Swabby y.
+              sub BULLET_Y_OFFSET       ; Apply bullet offset.
+              ld b,a
+              ld a,(ix+game_object.x)   ; Get Swabby x.
+              add a,BULLET_X_OFFSET     ; Apply offset.
+            pop ix                      ; Restore pointer to bullet.
+            ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
+            ld (ix+game_object.x),a
+            ;
+            call PSGSFXGetStatus
+            cp PSG_PLAYING
+            jp z,+
+              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+              ld c,SFX_CHANNELS2AND3
+              ld hl,shot_1
+              call PSGSFXPlay           ; Play the swabby shot sound effect.
+            +:
+            ;
+    activate_bullet_end:              ; End of bullet activation code.
+  skip_swabby_input:
+  ld ix,swabby
+  call draw_game_object           ; At last! Draw Swabby at final position.
+  ;
+  ;
+  ;
+  ; ---------------------------------------------------------------------------
+  ; Bullets
+  ; ---------------------------------------------------------------------------
+  ld ix,bullet
+  ld b,BULLET_MAX
+  -:
+    push bc
+    ;
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      ; Bullet 'collides' with deactivate zone?
+      ld a,BULLET_DEACTIVATE_ZONE_START
+      ld b,BULLET_DEACTIVATE_ZONE_END
+      call horizontal_zone_deactivate_game_object
+      call move_game_object
+      call draw_game_object
+      ;
+    +:
+    ld de,_sizeof_game_object
+    add ix,de
+    pop bc
+  djnz -
+  ;
+  ;
   ;
   ; ---------------------------------------------------------------------------
   ; Asteroids
