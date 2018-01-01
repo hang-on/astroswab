@@ -482,6 +482,11 @@
     ; Should be run on boot (and possibly on reset?).
     ; Variables and structs that are reset once per gaming session.
     ;
+    ; Initialize the various game objects.
+    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
+    ld hl,batch_game_object_init_table
+    call batch_initialize_game_objects
+    ;
     ld a,FALSE
     ld (pause_flag),a                 ; Reset pause flag.
     ;
@@ -501,10 +506,27 @@
     ; Should be called every time we prepare for a new level and with every
     ; Swabby respawn.
     ;
-    ld hl,general_triggers_batch_init_table
-    ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
+    ld a,FALSE
+    ld (kill_swabby_flag),a
+    ;
+    ld hl,swabby_triggers_batch_init_table
+    ld a,(swabby_triggers_batch_init_table_end-swabby_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
     call batch_initialize_triggers
+    ;
+    ; The spinner-hit-rumble-effect.
+    ld a,FLAG_RESET
+    ld (rumble_flag),a
+    ld ix,rumble_end_trigger
+    ld hl,rumble_end_trigger_init_table
+    call initialize_trigger
+    ;
+  ret
+  ;
+  ;
+  initialize_variables_once_per_level:
+    ;
     ; -------------------------------------------------------------------------
+    ; Variables that are set differently depending on difficulty:
     ; Depending on difficulty.
     call init_triggers_according_to_difficulty
     ; Set transition score (when to transition to next difficulty).
@@ -514,10 +536,11 @@
     ld de,transition_score
     call copy_score_and_increment_pointers
     ; -------------------------------------------------------------------------
-    ; Initialize the various game objects.
-    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
-    ld hl,batch_game_object_init_table
-    call batch_initialize_game_objects
+    ;
+    ld ix,transition_trigger
+    ld hl,transition_trigger_init_table
+    call initialize_trigger
+    ;
     ; Init swabby death explosion
     ld ix,swabby_death
     ld hl,swabby_death_anim_table
@@ -526,14 +549,6 @@
     ld a,TRUE
     ld (swabby_responds_to_player_input),a
     ld (swabby_can_collide_with_objects),a
-    ld a,FALSE
-    ld (kill_swabby_flag),a
-    ; The spinner-hit-rumble-effect.
-    ld a,FLAG_RESET
-    ld (rumble_flag),a
-    ld ix,rumble_end_trigger
-    ld hl,rumble_end_trigger_init_table
-    call initialize_trigger
     ;
     ; Initialize gun (use the current gun level)
     ld a,TRUE
@@ -547,7 +562,6 @@
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ;
   ret
   ;
   ;

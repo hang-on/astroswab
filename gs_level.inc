@@ -9,6 +9,7 @@ prepare_level:
   call disable_display_and_sound
   ;
   call setup_level_graphics
+  call initialize_variables_once_per_level
   call initialize_variables_once_per_life
   ;
   ; Turn on screen, frame interrupts.
@@ -46,9 +47,6 @@ run_level:
     call profile_vblank
   .endif
   ;
-  call get_input_ports            ; Get all keys and save them in RAM.
-  call begin_sprites              ; Prepare to fill the SAT-buffer.
-  ;
   ; Respond to the pause button.
   ld a,(pause_flag)
   cp TRUE
@@ -58,6 +56,10 @@ run_level:
     call PSGFrame
     jp main_loop
   +:
+  ;
+  call get_input_ports            ; Get all keys and save them in RAM.
+  call begin_sprites              ; Prepare to fill the SAT-buffer.
+  ;
   ;
   ;
   ; ---------------------------------------------------------------------------
