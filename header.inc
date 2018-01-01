@@ -48,7 +48,6 @@
   .equ PEACH 15
   ;
 ; Misc. definitions:
-  .equ FIRST_LINE_OF_VBLANK 192
   .equ PROFILER_MAX_LINE FIRST_LINE_OF_VBLANK
   .equ CHAR_FROM_BACKGROUND_BANK %00000000
   .equ CHAR_FROM_SPRITE_BANK %00000001
@@ -64,13 +63,13 @@
   .equ GS_RUN_SANDBOX 5
   .equ GS_PREPARE_TITLESCREEN 6
   .equ GS_RUN_TITLESCREEN 7
-  .equ GS_SETUP_NEW_GAME 8
-  .equ GS_PREPARE_HISCORE 9
-  .equ GS_RUN_HISCORE 10
-  .equ GS_PREPARE_WARNING 11
-  .equ GS_RUN_WARNING 12
-  .equ GS_PREPARE_CONSOLE 13
-  .equ GS_RUN_CONSOLE 14
+  ;.equ GS_SETUP_NEW_GAME 8
+  .equ GS_PREPARE_HISCORE 8
+  .equ GS_RUN_HISCORE 9
+  .equ GS_PREPARE_WARNING 10
+  .equ GS_RUN_WARNING 11
+  .equ GS_PREPARE_CONSOLE 12
+  .equ GS_RUN_CONSOLE 13
   ;
   .ifdef DEVELOPER_MODE
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
@@ -265,6 +264,7 @@
   .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
+  ;
   game_state db                   ; Contains game state.
   frame_counter db                ; Used in some loops.
   ;

@@ -46,7 +46,7 @@
     ; Check the game state constants in header.inc!
     .dw prepare_devmenu, run_devmenu, prepare_level, run_level
     .dw prepare_sandbox, run_sandbox,
-    .dw prepare_titlescreen, run_titlescreen, setup_new_game
+    .dw prepare_titlescreen, run_titlescreen
     .dw prepare_hiscore, run_hiscore
     .dw prepare_warning, run_warning
     .dw prepare_console, run_console
@@ -334,11 +334,10 @@
   trigger_wipe_table:
     .db 0, 0, DISABLED
   ;
-  general_triggers_batch_init_table:
-    .dw transition_trigger, transition_trigger_init_table
+  swabby_triggers_batch_init_table:
     .dw swabby_death_trigger, swabby_death_trigger_init_table
     .dw swabby_respawn_trigger, swabby_respawn_trigger_init_table
-  general_triggers_batch_init_table_end:
+  swabby_triggers_batch_init_table_end:
   ;
   ; Note! First table is used for dimensioning batch inits (lev. startup).
   difficulty_0_batch_trigger_init_table:

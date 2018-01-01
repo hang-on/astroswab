@@ -73,6 +73,17 @@
   ret
   ;
   ;
+  disable_display_and_sound:
+    ; Disable display and frame interrupts.
+    ld a,DISPLAY_0_FRAME_0_SIZE_0
+    ld b,REGISTER_1
+    call set_register
+    ; Disable sound.
+    call PSGSFXStop
+    call PSGStop
+  ret
+  ;
+  ;
   explode_asteroid_into_shards:
     ; Deactivate the asteroid pointed to by IX. Create two shards relative to
     ; the asteroid's position, and transfer the asteroid's yspeed to the two
@@ -427,6 +438,155 @@
   ret
   ;
   ;
+  handle_swabby_death:
+    ; First, see if the collision tests resulted in flipping the kill switch.
+    ld a,(kill_swabby_flag)             ; Test flag - should we kill Swabby?
+    cp TRUE
+    ret nz
+      cpl                               ; Toggle the flag (== FALSE).
+      ld (kill_swabby_flag),a
+      ; Prepare the death animation game object.
+      ld ix,swabby_death
+      ld hl,swabby_death_anim_table
+      call load_animation_game_object
+      xor a
+      ld (ix+game_object.anim_counter),a
+      ld a,GAME_OBJECT_ACTIVE
+      ld (ix+game_object.state),a
+      ;
+      ld iy,swabby_death                ; Position death anim. object where
+      ld ix,swabby                      ; Swabby is now.
+      call position_game_object_in_relation_to_game_object
+      ;
+      ld hl,swabby_death_trigger_init_table ; When the timer in this trigger is
+      ld ix,swabby_death_trigger            ; up, the death animation object
+      call initialize_trigger               ; will be deactivated.
+      ld a,ENABLED
+      ld (ix+trigger.state),a
+      ;
+      ; Deativate Swabby and player control.
+      ld ix,swabby
+      ld a,GAME_OBJECT_INACTIVE
+      ld (ix+game_object.state),a
+      ld a,FALSE
+      ld (swabby_responds_to_player_input),a  ; Swabby cannot be controlled.
+      ld (swabby_can_collide_with_objects),a  ; Swabby cannot be hit.
+      ;
+      ld ix,swabby_respawn_trigger
+      call batch_wipe_all_object_triggers_and_enable_trigger
+  ret
+  ;
+  ;
+  handle_swabby_gun:
+    call is_button_1_pressed        ;
+    jp c,+                          ; Is the player pressing the fire button?
+      ld a,TRUE                     ; No - then set gun flag (to prevent
+      ld (gun_released),a           ; auto fire).
+    +:
+    ; Process gun timer.
+    ld a,(gun_timer)                ; If gun_timer is not already zero then
+    or a                            ; decrement it.
+    jp z,+                          ;
+      dec a                         ;
+      ld (gun_timer),a              ;
+    +:
+    ld a,(swabby_responds_to_player_input)
+    cp TRUE
+    ret nz
+    ;
+    call is_button_1_pressed        ; Test for fire button press...
+    ret nc                          ; If the fire button is not pressed, skip...
+      call get_random_number        ; Re-seed random number generator!
+      ld a,(gun_timer)              ; Check gun timer (delay between shots).
+      or a                          ;
+      ret nz                        ; If timer not set, skip...
+        ld a,(gun_released)         ; Is gun released? (no autofire!)
+        cp TRUE                     ;
+        ret nz                      ; If not, skip...
+          ; If we get here, it is time to reset and activate a new bullet.
+          ld a,(gun_delay)          ; Make gun wait a little (load time)!
+          ld (gun_timer),a          ;
+          ld a,FALSE                ; Lock gun (released on fire button release).
+          ld (gun_released),a       ;
+          ld ix,bullet
+          ld a,BULLET_MAX
+          call get_inactive_game_object ; Let IX point to first inactive bullet.
+          ret c                         ; Skip on no inactive bullets (!).
+            call activate_game_object
+            push ix                     ; Save pointer to bullet.
+              ld ix,swabby
+              ld a,(ix+game_object.y)   ; Get Swabby y.
+              sub BULLET_Y_OFFSET       ; Apply bullet offset.
+              ld b,a
+              ld a,(ix+game_object.x)   ; Get Swabby x.
+              add a,BULLET_X_OFFSET     ; Apply offset.
+            pop ix                      ; Restore pointer to bullet.
+            ld (ix+game_object.y),b     ; Set bullet y,x in relation to Swabby.
+            ld (ix+game_object.x),a
+            ;
+            call PSGSFXGetStatus
+            cp PSG_PLAYING
+            ret z
+              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+              ld c,SFX_CHANNELS2AND3
+              ld hl,shot_1
+              call PSGSFXPlay           ; Play the swabby shot sound effect.
+  ret
+  ;
+  ;
+  handle_swabby_sprite_and_movement:
+  ; Handle Swabby sprite and movement:
+  ld ix,swabby
+  ld a,SWABBY_IDLE_SPRITE           ; Start by resetting sprite to idle.
+  ld (ix+game_object.sprite),a
+  ;
+  ld a,(swabby_responds_to_player_input)  ; If this flag is FALSE then Swabby
+  cp TRUE                                 ; will remain idle in place, cannot
+  jp nz, draw_swabby_and_exit
+  ;
+    call is_right_pressed             ; Check if player press right.
+    ld a,0
+    jp nc,+
+      ld a,SWABBY_RIGHT_SPRITE        ; Set sprite.
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
+      cp SWABBY_X_SPEED_MAX           ; Check current speed against max speed.
+      jp z,++                         ; If we are already there, skip ahead...
+        inc a                         ; If not, then accelerate a bit.
+        jp ++                         ; Skip over the dpad-left check below.
+    +:
+    ld a,0
+    call is_left_pressed              ; Check if player press left.
+    ld a,0
+    jp nc,++
+      ld a,SWABBY_LEFT_SPRITE
+      ld (ix+game_object.sprite),a
+      ld a,(ix+game_object.xspeed)
+      cp -(SWABBY_X_SPEED_MAX)
+      jp z,++
+        dec a
+    ++:
+    ld (ix+game_object.xspeed),a
+    call move_game_object
+    ;
+    ld a,(ix+game_object.x)         ; Get Swabby X (after movement).
+    cp SWABBY_X_MAX                 ; Compare it to max X (right border)
+    jp c,+                          ; If Swabby has moved beyond this border,
+      ld a,SWABBY_X_MAX             ; set his X to max.
+      ld (ix+game_object.x),a
+      jp draw_swabby_and_exit
+    +:
+    cp SWABBY_X_MIN                 ; Do the same test for the left border...
+    jp nc,draw_swabby_and_exit
+      ld a,SWABBY_X_MIN
+      ld (ix+game_object.x),a
+    ;
+    draw_swabby_and_exit:
+      ld ix,swabby
+      call draw_game_object           ; Draw Swabby at final position.
+    ret
+  ;
+  ;
   init_triggers_according_to_difficulty:
     ; Depending on the value stored in the variable [difficulty], calculate a
     ; pointer to a relevant batch trigger init table, and use this pointer to
@@ -447,6 +607,109 @@
     ; Initialize the difficulty-dependant triggers.
     ld a,(difficulty_0_batch_trigger_init_table_end-difficulty_0_batch_trigger_init_table)/4
     call batch_initialize_triggers
+  ret
+  ;
+  ;
+  initialize_variables_once_per_game:
+    ; A game consists of Swabby in action until he looses all his lives.
+    ; Should be run when preparing the first level (i.e. coming from titlescreen).
+    ; Could be divided into NON-VRAM and VRAM?
+    ; Variables and structs that are reset once per game.
+    ;
+    ld a,INITIAL_DIFFICULTY           ; Set difficulty.
+    ld (difficulty),a
+    ;
+    ld a,GUN_LEVEL_INIT               ; Reset gun
+    ld (gun_level),a
+    ;
+    call reset_scores                 ; Reset player and peak score.
+  ret
+  ;
+  ;
+  initialize_variables_once_per_gaming_session:
+    ; A gaming session consists of one or more games.
+    ; Should be run on boot (and possibly on reset?).
+    ; Variables and structs that are reset once per gaming session.
+    ;    ;
+    ld a,FALSE
+    ld (pause_flag),a                 ; Reset pause flag.
+    ;
+    ; The initial game state specified in the header.
+    ld a,INITIAL_GAME_STATE
+    ld (game_state),a
+    ;
+    .ifdef DEVELOPER_MODE
+      ; Reset debug meters:
+      call reset_vblank_profiler
+    .endif
+  ret
+  ;
+  ;
+  initialize_variables_once_per_life:
+    ; Variables and structs that are reset once per life.
+    ; Should be called with every Swabby respawn, including the first.
+    ;
+    ; Init swabby death explosion
+    ld ix,swabby_death
+    ld hl,swabby_death_anim_table
+    call load_animation_game_object
+    ;
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
+    ;
+    ld a,FALSE
+    ld (kill_swabby_flag),a
+    ;
+    ld hl,swabby_triggers_batch_init_table
+    ld a,(swabby_triggers_batch_init_table_end-swabby_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
+    call batch_initialize_triggers
+    ;
+    ; The spinner-hit-rumble-effect.
+    ld a,FLAG_RESET
+    ld (rumble_flag),a
+    ld ix,rumble_end_trigger
+    ld hl,rumble_end_trigger_init_table
+    call initialize_trigger
+    ;
+  ret
+  ;
+  ;
+  initialize_variables_once_per_level:
+    ;
+    ; -------------------------------------------------------------------------
+    ; Variables that are set differently depending on difficulty:
+    ; Depending on difficulty.
+    call init_triggers_according_to_difficulty
+    ; Set transition score (when to transition to next difficulty).
+    ld a,(difficulty)
+    ld hl,transition_score_init_table
+    call get_word_from_table
+    ld de,transition_score
+    call copy_score_and_increment_pointers
+    ; -------------------------------------------------------------------------
+    ;
+    ld ix,transition_trigger
+    ld hl,transition_trigger_init_table
+    call initialize_trigger
+    ;
+    ; Reset all game objects (Swabby, asteroids, etc.)
+    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
+    ld hl,batch_game_object_init_table
+    call batch_initialize_game_objects
+    ;
+    ; Initialize gun (use the current gun level)
+    ld a,TRUE
+    ld (gun_level_flag),a
+    ld a,(gun_level)
+    ld b,a
+    ld a,GUN_DELAY_INIT
+    sub b
+    ld (gun_delay),a
+    xor a
+    ld (gun_timer),a
+    ld a,TRUE
+    ld (gun_released),a
   ret
   ;
   ;
@@ -557,7 +820,7 @@
   ;
   ;
   setup_level_graphics:
-    ; Load various assets into vram.
+    ; Load various assets into vram and clears SAT.
     ; Entry: None - uses consts and globals.
     ; Exit: None.
     ; Uses: ?
@@ -583,6 +846,8 @@
     ld de,SPRITE_BANK_START
     ld hl,sprite_tiles
     call load_vram
+    ;
+    call wipe_sprites
   ret
   ;
   ;
@@ -632,7 +897,7 @@
   ;
   ;
   transition_to_gamestate:
-    ; Transition to a gamestate passed in A.
+    ; Fade-out transition to a gamestate passed in A.
     ; Entry: A = Game state.
     ; Exit: None
     ; Uses: ?
@@ -640,8 +905,32 @@
       call PSGSFXStop
       call PSGStop
       call FadeOutScreen
-    pop af              ;ld a,GS_PREPARE_DEVMENU
+    pop af
     ld (game_state),a
+  ret
+  ;
+  ;
+  update_bullets:
+    ld ix,bullet
+    ld b,BULLET_MAX
+    -:
+      push bc
+      ;
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        ; Bullet 'collides' with deactivate zone?
+        ld a,BULLET_DEACTIVATE_ZONE_START
+        ld b,BULLET_DEACTIVATE_ZONE_END
+        call horizontal_zone_deactivate_game_object
+        call move_game_object
+        call draw_game_object
+        ;
+      +:
+      ld de,_sizeof_game_object
+      add ix,de
+      pop bc
+    djnz -
   ret
   ;
   ;
@@ -666,149 +955,18 @@
   ret
   ;
   ;
-.ends
-;
-;
-;
-; -----------------------------------------------------------------------------
-; Metasprites
-; -----------------------------------------------------------------------------
-; Definitions for referencing the sprites on the spritesheet.
-; The astroswablib meta sprite code builds on the sprite routines in bluelib
-; and assumes that metasprites are drawn using the specific astroswab approach
-; with small, regular, tall and wide sizes.
-.equ SPRITE_1 0
-.equ SPRITE_2 2
-.equ SPRITE_3 8
-.equ SPRITE_4 10
-.equ SPRITE_5 16
-.equ SPRITE_6 18
-.equ SPRITE_7 24
-.equ SPRITE_8 26
-.equ SPRITE_9 32
-.equ SPRITE_10 34
-.equ SPRITE_11 40
-.equ SPRITE_12 42
-.equ SPRITE_13 48
-.equ SPRITE_14 50
-.equ SPRITE_15 56
-.equ SPRITE_16 58
-.equ SPRITE_17 64
-.equ SPRITE_18 66
-.equ SPRITE_19 72
-.equ SPRITE_20 74
-.equ SPRITE_21 80
-.equ SPRITE_22 82
-
-.equ SPRITE_23 88
-.equ SPRITE_24 90
-.equ SPRITE_25 96
-.equ SPRITE_26 98
-.equ SPRITE_27 104
-.equ SPRITE_28 106
-
-
-; . . .
-.equ FIRST_8x8_SPRITE 168
-.equ SPRITE_43 FIRST_8x8_SPRITE
-.equ SPRITE_44 169
-.equ SPRITE_45 170
-.equ SPRITE_46 171
-.equ SPRITE_47 172
-.equ SPRITE_48 173
-.equ SPRITE_49 174
-
-.equ SPRITE_50 175
-.equ SPRITE_51 176
-.equ SPRITE_52 177
-.equ SPRITE_53 178
-.equ SPRITE_54 179
-.equ SPRITE_55 180
-.equ SPRITE_56 181
-.equ SPRITE_57 182
-.equ SPRITE_58 183
-.equ SPRITE_59 184
-.equ SPRITE_60 185
-.equ SPRITE_61 186
-.equ SPRITE_62 187
-.equ SPRITE_63 188
-.equ SPRITE_64 189
-.equ SPRITE_65 190
-.equ SPRITE_66 191 ; Last 8x8 sprite
-; . . . .
-.section "metasprites" free
-; ---------------------------------------------------------------------------
-add_metasprite:
-  ; Put a 16x16 metasprite in the SAT.
-  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-  ;             and IX+2 is the character code.
-  ; Uses: AF, BC, DE, HL
-  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-  ld d,4
-  ld hl,meta_sprite_table
-  -:
-    ld a,(ix+0)
-    add a,(hl)
-    ld b,a
-    inc hl
-    ld a,(ix+1)
-    add a,(hl)
-    ld c,a
-    inc hl
-    ld a,(hl)
-    ld e,a
-    ld a,(ix+2)
-    add a,e
-    inc hl
-    call add_sprite
-    dec d
-  jp nz,-
-ret
-meta_sprite_table:
-  .db 0, 0, 0
-  .db 0, 8, 1
-  .db 8, 0, 4
-  .db 8, 8, 5
-;
-add_tall_metasprite:
-  ; Put a 16x32 metasprite in the SAT.
-  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-  ;             and IX+2 is the character code.
-  ; Uses: AF, BC, DE, HL
-  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-  ld d,8
-  ld hl,tall_meta_sprite_table
-  -:
-    ld a,(ix+0)
-    add a,(hl)
-    ld b,a
-    inc hl
-    ld a,(ix+1)
-    add a,(hl)
-    ld c,a
-    inc hl
-    ld a,(hl)
-    ld e,a
-    ld a,(ix+2)
-    add a,e
-    inc hl
-    call add_sprite
-    dec d
-  jp nz,-
-ret
-tall_meta_sprite_table:
-  .db 0, 0, 0
-  .db 0, 8, 1
-  .db 8, 0, 4
-  .db 8, 8, 5
+  wipe_sprites:
+    ; Wipe sprites.
+    call begin_sprites
+    call load_sat
+  ret
   ;
-  .db 16, 0, 6
-  .db 16, 8, 7
-  .db 24, 0, 10
-  .db 24, 8, 11
+  ;
 .ends
+;
+;
+;
+
 ;
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
