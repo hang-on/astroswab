@@ -12,18 +12,11 @@ prepare_level:
   ;
   call initialize_variables_once_per_life
   ;
-  ;
-  ; Wipe sprites.
-  call begin_sprites
-  call load_sat
-  ;
-  ; Turn on screen, frame interrupts and blank left column.
+  ; Turn on screen, frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1
   call set_register
-  ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
-  ld b,REGISTER_0
-  call set_register
+  ;
   ei
   call FadeInScreen
   ; When all is set, change the game state.

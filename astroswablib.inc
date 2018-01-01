@@ -658,7 +658,7 @@
   ;
   ;
   setup_level_graphics:
-    ; Load various assets into vram.
+    ; Load various assets into vram and clears SAT.
     ; Entry: None - uses consts and globals.
     ; Exit: None.
     ; Uses: ?
@@ -684,6 +684,8 @@
     ld de,SPRITE_BANK_START
     ld hl,sprite_tiles
     call load_vram
+    ;
+    call wipe_sprites
   ret
   ;
   ;
@@ -733,7 +735,7 @@
   ;
   ;
   transition_to_gamestate:
-    ; Transition to a gamestate passed in A.
+    ; Fade-out transition to a gamestate passed in A.
     ; Entry: A = Game state.
     ; Exit: None
     ; Uses: ?
@@ -741,7 +743,7 @@
       call PSGSFXStop
       call PSGStop
       call FadeOutScreen
-    pop af              ;ld a,GS_PREPARE_DEVMENU
+    pop af
     ld (game_state),a
   ret
   ;
@@ -764,6 +766,13 @@
     ld hl,PEAK_SCORE_VRAM_ADDRESS
     ld ix,peak_score
     call fast_print_score
+  ret
+  ;
+  ;
+  wipe_sprites:
+    ; Wipe sprites.
+    call begin_sprites
+    call load_sat
   ret
   ;
   ;
