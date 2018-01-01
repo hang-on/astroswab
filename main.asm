@@ -14,9 +14,10 @@
 .include "scorelib.inc"       ; Keeping score and displaying hiscore table.
 ;
 ; - Abstraction level 1: Game-specific code and implementations of structs.
+.include "header.inc"         ; Constants and struct instantiations.
+;
 .include "astroswablib.inc"   ; Metasprites, collision handling, etc.
 ;
-.include "header.inc"         ; Constants and struct instantiations.
 ;
 ; -----------------------------------------------------------------------------
 .section "main" free

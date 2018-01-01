@@ -1477,3 +1477,143 @@
   	call put_char
   ret
 .ends
+;
+; -----------------------------------------------------------------------------
+; Metasprites
+; -----------------------------------------------------------------------------
+; Definitions for referencing the sprites on the spritesheet.
+; The astroswablib meta sprite code builds on the sprite routines in bluelib
+; and assumes that metasprites are drawn using the specific astroswab approach
+; with small, regular, tall and wide sizes.
+.equ SPRITE_1 0
+.equ SPRITE_2 2
+.equ SPRITE_3 8
+.equ SPRITE_4 10
+.equ SPRITE_5 16
+.equ SPRITE_6 18
+.equ SPRITE_7 24
+.equ SPRITE_8 26
+.equ SPRITE_9 32
+.equ SPRITE_10 34
+.equ SPRITE_11 40
+.equ SPRITE_12 42
+.equ SPRITE_13 48
+.equ SPRITE_14 50
+.equ SPRITE_15 56
+.equ SPRITE_16 58
+.equ SPRITE_17 64
+.equ SPRITE_18 66
+.equ SPRITE_19 72
+.equ SPRITE_20 74
+.equ SPRITE_21 80
+.equ SPRITE_22 82
+
+.equ SPRITE_23 88
+.equ SPRITE_24 90
+.equ SPRITE_25 96
+.equ SPRITE_26 98
+.equ SPRITE_27 104
+.equ SPRITE_28 106
+
+
+; . . .
+.equ FIRST_8x8_SPRITE 168
+.equ SPRITE_43 FIRST_8x8_SPRITE
+.equ SPRITE_44 169
+.equ SPRITE_45 170
+.equ SPRITE_46 171
+.equ SPRITE_47 172
+.equ SPRITE_48 173
+.equ SPRITE_49 174
+
+.equ SPRITE_50 175
+.equ SPRITE_51 176
+.equ SPRITE_52 177
+.equ SPRITE_53 178
+.equ SPRITE_54 179
+.equ SPRITE_55 180
+.equ SPRITE_56 181
+.equ SPRITE_57 182
+.equ SPRITE_58 183
+.equ SPRITE_59 184
+.equ SPRITE_60 185
+.equ SPRITE_61 186
+.equ SPRITE_62 187
+.equ SPRITE_63 188
+.equ SPRITE_64 189
+.equ SPRITE_65 190
+.equ SPRITE_66 191 ; Last 8x8 sprite
+; . . . .
+.section "metasprites" free
+; ---------------------------------------------------------------------------
+add_metasprite:
+  ; Put a 16x16 metasprite in the SAT.
+  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+  ;             and IX+2 is the character code.
+  ; Uses: AF, BC, DE, HL
+  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+  ld d,4
+  ld hl,meta_sprite_table
+  -:
+    ld a,(ix+0)
+    add a,(hl)
+    ld b,a
+    inc hl
+    ld a,(ix+1)
+    add a,(hl)
+    ld c,a
+    inc hl
+    ld a,(hl)
+    ld e,a
+    ld a,(ix+2)
+    add a,e
+    inc hl
+    call add_sprite
+    dec d
+  jp nz,-
+ret
+meta_sprite_table:
+  .db 0, 0, 0
+  .db 0, 8, 1
+  .db 8, 0, 4
+  .db 8, 8, 5
+;
+add_tall_metasprite:
+  ; Put a 16x32 metasprite in the SAT.
+  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
+  ;             and IX+2 is the character code.
+  ; Uses: AF, BC, DE, HL
+  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
+  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
+  ld d,8
+  ld hl,tall_meta_sprite_table
+  -:
+    ld a,(ix+0)
+    add a,(hl)
+    ld b,a
+    inc hl
+    ld a,(ix+1)
+    add a,(hl)
+    ld c,a
+    inc hl
+    ld a,(hl)
+    ld e,a
+    ld a,(ix+2)
+    add a,e
+    inc hl
+    call add_sprite
+    dec d
+  jp nz,-
+ret
+tall_meta_sprite_table:
+  .db 0, 0, 0
+  .db 0, 8, 1
+  .db 8, 0, 4
+  .db 8, 8, 5
+  ;
+  .db 16, 0, 6
+  .db 16, 8, 7
+  .db 24, 0, 10
+  .db 24, 8, 11
+.ends

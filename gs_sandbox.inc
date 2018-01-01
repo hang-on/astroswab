@@ -39,9 +39,13 @@ run_sandbox:
   call begin_sprites
   ;
   ;
-  ; Tests below:
-  ;call test_rebuild_hiscore_table_against_fine_score
-  ;call test_rebuild_against_fine_and_print
+  call handle_swabby_death
+  call handle_swabby_sprite_and_movement
+  call handle_swabby_gun
+  ;
+  ;
+  call update_bullets
+  ;
   ;
   call is_reset_pressed
   jp nc,+
@@ -52,4 +56,3 @@ run_sandbox:
   ;
 jp main_loop
 ;
-; Tests for the sandbox:
