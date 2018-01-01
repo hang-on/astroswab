@@ -5,8 +5,8 @@
 ; ---------------------------------------------------------------------------
 prepare_sandbox:
   di
-  ;
   call disable_display_and_sound
+  ;
   call initialize_variables_once_per_game
   call setup_level_graphics
   call initialize_variables_once_per_life
@@ -15,6 +15,7 @@ prepare_sandbox:
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1
   call set_register
+  ;
   ei
   ;
   call FadeInScreen
@@ -34,9 +35,7 @@ run_sandbox:
   ;
   call load_sat
   ;
-  ld a,(gun_level_flag)
-  cp TRUE
-  call z,print_gun_level
+  call update_dashboard
   ;
   ; End of VDP-updating...
   call get_input_ports

@@ -9,7 +9,6 @@ prepare_level:
   call disable_display_and_sound
   ;
   call setup_level_graphics
-  ;
   call initialize_variables_once_per_life
   ;
   ; Turn on screen, frame interrupts.
@@ -18,6 +17,7 @@ prepare_level:
   call set_register
   ;
   ei
+  ;
   call FadeInScreen
   ; When all is set, change the game state.
   ld a,GS_RUN_LEVEL

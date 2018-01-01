@@ -265,6 +265,7 @@
   .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
+  ;
   game_state db                   ; Contains game state.
   frame_counter db                ; Used in some loops.
   ;
