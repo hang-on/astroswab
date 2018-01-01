@@ -481,12 +481,7 @@
     ; A gaming session consists of one or more games.
     ; Should be run on boot (and possibly on reset?).
     ; Variables and structs that are reset once per gaming session.
-    ;
-    ; Initialize the various game objects.
-    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
-    ld hl,batch_game_object_init_table
-    call batch_initialize_game_objects
-    ;
+    ;    ;
     ld a,FALSE
     ld (pause_flag),a                 ; Reset pause flag.
     ;
@@ -503,8 +498,16 @@
   ;
   initialize_variables_once_per_life:
     ; Variables and structs that are reset once per life.
-    ; Should be called every time we prepare for a new level and with every
-    ; Swabby respawn.
+    ; Should be called with every Swabby respawn, including the first.
+    ;
+    ; Init swabby death explosion
+    ld ix,swabby_death
+    ld hl,swabby_death_anim_table
+    call load_animation_game_object
+    ;
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
     ;
     ld a,FALSE
     ld (kill_swabby_flag),a
@@ -541,14 +544,10 @@
     ld hl,transition_trigger_init_table
     call initialize_trigger
     ;
-    ; Init swabby death explosion
-    ld ix,swabby_death
-    ld hl,swabby_death_anim_table
-    call load_animation_game_object
-    ; Inititalize misc. Swabby dashboard variables.
-    ld a,TRUE
-    ld (swabby_responds_to_player_input),a
-    ld (swabby_can_collide_with_objects),a
+    ; Reset all game objects (Swabby, asteroids, etc.)
+    ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
+    ld hl,batch_game_object_init_table
+    call batch_initialize_game_objects
     ;
     ; Initialize gun (use the current gun level)
     ld a,TRUE
