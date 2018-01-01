@@ -6,24 +6,17 @@
 prepare_level:
 ; ---------------------------------------------------------------------------
   di
-  ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,REGISTER_1
-  call set_register
+  call disable_display_and_sound
   ;
   call setup_level_graphics
   ;
   call initialize_variables_once_per_life
   ;
   ;
-  ; Reset debug meters:
-  call reset_vblank_profiler
   ; Wipe sprites.
   call begin_sprites
   call load_sat
   ;
-  call PSGSFXStop
-  call PSGStop
   ; Turn on screen, frame interrupts and blank left column.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1

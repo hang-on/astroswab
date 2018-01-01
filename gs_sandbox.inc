@@ -5,34 +5,21 @@
 ; ---------------------------------------------------------------------------
 prepare_sandbox:
   di
-  ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,REGISTER_1
-  call set_register
   ;
-  ; Initialize variables.
-  ld a,INITIAL_DIFFICULTY           ; Set difficulty.
-  ld (difficulty),a
-  ld a,TRUE
-  ld (gun_level_flag),a
-  ld a,GUN_LEVEL_INIT               ; Reset gun
-  ld (gun_level),a
-  ;
+  call disable_display_and_sound
+  call initialize_variables_once_per_game
   call setup_level_graphics
+  call initialize_variables_once_per_life
+  ;
   ; Wipe sprites.
   call begin_sprites
   call load_sat
-  ; Stop music and sound effects.
-  call PSGSFXStop
-  call PSGStop
-  ; ----------------------------------------------------------
-  call init_tests
-  ; ----------------------------------------------------------
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,1
   call set_register
   ei
+  ;
   call FadeInScreen
   ; When all is set, change the game state.
   ld a,GS_RUN_SANDBOX
@@ -73,12 +60,3 @@ run_sandbox:
 jp main_loop
 ;
 ; Tests for the sandbox:
-; -----------------------------------------------------------------------------
-init_tests:
-; -----------------------------------------------------------------------------
-  ; Tests below:
-  call initialize_variables_once_per_game
-  ;
-ret
-; -----------------------------------------------------------------------------
-; Update() tests:

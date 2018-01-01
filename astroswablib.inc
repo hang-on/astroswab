@@ -73,6 +73,17 @@
   ret
   ;
   ;
+  disable_display_and_sound:
+    ; Disable display and frame interrupts.
+    ld a,DISPLAY_0_FRAME_0_SIZE_0
+    ld b,REGISTER_1
+    call set_register
+    ; Disable sound.
+    call PSGSFXStop
+    call PSGStop
+  ret
+  ;
+  ;
   explode_asteroid_into_shards:
     ; Deactivate the asteroid pointed to by IX. Create two shards relative to
     ; the asteroid's position, and transfer the asteroid's yspeed to the two
@@ -477,11 +488,18 @@
     ; The initial game state specified in the header.
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
+    ;
+    .ifdef DEVELOPER_MODE
+      ; Reset debug meters:
+      call reset_vblank_profiler
+    .endif
   ret
   ;
   ;
   initialize_variables_once_per_life:
     ; Variables and structs that are reset once per life.
+    ; Should be called every time we prepare for a new level and with every
+    ; Swabby respawn.
     ;
     ld hl,general_triggers_batch_init_table
     ld a,(general_triggers_batch_init_table_end-general_triggers_batch_init_table)/TRIGGER_BATCH_INIT_TABLE_ITEM_SIZE
