@@ -391,6 +391,7 @@ run_level:
   +:
   ;
   ; Process the respawn trigger.
+  ; FIXME: Use initialize_variables_once_per_life instead!
   ld ix,swabby_respawn_trigger
   call process_trigger
   jp nc,+
