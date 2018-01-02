@@ -60,43 +60,13 @@ run_level:
   call get_input_ports            ; Get all keys and save them in RAM.
   call begin_sprites              ; Prepare to fill the SAT-buffer.
   ;
-  ;
-  ;
-  ; ---------------------------------------------------------------------------
-  ; Resolve possible bullet collisions:
-  ld ix,bullet
-  ld b,BULLET_MAX
-  bullet_collision_loop:
-    push bc
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_INACTIVE
-      jp z,+
-      ld a,(ix+game_object.y)       ; Prevent shooting objects in the invisible
-      cp SWABBY_Y_INIT              ; area...
-      jp nc,+
-        ; Test this bullet instance.
-        push ix
-          call detect_collision_using_collision_table
-          call c,handle_bullet_collision
-        pop ix
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-    pop bc
-  djnz bullet_collision_loop
-  ; Resolve possible swabby collisions.
-  ld a,(swabby_can_collide_with_objects)
-  cp TRUE
-  jp nz,+
-    ld ix,swabby
-    call detect_collision_using_collision_table
-    call c,handle_swabby_collision
-  +:
+  ; Resolve possible collisions:
+  call detect_and_handle_bullet_collisions
+  call detect_and_handle_swabby_collision
   ; End of collision tests for this frame.
-  call begin_collision_tables     ; Restart filling the coll.tables.
+  ;
   ; -------------------------------------------------------------------------
-  ;
-  ;
+  call begin_collision_tables     ; Restart filling the coll.tables.
   ;
   call handle_swabby_death
   call handle_swabby_sprite_and_movement

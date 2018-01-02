@@ -119,6 +119,46 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  detect_and_handle_bullet_collisions:
+    ; For each bullet, test it against all other objects in the relevant
+    ; collision table. If a collision happens, then run a handler according to
+    ; the ID of the colliding object.
+    ld ix,bullet
+    ld b,BULLET_MAX
+    -:
+      push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_INACTIVE
+        jp z,+
+        ld a,(ix+game_object.y)       ; Prevent shooting objects in the invisible
+        cp SWABBY_Y_INIT              ; area...
+        jp nc,+
+          ; Test this bullet instance.
+          push ix
+            call detect_collision_using_collision_table
+            call c,handle_bullet_collision
+          pop ix
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
+  ;
+  detect_and_handle_swabby_collision:
+    ; Test the Swabby game object against all other objects in the relevant
+    ; collision table. If a collision is detected, call a handler that performs
+    ; different tasks depending on ID of the colliding object.
+    ld a,(swabby_can_collide_with_objects)
+    cp TRUE
+    ret nz
+      ld ix,swabby
+      call detect_collision_using_collision_table
+      call c,handle_swabby_collision
+  ret
+  ;
+  ;
   difficulty_to_random_background:
     ; Load a random background depending on difficulty.
     ; Entry: None. (Uses the difficulty global variable).
