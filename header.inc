@@ -119,6 +119,73 @@
   .equ DUMMY_TEXT_ROW 22
   .equ DUMMY_TEXT_COLUMN 1
   .equ BACKGROUND_TABLE_MASK %00000111
+
+  ; -----------------------------------------------------------------------------
+  ; Metasprites
+  ; -----------------------------------------------------------------------------
+  ; Definitions for referencing the sprites on the spritesheet.
+  ; The astroswablib meta sprite code builds on the sprite routines in bluelib
+  ; and assumes that metasprites are drawn using the specific astroswab approach
+  ; with small, regular, tall and wide sizes.
+  .equ SPRITE_1 0
+  .equ SPRITE_2 2
+  .equ SPRITE_3 8
+  .equ SPRITE_4 10
+  .equ SPRITE_5 16
+  .equ SPRITE_6 18
+  .equ SPRITE_7 24
+  .equ SPRITE_8 26
+  .equ SPRITE_9 32
+  .equ SPRITE_10 34
+  .equ SPRITE_11 40
+  .equ SPRITE_12 42
+  .equ SPRITE_13 48
+  .equ SPRITE_14 50
+  .equ SPRITE_15 56
+  .equ SPRITE_16 58
+  .equ SPRITE_17 64
+  .equ SPRITE_18 66
+  .equ SPRITE_19 72
+  .equ SPRITE_20 74
+  .equ SPRITE_21 80
+  .equ SPRITE_22 82
+
+  .equ SPRITE_23 88
+  .equ SPRITE_24 90
+  .equ SPRITE_25 96
+  .equ SPRITE_26 98
+  .equ SPRITE_27 104
+  .equ SPRITE_28 106
+
+
+  ; . . .
+  .equ FIRST_8x8_SPRITE 168
+  .equ SPRITE_43 FIRST_8x8_SPRITE
+  .equ SPRITE_44 169
+  .equ SPRITE_45 170
+  .equ SPRITE_46 171
+  .equ SPRITE_47 172
+  .equ SPRITE_48 173
+  .equ SPRITE_49 174
+
+  .equ SPRITE_50 175
+  .equ SPRITE_51 176
+  .equ SPRITE_52 177
+  .equ SPRITE_53 178
+  .equ SPRITE_54 179
+  .equ SPRITE_55 180
+  .equ SPRITE_56 181
+  .equ SPRITE_57 182
+  .equ SPRITE_58 183
+  .equ SPRITE_59 184
+  .equ SPRITE_60 185
+  .equ SPRITE_61 186
+  .equ SPRITE_62 187
+  .equ SPRITE_63 188
+  .equ SPRITE_64 189
+  .equ SPRITE_65 190
+  .equ SPRITE_66 191 ; Last 8x8 sprite
+
 ;
 ; Swabby:
   .equ SWABBY_LEFT_BORDER_SPACER 9
