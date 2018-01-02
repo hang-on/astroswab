@@ -72,10 +72,10 @@ run_level:
   call handle_swabby_sprite_and_movement
   call handle_swabby_gun
   ;
+  call move_and_draw_bullets
   ;
-  call update_bullets
-  ;
-  call update_asteroids
+  call handle_asteroid_spawning
+  call move_and_draw_asteroids
   ;
   ;
   ;

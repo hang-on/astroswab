@@ -915,6 +915,30 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  move_and_draw_bullets:
+    ld ix,bullet
+    ld b,BULLET_MAX
+    -:
+      push bc
+      ;
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        ; Bullet 'collides' with deactivate zone?
+        ld a,BULLET_DEACTIVATE_ZONE_START
+        ld b,BULLET_DEACTIVATE_ZONE_END
+        call horizontal_zone_deactivate_game_object
+        call move_game_object
+        call draw_game_object
+        ;
+      +:
+      ld de,_sizeof_game_object
+      add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
+  ;
   print_gun_level:
     ; Print the ASCII version of the current gun level (POW:) to the name table.
     ; If we are at max gun level, print the word defined in gun_level_max_string.
@@ -1090,36 +1114,6 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  update_asteroids:
-    call handle_asteroid_spawning
-    call move_and_draw_asteroids
-  ret
-  ;
-  ;
-  update_bullets:
-    ld ix,bullet
-    ld b,BULLET_MAX
-    -:
-      push bc
-      ;
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        ; Bullet 'collides' with deactivate zone?
-        ld a,BULLET_DEACTIVATE_ZONE_START
-        ld b,BULLET_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
-        call move_game_object
-        call draw_game_object
-        ;
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz -
-  ret
-  ;
-  ;
   update_dashboard:
     ; Collection of calls to functions that update/refresh info on the dashboard.
     ; I.e. score, peak score, lives, gun level...
@@ -1158,7 +1152,66 @@ tall_meta_sprite_table:
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
   ; For future use..?!
+  move_active_game_objects:
+    ; IX = First game object.
+    ; A = Number of items in array.
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      call z,move_game_object
+      add ix,de
+    djnz -
+  ret
   ;
+  draw_active_game_objects:
+    ; IX = First game object.
+    ; A = Number of items in array.
+    ld b,a
+    ld de,_sizeof_game_object
+    -:
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      call z,draw_game_object
+      add ix,de
+    djnz -
+  ret
+  ;
+  handle_active_game_objects_in_horizontal_zone:
+    ; IX = First game object.
+    ; A = Number of items in array.
+    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
+
+    ld b,a
+    ld de,_sizeof_game_object
+    ld l,(iy+0)
+    ld h,(iy+1)
+    -:
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        push bc
+          ld a,(iy+2)
+          ld b,(iy+3)
+          SAVE_REGISTERS
+            call horizontal_zone_send_to_handler
+          RESTORE_REGISTERS
+        pop bc
+      +:
+      add ix,de
+    djnz -
+  ret
+  ;
+  asteroid_hits_ground_data:
+    .dw asteroid_hits_ground
+    .db ASTEROID_DEACTIVATE_ZONE_START, ASTEROID_DEACTIVATE_ZONE_END
+
+
+  ld a,ASTEROID_DEACTIVATE_ZONE_START
+  ld b,ASTEROID_DEACTIVATE_ZONE_END
+  ld hl,asteroid_hits_ground
+  call horizontal_zone_send_to_handler
 
 .ends
 ;

@@ -363,33 +363,37 @@
   move_game_object:
     ; Apply yspeed to y and xspeed to x.
     ; Entry: IX = Pointer to instance of enemy object.
-    ld b,(ix+game_object.y)
-    ld a,(ix+game_object.yspeed)
-    bit 7,a                       ; Test sign bit (negative speed?)
-    jp z,+
-      neg
-      ld b,a
-      ld a,(ix+game_object.y)
-      sub b
-      jp ++
-    +:
-      add a,b
-    ++:
-    ld (ix+game_object.y),a
-    ;
-    ld b,(ix+game_object.x)
-    ld a,(ix+game_object.xspeed)
-    bit 7,a                       ; Test sign bit (negative speed?)
-    jp z,+
-      neg
-      ld b,a
-      ld a,(ix+game_object.x)
-      sub b
-      jp ++
-    +:
-      add a,b
-    ++:
-    ld (ix+game_object.x),a
+    push af
+    push bc
+      ld b,(ix+game_object.y)
+      ld a,(ix+game_object.yspeed)
+      bit 7,a                       ; Test sign bit (negative speed?)
+      jp z,+
+        neg
+        ld b,a
+        ld a,(ix+game_object.y)
+        sub b
+        jp ++
+      +:
+        add a,b
+      ++:
+      ld (ix+game_object.y),a
+      ;
+      ld b,(ix+game_object.x)
+      ld a,(ix+game_object.xspeed)
+      bit 7,a                       ; Test sign bit (negative speed?)
+      jp z,+
+        neg
+        ld b,a
+        ld a,(ix+game_object.x)
+        sub b
+        jp ++
+      +:
+        add a,b
+      ++:
+      ld (ix+game_object.x),a
+    pop bc
+    pop af
   ret
   ;
   position_game_object_in_relation_to_game_object:
