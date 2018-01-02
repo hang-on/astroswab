@@ -46,6 +46,8 @@ run_sandbox:
   ;
   call update_bullets
   ;
+  call update_asteroids
+  ;
   ;
   call is_reset_pressed
   jp nc,+

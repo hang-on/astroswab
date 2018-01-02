@@ -75,70 +75,7 @@ run_level:
   ;
   call update_bullets
   ;
-  ; ---------------------------------------------------------------------------
-  ; Asteroids
-  ; ---------------------------------------------------------------------------
-  ld ix,asteroid_trigger
-  call process_trigger
-  jp nc,++
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
-        jp nz,+
-          ;
-          call spawn_game_object_in_invisible_area
-          call get_random_number
-          and ASTEROID_SPRITE_MASK
-          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
-          ld hl, new_asteroid_sprite_table
-          call convert_byte
-          ld (ix+game_object.sprite),a
-          call get_random_number
-          and ASTEROID_SPEED_MODIFIER
-          jp nz,end_asteroid_speed_setting
-            inc a
-          end_asteroid_speed_setting:
-          ld (ix+game_object.yspeed),a
-          call activate_game_object
-          ;
-          jp ++                        ; Jump out of loop.
-        +:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ++:
-  ;
-  ld ix,asteroid
-  ld b,ASTEROID_MAX
-  process_asteroid:
-    push bc
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        call move_game_object
-        push ix
-          ld a,ASTEROID_DEACTIVATE_ZONE_START
-          ld b,ASTEROID_DEACTIVATE_ZONE_END
-          ld hl,asteroid_hits_ground
-          call horizontal_zone_send_to_handler
-        pop ix
-        ;call horizontal_zone_deactivate_game_object
-        ld a,VERTICAL_DEACTIVATE_ZONE_START
-        ld b,VERTICAL_DEACTIVATE_ZONE_END
-        call vertical_zone_deactivate_game_object
-        ;
-        call draw_game_object              ; Put it in the SAT.
-        call add_game_object_to_collision_table
-      ;
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-    pop bc
-  djnz process_asteroid
+  call update_asteroids
   ;
   ;
   ;

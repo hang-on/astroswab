@@ -407,6 +407,43 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  handle_asteroid_spawning:
+  ld ix,asteroid_trigger
+  call process_trigger
+  ret nc
+    ld b,ASTEROID_MAX
+    ld ix,asteroid
+    -:
+      push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
+        jp nz,next_asteroid
+          ;
+          call spawn_game_object_in_invisible_area
+          call get_random_number
+          and ASTEROID_SPRITE_MASK
+          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
+          ld hl, new_asteroid_sprite_table
+          call convert_byte
+          ld (ix+game_object.sprite),a
+          call get_random_number
+          and ASTEROID_SPEED_MODIFIER
+          jp nz,+
+            inc a
+          +:
+          ld (ix+game_object.yspeed),a
+          call activate_game_object
+          ;
+          pop bc                      ; Align stack.
+          ret                         ; Jump out of loop.
+        next_asteroid:
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
+  ;
   handle_bullet_collision:
     ; Function for handling what happens when bullet collides with other
     ; objects.
@@ -847,6 +884,37 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  move_and_draw_asteroids:
+    ;
+    ld ix,asteroid
+    ld b,ASTEROID_MAX
+    -:
+      push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_ACTIVE
+        jp nz,+
+          call move_game_object
+          push ix
+            ld a,ASTEROID_DEACTIVATE_ZONE_START
+            ld b,ASTEROID_DEACTIVATE_ZONE_END
+            ld hl,asteroid_hits_ground
+            call horizontal_zone_send_to_handler
+          pop ix
+          ld a,VERTICAL_DEACTIVATE_ZONE_START
+          ld b,VERTICAL_DEACTIVATE_ZONE_END
+          call vertical_zone_deactivate_game_object
+          ;
+          call draw_game_object              ; Put it in the SAT.
+          call add_game_object_to_collision_table
+        ;
+        +:
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz -
+  ret
+  ;
+  ;
   print_gun_level:
     ; Print the ASCII version of the current gun level (POW:) to the name table.
     ; If we are at max gun level, print the word defined in gun_level_max_string.
@@ -1022,6 +1090,12 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  update_asteroids:
+    call handle_asteroid_spawning
+    call move_and_draw_asteroids
+  ret
+  ;
+  ;
   update_bullets:
     ld ix,bullet
     ld b,BULLET_MAX
@@ -1092,7 +1166,9 @@ tall_meta_sprite_table:
 .section "Empty section 2" free
 ; ---------------------------------------------------------------------------
   ;
+
   ;
+
 .ends
 ;
 ;
