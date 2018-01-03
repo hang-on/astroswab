@@ -1,3 +1,27 @@
+;2018-01-03:
+update_game_object:
+  ; Move and draw (add here...) game object. Only if active.
+  ; IX = Pointer to game object.
+  ; IY = Pointer to parameter string.
+  ;
+  ld a,(ix+game_object.state)
+  cp GAME_OBJECT_ACTIVE
+  ret nz
+    ;
+    ld a,(iy+0)       ; Make const for offset!
+    cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
+    call z,handle_active_game_objects_in_horizontal_zone
+    ;
+    ld a,(iy+5)
+    cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
+    call z,handle_active_game_objects_in_vertical_zone
+    ;
+    call move_game_object
+    call draw_game_object
+    call add_game_object_to_collision_table
+
+ret
+
 ; 2017-12-19
 subtract_from_score_old:
   ; Subtract a number passed in B from the digit specified in A. Update the

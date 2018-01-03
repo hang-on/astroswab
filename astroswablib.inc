@@ -815,6 +815,8 @@ tall_meta_sprite_table:
     call batch_initialize_triggers
     ;
     ; The spinner-hit-rumble-effect.
+    xor a
+    ld (vscroll_value),a
     ld a,FLAG_RESET
     ld (rumble_flag),a
     ld ix,rumble_end_trigger
@@ -1035,6 +1037,8 @@ tall_meta_sprite_table:
     ld a,DARK_BLUE
     ld b,REGISTER_7
     call set_register
+    ;
+    ;
     ; Print the dummy text under the playfield.
     ld b,DUMMY_TEXT_ROW
     ld c,DUMMY_TEXT_COLUMN
@@ -1151,8 +1155,60 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
+
+  update_spinner_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw spinner_hits_ground
+  .db SPINNER_GROUND_ZONE_START, SPINNER_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw $0000
+  .db 0, 0
+  ; Animate object.
+  .db TRUE
+  ;
+  update_asteroid_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw asteroid_hits_ground
+  .db ASTEROID_GROUND_ZONE_START, ASTEROID_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw $0000
+  .db 0, 0
+  ; Animate object
+  .db FALSE
+  ;
+  update_shard_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw shard_hits_ground
+  .db SHARD_GROUND_ZONE_START, SHARD_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db TRUE
+  .dw shard_hits_blanked_column
+  .db BLANKED_COLUMN_START, BLANKED_COLUMN_END
+  ; animate?
+  .db FALSE
+
+  shard_hits_blanked_column:
+    call deactivate_game_object
+  ret
+
+  within_range_send_to_handler:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to handler.
+    ;        A = number. B = Range start. C = Range end.
+    cp b
+    ret c
+    cp c
+    ret nc
+      jp (hl)
+  ret
+
   update_game_object:
-    ; Move and draw (add here...) game object. Only if active.
+    ; Perform various per-frame actions on an active game object.
     ; IX = Pointer to game object.
     ; IY = Pointer to parameter string.
     ;
@@ -1160,102 +1216,39 @@ tall_meta_sprite_table:
     cp GAME_OBJECT_ACTIVE
     ret nz
       ;
-      ld a,(iy+0)       ; Make const for offset!
-      cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
-      call z,handle_active_game_objects_in_horizontal_zone
+      ld a,(iy+0)       ; Test game object against horizontal zone?
+      cp TRUE
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+1)
+          ld h,(iy+2)
+          ld b,(iy+3)
+          ld c,(iy+4)
+          ld a,(ix+game_object.y)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
       ;
       ld a,(iy+5)
-      cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
-      call z,handle_active_game_objects_in_vertical_zone
+      cp TRUE           ; Test game object against vertical zone?
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+6)
+          ld h,(iy+7)
+          ld b,(iy+8)
+          ld c,(iy+9)
+          ld a,(ix+game_object.x)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ld a,(iy+10)
+      cp TRUE
+      call z,animate_game_object
       ;
       call move_game_object
       call draw_game_object
       call add_game_object_to_collision_table
-
   ret
-    update_asteroid_parameters:
-    ; Special handler for when the game object is in a specified horizontal zone?
-    .db TRUE
-    .dw asteroid_hits_ground
-    .db ASTEROID_DEACTIVATE_ZONE_START, ASTEROID_DEACTIVATE_ZONE_END
-    ; Special handler for when the game object is in a specified vertical zone?
-    .db FALSE
-    .dw $0000
-    .db 0, 0
-    ;
-    update_shard_parameters:
-    ; Special handler for when the game object is in a specified horizontal zone?
-    .db TRUE
-    .dw asteroid_hits_ground
-    .db SHARD_DEACTIVATE_ZONE_START, SHARD_DEACTIVATE_ZONE_END
-    ; Special handler for when the game object is in a specified vertical zone?
-    .db TRUE
-    .dw shard_hits_blanked_column
-    .db VERTICAL_DEACTIVATE_ZONE_START, VERTICAL_DEACTIVATE_ZONE_END
-
-    shard_hits_blanked_column:
-      call deactivate_game_object
-    ret
-
-
-    vertical_zone_send_to_handler:
-      ;
-      ; Entry: IX = Pointer to struct.
-      ;        HL = Pointer to handler.
-      ;        A = Zone start. B = Zone end.
-      ; Uses: AF, BC.
-      ld c,b
-      ld b,a
-      ld a,(ix+game_object.x)
-      cp b
-      ret c
-      cp c
-      ret nc
-        jp (hl)
-    ret
-
-    ld c,b
-    ld b,a
-    ld a,(ix+game_object.y)
-    cp b
-    ret c
-    cp c
-    ret nc
-      jp (hl)
-
-
-
-  handle_active_game_objects_in_horizontal_zone:
-    ; IX = Game object.
-    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
-    SAVE_REGISTERS
-      ld l,(iy+1)
-      ld h,(iy+2)
-      ld a,(iy+3)
-      ld b,(iy+4)
-      call horizontal_zone_send_to_handler
-    RESTORE_REGISTERS
-  ret
-  ;
-  handle_active_game_objects_in_vertical_zone:
-    ; IX = Game object.
-    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
-    SAVE_REGISTERS
-      ld l,(iy+6)
-      ld h,(iy+7)
-      ld a,(iy+8)
-      ld b,(iy+9)
-      call vertical_zone_send_to_handler
-    RESTORE_REGISTERS
-  ret
-
-
-
-  ld a,ASTEROID_DEACTIVATE_ZONE_START
-  ld b,ASTEROID_DEACTIVATE_ZONE_END
-  ld hl,asteroid_hits_ground
-  call horizontal_zone_send_to_handler
-
 .ends
 ;
 ; ---------------------------------------------------------------------------

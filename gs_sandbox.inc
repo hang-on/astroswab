@@ -57,10 +57,7 @@ run_sandbox:
     add ix,de
   djnz -
   ;
-
-
-
-
+  ;
   ld ix,shard_trigger               ;
   call process_trigger
   jp nc,++
@@ -96,7 +93,6 @@ run_sandbox:
     djnz -
   ++:
   ;
-
   ld ix,shard
   ld iy,update_shard_parameters
   ld de,_sizeof_game_object
@@ -106,41 +102,6 @@ run_sandbox:
     add ix,de
   djnz -
   ;
-
-  /*
-
-  ld ix,shard
-  ld b,SHARD_MAX
-  -:
-    push bc
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    jp nz,+
-      call move_game_object              ; Move shard.
-      push ix
-      ld a,SHARD_DEACTIVATE_ZONE_START
-      ld b,SHARD_DEACTIVATE_ZONE_END
-      ld hl,shard_hits_ground
-      call horizontal_zone_send_to_handler
-      pop ix
-      ;call horizontal_zone_deactivate_game_object
-      ld a,VERTICAL_DEACTIVATE_ZONE_START
-      ld b,VERTICAL_DEACTIVATE_ZONE_END
-      call vertical_zone_deactivate_game_object
-      ;
-      call draw_game_object              ; Put it in the SAT.
-      call add_game_object_to_collision_table
-    ;
-    +:
-    ld de,_sizeof_game_object
-    add ix,de
-    pop bc
-  djnz -
-  ;
-*/
-
-
-
   ;
   call is_reset_pressed
   jp nc,+

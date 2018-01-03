@@ -134,36 +134,6 @@ run_level:
     add ix,de
   djnz -
 
-  /*
-  ld ix,shard
-  ld b,SHARD_MAX
-  process_shards:
-    push bc
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    jp nz,+
-      call move_game_object              ; Move shard.
-      push ix
-      ld a,SHARD_DEACTIVATE_ZONE_START
-      ld b,SHARD_DEACTIVATE_ZONE_END
-      ld hl,shard_hits_ground
-      call horizontal_zone_send_to_handler
-      pop ix
-      ;call horizontal_zone_deactivate_game_object
-      ld a,VERTICAL_DEACTIVATE_ZONE_START
-      ld b,VERTICAL_DEACTIVATE_ZONE_END
-      call vertical_zone_deactivate_game_object
-      ;
-      call draw_game_object              ; Put it in the SAT.
-      call add_game_object_to_collision_table
-    ;
-    +:
-    ld de,_sizeof_game_object
-    add ix,de
-    pop bc
-  djnz process_shards
-
-  */
   ;
   ;
   ;
@@ -195,23 +165,13 @@ run_level:
   +:
   ;
   ld ix,spinner
-  ld a,(ix+game_object.state)
-  cp GAME_OBJECT_ACTIVE
-  jp nz,+
-    call move_game_object              ; Move
-    push ix
-      ld a,SPINNER_DEACTIVATE_ZONE_START
-      ld b,SPINNER_DEACTIVATE_ZONE_END
-      ld hl,spinner_hits_ground
-      call horizontal_zone_send_to_handler
-    pop ix
-    ;
-    call animate_game_object
-    call draw_game_object              ; Put it in the SAT.
-    call add_game_object_to_collision_table
-  +:
-  ;
-  ;
+  ld iy,update_spinner_parameters
+  ld de,_sizeof_game_object
+  ld b,SPINNER_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ;
   ; -------------------------------------------------------------------------
   ; Swabby death
