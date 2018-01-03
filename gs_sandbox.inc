@@ -47,20 +47,15 @@ run_sandbox:
   call move_and_draw_bullets
   ;
   call handle_asteroid_spawning
-
-  ;call move_and_draw_asteroids
-  ld ix,asteroid
-  ld a,ASTEROID_MAX
-  ld iy,asteroid_hits_ground_data
-  call handle_active_game_objects_in_horizontal_zone
   ;
   ld ix,asteroid
-  ld a,ASTEROID_MAX
-  call move_active_game_objects
-  ;
-  ld ix,asteroid
-  ld a,ASTEROID_MAX
-  call draw_active_game_objects
+  ld iy,update_asteroid_parameters
+  ld de,_sizeof_game_object
+  ld b,ASTEROID_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ;
   ;
   call is_reset_pressed

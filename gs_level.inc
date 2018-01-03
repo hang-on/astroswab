@@ -61,22 +61,29 @@ run_level:
   call begin_sprites              ; Prepare to fill the SAT-buffer.
   ;
   ; Resolve possible collisions:
-  call detect_and_handle_bullet_collisions
-  call detect_and_handle_swabby_collision
+  call detect_and_handle_bullet_collisions  ; FIXME! Remove game object instance from function name
+  call detect_and_handle_swabby_collision   ; FIXME! Remove game object instance from function name
   ; End of collision tests for this frame.
   ;
   ; -------------------------------------------------------------------------
   call begin_collision_tables     ; Restart filling the coll.tables.
   ;
-  call handle_swabby_death
-  call handle_swabby_sprite_and_movement
-  call handle_swabby_gun
+  call handle_swabby_death                  ; FIXME! Remove game object instance from function name
+  call handle_swabby_sprite_and_movement    ; FIXME! Remove game object instance from function name
+  call handle_swabby_gun                    ; FIXME! Remove game object instance from function name
   ;
-  call move_and_draw_bullets
+  call move_and_draw_bullets                ; FIXME! Remove game object instance from function name
   ;
-  call handle_asteroid_spawning
-  call move_and_draw_asteroids
+  call handle_asteroid_spawning             ; FIXME! Remove game object instance from function name
   ;
+  ld ix,asteroid
+  ld iy,update_asteroid_parameters
+  ld de,_sizeof_game_object
+  ld b,ASTEROID_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ;
   ;
   ; ---------------------------------------------------------------------------

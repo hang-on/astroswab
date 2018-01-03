@@ -444,7 +444,8 @@
     ; Add game object y,x and hitbox data to the collision table, so it is
     ; included in collision tests by "detect_collision_using_collision_table".
     ; Entry: IX = Pointer to game object.
-    ; Uses: AF, BC, DE, HL
+    ; Uses: None.
+    SAVE_REGISTERS
     ld a,(ix+game_object.y)                   ; Get game object's y-position.
     add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
     cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
@@ -493,6 +494,7 @@
     ld (hl),e
     inc hl
     ld (hl),d
+    RESTORE_REGISTERS
   ret
   ;
   add_multiple_game_object_instances_to_collision_table:

@@ -1151,61 +1151,41 @@ tall_meta_sprite_table:
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
-  ; For future use..?!
-  move_active_game_objects:
-    ; IX = First game object.
-    ; A = Number of items in array.
-    ld b,a
-    ld de,_sizeof_game_object
-    -:
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      call z,move_game_object
-      add ix,de
-    djnz -
-  ret
-  ;
-  draw_active_game_objects:
-    ; IX = First game object.
-    ; A = Number of items in array.
-    ld b,a
-    ld de,_sizeof_game_object
-    -:
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      call z,draw_game_object
-      add ix,de
-    djnz -
-  ret
-  ;
-  handle_active_game_objects_in_horizontal_zone:
-    ; IX = First game object.
-    ; A = Number of items in array.
-    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
+  update_game_object:
+    ; Move and draw (add here...) game object. Only if active.
+    ; IX = Pointer to game object.
+    ; IY = Pointer to parameter string.
+    ;
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+      ;
+      ld a,(iy+0)
+      cp TRUE
+      call z,handle_active_game_objects_in_horizontal_zone
+      ;
+      call move_game_object
+      call draw_game_object
+      call add_game_object_to_collision_table
 
-    ld b,a
-    ld de,_sizeof_game_object
-    ld l,(iy+0)
-    ld h,(iy+1)
-    -:
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        push bc
-          ld a,(iy+2)
-          ld b,(iy+3)
-          SAVE_REGISTERS
-            call horizontal_zone_send_to_handler
-          RESTORE_REGISTERS
-        pop bc
-      +:
-      add ix,de
-    djnz -
   ret
-  ;
-  asteroid_hits_ground_data:
+    update_asteroid_parameters:
+    .db TRUE
     .dw asteroid_hits_ground
     .db ASTEROID_DEACTIVATE_ZONE_START, ASTEROID_DEACTIVATE_ZONE_END
+
+  handle_active_game_objects_in_horizontal_zone:
+    ; IX = Game object.
+    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
+    SAVE_REGISTERS
+      ld l,(iy+1)
+      ld h,(iy+2)
+      ld a,(iy+3)
+      ld b,(iy+4)
+      call horizontal_zone_send_to_handler
+    RESTORE_REGISTERS
+  ret
+
 
 
   ld a,ASTEROID_DEACTIVATE_ZONE_START
