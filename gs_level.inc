@@ -152,7 +152,7 @@ run_level:
         ; If spinner_generator_timer is up, do...
         ; Activate a new spinner, if missile is not out!
         ld iy,missile
-        ld a,(game_object.state)
+        ld a,(iy+game_object.state)
         cp GAME_OBJECT_ACTIVE
         jp z,+
           ld ix,spinner

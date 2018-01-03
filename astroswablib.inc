@@ -1249,6 +1249,25 @@ tall_meta_sprite_table:
       call draw_game_object
       call add_game_object_to_collision_table
   ret
+
+  ; abstracted respawn handling...
+  ld ix,shard_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
+    ld ix,shard
+    ;ld iy,shard_respawn_parameters
+    call c,respawn_game_object
+  +:
+
+  respawn_game_object:
+    ; Get number of instantations from paramter string...
+    call get_inactive_game_object
+    ret c
+      ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
+      ; og sprites og speed. Først flash object med initialize.
+  ret
+
+
 .ends
 ;
 ; ---------------------------------------------------------------------------
