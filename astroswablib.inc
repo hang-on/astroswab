@@ -1160,9 +1160,13 @@ tall_meta_sprite_table:
     cp GAME_OBJECT_ACTIVE
     ret nz
       ;
-      ld a,(iy+0)
-      cp TRUE
+      ld a,(iy+0)       ; Make const for offset!
+      cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
       call z,handle_active_game_objects_in_horizontal_zone
+      ;
+      ld a,(iy+5)
+      cp TRUE           ; TODO: DRY-fix vertical/horiz. handlers
+      call z,handle_active_game_objects_in_vertical_zone
       ;
       call move_game_object
       call draw_game_object
@@ -1170,9 +1174,56 @@ tall_meta_sprite_table:
 
   ret
     update_asteroid_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
     .db TRUE
     .dw asteroid_hits_ground
     .db ASTEROID_DEACTIVATE_ZONE_START, ASTEROID_DEACTIVATE_ZONE_END
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ;
+    update_shard_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
+    .db TRUE
+    .dw asteroid_hits_ground
+    .db SHARD_DEACTIVATE_ZONE_START, SHARD_DEACTIVATE_ZONE_END
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db TRUE
+    .dw shard_hits_blanked_column
+    .db VERTICAL_DEACTIVATE_ZONE_START, VERTICAL_DEACTIVATE_ZONE_END
+
+    shard_hits_blanked_column:
+      call deactivate_game_object
+    ret
+
+
+    vertical_zone_send_to_handler:
+      ;
+      ; Entry: IX = Pointer to struct.
+      ;        HL = Pointer to handler.
+      ;        A = Zone start. B = Zone end.
+      ; Uses: AF, BC.
+      ld c,b
+      ld b,a
+      ld a,(ix+game_object.x)
+      cp b
+      ret c
+      cp c
+      ret nc
+        jp (hl)
+    ret
+
+    ld c,b
+    ld b,a
+    ld a,(ix+game_object.y)
+    cp b
+    ret c
+    cp c
+    ret nc
+      jp (hl)
+
+
 
   handle_active_game_objects_in_horizontal_zone:
     ; IX = Game object.
@@ -1183,6 +1234,18 @@ tall_meta_sprite_table:
       ld a,(iy+3)
       ld b,(iy+4)
       call horizontal_zone_send_to_handler
+    RESTORE_REGISTERS
+  ret
+  ;
+  handle_active_game_objects_in_vertical_zone:
+    ; IX = Game object.
+    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
+    SAVE_REGISTERS
+      ld l,(iy+6)
+      ld h,(iy+7)
+      ld a,(iy+8)
+      ld b,(iy+9)
+      call vertical_zone_send_to_handler
     RESTORE_REGISTERS
   ret
 

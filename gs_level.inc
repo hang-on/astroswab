@@ -124,6 +124,17 @@ run_level:
     djnz -
   ++:
   ;
+
+  ld ix,shard
+  ld iy,update_shard_parameters
+  ld de,_sizeof_game_object
+  ld b,SHARD_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
+
+  /*
   ld ix,shard
   ld b,SHARD_MAX
   process_shards:
@@ -151,6 +162,8 @@ run_level:
     add ix,de
     pop bc
   djnz process_shards
+
+  */
   ;
   ;
   ;
