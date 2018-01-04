@@ -473,6 +473,31 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "get_byte_from_table" free
+; -----------------------------------------------------------------------------
+  get_byte_from_table:
+    ; Retrieve a byte item from a table of bytes.
+    ; Entry: A = Index.
+    ;        HL = Base address of byte table.
+    ; Exit: A = Byte item.
+    ; Uses: None. 
+    push hl
+    push de
+      add a,a
+      ld d,0
+      ld e,a
+      add hl,de
+      ld a,(hl)
+      inc hl
+      ld h,(hl)
+      ld l,a
+    pop de
+    pop hl
+  ret
+;
+.ends
+;
+; -----------------------------------------------------------------------------
 .section "get_input_ports" free
 ; -----------------------------------------------------------------------------
   ; Set input_ports (word) to mirror current state of ports $dc and $dd.
