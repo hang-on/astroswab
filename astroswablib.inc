@@ -407,41 +407,6 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  handle_asteroid_spawning:
-  ld ix,asteroid_trigger
-  call process_trigger
-  ret nc
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
-        jp nz,next_asteroid
-          ;
-          call spawn_game_object_in_invisible_area
-          call get_random_number
-          and ASTEROID_SPRITE_MASK
-          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
-          ld hl, new_asteroid_sprite_table
-          call convert_byte
-          ld (ix+game_object.sprite),a
-          call get_random_number
-          and ASTEROID_SPEED_MODIFIER
-          jp nz,+
-            inc a
-          +:
-          ld (ix+game_object.yspeed),a
-          call activate_game_object
-          ;
-          pop bc                      ; Align stack.
-          ret                         ; Jump out of loop.
-        next_asteroid:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ret
   ;
   ;
   handle_bullet_collision:
@@ -1261,18 +1226,88 @@ tall_meta_sprite_table:
 
   respawn_game_object:
     ; Get number of instantations from paramter string...
-    call get_inactive_game_object
+    ld a,(iy+0)
+    call get_inactive_game_object ; NB! Save IY or other relevant registers here
     ret c
+      ld l,(iy+1)
+      ld h,(iy+2)
+      call initialize_game_object
+      ld a,(iy+3)
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+4)
+        ld h,(iy+5)
+        call get_byte_from_table
+        ld (ix+game_object.yspeed),a
+      +:
+      ;
+      call activate_game_object
       ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
       ; og sprites og speed. Først flash object med initialize., og så parameters,
       ; random x? no (keep init), yes (get from LUT)
   ret
+  ;
+  asteroid_respawn_parameters:
+    .db ASTEROID_MAX
+    .dw asteroid_init_table
+    .db TRUE  ; random yspeed?
+    .dw asteroid_yspeed_table
+    .db FALSE ; random xspeed?
+    .dw $0000
+  ;
+  asteroid_yspeed_table:
+    .rept 128
+      .db 1
+    .endr
+    .rept 128
+      .db 2
+    .endr
+
+
   ;
   horizontal_position_table:
     .db 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72
     .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136
     .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196
     .db 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 72, 136, 196, 244
+
+  handle_asteroid_spawning:
+  ld ix,asteroid_trigger
+  call process_trigger
+  ret nc
+    ld b,ASTEROID_MAX
+    ld ix,asteroid
+    -:
+      push bc
+        ld a,(ix+game_object.state)
+        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
+        jp nz,next_asteroid
+          ;
+          call spawn_game_object_in_invisible_area
+          call get_random_number
+          and ASTEROID_SPRITE_MASK
+          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
+          ld hl, new_asteroid_sprite_table
+          call convert_byte
+          ld (ix+game_object.sprite),a
+          call get_random_number
+          and ASTEROID_SPEED_MODIFIER
+          jp nz,+
+            inc a
+          +:
+          ld (ix+game_object.yspeed),a
+          call activate_game_object
+          ;
+          pop bc                      ; Align stack.
+          ret                         ; Jump out of loop.
+        next_asteroid:
+        ld de,_sizeof_game_object
+        add ix,de
+      pop bc
+    djnz -
+  ret
+
 
 
 .ends

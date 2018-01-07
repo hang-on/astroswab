@@ -184,6 +184,7 @@
     .dw swabby_death, swabby_death_init_table, 1
   batch_game_object_init_table_end:
   ;
+  .equ ASTEROID_Y_SPEED_INIT 1
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE

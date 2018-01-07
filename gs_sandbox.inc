@@ -46,7 +46,14 @@ run_sandbox:
   ;
   call move_and_draw_bullets
   ;
-  call handle_asteroid_spawning
+  ;call handle_asteroid_spawning
+  ld ix,asteroid_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
+    ld ix,asteroid
+    ld iy,asteroid_respawn_parameters
+    call respawn_game_object
+  +:
   ;
   ld ix,asteroid
   ld iy,update_asteroid_parameters
