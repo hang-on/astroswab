@@ -1231,11 +1231,8 @@ tall_meta_sprite_table:
     ret c
       ld l,(iy+1)
       ld h,(iy+2)
-      ; NOTE! Or pick random from table like "fast_blue_asteroid",
-      ; "slow_blue_asteroid" "turbo_blue_asteroid"
-      ; this sets sprite and speed in init. Leaves just
       call initialize_game_object
-      ld a,(iy+3)
+      ld a,(iy+3) ; random yspeed?
       cp TRUE
       jp nz,+
         call get_random_number
@@ -1244,6 +1241,16 @@ tall_meta_sprite_table:
         call get_byte_from_table
         ld (ix+game_object.yspeed),a
       +:
+      ld a,(iy+6) ; random xspeed?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+7)
+        ld h,(iy+8)
+        call get_byte_from_table
+        ld (ix+game_object.xspeed),a
+      +:
+
       ;
       call activate_game_object
       ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
@@ -1258,6 +1265,8 @@ tall_meta_sprite_table:
     .dw asteroid_yspeed_table
     .db FALSE ; random xspeed?
     .dw $0000
+    .db TRUE ; random horizontal position?
+    .dw horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
   ;
   asteroid_yspeed_table:
     .rept 120
