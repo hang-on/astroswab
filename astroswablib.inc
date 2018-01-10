@@ -1250,7 +1250,15 @@ tall_meta_sprite_table:
         call get_byte_from_table
         ld (ix+game_object.xspeed),a
       +:
-
+      ld a,(iy+9) ; random horizontal position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+10)
+        ld h,(iy+11)
+        call get_byte_from_table
+        ld (ix+game_object.x),a
+      +:
       ;
       call activate_game_object
       ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
@@ -1266,7 +1274,7 @@ tall_meta_sprite_table:
     .db FALSE ; random xspeed?
     .dw $0000
     .db TRUE ; random horizontal position?
-    .dw horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .dw asteroid_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
   ;
   asteroid_yspeed_table:
     .rept 120
@@ -1281,7 +1289,7 @@ tall_meta_sprite_table:
 
 
   ;
-  horizontal_position_table:
+  asteroid_horizontal_position_table:
     .db 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72
     .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136
     .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196
