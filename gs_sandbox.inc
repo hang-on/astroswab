@@ -7,6 +7,8 @@ prepare_sandbox:
   di
   call disable_display_and_sound
   ;
+  call randomize
+  ;
   call initialize_variables_once_per_game
   call initialize_variables_once_per_level
   call setup_level_graphics

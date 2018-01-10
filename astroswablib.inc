@@ -1231,6 +1231,9 @@ tall_meta_sprite_table:
     ret c
       ld l,(iy+1)
       ld h,(iy+2)
+      ; NOTE! Or pick random from table like "fast_blue_asteroid",
+      ; "slow_blue_asteroid" "turbo_blue_asteroid"
+      ; this sets sprite and speed in init. Leaves just
       call initialize_game_object
       ld a,(iy+3)
       cp TRUE
@@ -1257,11 +1260,14 @@ tall_meta_sprite_table:
     .dw $0000
   ;
   asteroid_yspeed_table:
-    .rept 128
+    .rept 120
       .db 1
     .endr
-    .rept 128
+    .rept 80
       .db 2
+    .endr
+    .rept 56
+      .db 3
     .endr
 
 
