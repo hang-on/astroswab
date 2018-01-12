@@ -478,19 +478,19 @@
   get_byte_from_table:
     ; Retrieve a byte item from a table of bytes.
     ; Entry: A = Index.
-    ;        HL = Base address of byte table.
+    ;        HL = Base address of byte table (256 bytes).
     ; Exit: A = Byte item.
-    ; Uses: None. 
+    ; Uses: None.
     push hl
     push de
-      add a,a
+      ;add a,a
       ld d,0
       ld e,a
       add hl,de
       ld a,(hl)
-      inc hl
-      ld h,(hl)
-      ld l,a
+      ;inc hl
+      ;ld h,(hl)
+      ;ld l,a
     pop de
     pop hl
   ret
@@ -516,7 +516,7 @@
   get_word_from_table:
     ; Retrieve a word item from a table of words.
     ; Entry: A = Index.
-    ;        HL = Base address of word table.
+    ;        HL = Base address of word table. (128 words in table)
     ; Exit: HL = Word.
     ; Uses: AF, DE, HL.
     add a,a

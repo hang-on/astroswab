@@ -1276,7 +1276,7 @@ tall_meta_sprite_table:
     .db TRUE ; random horizontal position?
     .dw asteroid_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
   ;
-  asteroid_yspeed_table:
+  asteroid_yspeed_table: ; could vary with difficulty!?
     .rept 120
       .db 1
     .endr
@@ -1286,15 +1286,14 @@ tall_meta_sprite_table:
     .rept 56
       .db 3
     .endr
-
-
   ;
   asteroid_horizontal_position_table:
-    .db 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72
-    .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136
-    .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196
-    .db 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 72, 136, 196, 244
-
+    .rept 4
+      .db 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72 ;17
+      .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
+      .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
+      .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
+    .endr
   handle_asteroid_spawning:
   ld ix,asteroid_trigger
   call process_trigger
