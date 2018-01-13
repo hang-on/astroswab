@@ -1312,6 +1312,22 @@ tall_meta_sprite_table:
     .db TRUE ; random sprite?
     .dw shard_respawn_sprite_table ; pointer to sprite table
   ;
+  .equ SPINNER_MAX 1
+  spinner_respawn_parameters:
+    .db SPINNER_MAX
+    .dw spinner_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  ;
+
   ;
   asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120

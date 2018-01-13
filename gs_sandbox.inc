@@ -86,6 +86,47 @@ run_sandbox:
   djnz -
   ;
   ;
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update spinner.
+  /*
+  ld ix,spinner
+  ld a,(ix+game_object.state)           ; If spinner is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,spinner_trigger
+    call process_trigger
+    jp nc,+
+      ld ix,spinner
+      ld iy,spinner_respawn_parameters
+      call respawn_game_object
+  +:
+  */
+  ld ix,spinner
+  ; ---------------------------------------------------------------------------
+  ld a,(ix+game_object.state)           ; If spinner is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,missile                       ; If missile is already out, skip!
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp z,+
+      ld ix,spinner_trigger
+      call process_trigger
+      jp nc,+
+          ld ix,spinner
+          ld iy,spinner_respawn_parameters
+          call respawn_game_object
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,spinner_coming_down
+          call PSGPlayNoRepeat
+  +:
+
+  ;
+  ld ix,spinner
+  ld iy,update_spinner_parameters
+  call update_game_object
+  ;
+  ;
   call is_reset_pressed
   jp nc,+
     ld a,GS_PREPARE_DEVMENU

@@ -213,11 +213,6 @@
     .db PURPLE_ASTEROID, PURPLE_SHARD
   shard_conversion_table_end:
   ;
-  ;
-  spinner_init_table:
-    .db SPRITE_12, SPINNER_YSPEED_INIT, 0, GAME_OBJECT_SHAPE_TALL
-    .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 0, 0, 16, 24, SPINNER
   spinner_anim_table:
   .rept 8
     .rept 8
@@ -233,6 +228,15 @@
       .db SPRITE_14
     .endr
   .endr
+  ;
+  spinner_init_table:
+    .db SPRITE_12, SPINNER_YSPEED_INIT, 0, GAME_OBJECT_SHAPE_TALL
+    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db %00000000, 0, 0, 16, 24, SPINNER
+    .db 0
+    .dw spinner_anim_table
+    ; FIXME: Add anim data to all init tables!
+    ;
   ;
   booster_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
