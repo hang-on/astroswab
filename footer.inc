@@ -189,11 +189,21 @@
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
-  ;asteroid_sprite_table:
-    ; Note - only first eight items are taken into account.
-  ;  .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
-  ;  .db PURPLE_ASTEROID, BROWN_ASTEROID, YELLOW_ASTEROID_1
-  ; !! Could be deprecated when you read this!
+    ;
+  update_asteroid_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
+    .db TRUE
+    .dw asteroid_hits_ground
+    .db ASTEROID_GROUND_ZONE_START, ASTEROID_GROUND_ZONE_END
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ; Animate object
+    .db FALSE
+    ; Put in collision table
+    .db TRUE
+    ;
   new_asteroid_sprite_table:
     .db 0, BROWN_ASTEROID, 1, GREY_ASTEROID, 2, PURPLE_ASTEROID
     .db 3, YELLOW_ASTEROID_1, 4, YELLOW_ASTEROID_2, 5, BROWN_ASTEROID
@@ -212,6 +222,20 @@
     .db GREY_ASTEROID, GREY_SHARD
     .db PURPLE_ASTEROID, PURPLE_SHARD
   shard_conversion_table_end:
+  ;
+  update_shard_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw shard_hits_ground
+  .db SHARD_GROUND_ZONE_START, SHARD_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db TRUE
+  .dw shard_hits_blanked_column
+  .db BLANKED_COLUMN_START, BLANKED_COLUMN_END
+  ; animate?
+  .db FALSE
+  ; Put in collision table
+  .db TRUE
   ;
   spinner_anim_table:
   .rept 8
@@ -236,8 +260,21 @@
     .db 0
     .dw spinner_anim_table
     ; FIXME: Add anim data to all init tables!
-    ;
+  update_spinner_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
+    .db TRUE
+    .dw spinner_hits_ground
+    .db SPINNER_GROUND_ZONE_START, SPINNER_GROUND_ZONE_END
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ; Animate object.
+    .db TRUE
+    ; Put in collision table
+    .db TRUE
   ;
+
   booster_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
@@ -294,7 +331,7 @@
   swabby_respawn_trigger_init_table:
     .db 255, SWABBY_RESPAWN_TRIGGER_INTERVAL
     .db DISABLED, DEFAULT_CYCLE_VALUE
-
+    ;
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
@@ -306,6 +343,19 @@
     .dw spinner, 1
     .dw booster, 1
   bullet_collision_table_end:
+  update_bullet_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw bullet_hits_deactivate_zone
+  .db BULLET_DEACTIVATE_ZONE_START, BULLET_DEACTIVATE_ZONE_END ; reverse?
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .dw UNUSED_WORD
+  ; animate?
+  .db FALSE
+  ; Put in collision table
+  .db FALSE
   ;
   gun_level_max_string:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS

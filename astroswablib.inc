@@ -119,6 +119,11 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  bullet_hits_deactivate_zone:
+    call deactivate_game_object
+  ret
+  ;
+  ;
   detect_and_handle_bullet_collisions:
     ; For each bullet, test it against all other objects in the relevant
     ; collision table. If a collision happens, then run a handler according to
@@ -871,9 +876,6 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  ;
-  ;
-  ;
   print_gun_level:
     ; Print the ASCII version of the current gun level (POW:) to the name table.
     ; If we are at max gun level, print the word defined in gun_level_max_string.
@@ -1002,6 +1004,11 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  shard_hits_blanked_column:
+    call deactivate_game_object
+  ret
+  ;
+  ;
   spinner_hits_ground:
     ; What happens when a flaming asteroid (a so-called spinner) hit ground?
     ; Entry: IX points to spinner structure.
@@ -1072,98 +1079,6 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  wipe_sprites:
-    ; Wipe sprites.
-    call begin_sprites
-    call load_sat
-  ret
-  ;
-  ;
-.ends
-;
-;
-;
-
-;
-; -----------------------------------------------------------------------------
-.section "Empty section" free
-; -----------------------------------------------------------------------------
-
-  update_spinner_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw spinner_hits_ground
-  .db SPINNER_GROUND_ZONE_START, SPINNER_GROUND_ZONE_END
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw $0000
-  .db 0, 0
-  ; Animate object.
-  .db TRUE
-  ; Put in collision table
-  .db TRUE
-  ;
-  update_asteroid_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw asteroid_hits_ground
-  .db ASTEROID_GROUND_ZONE_START, ASTEROID_GROUND_ZONE_END
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw $0000
-  .db 0, 0
-  ; Animate object
-  .db FALSE
-  ; Put in collision table
-  .db TRUE
-  ;
-  update_shard_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw shard_hits_ground
-  .db SHARD_GROUND_ZONE_START, SHARD_GROUND_ZONE_END
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db TRUE
-  .dw shard_hits_blanked_column
-  .db BLANKED_COLUMN_START, BLANKED_COLUMN_END
-  ; animate?
-  .db FALSE
-  ; Put in collision table
-  .db TRUE
-
-  update_bullet_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw bullet_hits_deactivate_zone
-  .db BULLET_DEACTIVATE_ZONE_START, BULLET_DEACTIVATE_ZONE_END ; reverse?
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw UNUSED_WORD
-  .dw UNUSED_WORD
-  ; animate?
-  .db FALSE
-  ; Put in collision table
-  .db FALSE
-
-  bullet_hits_deactivate_zone:
-    call deactivate_game_object
-  ret
-
-  shard_hits_blanked_column:
-    call deactivate_game_object
-  ret
-
-  within_range_send_to_handler:
-    ; Entry: IX = Pointer to struct.
-    ;        HL = Pointer to handler.
-    ;        A = number. B = Range start. C = Range end.
-    cp b
-    ret c
-    cp c
-    ret nc
-      jp (hl)
-  ret
-
   update_game_object:
     ; Perform various per-frame actions on an active game object.
     ; IX = Pointer to game object.
@@ -1208,6 +1123,33 @@ tall_meta_sprite_table:
       cp TRUE
       call z,add_game_object_to_collision_table
   ret
+  ;
+  ;
+  within_range_send_to_handler:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to handler.
+    ;        A = number. B = Range start. C = Range end.
+    cp b
+    ret c
+    cp c
+    ret nc
+      jp (hl)
+  ret
+  ;
+  ;
+  wipe_sprites:
+    ; Wipe sprites.
+    call begin_sprites
+    call load_sat
+  ret
+  ;
+  ;
+.ends
+;
+; -----------------------------------------------------------------------------
+.section "Empty section" free
+; -----------------------------------------------------------------------------
+
 
 
   respawn_game_object:
@@ -1344,6 +1286,19 @@ tall_meta_sprite_table:
     .db FALSE ; random sprite?
     .dw UNUSED_WORD ; pointer to sprite table
   ;
+  update_missile_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw booster_hits_ground
+  .db MISSILE_GROUND_ZONE_START, MISSILE_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .db UNUSED_BYTE, UNUSED_BYTE
+  ; Animate object
+  .db FALSE
+  ; Put in collision table
+  .db TRUE
   ;
   booster_respawn_sprite_table:
     .rept 64
@@ -1412,6 +1367,47 @@ tall_meta_sprite_table:
     ld (swabby_can_collide_with_objects),a
     call init_triggers_according_to_difficulty
   ret
+
+  get_absolute_value:
+    ;
+     bit 7,a
+     ret z
+      neg
+      ret
+
+  set_game_object_xspeed_depending_on_other_game_object_x:
+    ; IX = Pointer to game object
+    ; IY = Pointer to other object.
+    ; A = Speed
+    ; Uses: B
+    ld b,a
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+    ;
+      ld a,(ix+game_object.x)
+      sub (iy+game_object.x)
+      call get_absolute_value
+      cp b
+      jp nc,+
+        xor a
+        ld (ix+game_object.xspeed),a
+        ret
+      +:
+      ;
+      ld a,(ix+game_object.x)
+      cp (iy+game_object.x)
+      jp nc,+
+        ld a,b
+        ld (ix+game_object.xspeed),a
+        ret
+      +:
+      ld a,b
+      neg
+      ld (ix+game_object.xspeed),a
+      ret
+  ret
+
 .ends
 ;
 ; ---------------------------------------------------------------------------

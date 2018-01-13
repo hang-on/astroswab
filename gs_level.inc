@@ -177,39 +177,18 @@ run_level:
         call PSGPlayNoRepeat
   +:
   ;
-  ld ix,missile
-  ld a,(ix+game_object.state)
-  cp GAME_OBJECT_ACTIVE
-  jp nz,missile_loop_end
-    ld a,(ix+game_object.y)
-    cp MISSILE_TRACKING_LINE
-    jp c,++
-    ; Make missile track/follow Swabby.
+  ld a,(ix+game_object.y)
+  cp MISSILE_TRACKING_LINE
+  jp c,+
+    ld ix,missile
     ld iy,swabby
-    ld a,(iy+game_object.x)
-    ld b,(ix+game_object.x)
-    cp b
-    jp z,++
-    jp c,+
-      ld a,MISSILE_XSPEED       ; Move missile right.
-      jp +++
-    +:
-      ld a,-(MISSILE_XSPEED)    ; Move missile left.
-    jp +++
-  ++:                           ; Missile directly above Swabby.
-    xor a                       ; Don't move missile horizontally.
-  +++:
-    ld (ix+game_object.xspeed),a
-    call move_game_object
-    push ix
-      ld a,ASTEROID_DEACTIVATE_ZONE_START
-      ld b,ASTEROID_DEACTIVATE_ZONE_END
-      ld hl,missile_hits_ground
-      call horizontal_zone_send_to_handler
-    pop ix
-    call draw_game_object              ; Put it in the SAT.
-    call add_game_object_to_collision_table
-  missile_loop_end:
+    ld a,MISSILE_XSPEED
+    call set_game_object_xspeed_depending_on_other_game_object_x
+  +:
+  ;
+  ld ix,missile
+  ld iy,update_missile_parameters
+  call update_game_object
   ; -------------------------------------------------------------------------
   ;
   ; Update peak score as necessary.
@@ -242,7 +221,6 @@ run_level:
     add a,b
     ld (vscroll_value),a
   +:
-  ;
   ;
   ;
   ; Is it time to transition to next difficulty?
