@@ -242,6 +242,9 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
+    .db UNUSED_BYTE
+    .dw UNUSED_WORD
+
   booster_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19

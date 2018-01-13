@@ -72,9 +72,36 @@ run_level:
   call handle_swabby_sprite_and_movement    ; FIXME! Remove game object instance from function name
   call handle_swabby_gun                    ; FIXME! Remove game object instance from function name
   ;
-  call move_and_draw_bullets                ; FIXME! Remove game object instance from function name
+  ; -------------------------------------------------------------------------
+  ; Swabby death
+  ld ix,swabby_death_trigger
+  call process_trigger
+  jp nc,+
+    ld a,DISABLED                   ; Switch off trigger.
+    ld (ix+trigger.state),a
+    ;
+    ld ix,swabby_death              ; Remove the death animation object.
+    ld a,GAME_OBJECT_INACTIVE
+    ld (ix+game_object.state),a
+  +:
   ;
-  call handle_asteroid_spawning             ; FIXME! Remove game object instance from function name
+  ; Swabby death game object: The death animation (little explosion).
+  ld ix,swabby_death
+  ld a,(ix+game_object.state)
+  cp GAME_OBJECT_ACTIVE
+  jp nz,+
+    ;
+    call animate_game_object
+    call draw_game_object              ; Put it in the SAT.
+  +:
+  ;
+
+
+  ;call move_and_draw_bullets                ; FIXME! Remove game object instance from function name
+  ;
+  call move_and_draw_bullets
+
+
   ; ---------------------------------------------------------------------------
   ; Spawn and update asteroids.
   ld ix,asteroid_trigger
@@ -134,71 +161,22 @@ run_level:
   ld iy,update_spinner_parameters
   call update_game_object
   ;
-  ;
-  ; -------------------------------------------------------------------------
-  ; Swabby death
   ; ---------------------------------------------------------------------------
-  ld ix,swabby_death_trigger
-  call process_trigger
-  jp nc,+
-    ld a,DISABLED                   ; Switch off trigger.
-    ld (ix+trigger.state),a
-    ;
-    ld ix,swabby_death              ; Remove the death animation object.
-    ld a,GAME_OBJECT_INACTIVE
-    ld (ix+game_object.state),a
-  +:
-  ;
-  ; Swabby death game object: The death animation (little explosion).
-  ld ix,swabby_death
-  ld a,(ix+game_object.state)
-  cp GAME_OBJECT_ACTIVE
-  jp nz,+
-    ;
-    call animate_game_object
-    call draw_game_object              ; Put it in the SAT.
-  +:
-  ;
-  ;
-  ;
-  ; ---------------------------------------------------------------------------
+  ; Spawn and update booster.
   ld ix,booster
-  ; ---------------------------------------------------------------------------
-  ld a,(ix+game_object.state)          ; If booster is already out, skip!
+  ld a,(ix+game_object.state)           ; If booster is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
-    ld ix,booster_trigger               ;
-    ld a,(ix+trigger.state)
-    cp ENABLED
-    jp nz,+
-      call process_trigger
-      jp nc,+
-        ; If booster_trigger generates a trigger event - activate a new booster.
+    ld ix,booster_trigger
+    call process_trigger
+    jp nc,+
         ld ix,booster
-        call spawn_game_object_in_invisible_area
-        call get_random_number
-        and BOOSTER_SPRITE_MASK
-        ld hl,booster_sprite_table
-        ld d,0
-        ld e,a
-        add hl,de
-        ld a,(hl)
-        ld (ix+game_object.sprite),a
-        call activate_game_object
-      +:
-  ;
-  ld ix,booster
-  ld a,(ix+game_object.state)
-  cp GAME_OBJECT_ACTIVE
-  jp nz,+
-    call move_game_object              ; Move
-    ld a,ASTEROID_DEACTIVATE_ZONE_START
-    ld b,ASTEROID_DEACTIVATE_ZONE_END
-    call horizontal_zone_deactivate_game_object
-    call draw_game_object              ; Put it in the SAT.
-    call add_game_object_to_collision_table
+        ld iy,booster_respawn_parameters
+        call respawn_game_object
   +:
-  ;
+  ld ix,booster
+  ld iy,update_booster_parameters
+  call update_game_object
   ;
   ;
   ; ---------------------------------------------------------------------------

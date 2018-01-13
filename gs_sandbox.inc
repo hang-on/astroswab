@@ -46,7 +46,15 @@ run_sandbox:
   call handle_swabby_gun
   ;
   ;
-  call move_and_draw_bullets
+  ;call move_and_draw_bullets
+  ld ix,bullet
+  ld iy,update_bullet_parameters
+  ld de,_sizeof_game_object
+  ld b,BULLET_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ;
   ; ---------------------------------------------------------------------------
   ; Spawn and update asteroids.

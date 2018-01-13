@@ -851,59 +851,7 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  move_and_draw_asteroids:
-    ;
-    ld ix,asteroid
-    ld b,ASTEROID_MAX
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_ACTIVE
-        jp nz,+
-          call move_game_object
-          push ix
-            ld a,ASTEROID_DEACTIVATE_ZONE_START
-            ld b,ASTEROID_DEACTIVATE_ZONE_END
-            ld hl,asteroid_hits_ground
-            call horizontal_zone_send_to_handler
-          pop ix
-          ld a,VERTICAL_DEACTIVATE_ZONE_START
-          ld b,VERTICAL_DEACTIVATE_ZONE_END
-          call vertical_zone_deactivate_game_object
-          ;
-          call draw_game_object              ; Put it in the SAT.
-          call add_game_object_to_collision_table
-        ;
-        +:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ret
   ;
-  ;
-  move_and_draw_bullets:
-    ld ix,bullet
-    ld b,BULLET_MAX
-    -:
-      push bc
-      ;
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        ; Bullet 'collides' with deactivate zone?
-        ld a,BULLET_DEACTIVATE_ZONE_START
-        ld b,BULLET_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
-        call move_game_object
-        call draw_game_object
-        ;
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz -
-  ret
   ;
   ;
   print_gun_level:
@@ -1157,6 +1105,22 @@ tall_meta_sprite_table:
   ; animate?
   .db FALSE
 
+  update_bullet_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw bullet_hits_deactivate_zone
+  .db BULLET_DEACTIVATE_ZONE_START, BULLET_DEACTIVATE_ZONE_END ; reverse?
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .dw UNUSED_WORD
+  ; animate?
+  .db FALSE
+
+  bullet_hits_deactivate_zone:
+    call deactivate_game_object
+  ret
+
   shard_hits_blanked_column:
     call deactivate_game_object
   ret
@@ -1391,6 +1355,29 @@ tall_meta_sprite_table:
   booster_hits_ground:
     ; IX points to object.
     call deactivate_game_object
+  ret
+  ;
+  move_and_draw_bullets:
+    ld ix,bullet
+    ld b,BULLET_MAX
+    -:
+      push bc
+      ;
+      ld a,(ix+game_object.state)
+      cp GAME_OBJECT_ACTIVE
+      jp nz,+
+        ; Bullet 'collides' with deactivate zone?
+        ld a,BULLET_DEACTIVATE_ZONE_START
+        ld b,BULLET_DEACTIVATE_ZONE_END
+        call horizontal_zone_deactivate_game_object
+        call move_game_object
+        call draw_game_object
+        ;
+      +:
+      ld de,_sizeof_game_object
+      add ix,de
+      pop bc
+    djnz -
   ret
 
 
