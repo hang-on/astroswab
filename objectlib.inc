@@ -433,6 +433,39 @@
     djnz -
   ret
   ;
+  set_game_object_xspeed_depending_on_other_game_object_x:
+    ; IX = Pointer to game object
+    ; IY = Pointer to other object.
+    ; A = Speed
+    ; Uses: B
+    ld b,a
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+    ;
+      ld a,(ix+game_object.x)
+      sub (iy+game_object.x)
+      call get_absolute_value
+      cp b
+      jp nc,+
+        xor a
+        ld (ix+game_object.xspeed),a
+        ret
+      +:
+      ;
+      ld a,(ix+game_object.x)
+      cp (iy+game_object.x)
+      jp nc,+
+        ld a,b
+        ld (ix+game_object.xspeed),a
+        ret
+      +:
+      ld a,b
+      neg
+      ld (ix+game_object.xspeed),a
+      ret
+  ret
+  ;
   mark_scanline_with_game_object:
     ; Mark scanline by drawing a game object on it.
     ; Entry: IX = Pointer to game object to use as marker.

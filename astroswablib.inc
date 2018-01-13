@@ -119,6 +119,12 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  booster_hits_ground:
+    ; IX points to object.
+    call deactivate_game_object
+  ret
+  ;
+  ;
   bullet_hits_deactivate_zone:
     call deactivate_game_object
   ret
@@ -960,6 +966,81 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  respawn_game_object:
+    ; IX = Game object (first instance if array).
+    ; IY = Pointer to parameter string.
+    ; Get number of instantations from paramter string...
+    ld a,(iy+0)
+    call get_inactive_game_object ; NB! Save IY or other relevant registers here
+    ret c
+      ld l,(iy+1)
+      ld h,(iy+2)
+      call initialize_game_object
+      ld a,(iy+3) ; random yspeed?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+4)
+        ld h,(iy+5)
+        call get_byte_from_table
+        ld (ix+game_object.yspeed),a
+      +:
+      ld a,(iy+6) ; random xspeed?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+7)
+        ld h,(iy+8)
+        call get_byte_from_table
+        ld (ix+game_object.xspeed),a
+      +:
+      ld a,(iy+9) ; random horizontal position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+10)
+        ld h,(iy+11)
+        call get_byte_from_table
+        ld (ix+game_object.x),a
+      +:
+      ld a,(iy+12) ; random vertical position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+13)
+        ld h,(iy+14)
+        call get_byte_from_table
+        ld (ix+game_object.y),a
+      +:
+      ld a,(iy+15) ; random sprite?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+16)
+        ld h,(iy+17)
+        call get_byte_from_table
+        ld (ix+game_object.sprite),a
+      +:
+      ;
+      call activate_game_object
+  ret
+  ;
+  ;
+  respawn_swabby:
+  ; IX = Pointer to trigger
+  ; FIXME: Use initialize_variables_once_per_life instead!
+    ld a,DISABLED
+    ld (ix+trigger.state),a
+    ld ix,swabby
+    ld hl,swabby_init_table
+    call initialize_game_object
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
+    call init_triggers_according_to_difficulty
+  ret
+  ;
+  ;
   setup_level_graphics:
     ; Load various assets into vram and clears SAT.
     ; Entry: None - uses consts and globals.
@@ -1146,303 +1227,14 @@ tall_meta_sprite_table:
   ;
 .ends
 ;
+
 ; -----------------------------------------------------------------------------
-.section "Empty section" free
-; -----------------------------------------------------------------------------
-
-
-
-  respawn_game_object:
-    ; Get number of instantations from paramter string...
-    ld a,(iy+0)
-    call get_inactive_game_object ; NB! Save IY or other relevant registers here
-    ret c
-      ld l,(iy+1)
-      ld h,(iy+2)
-      call initialize_game_object
-      ld a,(iy+3) ; random yspeed?
-      cp TRUE
-      jp nz,+
-        call get_random_number
-        ld l,(iy+4)
-        ld h,(iy+5)
-        call get_byte_from_table
-        ld (ix+game_object.yspeed),a
-      +:
-      ld a,(iy+6) ; random xspeed?
-      cp TRUE
-      jp nz,+
-        call get_random_number
-        ld l,(iy+7)
-        ld h,(iy+8)
-        call get_byte_from_table
-        ld (ix+game_object.xspeed),a
-      +:
-      ld a,(iy+9) ; random horizontal position?
-      cp TRUE
-      jp nz,+
-        call get_random_number
-        ld l,(iy+10)
-        ld h,(iy+11)
-        call get_byte_from_table
-        ld (ix+game_object.x),a
-      +:
-      ld a,(iy+12) ; random vertical position?
-      cp TRUE
-      jp nz,+
-        call get_random_number
-        ld l,(iy+13)
-        ld h,(iy+14)
-        call get_byte_from_table
-        ld (ix+game_object.y),a
-      +:
-      ld a,(iy+15) ; random sprite?
-      cp TRUE
-      jp nz,+
-        call get_random_number
-        ld l,(iy+16)
-        ld h,(iy+17)
-        call get_byte_from_table
-        ld (ix+game_object.sprite),a
-      +:
-      ;
-      call activate_game_object
-      ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
-      ; og sprites og speed. Først flash object med initialize., og så parameters,
-      ; random x? no (keep init), yes (get from LUT)
-  ret
-  ;
-  asteroid_respawn_parameters:
-    .db ASTEROID_MAX
-    .dw asteroid_init_table
-    .db TRUE  ; random yspeed?
-    .dw asteroid_and_shard_respawn_yspeed_table
-    .db FALSE ; random xspeed?
-    .dw UNUSED_WORD
-    .db TRUE ; random horizontal position?
-    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    .db FALSE ; random vertical position?
-    .dw UNUSED_WORD
-    .db TRUE ; random sprite?
-    .dw asteroid_respawn_sprite_table ; pointer to sprite table
-  ;
-  shard_respawn_parameters:
-    .db SHARD_MAX
-    .dw shard_init_table
-    .db TRUE  ; random yspeed?
-    .dw asteroid_and_shard_respawn_yspeed_table
-    .db FALSE ; random xspeed?
-    .dw UNUSED_WORD
-    .db TRUE ; random horizontal position?
-    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    .db FALSE ; random vertical position?
-    .dw UNUSED_WORD
-    .db TRUE ; random sprite?
-    .dw shard_respawn_sprite_table ; pointer to sprite table
-  ;
-  ;.equ SPINNER_MAX 1
-  spinner_respawn_parameters:
-    .db SPINNER_MAX
-    .dw spinner_init_table
-    .db FALSE  ; random yspeed?
-    .dw UNUSED_WORD
-    .db FALSE ; random xspeed?
-    .dw UNUSED_WORD
-    .db TRUE ; random horizontal position?
-    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    .db FALSE ; random vertical position?
-    .dw UNUSED_WORD
-    .db FALSE ; random sprite?
-    .dw UNUSED_WORD ; pointer to sprite table
-  ;
-  .equ BOOSTER_MAX 1
-  booster_respawn_parameters:
-    .db BOOSTER_MAX
-    .dw booster_init_table
-    .db FALSE  ; random yspeed?
-    .dw UNUSED_WORD
-    .db FALSE ; random xspeed?
-    .dw UNUSED_WORD
-    .db TRUE ; random horizontal position?
-    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    .db FALSE ; random vertical position?
-    .dw UNUSED_WORD
-    .db TRUE ; random sprite?
-    .dw booster_respawn_sprite_table ; pointer to sprite table
-  ;
-  .equ MISSILE_MAX 1
-  missile_respawn_parameters:
-    .db MISSILE_MAX
-    .dw missile_init_table
-    .db FALSE  ; random yspeed?
-    .dw UNUSED_WORD
-    .db FALSE ; random xspeed?
-    .dw UNUSED_WORD
-    .db TRUE ; random horizontal position?
-    ; could be separate missile table to make it appear in the sides
-    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    .db FALSE ; random vertical position?
-    .dw UNUSED_WORD
-    .db FALSE ; random sprite?
-    .dw UNUSED_WORD ; pointer to sprite table
-  ;
-  update_missile_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw booster_hits_ground
-  .db MISSILE_GROUND_ZONE_START, MISSILE_GROUND_ZONE_END
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw UNUSED_WORD
-  .db UNUSED_BYTE, UNUSED_BYTE
-  ; Animate object
-  .db FALSE
-  ; Put in collision table
-  .db TRUE
-  ;
-  booster_respawn_sprite_table:
-    .rept 64
-      .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_20
-    .endr
-  update_booster_parameters:
-  ; Special handler for when the game object is in a specified horizontal zone?
-  .db TRUE
-  .dw booster_hits_ground
-  .db BOOSTER_GROUND_ZONE_START, BOOSTER_GROUND_ZONE_END
-  ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw $0000
-  .db 0, 0
-  ; Animate object
-  .db FALSE
-  ; Put in collision table
-  .db TRUE
-
-  ;
-  asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
-    .rept 120
-      .db 1
-    .endr
-    .rept 80
-      .db 2
-    .endr
-    .rept 56
-      .db 3
-    .endr
-  asteroid_respawn_sprite_table:
-    .rept 32
-      .db BROWN_ASTEROID, GREY_ASTEROID, PURPLE_ASTEROID
-      .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID
-      .db GREY_ASTEROID, YELLOW_ASTEROID_1
-    .endr
-  ;
-  game_object_respawn_horizontal_position_table:
-    .rept 4
-      .db 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72 ;17
-      .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
-      .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
-      .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
-    .endr
-  ;
-  shard_respawn_sprite_table:
-    .rept 64
-      .db YELLOW_SHARD_SPRITE, BROWN_SHARD_SPRITE, GREY_SHARD_SPRITE, PURPLE_SHARD_SPRITE
-    .endr
-  ;
-  booster_hits_ground:
-    ; IX points to object.
-    call deactivate_game_object
-  ret
-  ;
-  respawn_swabby:
-  ; IX = Pointer to trigger
-  ; FIXME: Use initialize_variables_once_per_life instead!
-    ld a,DISABLED
-    ld (ix+trigger.state),a
-    ld ix,swabby
-    ld hl,swabby_init_table
-    call initialize_game_object
-    ld a,TRUE
-    ld (swabby_responds_to_player_input),a
-    ld (swabby_can_collide_with_objects),a
-    call init_triggers_according_to_difficulty
-  ret
-
-  get_absolute_value:
-    ;
-     bit 7,a
-     ret z
-      neg
-      ret
-
-  set_game_object_xspeed_depending_on_other_game_object_x:
-    ; IX = Pointer to game object
-    ; IY = Pointer to other object.
-    ; A = Speed
-    ; Uses: B
-    ld b,a
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    ret nz
-    ;
-      ld a,(ix+game_object.x)
-      sub (iy+game_object.x)
-      call get_absolute_value
-      cp b
-      jp nc,+
-        xor a
-        ld (ix+game_object.xspeed),a
-        ret
-      +:
-      ;
-      ld a,(ix+game_object.x)
-      cp (iy+game_object.x)
-      jp nc,+
-        ld a,b
-        ld (ix+game_object.xspeed),a
-        ret
-      +:
-      ld a,b
-      neg
-      ld (ix+game_object.xspeed),a
-      ret
-  ret
-
-.ends
-;
-; ---------------------------------------------------------------------------
-.section "Empty section 2" free
-; ---------------------------------------------------------------------------
-  ;
-
-  ;
-
-.ends
-;
-;
-;
-; -----------------------------------------------------------------------------
-; SANDBOX AND CONSOLE
-; -----------------------------------------------------------------------------
-; Work- and testbench. Here we can develop and test new functions before they
-; are integrated into the astroswablib or other libraries.
+;.section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
 
+;.ends
+;.ramsection "Sandbox and console variables" slot 3
   ;
   ;
-; -----------------------------------------------------------------------------
-.ramsection "Sandbox and console variables" slot 3
-  ;
-  ;
-.ends
-;
-;
-; -----------------------------------------------------------------------------
-.section "Sandbox and console functions" free
-  ;
-  sandbox_function_1:
-    ; ...
-  ret
-  ;
-.ends
+;.ends

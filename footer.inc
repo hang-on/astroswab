@@ -184,6 +184,14 @@
     .dw swabby_death, swabby_death_init_table, 1
   batch_game_object_init_table_end:
   ;
+  game_object_respawn_horizontal_position_table:
+    .rept 4
+      .db 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72 ;17
+      .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
+      .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
+      .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
+    .endr
+    ;
   .equ ASTEROID_Y_SPEED_INIT 1
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
@@ -204,12 +212,37 @@
     ; Put in collision table
     .db TRUE
     ;
-  new_asteroid_sprite_table:
-    .db 0, BROWN_ASTEROID, 1, GREY_ASTEROID, 2, PURPLE_ASTEROID
-    .db 3, YELLOW_ASTEROID_1, 4, YELLOW_ASTEROID_2, 5, BROWN_ASTEROID
-    .db 6, GREY_ASTEROID, 7, YELLOW_ASTEROID_1
-  new_asteroid_sprite_table_end:
+  asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
+    .rept 120
+      .db 1
+    .endr
+    .rept 80
+      .db 2
+    .endr
+    .rept 56
+      .db 3
+    .endr
+  asteroid_respawn_sprite_table:
+    .rept 32
+      .db BROWN_ASTEROID, GREY_ASTEROID, PURPLE_ASTEROID
+      .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID
+      .db GREY_ASTEROID, YELLOW_ASTEROID_1
+    .endr
   ;
+  asteroid_respawn_parameters:
+    .db ASTEROID_MAX
+    .dw asteroid_init_table
+    .db TRUE  ; random yspeed?
+    .dw asteroid_and_shard_respawn_yspeed_table
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw asteroid_respawn_sprite_table ; pointer to sprite table
+    ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
@@ -237,6 +270,25 @@
   ; Put in collision table
   .db TRUE
   ;
+  shard_respawn_parameters:
+    .db SHARD_MAX
+    .dw shard_init_table
+    .db TRUE  ; random yspeed?
+    .dw asteroid_and_shard_respawn_yspeed_table
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw shard_respawn_sprite_table ; pointer to sprite table
+    ;
+  shard_respawn_sprite_table:
+    .rept 64
+      .db YELLOW_SHARD_SPRITE, BROWN_SHARD_SPRITE, GREY_SHARD_SPRITE, PURPLE_SHARD_SPRITE
+    .endr
+    ;
   spinner_anim_table:
   .rept 8
     .rept 8
@@ -274,6 +326,20 @@
     ; Put in collision table
     .db TRUE
   ;
+  spinner_respawn_parameters:
+    .db SPINNER_MAX
+    .dw spinner_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+
 
   booster_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
@@ -281,15 +347,75 @@
     .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
     .db UNUSED_BYTE
     .dw UNUSED_WORD
-
+    ;
   booster_sprite_table:
     ; Note - only first four items are taken into account.
     .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_19
+    ;
+    booster_respawn_sprite_table:
+      .rept 64
+        .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_20
+      .endr
+    update_booster_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
+    .db TRUE
+    .dw booster_hits_ground
+    .db BOOSTER_GROUND_ZONE_START, BOOSTER_GROUND_ZONE_END
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ; Animate object
+    .db FALSE
+    ; Put in collision table
+    .db TRUE
   ;
+  booster_respawn_parameters:
+    .db BOOSTER_MAX
+    .dw booster_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw booster_respawn_sprite_table ; pointer to sprite table
+    ;
   missile_init_table:
     .db SPRITE_4, MISSILE_YSPEED, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
+  missile_respawn_parameters:
+    .db MISSILE_MAX
+    .dw missile_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    ; could be separate missile table to make it appear in the sides
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  update_missile_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw booster_hits_ground
+  .db MISSILE_GROUND_ZONE_START, MISSILE_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .db UNUSED_BYTE, UNUSED_BYTE
+  ; Animate object
+  .db FALSE
+  ; Put in collision table
+  .db TRUE
+    ;
   ;
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
