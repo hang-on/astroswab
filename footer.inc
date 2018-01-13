@@ -193,6 +193,7 @@
     ; Note - only first eight items are taken into account.
   ;  .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID, GREY_ASTEROID
   ;  .db PURPLE_ASTEROID, BROWN_ASTEROID, YELLOW_ASTEROID_1
+  ; !! Could be deprecated when you read this!
   new_asteroid_sprite_table:
     .db 0, BROWN_ASTEROID, 1, GREY_ASTEROID, 2, PURPLE_ASTEROID
     .db 3, YELLOW_ASTEROID_1, 4, YELLOW_ASTEROID_2, 5, BROWN_ASTEROID

@@ -1259,6 +1259,24 @@ tall_meta_sprite_table:
         call get_byte_from_table
         ld (ix+game_object.x),a
       +:
+      ld a,(iy+12) ; random vertical position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+13)
+        ld h,(iy+14)
+        call get_byte_from_table
+        ld (ix+game_object.y),a
+      +:
+      ld a,(iy+15) ; random sprite?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+16)
+        ld h,(iy+17)
+        call get_byte_from_table
+        ld (ix+game_object.sprite),a
+      +:
       ;
       call activate_game_object
       ; alle rnd er tables, a 256 items, både x-pos, (reelt 64 forskellige),
@@ -1270,13 +1288,18 @@ tall_meta_sprite_table:
     .db ASTEROID_MAX
     .dw asteroid_init_table
     .db TRUE  ; random yspeed?
-    .dw asteroid_yspeed_table
+    .dw asteroid_respawn_yspeed_table
     .db FALSE ; random xspeed?
-    .dw $0000
+    .dw UNUSED_WORD
     .db TRUE ; random horizontal position?
-    .dw asteroid_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    ; NOTE: Add below functionality to respawn game object!
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw asteroid_respawn_sprite_table ; pointer to sprite table
   ;
-  asteroid_yspeed_table: ; could vary with difficulty!?
+  asteroid_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120
       .db 1
     .endr
@@ -1286,14 +1309,21 @@ tall_meta_sprite_table:
     .rept 56
       .db 3
     .endr
+  asteroid_respawn_sprite_table:
+    .rept 32
+      .db BROWN_ASTEROID, GREY_ASTEROID, PURPLE_ASTEROID
+      .db YELLOW_ASTEROID_1, YELLOW_ASTEROID_2, BROWN_ASTEROID
+      .db GREY_ASTEROID, YELLOW_ASTEROID_1
+    .endr
   ;
-  asteroid_horizontal_position_table:
+  game_object_respawn_horizontal_position_table:
     .rept 4
       .db 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72 ;17
       .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
       .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
       .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
     .endr
+  ;
   handle_asteroid_spawning:
   ld ix,asteroid_trigger
   call process_trigger
