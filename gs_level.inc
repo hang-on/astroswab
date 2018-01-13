@@ -160,23 +160,18 @@ run_level:
   ld iy,update_booster_parameters
   call update_game_object
   ;
-  ;
   ; ---------------------------------------------------------------------------
+  ; Spawn  missile.
   ld ix,missile
-  ; ---------------------------------------------------------------------------
-  ld a,(ix+game_object.state)          ; If missile is already out, skip!
+  ld a,(ix+game_object.state)           ; If missile is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
     ld ix,missile_trigger
-    ld a,(ix+trigger.state)
-    cp ENABLED
-    jp nz,+
-      call process_trigger
-      jp nc,+
-        ; If missile_generator_timer is up, activate a new missile.
+    call process_trigger
+    jp nc,+
         ld ix,missile
-        call spawn_game_object_in_invisible_area
-        call activate_game_object
+        ld iy,missile_respawn_parameters
+        call respawn_game_object
         SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
         ld hl,missile_warning
         call PSGPlayNoRepeat

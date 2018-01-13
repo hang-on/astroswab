@@ -1328,6 +1328,23 @@ tall_meta_sprite_table:
     .db TRUE ; random sprite?
     .dw booster_respawn_sprite_table ; pointer to sprite table
   ;
+  .equ MISSILE_MAX 1
+  missile_respawn_parameters:
+    .db MISSILE_MAX
+    .dw missile_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    ; could be separate missile table to make it appear in the sides
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  ;
+  ;
   booster_respawn_sprite_table:
     .rept 64
       .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_20
@@ -1383,7 +1400,7 @@ tall_meta_sprite_table:
   ret
   ;
   respawn_swabby:
-  ; IX = Pointer to trigger 
+  ; IX = Pointer to trigger
   ; FIXME: Use initialize_variables_once_per_life instead!
     ld a,DISABLED
     ld (ix+trigger.state),a
