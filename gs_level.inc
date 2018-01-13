@@ -84,7 +84,6 @@ run_level:
     ld iy,asteroid_respawn_parameters
     call respawn_game_object
   +:
-  ;
   ld ix,asteroid
   ld iy,update_asteroid_parameters
   ld de,_sizeof_game_object
@@ -102,7 +101,6 @@ run_level:
     ld iy,shard_respawn_parameters
     call respawn_game_object
   +:
-  ;
   ld ix,shard
   ld iy,update_shard_parameters
   ld de,_sizeof_game_object
@@ -112,43 +110,30 @@ run_level:
     add ix,de
   djnz -
   ;
-  ;
-  ;
   ; ---------------------------------------------------------------------------
+  ; Spawn and update spinner.
   ld ix,spinner
-  ; ---------------------------------------------------------------------------
   ld a,(ix+game_object.state)           ; If spinner is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
-    ld ix,spinner_trigger               ;
-    ld a,(ix+trigger.state)
-    cp ENABLED
-    jp nz,+
+    ld ix,missile                       ; If missile is already out, skip!
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp z,+
+      ld ix,spinner_trigger
       call process_trigger
       jp nc,+
-        ; If spinner_generator_timer is up, do...
-        ; Activate a new spinner, if missile is not out!
-        ld iy,missile
-        ld a,(iy+game_object.state)
-        cp GAME_OBJECT_ACTIVE
-        jp z,+
           ld ix,spinner
-          call spawn_game_object_in_invisible_area
-          ld hl,spinner_anim_table
-          call load_animation_game_object
+          ld iy,spinner_respawn_parameters
+          call respawn_game_object
           SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
           ld hl,spinner_coming_down
           call PSGPlayNoRepeat
   +:
-  ;
   ld ix,spinner
   ld iy,update_spinner_parameters
-  ld de,_sizeof_game_object
-  ld b,SPINNER_MAX
-  -:
-    call update_game_object
-    add ix,de
-  djnz -
+  call update_game_object
+  ;
   ;
   ; -------------------------------------------------------------------------
   ; Swabby death

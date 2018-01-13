@@ -187,7 +187,7 @@
   .equ ASTEROID_Y_SPEED_INIT 1
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
-    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
   ;asteroid_sprite_table:
     ; Note - only first eight items are taken into account.
@@ -202,7 +202,7 @@
   ;
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
-    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 0, 0, 8, 8, SHARD
   ;
   shard_conversion_table:
@@ -231,7 +231,7 @@
   ;
   spinner_init_table:
     .db SPRITE_12, SPINNER_YSPEED_INIT, 0, GAME_OBJECT_SHAPE_TALL
-    .db 0, 0, GAME_OBJECT_INACTIVE
+    .db INVISIBLE_AREA_BOTTOM_BORDER-24, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 24, SPINNER
     .db 0
     .dw spinner_anim_table

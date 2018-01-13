@@ -88,21 +88,7 @@ run_sandbox:
   ;
   ; ---------------------------------------------------------------------------
   ; Spawn and update spinner.
-  /*
   ld ix,spinner
-  ld a,(ix+game_object.state)           ; If spinner is already out, skip!
-  cp GAME_OBJECT_ACTIVE
-  jp z,+
-    ld ix,spinner_trigger
-    call process_trigger
-    jp nc,+
-      ld ix,spinner
-      ld iy,spinner_respawn_parameters
-      call respawn_game_object
-  +:
-  */
-  ld ix,spinner
-  ; ---------------------------------------------------------------------------
   ld a,(ix+game_object.state)           ; If spinner is already out, skip!
   cp GAME_OBJECT_ACTIVE
   jp z,+
