@@ -1080,6 +1080,8 @@ tall_meta_sprite_table:
   .db 0, 0
   ; Animate object.
   .db TRUE
+  ; Put in collision table
+  .db TRUE
   ;
   update_asteroid_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -1092,6 +1094,8 @@ tall_meta_sprite_table:
   .db 0, 0
   ; Animate object
   .db FALSE
+  ; Put in collision table
+  .db TRUE
   ;
   update_shard_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -1104,6 +1108,8 @@ tall_meta_sprite_table:
   .db BLANKED_COLUMN_START, BLANKED_COLUMN_END
   ; animate?
   .db FALSE
+  ; Put in collision table
+  .db TRUE
 
   update_bullet_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -1115,6 +1121,8 @@ tall_meta_sprite_table:
   .dw UNUSED_WORD
   .dw UNUSED_WORD
   ; animate?
+  .db FALSE
+  ; Put in collision table
   .db FALSE
 
   bullet_hits_deactivate_zone:
@@ -1176,17 +1184,11 @@ tall_meta_sprite_table:
       ;
       call move_game_object
       call draw_game_object
-      call add_game_object_to_collision_table
+      ld a,(iy+11)
+      cp TRUE
+      call z,add_game_object_to_collision_table
   ret
 
-  ; abstracted respawn handling...
-  ld ix,shard_trigger
-  call process_trigger ; NB: Save the registers!
-  jp nc,+
-    ld ix,shard
-    ;ld iy,shard_respawn_parameters
-    call c,respawn_game_object
-  +:
 
   respawn_game_object:
     ; Get number of instantations from paramter string...
@@ -1276,7 +1278,7 @@ tall_meta_sprite_table:
     .db TRUE ; random sprite?
     .dw shard_respawn_sprite_table ; pointer to sprite table
   ;
-  .equ SPINNER_MAX 1
+  ;.equ SPINNER_MAX 1
   spinner_respawn_parameters:
     .db SPINNER_MAX
     .dw spinner_init_table
@@ -1321,6 +1323,9 @@ tall_meta_sprite_table:
   .db 0, 0
   ; Animate object
   .db FALSE
+  ; Put in collision table
+  .db TRUE
+
   ;
   asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120
@@ -1357,72 +1362,6 @@ tall_meta_sprite_table:
     call deactivate_game_object
   ret
   ;
-  move_and_draw_bullets:
-    ld ix,bullet
-    ld b,BULLET_MAX
-    -:
-      push bc
-      ;
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        ; Bullet 'collides' with deactivate zone?
-        ld a,BULLET_DEACTIVATE_ZONE_START
-        ld b,BULLET_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
-        call move_game_object
-        call draw_game_object
-        ;
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz -
-  ret
-
-
-
-
-
-
-
-  handle_asteroid_spawning:
-  ld ix,asteroid_trigger
-  call process_trigger
-  ret nc
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
-        jp nz,next_asteroid
-          ;
-          call spawn_game_object_in_invisible_area
-          call get_random_number
-          and ASTEROID_SPRITE_MASK
-          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
-          ld hl, new_asteroid_sprite_table
-          call convert_byte
-          ld (ix+game_object.sprite),a
-          call get_random_number
-          and ASTEROID_SPEED_MODIFIER
-          jp nz,+
-            inc a
-          +:
-          ld (ix+game_object.yspeed),a
-          call activate_game_object
-          ;
-          pop bc                      ; Align stack.
-          ret                         ; Jump out of loop.
-        next_asteroid:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ret
-
-
 
 .ends
 ;

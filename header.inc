@@ -212,7 +212,7 @@
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
-  .equ BULLET_Y_OFFSET 1
+  .equ BULLET_Y_OFFSET 5
   .equ BULLET_X_OFFSET 4
   .equ BULLET_Y_SPEED (-5)
   .equ BULLET_X_SPEED 0
@@ -370,6 +370,7 @@
   swabby_responds_to_player_input db          ; TRUE/FALSE
   swabby_can_collide_with_objects db    ; TRUE/FALSE
   swabby_death instanceof game_object
+  ;dev_buffer_2 dsb 4
   kill_swabby_flag db
   ;dev_buffer_1 dsb 4
   swabby_death_trigger instanceof trigger

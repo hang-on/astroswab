@@ -72,7 +72,6 @@ run_level:
   call handle_swabby_sprite_and_movement    ; FIXME! Remove game object instance from function name
   call handle_swabby_gun                    ; FIXME! Remove game object instance from function name
   ;
-  ; -------------------------------------------------------------------------
   ; Swabby death
   ld ix,swabby_death_trigger
   call process_trigger
@@ -84,7 +83,6 @@ run_level:
     ld a,GAME_OBJECT_INACTIVE
     ld (ix+game_object.state),a
   +:
-  ;
   ; Swabby death game object: The death animation (little explosion).
   ld ix,swabby_death
   ld a,(ix+game_object.state)
@@ -94,14 +92,31 @@ run_level:
     call animate_game_object
     call draw_game_object              ; Put it in the SAT.
   +:
+  ; Process the respawn trigger.
+  ; FIXME: Use initialize_variables_once_per_life instead!
+  ld ix,swabby_respawn_trigger
+  call process_trigger
+  jp nc,+
+    ld a,DISABLED
+    ld (ix+trigger.state),a
+    ld ix,swabby
+    ld hl,swabby_init_table
+    call initialize_game_object
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
+    call init_triggers_according_to_difficulty
+  +:
+  ; -------------------------------------------------------------------------
   ;
-
-
-  ;call move_and_draw_bullets                ; FIXME! Remove game object instance from function name
-  ;
-  call move_and_draw_bullets
-
-
+  ld ix,bullet
+  ld iy,update_bullet_parameters
+  ld de,_sizeof_game_object
+  ld b,BULLET_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ; ---------------------------------------------------------------------------
   ; Spawn and update asteroids.
   ld ix,asteroid_trigger
@@ -235,8 +250,6 @@ run_level:
   missile_loop_end:
   ; -------------------------------------------------------------------------
   ;
-  ;
-  ;
   ; Update peak score as necessary.
   ld iy,player_score
   ld ix,peak_score
@@ -245,22 +258,6 @@ run_level:
     ld hl,player_score
     ld de,peak_score
     call copy_score_and_increment_pointers
-  +:
-  ;
-  ; Process the respawn trigger.
-  ; FIXME: Use initialize_variables_once_per_life instead!
-  ld ix,swabby_respawn_trigger
-  call process_trigger
-  jp nc,+
-    ld a,DISABLED
-    ld (ix+trigger.state),a
-    ld ix,swabby
-    ld hl,swabby_init_table
-    call initialize_game_object
-    ld a,TRUE
-    ld (swabby_responds_to_player_input),a
-    ld (swabby_can_collide_with_objects),a
-    call init_triggers_according_to_difficulty
   +:
   ;
   ; Rumble effect.
