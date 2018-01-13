@@ -1288,18 +1288,32 @@ tall_meta_sprite_table:
     .db ASTEROID_MAX
     .dw asteroid_init_table
     .db TRUE  ; random yspeed?
-    .dw asteroid_respawn_yspeed_table
+    .dw asteroid_and_shard_respawn_yspeed_table
     .db FALSE ; random xspeed?
     .dw UNUSED_WORD
     .db TRUE ; random horizontal position?
     .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
-    ; NOTE: Add below functionality to respawn game object!
     .db FALSE ; random vertical position?
     .dw UNUSED_WORD
     .db TRUE ; random sprite?
     .dw asteroid_respawn_sprite_table ; pointer to sprite table
   ;
-  asteroid_respawn_yspeed_table: ; could vary with difficulty!?
+  shard_respawn_parameters:
+    .db SHARD_MAX
+    .dw shard_init_table
+    .db TRUE  ; random yspeed?
+    .dw asteroid_and_shard_respawn_yspeed_table
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw shard_respawn_sprite_table ; pointer to sprite table
+  ;
+  ;
+  asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120
       .db 1
     .endr
@@ -1322,6 +1336,11 @@ tall_meta_sprite_table:
       .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
       .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
       .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
+    .endr
+  ;
+  shard_respawn_sprite_table:
+    .rept 64
+      .db YELLOW_SHARD_SPRITE, BROWN_SHARD_SPRITE, GREY_SHARD_SPRITE, PURPLE_SHARD_SPRITE
     .endr
   ;
   handle_asteroid_spawning:
