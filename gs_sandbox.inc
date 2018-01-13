@@ -112,6 +112,25 @@ run_sandbox:
   ld iy,update_spinner_parameters
   call update_game_object
   ;
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update booster.
+  ld ix,booster
+  ld a,(ix+game_object.state)           ; If booster is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,booster_trigger
+    call process_trigger
+    jp nc,+
+        ld ix,booster
+        ld iy,booster_respawn_parameters
+        call respawn_game_object
+  +:
+  ;
+  ld ix,booster
+  ld iy,update_booster_parameters
+  call update_game_object
+  ;
+
   ;
   call is_reset_pressed
   jp nc,+

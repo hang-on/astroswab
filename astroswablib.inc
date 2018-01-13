@@ -1327,7 +1327,36 @@ tall_meta_sprite_table:
     .db FALSE ; random sprite?
     .dw UNUSED_WORD ; pointer to sprite table
   ;
-
+  .equ BOOSTER_MAX 1
+  booster_respawn_parameters:
+    .db BOOSTER_MAX
+    .dw booster_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db TRUE ; random sprite?
+    .dw booster_respawn_sprite_table ; pointer to sprite table
+  ;
+  booster_respawn_sprite_table:
+    .rept 64
+      .db SPRITE_18, SPRITE_19, SPRITE_20, SPRITE_20
+    .endr
+  update_booster_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw booster_hits_ground
+  .db BOOSTER_GROUND_ZONE_START, BOOSTER_GROUND_ZONE_END
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw $0000
+  .db 0, 0
+  ; Animate object
+  .db FALSE
   ;
   asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120
@@ -1359,6 +1388,17 @@ tall_meta_sprite_table:
       .db YELLOW_SHARD_SPRITE, BROWN_SHARD_SPRITE, GREY_SHARD_SPRITE, PURPLE_SHARD_SPRITE
     .endr
   ;
+  booster_hits_ground:
+    ; IX points to object.
+    call deactivate_game_object
+  ret
+
+
+
+
+
+
+
   handle_asteroid_spawning:
   ld ix,asteroid_trigger
   call process_trigger
