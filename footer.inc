@@ -182,6 +182,7 @@
     .dw shard, shard_init_table, SHARD_MAX
     .dw bee, bee_init_table, 1
     .dw swabby_death, swabby_death_init_table, 1
+    .dw ufo, ufo_init_table, 1
   batch_game_object_init_table_end:
   ;
   game_object_respawn_horizontal_position_table:
@@ -416,7 +417,30 @@
   ; Put in collision table
   .db TRUE
     ;
+  ufo_init_table:
+    .db SPRITE_21, UFO_YSPEED_INIT, UFO_XSPEED_INIT, GAME_OBJECT_SHAPE_WIDE
+    .db 10, 10, GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 32, 16, UFO
+    .db UNUSED_BYTE
+    .dw UNUSED_WORD
   ;
+  update_ufo_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .db UNUSED_BYTE, UNUSED_BYTE
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .db UNUSED_BYTE, UNUSED_BYTE
+  ; Animate object
+  .db FALSE
+  ; Put in collision table
+  .db TRUE
+
+
+
+
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE

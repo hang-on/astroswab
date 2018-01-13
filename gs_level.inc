@@ -190,7 +190,9 @@ run_level:
   ld iy,update_missile_parameters
   call update_game_object
   ; -------------------------------------------------------------------------
-  ;
+
+
+
   ; Update peak score as necessary.
   ld iy,player_score
   ld ix,peak_score

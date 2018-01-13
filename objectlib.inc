@@ -29,6 +29,9 @@
 .equ GAME_OBJECT_SHAPE_TALL 1
 .equ GAME_OBJECT_SHAPE_WIDE 2
 .equ GAME_OBJECT_SHAPE_SMALL 3
+.equ NUMBER_OF_SPRITES_IN_WIDE_METASPRITE 8
+.equ NUMBER_OF_SPRITES_IN_TALL_METASPRITE 8
+.equ NUMBER_OF_SPRITES_IN_REGULAR_METASPRITE 4
 ;
 .equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
 ;
@@ -340,6 +343,8 @@
       jp z,regular_shape
       cp GAME_OBJECT_SHAPE_TALL
       jp z,tall_shape
+      cp GAME_OBJECT_SHAPE_WIDE
+      jp z,wide_shape
     draw_game_object_end:
     RESTORE_REGISTERS
   ret
@@ -350,10 +355,19 @@
     call add_sprite
   jp draw_game_object_end
   regular_shape:
+    ld hl,regular_meta_sprite_table
+    ld a,NUMBER_OF_SPRITES_IN_REGULAR_METASPRITE
     call add_metasprite
   jp draw_game_object_end
   tall_shape:
-    call add_tall_metasprite
+    ld hl,tall_meta_sprite_table
+    ld a,NUMBER_OF_SPRITES_IN_TALL_METASPRITE
+    call add_metasprite
+  jp draw_game_object_end
+  wide_shape:
+    ld hl,wide_meta_sprite_table
+    ld a,NUMBER_OF_SPRITES_IN_WIDE_METASPRITE
+    call add_metasprite
   jp draw_game_object_end
   ;
   load_animation_game_object:

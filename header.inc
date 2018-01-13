@@ -103,6 +103,7 @@
   .equ CURSOR_EFFECT 9
   .equ NOT_MOVING 0
   .equ SWABBY_DEATH 10
+  .equ UFO 11
 ;
   .equ RUMBLE_END_TRIGGER_INTERVAL 45
 ;
@@ -284,6 +285,11 @@
   .equ MISSILE_GROUND_ZONE_END MISSILE_GROUND_ZONE_START+8
   .equ MISSILE_MAX 1
 ;
+; UFO:
+  .equ UFO_YSPEED_INIT 0
+  .equ UFO_XSPEED_INIT 2
+  .equ UFO_MAX 1
+;
 .equ INITIAL_DIFFICULTY 0
 .equ DIFFICULTY_MAX 3
 ;
@@ -398,6 +404,8 @@
   ;
   missile instanceof game_object
   missile_trigger instanceof trigger
+  ;
+  ufo instanceof game_object
   ;
   bullet instanceof game_object BULLET_MAX
   gun_timer db

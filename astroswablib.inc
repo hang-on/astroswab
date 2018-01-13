@@ -13,14 +13,15 @@
 .section "Misc functions" free
 ; -----------------------------------------------------------------------------
 add_metasprite:
-  ; Put a 16x16 metasprite in the SAT.
+  ; Put a metasprite in the SAT.
   ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
   ;             and IX+2 is the character code.
+  ;        HL = Pointer to layout block
+  ;         A = Number of hardware sprites in metasprite.
   ; Uses: AF, BC, DE, HL
   ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
   ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-  ld d,4
-  ld hl,meta_sprite_table
+  ld d,a
   -:
     ld a,(ix+0)
     add a,(hl)
@@ -39,49 +40,34 @@ add_metasprite:
     dec d
   jp nz,-
 ret
-meta_sprite_table:
-  .db 0, 0, 0
-  .db 0, 8, 1
-  .db 8, 0, 4
-  .db 8, 8, 5
 ;
-add_tall_metasprite:
-  ; Put a 16x32 metasprite in the SAT.
-  ; Entry: IX = Pointer to meta sprite data block, where IX+0 is Y, IX+1 is X
-  ;             and IX+2 is the character code.
-  ; Uses: AF, BC, DE, HL
-  ; Dependencies: add_sprite (in bluelib), and a spritesheet formatted as
-  ; 2x21 16x16 images, loaded into SPRITE_BANK_START.
-  ld d,8
-  ld hl,tall_meta_sprite_table
-  -:
-    ld a,(ix+0)
-    add a,(hl)
-    ld b,a
-    inc hl
-    ld a,(ix+1)
-    add a,(hl)
-    ld c,a
-    inc hl
-    ld a,(hl)
-    ld e,a
-    ld a,(ix+2)
-    add a,e
-    inc hl
-    call add_sprite
-    dec d
-  jp nz,-
-ret
-tall_meta_sprite_table:
-  .db 0, 0, 0
-  .db 0, 8, 1
-  .db 8, 0, 4
-  .db 8, 8, 5
+  regular_meta_sprite_table:
+    .db 0, 0, 0
+    .db 0, 8, 1
+    .db 8, 0, 4
+    .db 8, 8, 5
   ;
-  .db 16, 0, 6
-  .db 16, 8, 7
-  .db 24, 0, 10
-  .db 24, 8, 11
+  tall_meta_sprite_table:
+    .db 0, 0, 0
+    .db 0, 8, 1
+    .db 8, 0, 4
+    .db 8, 8, 5
+    ;
+    .db 16, 0, 6
+    .db 16, 8, 7
+    .db 24, 0, 10
+    .db 24, 8, 11
+  ;
+  wide_meta_sprite_table:
+    .db 0, 0, 0
+    .db 0, 8, 1
+    .db 0, 16, 2
+    .db 0, 24, 3
+    ;
+    .db 8, 0, 4
+    .db 8, 8, 5
+    .db 8, 16, 6
+    .db 8, 24, 7
   ;
   ;
   asteroid_hits_ground:
