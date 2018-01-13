@@ -75,6 +75,15 @@ run_level:
   call move_and_draw_bullets                ; FIXME! Remove game object instance from function name
   ;
   call handle_asteroid_spawning             ; FIXME! Remove game object instance from function name
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update asteroids.
+  ld ix,asteroid_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
+    ld ix,asteroid
+    ld iy,asteroid_respawn_parameters
+    call respawn_game_object
+  +:
   ;
   ld ix,asteroid
   ld iy,update_asteroid_parameters
@@ -84,44 +93,16 @@ run_level:
     call update_game_object
     add ix,de
   djnz -
-  ;
   ; ---------------------------------------------------------------------------
-  ld ix,shard_trigger               ;
-  call process_trigger
-  jp nc,++
-    ld b,SHARD_MAX
+  ; Spawn and update shards.
+  ld ix,shard_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
     ld ix,shard
-    -:
-      push bc
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_INACTIVE        ; Search for an inactive shard.
-      jp nz,+
-        call spawn_game_object_in_invisible_area
-        ld a,SHARD_YELLOW_SPRITE
-        ld b,a
-        call get_random_number
-        and %00000011
-        add a,b
-        ld (ix+game_object.sprite),a
-        call get_random_number
-        and SHARD_SPEED_MODIFIER
-        inc a
-        ld b,SHARD_FREEFALLING_XSPEED
-        ld (ix+game_object.yspeed),a
-        ld (ix+game_object.xspeed),b
-        call activate_game_object
-        ; Fix for exploding shards:
-        ld a,SHARD
-        ld (ix+game_object.id),a
-        jp ++                        ; Jump out of loop.
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz -
-  ++:
+    ld iy,shard_respawn_parameters
+    call respawn_game_object
+  +:
   ;
-
   ld ix,shard
   ld iy,update_shard_parameters
   ld de,_sizeof_game_object
@@ -130,7 +111,6 @@ run_level:
     call update_game_object
     add ix,de
   djnz -
-
   ;
   ;
   ;
