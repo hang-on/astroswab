@@ -7,6 +7,8 @@ prepare_sandbox:
   di
   call disable_display_and_sound
   ;
+  call randomize
+  ;
   call initialize_variables_once_per_game
   call initialize_variables_once_per_level
   call setup_level_graphics
@@ -44,9 +46,25 @@ run_sandbox:
   call handle_swabby_gun
   ;
   ;
-  call move_and_draw_bullets
+  ;call move_and_draw_bullets
+  ld ix,bullet
+  ld iy,update_bullet_parameters
+  ld de,_sizeof_game_object
+  ld b,BULLET_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
   ;
-  call handle_asteroid_spawning
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update asteroids.
+  ld ix,asteroid_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
+    ld ix,asteroid
+    ld iy,asteroid_respawn_parameters
+    call respawn_game_object
+  +:
   ;
   ld ix,asteroid
   ld iy,update_asteroid_parameters
@@ -56,7 +74,71 @@ run_sandbox:
     call update_game_object
     add ix,de
   djnz -
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update shards.
+  ld ix,shard_trigger
+  call process_trigger ; NB: Save the registers!
+  jp nc,+
+    ld ix,shard
+    ld iy,shard_respawn_parameters
+    call respawn_game_object
+  +:
   ;
+  ld ix,shard
+  ld iy,update_shard_parameters
+  ld de,_sizeof_game_object
+  ld b,SHARD_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
+  ;
+  ;
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update spinner.
+  ld ix,spinner
+  ld a,(ix+game_object.state)           ; If spinner is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,missile                       ; If missile is already out, skip!
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp z,+
+      ld ix,spinner_trigger
+      call process_trigger
+      jp nc,+
+          ld ix,spinner
+          ld iy,spinner_respawn_parameters
+          call respawn_game_object
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,spinner_coming_down
+          call PSGPlayNoRepeat
+  +:
+
+  ;
+  ld ix,spinner
+  ld iy,update_spinner_parameters
+  call update_game_object
+  ;
+  ; ---------------------------------------------------------------------------
+  ; Spawn and update booster.
+  ld ix,booster
+  ld a,(ix+game_object.state)           ; If booster is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,booster_trigger
+    call process_trigger
+    jp nc,+
+        ld ix,booster
+        ld iy,booster_respawn_parameters
+        call respawn_game_object
+  +:
+  ;
+  ld ix,booster
+  ld iy,update_booster_parameters
+  call update_game_object
+  ;
+
   ;
   call is_reset_pressed
   jp nc,+

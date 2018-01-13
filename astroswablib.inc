@@ -119,6 +119,17 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  booster_hits_ground:
+    ; IX points to object.
+    call deactivate_game_object
+  ret
+  ;
+  ;
+  bullet_hits_deactivate_zone:
+    call deactivate_game_object
+  ret
+  ;
+  ;
   detect_and_handle_bullet_collisions:
     ; For each bullet, test it against all other objects in the relevant
     ; collision table. If a collision happens, then run a handler according to
@@ -407,41 +418,6 @@ tall_meta_sprite_table:
   ret
   ;
   ;
-  handle_asteroid_spawning:
-  ld ix,asteroid_trigger
-  call process_trigger
-  ret nc
-    ld b,ASTEROID_MAX
-    ld ix,asteroid
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_INACTIVE        ; Search for an inactive asteroid.
-        jp nz,next_asteroid
-          ;
-          call spawn_game_object_in_invisible_area
-          call get_random_number
-          and ASTEROID_SPRITE_MASK
-          ld b,(new_asteroid_sprite_table_end-new_asteroid_sprite_table)/2
-          ld hl, new_asteroid_sprite_table
-          call convert_byte
-          ld (ix+game_object.sprite),a
-          call get_random_number
-          and ASTEROID_SPEED_MODIFIER
-          jp nz,+
-            inc a
-          +:
-          ld (ix+game_object.yspeed),a
-          call activate_game_object
-          ;
-          pop bc                      ; Align stack.
-          ret                         ; Jump out of loop.
-        next_asteroid:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ret
   ;
   ;
   handle_bullet_collision:
@@ -588,6 +564,26 @@ tall_meta_sprite_table:
   ;
   ;
   handle_swabby_death:
+    ld ix,swabby_death_trigger
+    call process_trigger
+    jp nc,+
+      ld a,DISABLED                   ; Switch off trigger.
+      ld (ix+trigger.state),a
+      ;
+      ld ix,swabby_death              ; Remove the death animation object.
+      ld a,GAME_OBJECT_INACTIVE
+      ld (ix+game_object.state),a
+    +:
+    ; Swabby death game object: The death animation (little explosion).
+    ld ix,swabby_death
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    jp nz,+
+      call animate_game_object
+      call draw_game_object              ; Put it in the SAT.
+    +:
+
+    ;
     ; First, see if the collision tests resulted in flipping the kill switch.
     ld a,(kill_swabby_flag)             ; Test flag - should we kill Swabby?
     cp TRUE
@@ -815,6 +811,8 @@ tall_meta_sprite_table:
     call batch_initialize_triggers
     ;
     ; The spinner-hit-rumble-effect.
+    xor a
+    ld (vscroll_value),a
     ld a,FLAG_RESET
     ld (rumble_flag),a
     ld ix,rumble_end_trigger
@@ -881,61 +879,6 @@ tall_meta_sprite_table:
     ld hl,explosion
     ld c,SFX_CHANNELS2AND3
     call PSGSFXPlay
-  ret
-  ;
-  ;
-  move_and_draw_asteroids:
-    ;
-    ld ix,asteroid
-    ld b,ASTEROID_MAX
-    -:
-      push bc
-        ld a,(ix+game_object.state)
-        cp GAME_OBJECT_ACTIVE
-        jp nz,+
-          call move_game_object
-          push ix
-            ld a,ASTEROID_DEACTIVATE_ZONE_START
-            ld b,ASTEROID_DEACTIVATE_ZONE_END
-            ld hl,asteroid_hits_ground
-            call horizontal_zone_send_to_handler
-          pop ix
-          ld a,VERTICAL_DEACTIVATE_ZONE_START
-          ld b,VERTICAL_DEACTIVATE_ZONE_END
-          call vertical_zone_deactivate_game_object
-          ;
-          call draw_game_object              ; Put it in the SAT.
-          call add_game_object_to_collision_table
-        ;
-        +:
-        ld de,_sizeof_game_object
-        add ix,de
-      pop bc
-    djnz -
-  ret
-  ;
-  ;
-  move_and_draw_bullets:
-    ld ix,bullet
-    ld b,BULLET_MAX
-    -:
-      push bc
-      ;
-      ld a,(ix+game_object.state)
-      cp GAME_OBJECT_ACTIVE
-      jp nz,+
-        ; Bullet 'collides' with deactivate zone?
-        ld a,BULLET_DEACTIVATE_ZONE_START
-        ld b,BULLET_DEACTIVATE_ZONE_END
-        call horizontal_zone_deactivate_game_object
-        call move_game_object
-        call draw_game_object
-        ;
-      +:
-      ld de,_sizeof_game_object
-      add ix,de
-      pop bc
-    djnz -
   ret
   ;
   ;
@@ -1023,6 +966,81 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  respawn_game_object:
+    ; IX = Game object (first instance if array).
+    ; IY = Pointer to parameter string.
+    ; Get number of instantations from paramter string...
+    ld a,(iy+0)
+    call get_inactive_game_object ; NB! Save IY or other relevant registers here
+    ret c
+      ld l,(iy+1)
+      ld h,(iy+2)
+      call initialize_game_object
+      ld a,(iy+3) ; random yspeed?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+4)
+        ld h,(iy+5)
+        call get_byte_from_table
+        ld (ix+game_object.yspeed),a
+      +:
+      ld a,(iy+6) ; random xspeed?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+7)
+        ld h,(iy+8)
+        call get_byte_from_table
+        ld (ix+game_object.xspeed),a
+      +:
+      ld a,(iy+9) ; random horizontal position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+10)
+        ld h,(iy+11)
+        call get_byte_from_table
+        ld (ix+game_object.x),a
+      +:
+      ld a,(iy+12) ; random vertical position?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+13)
+        ld h,(iy+14)
+        call get_byte_from_table
+        ld (ix+game_object.y),a
+      +:
+      ld a,(iy+15) ; random sprite?
+      cp TRUE
+      jp nz,+
+        call get_random_number
+        ld l,(iy+16)
+        ld h,(iy+17)
+        call get_byte_from_table
+        ld (ix+game_object.sprite),a
+      +:
+      ;
+      call activate_game_object
+  ret
+  ;
+  ;
+  respawn_swabby:
+  ; IX = Pointer to trigger
+  ; FIXME: Use initialize_variables_once_per_life instead!
+    ld a,DISABLED
+    ld (ix+trigger.state),a
+    ld ix,swabby
+    ld hl,swabby_init_table
+    call initialize_game_object
+    ld a,TRUE
+    ld (swabby_responds_to_player_input),a
+    ld (swabby_can_collide_with_objects),a
+    call init_triggers_according_to_difficulty
+  ret
+  ;
+  ;
   setup_level_graphics:
     ; Load various assets into vram and clears SAT.
     ; Entry: None - uses consts and globals.
@@ -1035,6 +1053,8 @@ tall_meta_sprite_table:
     ld a,DARK_BLUE
     ld b,REGISTER_7
     call set_register
+    ;
+    ;
     ; Print the dummy text under the playfield.
     ld b,DUMMY_TEXT_ROW
     ld c,DUMMY_TEXT_COLUMN
@@ -1062,6 +1082,11 @@ tall_meta_sprite_table:
     ld a,SCORE_TENS
     ld b,1
     call subtract_from_score
+  ret
+  ;
+  ;
+  shard_hits_blanked_column:
+    call deactivate_game_object
   ret
   ;
   ;
@@ -1135,6 +1160,64 @@ tall_meta_sprite_table:
   ret
   ;
   ;
+  update_game_object:
+    ; Perform various per-frame actions on an active game object.
+    ; IX = Pointer to game object.
+    ; IY = Pointer to parameter string.
+    ;
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+      ;
+      ld a,(iy+0)       ; Test game object against horizontal zone?
+      cp TRUE
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+1)
+          ld h,(iy+2)
+          ld b,(iy+3)
+          ld c,(iy+4)
+          ld a,(ix+game_object.y)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ;
+      ld a,(iy+5)
+      cp TRUE           ; Test game object against vertical zone?
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+6)
+          ld h,(iy+7)
+          ld b,(iy+8)
+          ld c,(iy+9)
+          ld a,(ix+game_object.x)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ld a,(iy+10)
+      cp TRUE
+      call z,animate_game_object
+      ;
+      call move_game_object
+      call draw_game_object
+      ld a,(iy+11)
+      cp TRUE
+      call z,add_game_object_to_collision_table
+  ret
+  ;
+  ;
+  within_range_send_to_handler:
+    ; Entry: IX = Pointer to struct.
+    ;        HL = Pointer to handler.
+    ;        A = number. B = Range start. C = Range end.
+    cp b
+    ret c
+    cp c
+    ret nc
+      jp (hl)
+  ret
+  ;
+  ;
   wipe_sprites:
     ; Wipe sprites.
     call begin_sprites
@@ -1144,90 +1227,14 @@ tall_meta_sprite_table:
   ;
 .ends
 ;
-;
-;
 
-;
 ; -----------------------------------------------------------------------------
-.section "Empty section" free
-; -----------------------------------------------------------------------------
-  update_game_object:
-    ; Move and draw (add here...) game object. Only if active.
-    ; IX = Pointer to game object.
-    ; IY = Pointer to parameter string.
-    ;
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    ret nz
-      ;
-      ld a,(iy+0)
-      cp TRUE
-      call z,handle_active_game_objects_in_horizontal_zone
-      ;
-      call move_game_object
-      call draw_game_object
-      call add_game_object_to_collision_table
-
-  ret
-    update_asteroid_parameters:
-    .db TRUE
-    .dw asteroid_hits_ground
-    .db ASTEROID_DEACTIVATE_ZONE_START, ASTEROID_DEACTIVATE_ZONE_END
-
-  handle_active_game_objects_in_horizontal_zone:
-    ; IX = Game object.
-    ; IY = Parameters: Word: Pointer to handler, word: hzone start, end
-    SAVE_REGISTERS
-      ld l,(iy+1)
-      ld h,(iy+2)
-      ld a,(iy+3)
-      ld b,(iy+4)
-      call horizontal_zone_send_to_handler
-    RESTORE_REGISTERS
-  ret
-
-
-
-  ld a,ASTEROID_DEACTIVATE_ZONE_START
-  ld b,ASTEROID_DEACTIVATE_ZONE_END
-  ld hl,asteroid_hits_ground
-  call horizontal_zone_send_to_handler
-
-.ends
-;
-; ---------------------------------------------------------------------------
-.section "Empty section 2" free
-; ---------------------------------------------------------------------------
-  ;
-
-  ;
-
-.ends
-;
-;
-;
-; -----------------------------------------------------------------------------
-; SANDBOX AND CONSOLE
-; -----------------------------------------------------------------------------
-; Work- and testbench. Here we can develop and test new functions before they
-; are integrated into the astroswablib or other libraries.
+;.section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
 
+;.ends
+;.ramsection "Sandbox and console variables" slot 3
   ;
   ;
-; -----------------------------------------------------------------------------
-.ramsection "Sandbox and console variables" slot 3
-  ;
-  ;
-.ends
-;
-;
-; -----------------------------------------------------------------------------
-.section "Sandbox and console functions" free
-  ;
-  sandbox_function_1:
-    ; ...
-  ret
-  ;
-.ends
+;.ends
