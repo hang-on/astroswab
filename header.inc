@@ -289,6 +289,14 @@
   .equ UFO_YSPEED_INIT 0
   .equ UFO_XSPEED_INIT 2
   .equ UFO_MAX 1
+  .equ UFO_BOMB_MAX 5
+  .equ UFO_BOMB_Y_OFFSET 28
+  .equ UFO_BOMB_X_OFFSET 16
+  .equ UFO_BOMB_Y_SPEED 4
+  .equ UFO_BOMB_X_SPEED 0
+  .equ UFO_BOMB_DEACTIVATE_ZONE_START SWABBY_Y_INIT+8
+  .equ UFO_BOMB_DEACTIVATE_ZONE_END UFO_BOMB_DEACTIVATE_ZONE_START+UFO_BOMB_Y_SPEED+1
+
 ;
 .equ INITIAL_DIFFICULTY 0
 .equ DIFFICULTY_MAX 3
@@ -406,6 +414,7 @@
   missile_trigger instanceof trigger
   ;
   ufo instanceof game_object
+  ufo_bomb instanceof game_object UFO_BOMB_MAX
   ;
   bullet instanceof game_object BULLET_MAX
   gun_timer db

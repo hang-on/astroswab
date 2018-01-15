@@ -437,7 +437,8 @@
   .db FALSE
   ; Put in collision table
   .db TRUE
-
+  ;
+  ;UFO Bombs:
 
 
 
