@@ -101,9 +101,12 @@
   .equ BOOSTER 7
   .equ BEE 8
   .equ CURSOR_EFFECT 9
-  .equ NOT_MOVING 0
   .equ SWABBY_DEATH 10
   .equ UFO 11
+  .equ UFO_BOMB 12
+  ;
+  .equ NOT_MOVING 0
+
 ;
   .equ RUMBLE_END_TRIGGER_INTERVAL 45
 ;
@@ -296,7 +299,7 @@
   .equ UFO_BOMB_X_SPEED 0
   .equ UFO_BOMB_DEACTIVATE_ZONE_START SWABBY_Y_INIT+8
   .equ UFO_BOMB_DEACTIVATE_ZONE_END UFO_BOMB_DEACTIVATE_ZONE_START+UFO_BOMB_Y_SPEED+1
-
+  .equ UFO_GUN_INTERVAL 30
 ;
 .equ INITIAL_DIFFICULTY 0
 .equ DIFFICULTY_MAX 3
@@ -414,7 +417,9 @@
   missile_trigger instanceof trigger
   ;
   ufo instanceof game_object
+  ufo_trigger instanceof trigger
   ufo_bomb instanceof game_object UFO_BOMB_MAX
+  ufo_gun_trigger instanceof trigger
   ;
   bullet instanceof game_object BULLET_MAX
   gun_timer db
