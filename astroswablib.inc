@@ -825,6 +825,10 @@ ret
     ld ix,transition_trigger
     ld hl,transition_trigger_init_table
     call initialize_trigger
+    ; 
+    ld ix,ufo_gun_trigger
+    ld hl,ufo_gun_trigger_init_table
+    call initialize_trigger
     ;
     ; Reset all game objects (Swabby, asteroids, etc.)
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
@@ -843,6 +847,8 @@ ret
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
+    ;
+
   ret
   ;
   ;
@@ -1125,6 +1131,8 @@ ret
   ret
   ;
   ;
+  ;
+  ;
   update_dashboard:
     ; Collection of calls to functions that update/refresh info on the dashboard.
     ; I.e. score, peak score, lives, gun level...
@@ -1146,50 +1154,6 @@ ret
   ret
   ;
   ;
-  update_game_object:
-    ; Perform various per-frame actions on an active game object.
-    ; IX = Pointer to game object.
-    ; IY = Pointer to parameter string.
-    ;
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    ret nz
-      ;
-      ld a,(iy+0)       ; Test game object against horizontal zone?
-      cp TRUE
-      jp nz,+
-        SAVE_REGISTERS
-          ld l,(iy+1)
-          ld h,(iy+2)
-          ld b,(iy+3)
-          ld c,(iy+4)
-          ld a,(ix+game_object.y)
-          call within_range_send_to_handler
-        RESTORE_REGISTERS
-      +:
-      ;
-      ld a,(iy+5)
-      cp TRUE           ; Test game object against vertical zone?
-      jp nz,+
-        SAVE_REGISTERS
-          ld l,(iy+6)
-          ld h,(iy+7)
-          ld b,(iy+8)
-          ld c,(iy+9)
-          ld a,(ix+game_object.x)
-          call within_range_send_to_handler
-        RESTORE_REGISTERS
-      +:
-      ld a,(iy+10)
-      cp TRUE
-      call z,animate_game_object
-      ;
-      call move_game_object
-      call draw_game_object
-      ld a,(iy+11)
-      cp TRUE
-      call z,add_game_object_to_collision_table
-  ret
   ;
   ;
   within_range_send_to_handler:

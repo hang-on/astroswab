@@ -275,6 +275,51 @@
     call activate_game_object
   ret
   ;
+  update_game_object:
+    ; Perform various per-frame actions on an active game object.
+    ; IX = Pointer to game object.
+    ; IY = Pointer to parameter string.
+    ;
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+      ;
+      ld a,(iy+0)       ; Test game object against horizontal zone?
+      cp TRUE
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+1)
+          ld h,(iy+2)
+          ld b,(iy+3)
+          ld c,(iy+4)
+          ld a,(ix+game_object.y)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ;
+      ld a,(iy+5)
+      cp TRUE           ; Test game object against vertical zone?
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+6)
+          ld h,(iy+7)
+          ld b,(iy+8)
+          ld c,(iy+9)
+          ld a,(ix+game_object.x)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ld a,(iy+10)
+      cp TRUE
+      call z,animate_game_object
+      ;
+      call move_game_object
+      call draw_game_object
+      ld a,(iy+11)
+      cp TRUE
+      call z,add_game_object_to_collision_table
+  ret
+  ;
   ; ---------------------------------------------------------------------------
   ; DRAWING AND ANIMATING.
   animate_game_object:

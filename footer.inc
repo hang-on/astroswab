@@ -183,6 +183,7 @@
     .dw bee, bee_init_table, 1
     .dw swabby_death, swabby_death_init_table, 1
     .dw ufo, ufo_init_table, 1
+    .dw ufo_bomb, ufo_bomb_init_table, UFO_BOMB_MAX
   batch_game_object_init_table_end:
   ;
   game_object_respawn_horizontal_position_table:
@@ -447,6 +448,21 @@
   ufo_gun_trigger_init_table:
     .db 255, UFO_GUN_INTERVAL
     .db DISABLED, DEFAULT_CYCLE_VALUE
+  ;
+  update_ufo_bomb_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw deactivate_game_object
+  .db SHARD_DEACTIVATE_ZONE_START, SHARD_DEACTIVATE_ZONE_END ; reverse?
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .dw UNUSED_WORD
+  ; animate?
+  .db FALSE
+  ; Put in collision table
+  .db FALSE
+
   ;
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
