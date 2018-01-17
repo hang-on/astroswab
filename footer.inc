@@ -480,7 +480,7 @@
   ;
   ufo_gun_trigger_init_table:
     .db 255, UFO_GUN_INTERVAL
-    .db ENABLED, DEFAULT_CYCLE_VALUE
+    .db DISABLED, DEFAULT_CYCLE_VALUE
   ;
   update_ufo_bomb_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?

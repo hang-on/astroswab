@@ -208,6 +208,8 @@ run_level:
         +:
         ld ix,ufo
         call respawn_game_object
+        ld a,ENABLED
+        ld (ufo_gun_trigger.state),a
         ;SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
         ;ld hl,ufo_sound
         ;call PSGPlay
