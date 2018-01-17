@@ -431,9 +431,9 @@
   .dw UNUSED_WORD
   .db UNUSED_BYTE, UNUSED_BYTE
   ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw UNUSED_WORD
-  .db UNUSED_BYTE, UNUSED_BYTE
+  .db TRUE
+  .dw ufo_hits_blanked_column
+  .db UFO_VERTICAL_ZONE_START, UFO_VERTICAL_ZONE_END
   ; Animate object
   .db FALSE
   ; Put in collision table

@@ -214,8 +214,8 @@ run_level:
   ld a,(ufo.state)
   cp GAME_OBJECT_ACTIVE
   jp nz,+
-    ld ix,ufo_gun_trigger
-    call process_trigger
+    ld ix,ufo_gun_trigger   ; Note: This might be rot! The trigger is always on
+    call process_trigger    ; but is only processed when ufo is active...?
     jp nc,+
       ld ix,ufo_bomb
       call get_inactive_game_object

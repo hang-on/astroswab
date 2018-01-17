@@ -1166,6 +1166,12 @@ ret
   ret
   ;
   ;
+  ufo_hits_blanked_column:
+    ld a,(swabby_respawn_trigger.state)
+    cp ENABLED
+    ret nz
+      call deactivate_game_object
+  ret
   ;
   ;
   update_dashboard:
