@@ -411,13 +411,14 @@ ret
     ; objects.
     ; Entry: IX = bullet.
     ;        IY = game object that collides with bullet.
-    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating both items.
+    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating bullet.
     ld (ix+game_object.state),a
-    ld (iy+game_object.state),a
     ;
     ld a,(iy+game_object.id)      ; Do different stuff depending on id.
     cp SHARD                      ; Does bullet collide with a shard?
     jp nz,+                       ; No? - skip forward to next id test.
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ld hl,player_score          ; Yes? - award the player some points.
       ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
       ld b,2
@@ -426,6 +427,8 @@ ret
     +:
     cp ASTEROID
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       push ix
         call get_random_number
         cp ASTEROIDS_INTO_SHARDS_CHANCE
@@ -444,12 +447,13 @@ ret
         ld a,SCORE_TENS
         ld b,1
         call add_to_score
-
       pop ix
       ret
     +:
     cp SPINNER
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       call PSGStop
       SELECT_BANK SOUND_BANK
       call PSGSFXStop
@@ -466,6 +470,8 @@ ret
     +:
     cp BOOSTER
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_TENS
@@ -483,6 +489,8 @@ ret
     +:
     cp MISSILE
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_TENS
@@ -495,9 +503,12 @@ ret
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
+      ret
     +:
     cp UFO
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_HUNDREDS
@@ -511,8 +522,14 @@ ret
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
       ; FIXME: Add explosion object
-      ; and disable gun!
+      ret
     +:
+    cp UFO
+    jp nz,+
+      ; Bullet is destroyed but the ufo bombs keeps falling down!
+      ret
+    +:
+
   ret
   ;
   ;
