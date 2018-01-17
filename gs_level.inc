@@ -195,17 +195,23 @@ run_level:
   ld ix,ufo
   ld a,(ix+game_object.state)           ; If UFO is already out, skip!
   cp GAME_OBJECT_ACTIVE
-  jp z,+
+  jp z,++
     ld ix,ufo_trigger
     call process_trigger
-    jp nc,+
-        ld ix,ufo
+    jp nc,++
+        ; Left-to-right or reverse ufo..?
         ld iy,ufo_respawn_parameters
+        call get_random_number
+        cp PERCENT_CHANCE_50
+        jp c,+
+          ld iy,reverse_ufo_respawn_parameters
+        +:
+        ld ix,ufo
         call respawn_game_object
         ;SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
         ;ld hl,ufo_sound
         ;call PSGPlay
-  +:
+  ++:
   ;
   ld ix,ufo
   ld iy,update_ufo_parameters

@@ -424,6 +424,12 @@
     .db %00000000, 0, 0, 32, 16, UFO
     .db UNUSED_BYTE
     .dw UNUSED_WORD
+  reverse_ufo_init_table:
+    .db SPRITE_21, UFO_YSPEED_INIT, -(UFO_XSPEED_INIT), GAME_OBJECT_SHAPE_WIDE
+    .db 10, 246, GAME_OBJECT_INACTIVE
+    .db %00000000, 0, 0, 32, 16, UFO
+    .db UNUSED_BYTE
+    .dw UNUSED_WORD
   ;
   update_ufo_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -442,6 +448,19 @@
   ufo_respawn_parameters:
     .db UFO_MAX
     .dw ufo_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random horizontal position?
+    .dw UNUSED_WORD
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  reverse_ufo_respawn_parameters:
+    .db UFO_MAX
+    .dw reverse_ufo_init_table
     .db FALSE  ; random yspeed?
     .dw UNUSED_WORD
     .db FALSE ; random xspeed?
