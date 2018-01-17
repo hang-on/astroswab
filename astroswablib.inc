@@ -496,13 +496,30 @@ ret
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
     +:
+    cp UFO
+    jp nz,+
+      ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,1
+      call add_to_score
+      ;
+      ;call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ; FIXME: Add explosion object
+      ; and disable gun!
+    +:
   ret
   ;
   ;
   handle_swabby_collision:
-    ; Placeholder function for handling what happens when swabby collides with
+    ; Function for handling what happens when Swabby collides with
     ; other objects.
-    ; IX = swabby, IY other object..
+    ; IX = Swabby, IY other object..
     ld a,GAME_OBJECT_INACTIVE
     ld (iy+game_object.state),a
     ;
@@ -769,6 +786,10 @@ ret
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
     ;
+    ld ix,ufo_gun_trigger
+    ld hl,ufo_gun_trigger_init_table
+    call initialize_trigger
+    ;
     .ifdef DEVELOPER_MODE
       ; Reset debug meters:
       call reset_vblank_profiler
@@ -825,10 +846,7 @@ ret
     ld ix,transition_trigger
     ld hl,transition_trigger_init_table
     call initialize_trigger
-    ; 
-    ld ix,ufo_gun_trigger
-    ld hl,ufo_gun_trigger_init_table
-    call initialize_trigger
+    ;
     ;
     ; Reset all game objects (Swabby, asteroids, etc.)
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE

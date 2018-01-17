@@ -420,7 +420,7 @@
     ;
   ufo_init_table:
     .db SPRITE_21, UFO_YSPEED_INIT, UFO_XSPEED_INIT, GAME_OBJECT_SHAPE_WIDE
-    .db 10, 10, GAME_OBJECT_ACTIVE
+    .db 10, 10, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 32, 16, UFO
     .db UNUSED_BYTE
     .dw UNUSED_WORD
@@ -439,6 +439,20 @@
   ; Put in collision table
   .db TRUE
   ;
+  ufo_respawn_parameters:
+    .db UFO_MAX
+    .dw ufo_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random horizontal position?
+    .dw UNUSED_WORD
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  ;
   ;UFO Bombs:
   ufo_bomb_init_table:
     .db SPRITE_49, UFO_BOMB_Y_SPEED, UFO_BOMB_X_SPEED, GAME_OBJECT_SHAPE_SMALL
@@ -447,7 +461,7 @@
   ;
   ufo_gun_trigger_init_table:
     .db 255, UFO_GUN_INTERVAL
-    .db DISABLED, DEFAULT_CYCLE_VALUE
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   update_ufo_bomb_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -461,7 +475,7 @@
   ; animate?
   .db FALSE
   ; Put in collision table
-  .db FALSE
+  .db TRUE
 
   ;
   swabby_init_table:
@@ -562,6 +576,8 @@
     .dw missile_trigger, trigger_wipe_table
     .dw shard_trigger, trigger_wipe_table
     .dw asteroid_trigger, trigger_wipe_table
+    .dw ufo_trigger, trigger_wipe_table
+    ;.dw ufo_gun_trigger, trigger_wipe_table
   batch_wipe_and_disable_all_triggers_table_end:
   trigger_wipe_table:
     .db 0, 0, DISABLED
@@ -578,6 +594,7 @@
     .dw missile_trigger, missile_trigger_init_table_0
     .dw shard_trigger, shard_trigger_init_table_0
     .dw asteroid_trigger, asteroid_trigger_init_table_0
+    .dw ufo_trigger, ufo_trigger_init_table_0
   difficulty_0_batch_trigger_init_table_end:
   difficulty_1_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_1
@@ -585,18 +602,21 @@
     .dw missile_trigger, missile_trigger_init_table_1
     .dw shard_trigger, shard_trigger_init_table_1
     .dw asteroid_trigger, asteroid_trigger_init_table_1
+    .dw ufo_trigger, ufo_trigger_init_table_1
   difficulty_2_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_2
     .dw booster_trigger, booster_trigger_init_table_2
     .dw missile_trigger, missile_trigger_init_table_2
     .dw shard_trigger, shard_trigger_init_table_2
     .dw asteroid_trigger, asteroid_trigger_init_table_2
+    .dw ufo_trigger, ufo_trigger_init_table_2
   difficulty_3_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_3
     .dw booster_trigger, booster_trigger_init_table_3
     .dw missile_trigger, missile_trigger_init_table_3
     .dw shard_trigger, shard_trigger_init_table_3
     .dw asteroid_trigger, asteroid_trigger_init_table_3
+    .dw ufo_trigger, ufo_trigger_init_table_3
   ;
   spinner_trigger_init_table_0:
     .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
@@ -612,6 +632,9 @@
     .db ENABLED, DEFAULT_CYCLE_VALUE
   asteroid_trigger_init_table_0:
     .db ASTEROID_TRIGGER_CHANCE_INIT_0, ASTEROID_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_0:
+    .db UFO_TRIGGER_CHANCE_INIT_0, UFO_TRIGGER_INTERVAL_INIT_0
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_1:
@@ -629,6 +652,9 @@
   asteroid_trigger_init_table_1:
     .db ASTEROID_TRIGGER_CHANCE_INIT_1, ASTEROID_TRIGGER_INTERVAL_INIT_1
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_1:
+    .db UFO_TRIGGER_CHANCE_INIT_1, UFO_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_2:
     .db SPINNER_TRIGGER_CHANCE_INIT_2, SPINNER_TRIGGER_INTERVAL_INIT_2
@@ -645,6 +671,9 @@
   asteroid_trigger_init_table_2:
     .db ASTEROID_TRIGGER_CHANCE_INIT_2, ASTEROID_TRIGGER_INTERVAL_INIT_2
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_2:
+    .db UFO_TRIGGER_CHANCE_INIT_0, UFO_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_3:
     .db SPINNER_TRIGGER_CHANCE_INIT_3, SPINNER_TRIGGER_INTERVAL_INIT_3
@@ -660,6 +689,9 @@
     .db ENABLED, DEFAULT_CYCLE_VALUE
   asteroid_trigger_init_table_3:
     .db ASTEROID_TRIGGER_CHANCE_INIT_3, ASTEROID_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_3:
+    .db UFO_TRIGGER_CHANCE_INIT_0, UFO_TRIGGER_INTERVAL_INIT_0
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   ;

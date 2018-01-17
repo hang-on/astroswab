@@ -190,9 +190,56 @@ run_level:
   ld iy,update_missile_parameters
   call update_game_object
   ; -------------------------------------------------------------------------
-
-
-
+  ;
+  ; Spawn UFO.
+  ld ix,ufo
+  ld a,(ix+game_object.state)           ; If UFO is already out, skip!
+  cp GAME_OBJECT_ACTIVE
+  jp z,+
+    ld ix,ufo_trigger
+    call process_trigger
+    jp nc,+
+        ld ix,ufo
+        ld iy,ufo_respawn_parameters
+        call respawn_game_object
+        ;SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+        ;ld hl,ufo_sound
+        ;call PSGPlay
+  +:
+  ;
+  ld ix,ufo
+  ld iy,update_ufo_parameters
+  call update_game_object
+  ;
+  ld a,(ufo.state)
+  cp GAME_OBJECT_ACTIVE
+  jp nz,+
+    ld ix,ufo_gun_trigger
+    call process_trigger
+    jp nc,+
+      ld ix,ufo_bomb
+      call get_inactive_game_object
+      jp c,+
+        ld hl,ufo_bomb_init_table
+        call initialize_game_object
+        call activate_game_object
+        push ix
+        pop iy
+        ld b,UFO_BOMB_Y_OFFSET
+        ld c,UFO_BOMB_X_OFFSET
+        ld ix,ufo
+        call position_game_object_in_relation_to_game_object
+  +:
+  ;
+  ld ix,ufo_bomb
+  ld iy,update_ufo_bomb_parameters
+  ld de,_sizeof_game_object
+  ld b,UFO_BOMB_MAX
+  -:
+    call update_game_object
+    add ix,de
+  djnz -
+  ;
   ; Update peak score as necessary.
   ld iy,player_score
   ld ix,peak_score
