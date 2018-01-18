@@ -507,8 +507,12 @@ ret
     +:
     cp UFO
     jp nz,+
-      ld a,GAME_OBJECT_INACTIVE
-      ld (iy+game_object.state),a
+      ld a,SPRITE_23
+      ld (ufo.sprite),a
+      ld a,NOT_MOVING
+      ld (ufo.xspeed),a
+      ld a,ENABLED
+      ld (ufo.timer_state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_HUNDREDS

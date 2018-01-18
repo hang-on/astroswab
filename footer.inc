@@ -445,19 +445,20 @@
     .db %00000000, 0, 0, 32, 16, UFO
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
-    .db UNUSED_BYTE ; Timer.
-    .dw UNUSED_WORD ; Timer handler.
+    .db UFO_EXPLODE_DURATION ; Timer.
+    .dw deactivate_game_object ; Timer handler.
     .db DISABLED    ; Timer state.
-
+  ;
   reverse_ufo_init_table:
     .db SPRITE_21, UFO_YSPEED_INIT, -(UFO_XSPEED_INIT), GAME_OBJECT_SHAPE_WIDE
     .db 10, 246, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 32, 16, UFO
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
-    .db UNUSED_BYTE ; Timer.
-    .dw UNUSED_WORD ; Timer handler.
+    .db UFO_EXPLODE_DURATION ; Timer.
+    .dw deactivate_game_object ; Timer handler.
     .db DISABLED    ; Timer state.
+  ;
   ;
   update_ufo_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
