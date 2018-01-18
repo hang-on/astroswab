@@ -215,6 +215,19 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.anim_pointer+1),a
+    ;
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_handler),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_handler+1),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_state),a
     pop hl
   ret
   ;
@@ -258,6 +271,24 @@
     djnz --
   ret
   ;
+  process_game_object_timer:
+    ; Timer is enabled. Count it down. If it reaches zero send to handler.
+    ; IX = Pointer to object.
+    ; IY Pointer to update parameters.
+    ;
+    dec (ix+game_object.timer)
+    ret nz
+        ld l,(ix+game_object.timer_handler)
+        ld h,(ix+game_object.timer_handler+1)
+        SAVE_REGISTERS
+          call call_hl
+        RESTORE_REGISTERS
+  ret
+    call_hl:
+      ; Jump to where HL is pointing to. Assume it is a handler that ends in
+      ; ret.
+      jp (hl)
+  ;
   spawn_game_object_in_invisible_area:
     ; Entry: IX = Pointer to enemy object.
     ; Object gets a random position and is activated!
@@ -286,6 +317,10 @@
     ld a,(ix+game_object.state)
     cp GAME_OBJECT_ACTIVE
     ret nz
+      ;
+      ld a,(ix+game_object.timer_state)
+      cp ENABLED
+      call z,process_game_object_timer
       ;
       ld a,(iy+0)       ; Test game object against horizontal zone?
       cp TRUE

@@ -254,6 +254,11 @@
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 0, 0, 8, 8, SHARD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   shard_conversion_table:
     .db YELLOW_ASTEROID_1, YELLOW_SHARD
@@ -318,7 +323,9 @@
     .db %00000000, 0, 0, 16, 24, SPINNER
     .db 0
     .dw spinner_anim_table
-    ; FIXME: Add anim data to all init tables!
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   update_spinner_parameters:
     ; Special handler for when the game object is in a specified horizontal zone?
     .db TRUE
@@ -352,8 +359,11 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
-    .db UNUSED_BYTE
-    .dw UNUSED_WORD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
     ;
   booster_sprite_table:
     ; Note - only first four items are taken into account.
@@ -395,6 +405,12 @@
     .db SPRITE_4, MISSILE_YSPEED, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+    ;
   missile_respawn_parameters:
     .db MISSILE_MAX
     .dw missile_init_table
@@ -427,14 +443,21 @@
     .db SPRITE_21, UFO_YSPEED_INIT, UFO_XSPEED_INIT, GAME_OBJECT_SHAPE_WIDE
     .db 10, 10, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 32, 16, UFO
-    .db UNUSED_BYTE
-    .dw UNUSED_WORD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+
   reverse_ufo_init_table:
     .db SPRITE_21, UFO_YSPEED_INIT, -(UFO_XSPEED_INIT), GAME_OBJECT_SHAPE_WIDE
     .db 10, 246, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 32, 16, UFO
-    .db UNUSED_BYTE
-    .dw UNUSED_WORD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   update_ufo_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -482,6 +505,11 @@
     .db SPRITE_49, UFO_BOMB_Y_SPEED, UFO_BOMB_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 8, 8, UFO_BOMB
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   ufo_gun_trigger_init_table:
     .db 255, UFO_GUN_INTERVAL
@@ -510,7 +538,7 @@
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
     .dw UNUSED_WORD ; Timer handler.
-    .db UNUSED_BYTE ; Timer state.
+    .db DISABLED    ; Timer state.
   ;
   swabby_collision_table:
     .dw missile, 1
@@ -524,6 +552,11 @@
     .db SWABBY_DEATH_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT-1, SWABBY_X_INIT+20, GAME_OBJECT_INACTIVE
     .db %00000001, 1, 0, 15, 14, SWABBY_DEATH
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   swabby_death_anim_table:
   .rept 8
@@ -553,6 +586,11 @@
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00100000, 2, 0, 4, 8, BULLET
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   bullet_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX
@@ -588,6 +626,11 @@
     .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db 0, 8, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, BEE
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   transition_trigger_init_table:
     .db 255, 255

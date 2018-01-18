@@ -796,7 +796,7 @@ ret
     ; Should be run on boot (and possibly on reset?).
     ; Variables and structs that are reset once per gaming session.
     ;
-    call load_sprites 
+    call load_sprites
     ;
     ld a,FALSE
     ld (pause_flag),a                 ; Reset pause flag.
@@ -1215,11 +1215,11 @@ ret
 ;
 
 ; -----------------------------------------------------------------------------
-;.section "Empty section" free
+.section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
 
-;.ends
+.ends
 ;.ramsection "Sandbox and console variables" slot 3
   ;
   ;
