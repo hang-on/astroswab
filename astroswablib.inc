@@ -572,7 +572,26 @@ ret
     cp SPINNER
     jp nz,+
       call start_rumble
-      ; Fall through to kill, sound effect etc.
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ;
+      ld a,TRUE
+      ld (kill_swabby_flag),a
+    ret
+    +:
+    cp MISSILE
+    jp nz,+
+      call start_rumble
+      SELECT_BANK SOUND_BANK
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ;
+      ld a,TRUE
+      ld (kill_swabby_flag),a
+    ret
     +:
     ; cp ANOTHER_GAME_OBJECT...
     ;
