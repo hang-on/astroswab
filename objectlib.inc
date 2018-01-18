@@ -16,9 +16,12 @@
   hitbox_offset_x db
   hitbox_width db
   hitbox_height db
+  id db
   anim_counter db
   anim_pointer dw
-  id db
+  counter db
+  counter_handler dw
+  counter_state db
   ;reserved_word dw
   ;reserved_byte db
 .endst

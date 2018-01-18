@@ -795,7 +795,9 @@ ret
     ; A gaming session consists of one or more games.
     ; Should be run on boot (and possibly on reset?).
     ; Variables and structs that are reset once per gaming session.
-    ;    ;
+    ;
+    call load_sprites 
+    ;
     ld a,FALSE
     ld (pause_flag),a                 ; Reset pause flag.
     ;
@@ -1075,7 +1077,6 @@ ret
     ; Uses: ?
     ;
     call difficulty_to_random_background
-    call load_sprites
     ; Set border color.
     ld a,DARK_BLUE
     ld b,REGISTER_7

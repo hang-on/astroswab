@@ -199,6 +199,11 @@
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Counter.
+    .dw UNUSED_WORD ; Counter handler.
+    .db UNUSED_BYTE ; Counter state.
     ;
   update_asteroid_parameters:
     ; Special handler for when the game object is in a specified horizontal zone?
@@ -501,6 +506,12 @@
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
     .db %00000001, 1, 0, 15, 14, SWABBY
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Counter.
+    .dw UNUSED_WORD ; Counter handler.
+    .db UNUSED_BYTE ; Counter state.
+  ;
   swabby_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX
