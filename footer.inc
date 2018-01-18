@@ -404,7 +404,7 @@
   missile_init_table:
     .db SPRITE_4, MISSILE_YSPEED, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
+    .db UNUSED_BYTE, 1, 4, 8, 14, MISSILE     ; Might need adjustment!
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
