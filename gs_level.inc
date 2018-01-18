@@ -93,6 +93,29 @@ run_level:
     ld iy,asteroid_respawn_parameters
     call respawn_game_object
   +:
+  ; Make sure there is always at least one active asteroid, (if swabby is not
+  ; respawning at the moment).
+  ld a,(swabby_respawn_trigger.state)
+  cp ENABLED
+  jp z,+
+    ld a,(transition_trigger.state)
+    cp ENABLED
+    jp z,+
+      ld hl,asteroid.state
+      ld b,ASTEROID_MAX
+      ld de,_sizeof_game_object
+      ld a,GAME_OBJECT_ACTIVE
+      -:
+        cp (hl)                   ; Run through all the asteroid.states...
+        jp z,+                    ; Jump out if we find one active asteroid.
+          add hl,de
+      djnz -
+        ; Else, fall through: No active asteroids at the moment.
+        ld ix,asteroid
+        ld iy,asteroid_respawn_parameters
+        call respawn_game_object
+  +:
+  ;
   ld ix,asteroid
   ld iy,update_asteroid_parameters
   ld de,_sizeof_game_object
