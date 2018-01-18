@@ -411,13 +411,14 @@ ret
     ; objects.
     ; Entry: IX = bullet.
     ;        IY = game object that collides with bullet.
-    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating both items.
+    ld a,GAME_OBJECT_INACTIVE     ; Start by deactivating bullet.
     ld (ix+game_object.state),a
-    ld (iy+game_object.state),a
     ;
     ld a,(iy+game_object.id)      ; Do different stuff depending on id.
     cp SHARD                      ; Does bullet collide with a shard?
     jp nz,+                       ; No? - skip forward to next id test.
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ld hl,player_score          ; Yes? - award the player some points.
       ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
       ld b,2
@@ -426,6 +427,8 @@ ret
     +:
     cp ASTEROID
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       push ix
         call get_random_number
         cp ASTEROIDS_INTO_SHARDS_CHANCE
@@ -444,12 +447,13 @@ ret
         ld a,SCORE_TENS
         ld b,1
         call add_to_score
-
       pop ix
       ret
     +:
     cp SPINNER
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       call PSGStop
       SELECT_BANK SOUND_BANK
       call PSGSFXStop
@@ -466,6 +470,8 @@ ret
     +:
     cp BOOSTER
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_TENS
@@ -483,6 +489,8 @@ ret
     +:
     cp MISSILE
     jp nz,+
+      ld a,GAME_OBJECT_INACTIVE
+      ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
       ld a,SCORE_TENS
@@ -495,14 +503,44 @@ ret
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
+      ret
     +:
+    cp UFO
+    jp nz,+
+      ld a,SPRITE_23
+      ld (ufo.sprite),a
+      ld a,NOT_MOVING
+      ld (ufo.xspeed),a
+      ld a,ENABLED
+      ld (ufo.timer_state),a
+      ; Points and stuff here...
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,1
+      call add_to_score
+      ;
+      ;call PSGStop
+      SELECT_BANK SOUND_BANK
+      call PSGSFXStop
+      ld hl,explosion
+      ld c,SFX_CHANNELS2AND3
+      call PSGSFXPlay
+      ; FIXME: Add explosion object
+      ret
+    +:
+    cp UFO
+    jp nz,+
+      ; Bullet is destroyed but the ufo bombs keeps falling down!
+      ret
+    +:
+
   ret
   ;
   ;
   handle_swabby_collision:
-    ; Placeholder function for handling what happens when swabby collides with
+    ; Function for handling what happens when Swabby collides with
     ; other objects.
-    ; IX = swabby, IY other object..
+    ; IX = Swabby, IY other object..
     ld a,GAME_OBJECT_INACTIVE
     ld (iy+game_object.state),a
     ;
@@ -761,13 +799,19 @@ ret
     ; A gaming session consists of one or more games.
     ; Should be run on boot (and possibly on reset?).
     ; Variables and structs that are reset once per gaming session.
-    ;    ;
+    ;
+    call load_sprites
+    ;
     ld a,FALSE
     ld (pause_flag),a                 ; Reset pause flag.
     ;
     ; The initial game state specified in the header.
     ld a,INITIAL_GAME_STATE
     ld (game_state),a
+    ;
+    ld ix,ufo_gun_trigger
+    ld hl,ufo_gun_trigger_init_table
+    call initialize_trigger
     ;
     .ifdef DEVELOPER_MODE
       ; Reset debug meters:
@@ -826,6 +870,7 @@ ret
     ld hl,transition_trigger_init_table
     call initialize_trigger
     ;
+    ;
     ; Reset all game objects (Swabby, asteroids, etc.)
     ld a,(batch_game_object_init_table_end-batch_game_object_init_table)/BATCH_INIT_TABLE_ELEMENT_SIZE
     ld hl,batch_game_object_init_table
@@ -843,6 +888,8 @@ ret
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
+    ;
+
   ret
   ;
   ;
@@ -1034,7 +1081,6 @@ ret
     ; Uses: ?
     ;
     call difficulty_to_random_background
-    call load_sprites
     ; Set border color.
     ld a,DARK_BLUE
     ld b,REGISTER_7
@@ -1050,12 +1096,6 @@ ret
     ld hl,lives_string
     ld b,(lives_string_end-lives_string-2)/2
     call put_string
-    ;
-    SELECT_BANK SPRITE_BANK
-    ld bc,sprite_tiles_end-sprite_tiles
-    ld de,SPRITE_BANK_START
-    ld hl,sprite_tiles
-    call load_vram
     ;
     call wipe_sprites
   ret
@@ -1125,6 +1165,14 @@ ret
   ret
   ;
   ;
+  ufo_hits_blanked_column:
+    ld a,(swabby_respawn_trigger.state)
+    cp ENABLED
+    ret nz
+      call deactivate_game_object
+  ret
+  ;
+  ;
   update_dashboard:
     ; Collection of calls to functions that update/refresh info on the dashboard.
     ; I.e. score, peak score, lives, gun level...
@@ -1146,50 +1194,6 @@ ret
   ret
   ;
   ;
-  update_game_object:
-    ; Perform various per-frame actions on an active game object.
-    ; IX = Pointer to game object.
-    ; IY = Pointer to parameter string.
-    ;
-    ld a,(ix+game_object.state)
-    cp GAME_OBJECT_ACTIVE
-    ret nz
-      ;
-      ld a,(iy+0)       ; Test game object against horizontal zone?
-      cp TRUE
-      jp nz,+
-        SAVE_REGISTERS
-          ld l,(iy+1)
-          ld h,(iy+2)
-          ld b,(iy+3)
-          ld c,(iy+4)
-          ld a,(ix+game_object.y)
-          call within_range_send_to_handler
-        RESTORE_REGISTERS
-      +:
-      ;
-      ld a,(iy+5)
-      cp TRUE           ; Test game object against vertical zone?
-      jp nz,+
-        SAVE_REGISTERS
-          ld l,(iy+6)
-          ld h,(iy+7)
-          ld b,(iy+8)
-          ld c,(iy+9)
-          ld a,(ix+game_object.x)
-          call within_range_send_to_handler
-        RESTORE_REGISTERS
-      +:
-      ld a,(iy+10)
-      cp TRUE
-      call z,animate_game_object
-      ;
-      call move_game_object
-      call draw_game_object
-      ld a,(iy+11)
-      cp TRUE
-      call z,add_game_object_to_collision_table
-  ret
   ;
   ;
   within_range_send_to_handler:
@@ -1215,11 +1219,11 @@ ret
 ;
 
 ; -----------------------------------------------------------------------------
-;.section "Empty section" free
+.section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
 
-;.ends
+.ends
 ;.ramsection "Sandbox and console variables" slot 3
   ;
   ;

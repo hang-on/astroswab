@@ -46,7 +46,6 @@ run_sandbox:
   call handle_swabby_gun
   ;
   ;
-  ;call move_and_draw_bullets
   ld ix,bullet
   ld iy,update_bullet_parameters
   ld de,_sizeof_game_object
@@ -56,10 +55,6 @@ run_sandbox:
     add ix,de
   djnz -
   ;
-  ;
-  ld ix,ufo
-  ld iy,update_ufo_parameters
-  call update_game_object
   ;
   call is_reset_pressed
   jp nc,+

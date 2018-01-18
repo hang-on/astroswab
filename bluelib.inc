@@ -111,7 +111,9 @@
 .equ PAUSE_FLAG_SET $ff
 .equ UNUSED_BYTE $0
 .equ UNUSED_WORD $0000
-
+.equ PERCENT_CHANCE_50 128
+.equ PERCENT_CHANCE_100 255
+;
 .equ BYTES_PER_TILE 32
 .equ ONE_TILEMAP_ROW 32*2
 .equ END_OF_TABLE $ff
@@ -615,6 +617,17 @@
     ret nz          ; Return with carry flag reset
     scf
   ret               ; Return with carry flag set.
+.ends
+;
+; -----------------------------------------------------------------------------
+.section "is_player_2_button_2_pressed" free
+; -----------------------------------------------------------------------------
+  is_player_2_button_2_pressed:
+    ld a,(input_ports+1)
+    and %00001000
+    ret nz            ; Return with carry flag reset
+    scf
+  ret                 ; Return with carry flag set.
 .ends
 ;
 ; -----------------------------------------------------------------------------

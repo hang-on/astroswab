@@ -183,6 +183,7 @@
     .dw bee, bee_init_table, 1
     .dw swabby_death, swabby_death_init_table, 1
     .dw ufo, ufo_init_table, 1
+    .dw ufo_bomb, ufo_bomb_init_table, UFO_BOMB_MAX
   batch_game_object_init_table_end:
   ;
   game_object_respawn_horizontal_position_table:
@@ -198,6 +199,11 @@
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, ASTEROID
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Counter.
+    .dw UNUSED_WORD ; Counter handler.
+    .db UNUSED_BYTE ; Counter state.
     ;
   update_asteroid_parameters:
     ; Special handler for when the game object is in a specified horizontal zone?
@@ -248,6 +254,11 @@
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
     .db %00010001, 0, 0, 8, 8, SHARD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   shard_conversion_table:
     .db YELLOW_ASTEROID_1, YELLOW_SHARD
@@ -312,7 +323,9 @@
     .db %00000000, 0, 0, 16, 24, SPINNER
     .db 0
     .dw spinner_anim_table
-    ; FIXME: Add anim data to all init tables!
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   update_spinner_parameters:
     ; Special handler for when the game object is in a specified horizontal zone?
     .db TRUE
@@ -346,8 +359,11 @@
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
-    .db UNUSED_BYTE
-    .dw UNUSED_WORD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
     ;
   booster_sprite_table:
     ; Note - only first four items are taken into account.
@@ -388,7 +404,13 @@
   missile_init_table:
     .db SPRITE_4, MISSILE_YSPEED, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 1, 1, 14, 14, MISSILE     ; Might need adjustment!
+    .db UNUSED_BYTE, 1, 4, 8, 14, MISSILE     ; Might need adjustment!
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+    ;
   missile_respawn_parameters:
     .db MISSILE_MAX
     .dw missile_init_table
@@ -419,10 +441,24 @@
     ;
   ufo_init_table:
     .db SPRITE_21, UFO_YSPEED_INIT, UFO_XSPEED_INIT, GAME_OBJECT_SHAPE_WIDE
-    .db 10, 10, GAME_OBJECT_ACTIVE
+    .db 10, 10, GAME_OBJECT_INACTIVE
     .db %00000000, 0, 0, 32, 16, UFO
-    .db UNUSED_BYTE
-    .dw UNUSED_WORD
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UFO_EXPLODE_DURATION ; Timer.
+    .dw deactivate_game_object ; Timer handler.
+    .db DISABLED    ; Timer state.
+  ;
+  reverse_ufo_init_table:
+    .db SPRITE_21, UFO_YSPEED_INIT, -(UFO_XSPEED_INIT), GAME_OBJECT_SHAPE_WIDE
+    .db 10, 246, GAME_OBJECT_INACTIVE
+    .db %00000000, 0, 0, 32, 16, UFO
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UFO_EXPLODE_DURATION ; Timer.
+    .dw deactivate_game_object ; Timer handler.
+    .db DISABLED    ; Timer state.
+  ;
   ;
   update_ufo_parameters:
   ; Special handler for when the game object is in a specified horizontal zone?
@@ -430,21 +466,81 @@
   .dw UNUSED_WORD
   .db UNUSED_BYTE, UNUSED_BYTE
   ; Special handler for when the game object is in a specified vertical zone?
-  .db FALSE
-  .dw UNUSED_WORD
-  .db UNUSED_BYTE, UNUSED_BYTE
+  .db TRUE
+  .dw ufo_hits_blanked_column
+  .db UFO_VERTICAL_ZONE_START, UFO_VERTICAL_ZONE_END
   ; Animate object
   .db FALSE
   ; Put in collision table
   .db TRUE
+  ;
+  ufo_respawn_parameters:
+    .db UFO_MAX
+    .dw ufo_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random horizontal position?
+    .dw UNUSED_WORD
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  reverse_ufo_respawn_parameters:
+    .db UFO_MAX
+    .dw reverse_ufo_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random horizontal position?
+    .dw UNUSED_WORD
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+  ;
+  ;UFO Bombs:
+  ufo_bomb_init_table:
+    .db SPRITE_49, UFO_BOMB_Y_SPEED, UFO_BOMB_X_SPEED, GAME_OBJECT_SHAPE_SMALL
+    .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
+    .db %00000000, 0, 0, 8, 8, UFO_BOMB
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+  ;
+  ufo_gun_trigger_init_table:
+    .db 255, UFO_GUN_INTERVAL
+    .db DISABLED, DEFAULT_CYCLE_VALUE
+  ;
+  update_ufo_bomb_parameters:
+  ; Special handler for when the game object is in a specified horizontal zone?
+  .db TRUE
+  .dw deactivate_game_object
+  .db SHARD_DEACTIVATE_ZONE_START, SHARD_DEACTIVATE_ZONE_END ; reverse?
+  ; Special handler for when the game object is in a specified vertical zone?
+  .db FALSE
+  .dw UNUSED_WORD
+  .dw UNUSED_WORD
+  ; animate?
+  .db FALSE
+  ; Put in collision table
+  .db TRUE
 
-
-
-
+  ;
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
     .db %00000001, 1, 0, 15, 14, SWABBY
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+  ;
   swabby_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX
@@ -457,6 +553,11 @@
     .db SWABBY_DEATH_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT-1, SWABBY_X_INIT+20, GAME_OBJECT_INACTIVE
     .db %00000001, 1, 0, 15, 14, SWABBY_DEATH
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   swabby_death_anim_table:
   .rept 8
@@ -486,6 +587,11 @@
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
     .db %00100000, 2, 0, 4, 8, BULLET
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   bullet_collision_table:
     .dw missile, 1
     .dw asteroid, ASTEROID_MAX
@@ -521,6 +627,11 @@
     .db SPRITE_65, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_SMALL
     .db 0, 8, GAME_OBJECT_ACTIVE
     .db %00000000, 0, 0, 1, 1, BEE
+    .db UNUSED_BYTE ; Animation counter.
+    .dw UNUSED_WORD ; Animation pointer.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
   ;
   transition_trigger_init_table:
     .db 255, 255
@@ -539,6 +650,8 @@
     .dw missile_trigger, trigger_wipe_table
     .dw shard_trigger, trigger_wipe_table
     .dw asteroid_trigger, trigger_wipe_table
+    .dw ufo_trigger, trigger_wipe_table
+    ;.dw ufo_gun_trigger, trigger_wipe_table
   batch_wipe_and_disable_all_triggers_table_end:
   trigger_wipe_table:
     .db 0, 0, DISABLED
@@ -555,6 +668,7 @@
     .dw missile_trigger, missile_trigger_init_table_0
     .dw shard_trigger, shard_trigger_init_table_0
     .dw asteroid_trigger, asteroid_trigger_init_table_0
+    .dw ufo_trigger, ufo_trigger_init_table_0
   difficulty_0_batch_trigger_init_table_end:
   difficulty_1_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_1
@@ -562,18 +676,21 @@
     .dw missile_trigger, missile_trigger_init_table_1
     .dw shard_trigger, shard_trigger_init_table_1
     .dw asteroid_trigger, asteroid_trigger_init_table_1
+    .dw ufo_trigger, ufo_trigger_init_table_1
   difficulty_2_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_2
     .dw booster_trigger, booster_trigger_init_table_2
     .dw missile_trigger, missile_trigger_init_table_2
     .dw shard_trigger, shard_trigger_init_table_2
     .dw asteroid_trigger, asteroid_trigger_init_table_2
+    .dw ufo_trigger, ufo_trigger_init_table_2
   difficulty_3_batch_trigger_init_table:
     .dw spinner_trigger, spinner_trigger_init_table_3
     .dw booster_trigger, booster_trigger_init_table_3
     .dw missile_trigger, missile_trigger_init_table_3
     .dw shard_trigger, shard_trigger_init_table_3
     .dw asteroid_trigger, asteroid_trigger_init_table_3
+    .dw ufo_trigger, ufo_trigger_init_table_3
   ;
   spinner_trigger_init_table_0:
     .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
@@ -589,6 +706,9 @@
     .db ENABLED, DEFAULT_CYCLE_VALUE
   asteroid_trigger_init_table_0:
     .db ASTEROID_TRIGGER_CHANCE_INIT_0, ASTEROID_TRIGGER_INTERVAL_INIT_0
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_0:
+    .db UFO_TRIGGER_CHANCE_INIT_0, UFO_TRIGGER_INTERVAL_INIT_0
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_1:
@@ -606,6 +726,9 @@
   asteroid_trigger_init_table_1:
     .db ASTEROID_TRIGGER_CHANCE_INIT_1, ASTEROID_TRIGGER_INTERVAL_INIT_1
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_1:
+    .db UFO_TRIGGER_CHANCE_INIT_1, UFO_TRIGGER_INTERVAL_INIT_1
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_2:
     .db SPINNER_TRIGGER_CHANCE_INIT_2, SPINNER_TRIGGER_INTERVAL_INIT_2
@@ -622,6 +745,9 @@
   asteroid_trigger_init_table_2:
     .db ASTEROID_TRIGGER_CHANCE_INIT_2, ASTEROID_TRIGGER_INTERVAL_INIT_2
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_2:
+    .db UFO_TRIGGER_CHANCE_INIT_2, UFO_TRIGGER_INTERVAL_INIT_2
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   spinner_trigger_init_table_3:
     .db SPINNER_TRIGGER_CHANCE_INIT_3, SPINNER_TRIGGER_INTERVAL_INIT_3
@@ -637,6 +763,9 @@
     .db ENABLED, DEFAULT_CYCLE_VALUE
   asteroid_trigger_init_table_3:
     .db ASTEROID_TRIGGER_CHANCE_INIT_3, ASTEROID_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_3:
+    .db UFO_TRIGGER_CHANCE_INIT_3, UFO_TRIGGER_INTERVAL_INIT_3
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   ;

@@ -16,9 +16,12 @@
   hitbox_offset_x db
   hitbox_width db
   hitbox_height db
+  id db
   anim_counter db
   anim_pointer dw
-  id db
+  timer db
+  timer_handler dw
+  timer_state db
   ;reserved_word dw
   ;reserved_byte db
 .endst
@@ -212,6 +215,19 @@
     inc hl
     ld a,(hl)
     ld (ix+game_object.anim_pointer+1),a
+    ;
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_handler),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_handler+1),a
+    inc hl
+    ld a,(hl)
+    ld (ix+game_object.timer_state),a
     pop hl
   ret
   ;
@@ -255,6 +271,24 @@
     djnz --
   ret
   ;
+  process_game_object_timer:
+    ; Timer is enabled. Count it down. If it reaches zero send to handler.
+    ; IX = Pointer to object.
+    ; IY Pointer to update parameters.
+    ;
+    dec (ix+game_object.timer)
+    ret nz
+        ld l,(ix+game_object.timer_handler)
+        ld h,(ix+game_object.timer_handler+1)
+        SAVE_REGISTERS
+          call call_hl
+        RESTORE_REGISTERS
+  ret
+    call_hl:
+      ; Jump to where HL is pointing to. Assume it is a handler that ends in
+      ; ret.
+      jp (hl)
+  ;
   spawn_game_object_in_invisible_area:
     ; Entry: IX = Pointer to enemy object.
     ; Object gets a random position and is activated!
@@ -273,6 +307,55 @@
     add a,8                   ; x = (0-127) + (0-63) + (0-31) + 8.
     ld (ix+game_object.x),a  ; x = 8 - 229.
     call activate_game_object
+  ret
+  ;
+  update_game_object:
+    ; Perform various per-frame actions on an active game object.
+    ; IX = Pointer to game object.
+    ; IY = Pointer to parameter string.
+    ;
+    ld a,(ix+game_object.state)
+    cp GAME_OBJECT_ACTIVE
+    ret nz
+      ;
+      ld a,(ix+game_object.timer_state)
+      cp ENABLED
+      call z,process_game_object_timer
+      ;
+      ld a,(iy+0)       ; Test game object against horizontal zone?
+      cp TRUE
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+1)
+          ld h,(iy+2)
+          ld b,(iy+3)
+          ld c,(iy+4)
+          ld a,(ix+game_object.y)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ;
+      ld a,(iy+5)
+      cp TRUE           ; Test game object against vertical zone?
+      jp nz,+
+        SAVE_REGISTERS
+          ld l,(iy+6)
+          ld h,(iy+7)
+          ld b,(iy+8)
+          ld c,(iy+9)
+          ld a,(ix+game_object.x)
+          call within_range_send_to_handler
+        RESTORE_REGISTERS
+      +:
+      ld a,(iy+10)
+      cp TRUE
+      call z,animate_game_object
+      ;
+      call move_game_object
+      call draw_game_object
+      ld a,(iy+11)
+      cp TRUE
+      call z,add_game_object_to_collision_table
   ret
   ;
   ; ---------------------------------------------------------------------------
