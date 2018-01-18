@@ -19,9 +19,9 @@
   id db
   anim_counter db
   anim_pointer dw
-  counter db
-  counter_handler dw
-  counter_state db
+  timer db
+  timer_handler dw
+  timer_state db
   ;reserved_word dw
   ;reserved_byte db
 .endst

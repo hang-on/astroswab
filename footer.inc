@@ -508,9 +508,9 @@
     .db %00000001, 1, 0, 15, 14, SWABBY
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
-    .db UNUSED_BYTE ; Counter.
-    .dw UNUSED_WORD ; Counter handler.
-    .db UNUSED_BYTE ; Counter state.
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db UNUSED_BYTE ; Timer state.
   ;
   swabby_collision_table:
     .dw missile, 1
