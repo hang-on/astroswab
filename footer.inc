@@ -191,14 +191,14 @@
       .db 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72 ;17
       .db 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136 ;16
       .db 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200 ;16
-      .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 242 ;15
+      .db 204, 208, 212, 216, 220, 224, 228, 232, 236, 225, 72, 136, 196, 238, 240 ;15
     .endr
     ;
   .equ ASTEROID_Y_SPEED_INIT 1
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 0, 0, 16, 16, ASTEROID
+    .db UNUSED_BYTE, -(4), 0, 16, 20, ASTEROID
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Counter.
@@ -253,7 +253,7 @@
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
-    .db %00010001, 0, 0, 8, 8, SHARD
+    .db UNUSED_BYTE, -(1), -(1), 10, 10, SHARD
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
@@ -586,7 +586,7 @@
   bullet_init_table:
     .db SPRITE_44, BULLET_Y_SPEED, BULLET_X_SPEED, GAME_OBJECT_SHAPE_SMALL
     .db 0, 0, GAME_OBJECT_INACTIVE
-    .db %00100000, 2, 0, 4, 8, BULLET
+    .db UNUSED_BYTE, 0, 1, 6, 8, BULLET
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.

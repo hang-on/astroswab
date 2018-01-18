@@ -625,7 +625,6 @@ ret
       call animate_game_object
       call draw_game_object              ; Put it in the SAT.
     +:
-
     ;
     ; First, see if the collision tests resulted in flipping the kill switch.
     ld a,(kill_swabby_flag)             ; Test flag - should we kill Swabby?
