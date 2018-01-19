@@ -616,6 +616,17 @@ ret
       ld ix,swabby_death              ; Remove the death animation object.
       ld a,GAME_OBJECT_INACTIVE
       ld (ix+game_object.state),a
+      ; Decrement lives
+      ld a,(lives)
+      dec a
+      ld (lives),a
+      cp -(1)
+      jp nz,not_game_over
+        ld a,GS_PREPARE_HISCORE
+        call transition_to_gamestate
+      not_game_over:
+      ld a,FLAG_SET
+      ld (lives_flag),a
     +:
     ; Swabby death game object: The death animation (little explosion).
     ld ix,swabby_death
