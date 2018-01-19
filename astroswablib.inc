@@ -810,6 +810,8 @@ ret
     ld (gun_level),a
     ;
     call reset_scores                 ; Reset player and peak score.
+    ld a,LIVES_INIT
+    ld (lives),a
   ret
   ;
   ;
@@ -850,6 +852,7 @@ ret
     ld a,TRUE
     ld (swabby_responds_to_player_input),a
     ld (swabby_can_collide_with_objects),a
+    ld (lives_flag),a
     ;
     ld a,FALSE
     ld (kill_swabby_flag),a
@@ -959,6 +962,17 @@ ret
     ld (gun_level_flag),a
   ret
   ;
+  print_lives:
+    ;
+    ld hl,LIVES_NAMETABLE_ADDRESS
+    call set_vram_address
+    ld a,(lives)
+    add a,ASCII_ZERO
+    out (DATA_PORT),a
+    ;
+    ld a,FALSE
+    ld (lives_flag),a
+  ret
   ;
   profile_vblank:
     ; Set debug meter for profiling the amount of lines consumed by functions
@@ -1202,6 +1216,9 @@ ret
     ld a,(gun_level_flag)
     cp TRUE
     call z,print_gun_level
+    ld a,(lives_flag)
+    cp TRUE
+    call z,print_lives
     ; Score and peak score.
     ld hl,SCORE_VRAM_ADDRESS
     ld ix,player_score
@@ -1240,6 +1257,7 @@ ret
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
+
 
 .ends
 ;.ramsection "Sandbox and console variables" slot 3

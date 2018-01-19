@@ -110,7 +110,6 @@
 ;
   .equ RUMBLE_END_TRIGGER_INTERVAL 45
 ;
-;
 ; Background - nametable, tiles etc.:
   .equ BACKGROUND_BANK 4
   .equ BACKGROUND_BANK_2 6
@@ -210,6 +209,9 @@
 ; Score:
   .equ SCORE_VRAM_ADDRESS $3d92-2
   .equ PEAK_SCORE_VRAM_ADDRESS SCORE_VRAM_ADDRESS+12
+; Lives:
+  .equ LIVES_INIT 3
+  .equ LIVES_NAMETABLE_ADDRESS $3dac
 ;
 ; Bullets and gun:
   .equ BULLET_MAX 5
@@ -399,6 +401,8 @@
   swabby_death instanceof game_object
   ;dev_buffer_2 dsb 4
   kill_swabby_flag db
+  lives db
+  lives_flag db
   ;dev_buffer_1 dsb 4
   swabby_death_trigger instanceof trigger
   swabby_respawn_trigger instanceof trigger
