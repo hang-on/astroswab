@@ -210,7 +210,7 @@
   .equ SCORE_VRAM_ADDRESS $3d92-2
   .equ PEAK_SCORE_VRAM_ADDRESS SCORE_VRAM_ADDRESS+12
 ; Lives:
-  .equ LIVES_INIT 3
+  .equ LIVES_INIT 2
   .equ LIVES_NAMETABLE_ADDRESS $3dac
 ;
 ; Bullets and gun:
