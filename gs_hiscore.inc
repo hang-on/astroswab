@@ -75,7 +75,7 @@ prepare_hiscore:
     ; Player did not break hiscore -> read-only mode.
     ld a,FALSE
     ld (new_hiscore),a
-    ld hl,transition_trigger_init_table ; In read-only mode, the hiscore table
+    ld hl,transition_trigger_hiscore_init_table ; In read-only mode, the hiscore table
     ld ix,transition_trigger            ; displays for a short period of time,
     call initialize_trigger             ; and then we make a transition back
     call enable_trigger                 ; to te title screen.
@@ -363,6 +363,18 @@ run_hiscore:
       ld a,GS_PREPARE_TITLESCREEN
       call transition_to_gamestate
     +:
+    call is_button_1_pressed
+    jp c,+
+    call is_button_2_pressed
+    jp nc,++
+      +:
+      ld a,(transition_trigger.cycle)
+      cp 2
+      jp nz,++
+      ld a,GS_PREPARE_TITLESCREEN
+      call transition_to_gamestate
+    ++:
+
     ;
 ; *****************************************************************************
   finish_hiscore_loop:

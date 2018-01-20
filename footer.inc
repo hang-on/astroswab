@@ -643,6 +643,9 @@
   transition_trigger_game_over_init_table:
     .db PERCENT_CHANCE_100, GAME_OVER_INTERVAL
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  transition_trigger_hiscore_init_table:
+    .db PERCENT_CHANCE_100, HISCORE_INTERVAL
+    .db ENABLED, HISCORE_CYCLE_VALUE
   ;
   difficulty_to_trigger_init_tables:
     .dw difficulty_0_batch_trigger_init_table

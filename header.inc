@@ -33,6 +33,10 @@
 ; Sandbox and console:
   .equ CONSOLE_LOGGER_START_ROW 4
   ;
+; Hiscore:
+  .equ HISCORE_INTERVAL 180
+  .equ HISCORE_CYCLE_VALUE 3
+;
 ; Pico-related definitions:
   .equ PICO8_PALETTE_SIZE 16
   .equ BLACK 0
