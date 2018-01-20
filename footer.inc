@@ -21,11 +21,11 @@
     .dw difficulty_0_transition_score, difficulty_1_transition_score
     .dw difficulty_2_transition_score
   difficulty_0_transition_score:
-    .asc "00400"
+    .asc "00500"
   difficulty_1_transition_score:
     .asc "01500"
   difficulty_2_transition_score:
-    .asc "02800"
+    .asc "03000"
     ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
@@ -37,6 +37,9 @@
     .db ASCII_LOWERCASE_X, CHAR_FROM_BACKGROUND_BANK
     .db ASCII_ZERO+3, CHAR_FROM_BACKGROUND_BANK
   lives_string_end:
+  ;
+  game_over_text:
+    .asc "GAME OVER#"
   ;
   rumble_end_trigger_init_table:
     .db 255, RUMBLE_END_TRIGGER_INTERVAL
@@ -50,6 +53,7 @@
     .dw prepare_hiscore, run_hiscore
     .dw prepare_warning, run_warning
     .dw prepare_console, run_console
+    .dw prepare_game_over, run_game_over
   ;
   meta_background_table:
     ; Used when preparing a level.
@@ -636,6 +640,9 @@
   transition_trigger_init_table:
     .db 255, 255
     .db DISABLED, TRANSITION_TRIGGER_CYCLE_INIT
+  transition_trigger_game_over_init_table:
+    .db PERCENT_CHANCE_100, GAME_OVER_INTERVAL
+    .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   difficulty_to_trigger_init_tables:
     .dw difficulty_0_batch_trigger_init_table

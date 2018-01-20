@@ -326,6 +326,8 @@ run_level:
     ld (difficulty),a
     ld a,GS_PREPARE_LEVEL
     call transition_to_gamestate
+    call PSGStop
+    call PSGSFXStop
   +:
   ;
   ;

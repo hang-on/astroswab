@@ -273,7 +273,11 @@ ret
     djnz -
     ;
     ld b,4                 ; delay 4 frames
- -: halt
+ -:
+     push bc
+     call PSGFrame
+     call PSGSFXFrame
+     pop bc
     djnz -
     ;
     ld b,32                ; number of palette entries: 32 (full palette)
@@ -285,7 +289,11 @@ ret
     djnz -
     ;
     ld b,4                 ; delay 4 frames
- -: halt
+ -:
+     push bc
+     call PSGFrame
+     call PSGSFXFrame
+     pop bc
     djnz -
     ;
     ld b,32                ; number of palette entries: 32 (full palette)
@@ -315,7 +323,12 @@ ret
     djnz -
     ;
     ld b,4                 ; delay 4 frames
- -: halt
+ -:
+    push bc
+    call PSGFrame
+    call PSGSFXFrame
+    pop bc
+    halt
     djnz -
     ;
     ld b,32                ; number of palette entries: 32 (full palette)
@@ -328,7 +341,11 @@ ret
     djnz -
     ;
     ld b,4                 ; delay 4 frames
- -: halt
+ -:
+ push bc
+ call PSGFrame
+ call PSGSFXFrame
+ pop bc
     djnz -
     ;
     ld b, 32               ; number of palette entries: 32 (full palette)
@@ -622,7 +639,7 @@ ret
       ld (lives),a
       cp -(1)
       jp nz,not_game_over
-        ld a,GS_PREPARE_HISCORE
+        ld a,GS_PREPARE_GAME_OVER
         call transition_to_gamestate
       not_game_over:
       ld a,FLAG_SET
@@ -1200,8 +1217,8 @@ ret
     ; Exit: None
     ; Uses: ?
     push af
-      call PSGSFXStop
-      call PSGStop
+      ;call PSGSFXStop
+      ;call PSGStop
       call FadeOutScreen
     pop af
     ld (game_state),a

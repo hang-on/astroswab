@@ -22,6 +22,11 @@
   ;
 ; Title screen:
   .equ TITLESCREEN_BANK 10
+; Game over:
+  .equ GAME_OVER_BANK 10
+  .equ GAME_OVER_TEXT_ROW 10
+  .equ GAME_OVER_TEXT_COLUMN 12
+  .equ GAME_OVER_INTERVAL 120
 ; Warning (wrong tv-type)
   .equ WARNING_BANK 3
   ;
@@ -70,6 +75,8 @@
   .equ GS_RUN_WARNING 11
   .equ GS_PREPARE_CONSOLE 12
   .equ GS_RUN_CONSOLE 13
+  .equ GS_PREPARE_GAME_OVER 14
+  .equ GS_RUN_GAME_OVER 15
   ;
   .ifdef DEVELOPER_MODE
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
@@ -210,7 +217,7 @@
   .equ SCORE_VRAM_ADDRESS $3d92-2
   .equ PEAK_SCORE_VRAM_ADDRESS SCORE_VRAM_ADDRESS+12
 ; Lives:
-  .equ LIVES_INIT 2
+  .equ LIVES_INIT 0
   .equ LIVES_NAMETABLE_ADDRESS $3dac
 ;
 ; Bullets and gun:
