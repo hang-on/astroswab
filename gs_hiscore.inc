@@ -75,11 +75,12 @@ prepare_hiscore:
     ; Player did not break hiscore -> read-only mode.
     ld a,FALSE
     ld (new_hiscore),a
-    ld hl,transition_trigger_hiscore_init_table ; In read-only mode, the hiscore table
-    ld ix,transition_trigger            ; displays for a short period of time,
-    call initialize_trigger             ; and then we make a transition back
-    call enable_trigger                 ; to te title screen.
   ++:
+  ;
+  ld hl,transition_trigger_hiscore_init_table ; In read-only mode, the hiscore table
+  ld ix,transition_trigger            ; displays for a short period of time,
+  call initialize_trigger             ; and then we make a transition back
+  call enable_trigger                 ; to te title screen.
   ;
   ld hl,peak_score                      ; Rebuild the hiscore table againt the
   call rebuild_hiscore_table            ; player's peak score.
@@ -241,10 +242,6 @@ run_hiscore:
             ld a,FALSE
             ld (new_hiscore),a
             ;
-            ld hl,transition_trigger_init_table
-            ld ix,transition_trigger
-            call initialize_trigger
-            call enable_trigger
             ld ix,cursor_effect
             ld a,GAME_OBJECT_INACTIVE
             ld (ix+game_object.state),a
@@ -369,8 +366,8 @@ run_hiscore:
     jp nc,++
       +:
       ld a,(transition_trigger.cycle)
-      cp 2
-      jp nz,++
+      cp HISCORE_CYCLE_VALUE
+      jp z,++
       ld a,GS_PREPARE_TITLESCREEN
       call transition_to_gamestate
     ++:
