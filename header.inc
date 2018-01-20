@@ -1,7 +1,7 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
   .equ DEVELOPER_MODE ; Comment out for consumer mode.
-  .equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
+  ;.equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
@@ -340,7 +340,7 @@
 .equ SHARD_TRIGGER_INTERVAL_INIT_1 40 ;230
 .equ ASTEROID_TRIGGER_CHANCE_INIT_1 150 ; 50
 .equ ASTEROID_TRIGGER_INTERVAL_INIT_1 50 ;10
-.equ UFO_TRIGGER_CHANCE_INIT_1 16
+.equ UFO_TRIGGER_CHANCE_INIT_1 8
 .equ UFO_TRIGGER_INTERVAL_INIT_1 200
 ;
 ; Difficulty 2
@@ -354,7 +354,7 @@
 .equ SHARD_TRIGGER_INTERVAL_INIT_2 50 ;230
 .equ ASTEROID_TRIGGER_CHANCE_INIT_2 60 ; 50
 .equ ASTEROID_TRIGGER_INTERVAL_INIT_2 10 ;10
-.equ UFO_TRIGGER_CHANCE_INIT_2 32
+.equ UFO_TRIGGER_CHANCE_INIT_2 24
 .equ UFO_TRIGGER_INTERVAL_INIT_2 200
 ;
 ; Difficulty 3
@@ -362,7 +362,7 @@
 .equ SPINNER_TRIGGER_INTERVAL_INIT_3 200 ;230
 .equ BOOSTER_TRIGGER_CHANCE_INIT_3 130 ; 190  1 to turn off
 .equ BOOSTER_TRIGGER_INTERVAL_INIT_3 200
-.equ MISSILE_TRIGGER_CHANCE_INIT_3 45 ; 190 - 1 to almost disable
+.equ MISSILE_TRIGGER_CHANCE_INIT_3 55 ; 190 - 1 to almost disable
 .equ MISSILE_TRIGGER_INTERVAL_INIT_3 100
 .equ SHARD_TRIGGER_CHANCE_INIT_3 90 ;50
 .equ SHARD_TRIGGER_INTERVAL_INIT_3 50 ;230

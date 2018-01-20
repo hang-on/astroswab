@@ -23,7 +23,7 @@ prepare_titlescreen:
   ld hl,sprite_tiles
   call load_vram
   ; Set border color.
-  ld a,INDIGO
+  ld a,DARK_PURPLE
   ld b,REGISTER_7
   call set_register
   ; Wipe sprites.

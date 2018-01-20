@@ -8,6 +8,10 @@ prepare_hiscore:
   ld b,REGISTER_1
   call set_register
   ;
+  xor a
+  ld b,VERTICAL_SCROLL_REGISTER
+  call set_register
+  ;
   ld a,ASCII_SPACE
   ld b,TILE_BANK_1
   call reset_name_table
@@ -18,7 +22,7 @@ prepare_hiscore:
   call load_vram_from_table
   ;
   ; Set border color.
-  ld a,INDIGO
+  ld a,DARK_PURPLE
   ld b,REGISTER_7
   call set_register
   ;

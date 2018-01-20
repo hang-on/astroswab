@@ -1,182 +1,182 @@
 ; Tile index $000
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $001
-.db $F7 $30 $F7 $DF $F7 $30 $F7 $FF $F7 $30 $F7 $FF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $30 $F7 $30 $38 $30 $F7 $30 $38 $30 $F7 $30 $08 $00 $C7 $00 $38 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $002
-.db $EB $28 $EB $D7 $EB $28 $EB $FF $C3 $00 $C3 $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $28 $EB $28 $14 $28 $EB $28 $3C $00 $C3 $00 $3C $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $003
-.db $EB $28 $EB $D7 $FD $7C $FD $FF $FD $7C $FD $FF $A9 $28 $A9 $D7 $FD $7C $FD $83 $A9 $28 $A9 $D7 $C3 $00 $C3 $FF $FF $00 $FF $FF
+.db $28 $EB $28 $14 $7C $FD $7C $7E $7C $FD $7C $7E $28 $A9 $28 $56 $7C $FD $7C $02 $28 $A9 $28 $56 $00 $C3 $00 $3C $00 $FF $00 $00
 ; Tile index $004
-.db $EB $28 $EB $D7 $FD $7C $FD $FF $E9 $E8 $E9 $FF $7D $7C $7D $83 $AE $2E $AE $D1 $FC $7C $FC $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $28 $EB $28 $14 $7C $FD $7C $7E $E8 $E9 $E8 $FE $7C $7D $7C $82 $2E $AE $2E $51 $7C $FC $7C $03 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $005
-.db $EE $E6 $EE $7F $AC $AC $AC $FF $F9 $F8 $F9 $FF $3E $3E $3E $C1 $EA $6A $EA $95 $CE $CE $CE $31 $10 $00 $10 $FF $FF $00 $FF $FF
+.db $E6 $EE $E6 $77 $AC $AC $AC $FF $F8 $F9 $F8 $FE $3E $3E $3E $C1 $6A $EA $6A $15 $CE $CE $CE $31 $00 $10 $00 $EF $00 $FF $00 $00
 ; Tile index $006
-.db $FB $F8 $FB $7F $C3 $C0 $C3 $FF $6D $6C $6D $FF $B9 $B8 $B9 $47 $9D $9C $9D $63 $76 $76 $76 $89 $80 $00 $80 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $C0 $C3 $C0 $FC $6C $6D $6C $FE $B8 $B9 $B8 $46 $9C $9D $9C $62 $76 $76 $76 $89 $00 $80 $00 $7F $00 $FF $00 $00
 ; Tile index $007
-.db $FB $18 $FB $EF $F3 $30 $F3 $FF $E7 $20 $E7 $FF $CF $00 $CF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $30 $F3 $30 $3C $20 $E7 $20 $38 $00 $CF $00 $30 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $008
-.db $FB $18 $FB $EF $FB $38 $FB $FF $F3 $30 $F3 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $DB $18 $DB $E7 $E3 $00 $E3 $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $38 $FB $38 $3C $30 $F3 $30 $3C $30 $F7 $30 $08 $30 $F7 $30 $08 $18 $DB $18 $24 $00 $E3 $00 $1C $00 $FF $00 $00
 ; Tile index $009
-.db $F7 $30 $F7 $DF $FB $38 $FB $FF $DB $18 $DB $FF $FB $18 $FB $E7 $FB $18 $FB $E7 $F3 $30 $F3 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $38 $FB $38 $3C $18 $DB $18 $3C $18 $FB $18 $04 $18 $FB $18 $04 $30 $F3 $30 $0C $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $00A
-.db $FF $00 $FF $FF $F7 $10 $F7 $EF $D5 $54 $D5 $FF $B9 $38 $B9 $C7 $D5 $54 $D5 $AB $91 $10 $91 $EF $E7 $00 $E7 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $10 $F7 $10 $08 $54 $D5 $54 $7E $38 $B9 $38 $46 $54 $D5 $54 $2A $10 $91 $10 $6E $00 $E7 $00 $18 $00 $FF $00 $00
 ; Tile index $00B
-.db $FF $00 $FF $FF $F7 $10 $F7 $EF $F7 $10 $F7 $FF $FD $7C $FD $83 $91 $10 $91 $EF $F7 $10 $F7 $EF $E7 $00 $E7 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $10 $F7 $10 $08 $10 $F7 $10 $18 $7C $FD $7C $02 $10 $91 $10 $6E $10 $F7 $10 $08 $00 $E7 $00 $18 $00 $FF $00 $00
 ; Tile index $00C
-.db $FF $00 $FF $FF $FF $00 $FF $FF $F7 $30 $F7 $DF $F7 $30 $F7 $CF $D7 $10 $D7 $EF $E7 $20 $E7 $DF $CF $00 $CF $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $30 $F7 $30 $18 $30 $F7 $30 $08 $10 $D7 $10 $28 $20 $E7 $20 $18 $00 $CF $00 $30 $00 $FF $00 $00
 ; Tile index $00D
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FD $7C $FD $83 $81 $00 $81 $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $7C $FD $7C $02 $00 $81 $00 $7E $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $00E
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $00F
-.db $FE $06 $FE $FB $FC $0C $FC $FF $F9 $18 $F9 $FF $F3 $30 $F3 $CF $E7 $60 $E7 $9F $CF $C0 $CF $3F $1F $00 $1F $FF $FF $00 $FF $FF
+.db $06 $FE $06 $03 $0C $FC $0C $0F $18 $F9 $18 $1E $30 $F3 $30 $0C $60 $E7 $60 $18 $C0 $CF $C0 $30 $00 $1F $00 $E0 $00 $FF $00 $00
 ; Tile index $010
-.db $FB $78 $FB $BF $FD $FC $FD $FF $CD $CC $CD $FF $DD $CC $DD $33 $DD $CC $DD $33 $79 $78 $79 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $FC $FD $FC $FE $CC $CD $CC $FE $CC $DD $CC $22 $CC $DD $CC $22 $78 $79 $78 $86 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $011
-.db $FB $78 $FB $BF $FB $78 $FB $FF $9B $18 $9B $FF $FB $18 $FB $E7 $FB $18 $FB $E7 $FB $18 $FB $E7 $E3 $00 $E3 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $78 $FB $78 $7C $18 $9B $18 $7C $18 $FB $18 $04 $18 $FB $18 $04 $18 $FB $18 $04 $00 $E3 $00 $1C $00 $FF $00 $00
 ; Tile index $012
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $0D $0C $0D $FF $F9 $18 $F9 $E7 $F3 $30 $F3 $CF $FD $7C $FD $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $0C $0D $0C $FE $18 $F9 $18 $06 $30 $F3 $30 $0C $7C $FD $7C $02 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $013
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $0D $0C $0D $FF $F9 $38 $F9 $C7 $CD $0C $CD $F3 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $0C $0D $0C $FE $38 $F9 $38 $06 $0C $CD $0C $32 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $014
-.db $FB $38 $FB $DF $FB $78 $FB $FF $FB $78 $FB $FF $CB $C8 $CB $37 $FD $FC $FD $03 $19 $18 $19 $E7 $E3 $00 $E3 $FF $FF $00 $FF $FF
+.db $38 $FB $38 $1C $78 $FB $78 $7C $78 $FB $78 $7C $C8 $CB $C8 $34 $FC $FD $FC $02 $18 $19 $18 $E6 $00 $E3 $00 $1C $00 $FF $00 $00
 ; Tile index $015
-.db $FD $FC $FD $7F $FD $FC $FD $FF $E1 $E0 $E1 $FF $7B $78 $7B $87 $8D $0C $8D $F3 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $E0 $E1 $E0 $FE $78 $7B $78 $84 $0C $8D $0C $72 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $016
-.db $FB $78 $FB $BF $C3 $C0 $C3 $FF $FB $F8 $FB $FF $FD $FC $FD $03 $8D $8C $8D $73 $79 $78 $79 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $C0 $C3 $C0 $FC $F8 $FB $F8 $FC $FC $FD $FC $02 $8C $8D $8C $72 $78 $79 $78 $86 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $017
-.db $FD $FC $FD $7F $FD $FC $FD $FF $09 $08 $09 $FF $FB $18 $FB $E7 $F3 $30 $F3 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $08 $09 $08 $FE $18 $FB $18 $04 $30 $F3 $30 $0C $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $018
-.db $FB $78 $FB $BF $FD $FC $FD $FF $CD $CC $CD $FF $79 $78 $79 $87 $CD $CC $CD $33 $79 $78 $79 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $FC $FD $FC $FE $CC $CD $CC $FE $78 $79 $78 $86 $CC $CD $CC $32 $78 $79 $78 $86 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $019
-.db $FB $78 $FB $BF $FD $FC $FD $FF $CD $CC $CD $FF $7D $7C $7D $83 $89 $08 $89 $F7 $F3 $30 $F3 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $FC $FD $FC $FE $CC $CD $CC $FE $7C $7D $7C $82 $08 $89 $08 $76 $30 $F3 $30 $0C $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $01A
-.db $F7 $30 $F7 $DF $F7 $30 $F7 $FF $C7 $00 $C7 $FF $FF $00 $FF $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $30 $F7 $30 $38 $00 $C7 $00 $38 $00 $FF $00 $00 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $01B
-.db $F7 $30 $F7 $DF $F7 $30 $F7 $FF $C7 $00 $C7 $FF $F7 $30 $F7 $CF $D7 $10 $D7 $EF $E7 $20 $E7 $DF $CF $00 $CF $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $30 $F7 $30 $38 $00 $C7 $00 $38 $30 $F7 $30 $08 $10 $D7 $10 $28 $20 $E7 $20 $18 $00 $CF $00 $30 $00 $FF $00 $00
 ; Tile index $01C
-.db $FB $18 $FB $EF $FB $38 $FB $FF $F3 $30 $F3 $FF $E7 $60 $E7 $9F $B7 $30 $B7 $CF $DB $18 $DB $E7 $E3 $00 $E3 $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $38 $FB $38 $3C $30 $F3 $30 $3C $60 $E7 $60 $18 $30 $B7 $30 $48 $18 $DB $18 $24 $00 $E3 $00 $1C $00 $FF $00 $00
 ; Tile index $01D
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FD $7C $FD $BF $81 $00 $81 $FF $FD $7C $FD $83 $81 $00 $81 $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $7C $FD $7C $3E $00 $81 $00 $7E $7C $FD $7C $02 $00 $81 $00 $7E $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $01E
-.db $EF $60 $EF $BF $F7 $70 $F7 $FF $B7 $30 $B7 $FF $DB $18 $DB $E7 $F3 $30 $F3 $CF $E7 $60 $E7 $9F $8F $00 $8F $FF $FF $00 $FF $FF
+.db $60 $EF $60 $30 $70 $F7 $70 $78 $30 $B7 $30 $78 $18 $DB $18 $24 $30 $F3 $30 $0C $60 $E7 $60 $18 $00 $8F $00 $70 $00 $FF $00 $00
 ; Tile index $01F
-.db $FD $FC $FD $7F $CD $CC $CD $FF $1D $0C $1D $FF $F1 $30 $F1 $CF $C7 $00 $C7 $FF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $CC $CD $CC $FE $0C $1D $0C $EE $30 $F1 $30 $0E $00 $C7 $00 $38 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $020
-.db $FB $78 $FB $BF $FD $FC $FD $FF $D5 $D4 $D5 $FF $DD $DC $DD $23 $C1 $C0 $C1 $3F $7B $78 $7B $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $78 $FB $78 $3C $FC $FD $FC $FE $D4 $D5 $D4 $FE $DC $DD $DC $22 $C0 $C1 $C0 $3E $78 $7B $78 $84 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $021
-.db $FB $38 $FB $DF $FD $7C $FD $FF $ED $6C $ED $FF $CD $CC $CD $33 $FD $FC $FD $03 $8D $8C $8D $73 $31 $00 $31 $FF $FF $00 $FF $FF
+.db $38 $FB $38 $1C $7C $FD $7C $7E $6C $ED $6C $7E $CC $CD $CC $32 $FC $FD $FC $02 $8C $8D $8C $72 $00 $31 $00 $CE $00 $FF $00 $00
 ; Tile index $022
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $CD $CC $CD $FF $F9 $F8 $F9 $07 $CD $CC $CD $33 $F9 $F8 $F9 $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $CC $CD $CC $FE $F8 $F9 $F8 $06 $CC $CD $CC $32 $F8 $F9 $F8 $06 $00 $03 $00 $FC $00 $FF $00 $00
 ; Tile index $023
-.db $FD $7C $FD $BF $FD $FC $FD $FF $C1 $C0 $C1 $FF $DF $C0 $DF $3F $DF $C0 $DF $3F $7B $78 $7B $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FC $FD $FC $FE $C0 $C1 $C0 $FE $C0 $DF $C0 $20 $C0 $DF $C0 $20 $78 $7B $78 $84 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $024
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $CD $CC $CD $FF $DD $CC $DD $33 $DD $CC $DD $33 $F9 $F8 $F9 $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $CC $CD $CC $FE $CC $DD $CC $22 $CC $DD $CC $22 $F8 $F9 $F8 $06 $00 $03 $00 $FC $00 $FF $00 $00
 ; Tile index $025
-.db $FD $FC $FD $7F $FD $FC $FD $FF $C1 $C0 $C1 $FF $FB $F8 $FB $07 $C3 $C0 $C3 $3F $FB $F8 $FB $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $C0 $C1 $C0 $FE $F8 $FB $F8 $04 $C0 $C3 $C0 $3C $F8 $FB $F8 $04 $00 $03 $00 $FC $00 $FF $00 $00
 ; Tile index $026
-.db $FD $FC $FD $7F $FD $FC $FD $FF $C1 $C0 $C1 $FF $FB $F8 $FB $07 $C3 $C0 $C3 $3F $DF $C0 $DF $3F $1F $00 $1F $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $C0 $C1 $C0 $FE $F8 $FB $F8 $04 $C0 $C3 $C0 $3C $C0 $DF $C0 $20 $00 $1F $00 $E0 $00 $FF $00 $00
 ; Tile index $027
-.db $FD $7C $FD $BF $FD $FC $FD $FF $C1 $C0 $C1 $FF $DD $CC $DD $33 $DD $CC $DD $33 $7D $7C $7D $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FC $FD $FC $FE $C0 $C1 $C0 $FE $CC $DD $CC $22 $CC $DD $CC $22 $7C $7D $7C $82 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $028
-.db $DD $CC $DD $77 $DD $CC $DD $FF $DD $CC $DD $FF $FD $FC $FD $03 $CD $CC $CD $33 $DD $CC $DD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $66 $CC $DD $CC $EE $CC $DD $CC $EE $FC $FD $FC $02 $CC $CD $CC $32 $CC $DD $CC $22 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $029
-.db $F7 $30 $F7 $DF $F7 $30 $F7 $FF $F7 $30 $F7 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $30 $F7 $30 $38 $30 $F7 $30 $38 $30 $F7 $30 $08 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $02A
-.db $FD $0C $FD $F7 $FD $0C $FD $FF $FD $0C $FD $FF $FD $0C $FD $F3 $ED $6C $ED $93 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $0C $FD $0C $06 $0C $FD $0C $0E $0C $FD $0C $0E $0C $FD $0C $02 $6C $ED $6C $12 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $02B
-.db $DD $CC $DD $77 $DD $DC $DD $FF $F9 $F8 $F9 $FF $F3 $F0 $F3 $0F $DB $D8 $DB $27 $CD $CC $CD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $66 $DC $DD $DC $FE $F8 $F9 $F8 $FE $F0 $F3 $F0 $0C $D8 $DB $D8 $24 $CC $CD $CC $32 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $02C
-.db $EF $60 $EF $BF $EF $60 $EF $FF $EF $60 $EF $FF $EF $60 $EF $9F $EF $60 $EF $9F $FB $78 $FB $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $60 $EF $60 $30 $60 $EF $60 $70 $60 $EF $60 $70 $60 $EF $60 $10 $60 $EF $60 $10 $78 $FB $78 $04 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $02D
-.db $BE $8E $BE $77 $DE $DE $DE $FF $FE $FE $FE $FF $F6 $F6 $F6 $09 $A6 $A6 $A6 $59 $8E $86 $8E $79 $38 $00 $38 $FF $FF $00 $FF $FF
+.db $8E $BE $8E $47 $DE $DE $DE $FF $FE $FE $FE $FF $F6 $F6 $F6 $09 $A6 $A6 $A6 $59 $86 $8E $86 $71 $00 $38 $00 $C7 $00 $FF $00 $00
 ; Tile index $02E
-.db $DD $CC $DD $7F $ED $EC $ED $FF $FD $FC $FD $FF $BD $BC $BD $43 $9D $9C $9D $63 $AD $8C $AD $73 $31 $00 $31 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $6E $EC $ED $EC $FE $FC $FD $FC $FE $BC $BD $BC $42 $9C $9D $9C $62 $8C $AD $8C $52 $00 $31 $00 $CE $00 $FF $00 $00
 ; Tile index $02F
-.db $FD $7C $FD $BF $FE $FE $FE $FF $C6 $C6 $C6 $FF $DE $C6 $DE $39 $DE $C6 $DE $39 $7C $7C $7C $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FE $FE $FE $FF $C6 $C6 $C6 $FF $C6 $DE $C6 $21 $C6 $DE $C6 $21 $7C $7C $7C $83 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $030
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $CD $CC $CD $FF $DD $CC $DD $33 $F9 $F8 $F9 $07 $C3 $C0 $C3 $3F $1F $00 $1F $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $CC $CD $CC $FE $CC $DD $CC $22 $F8 $F9 $F8 $06 $C0 $C3 $C0 $3C $00 $1F $00 $E0 $00 $FF $00 $00
 ; Tile index $031
-.db $FD $7C $FD $BF $FE $FE $FE $FF $C6 $C6 $C6 $FF $DE $C6 $DE $39 $DC $CC $DC $33 $7E $7E $7E $81 $80 $00 $80 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FE $FE $FE $FF $C6 $C6 $C6 $FF $C6 $DE $C6 $21 $CC $DC $CC $23 $7E $7E $7E $81 $00 $80 $00 $7F $00 $FF $00 $00
 ; Tile index $032
-.db $FB $F8 $FB $7F $FD $FC $FD $FF $CD $CC $CD $FF $D9 $C8 $D9 $37 $FB $F8 $FB $07 $CD $CC $CD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $F8 $FB $F8 $7C $FC $FD $FC $FE $CC $CD $CC $FE $C8 $D9 $C8 $26 $F8 $FB $F8 $04 $CC $CD $CC $32 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $033
-.db $FD $7C $FD $BF $FD $FC $FD $FF $E1 $E0 $E1 $FF $7B $78 $7B $87 $9D $1C $9D $E3 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FC $FD $FC $FE $E0 $E1 $E0 $FE $78 $7B $78 $84 $1C $9D $1C $62 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $034
-.db $FD $FC $FD $7F $FD $FC $FD $FF $31 $30 $31 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $30 $31 $30 $FE $30 $F7 $30 $08 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $035
-.db $DD $CC $DD $7F $DD $CC $DD $FF $DD $CC $DD $FF $DD $CC $DD $33 $DD $CC $DD $33 $79 $78 $79 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $6E $CC $DD $CC $EE $CC $DD $CC $EE $CC $DD $CC $22 $CC $DD $CC $22 $78 $79 $78 $86 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $036
-.db $DD $CC $DD $7F $DD $CC $DD $FF $59 $48 $59 $FF $FB $78 $FB $87 $B3 $30 $B3 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $6E $CC $DD $CC $EE $48 $59 $48 $EE $78 $FB $78 $04 $30 $B3 $30 $4C $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $037
-.db $DE $C6 $DE $7F $D6 $D6 $D6 $FF $D6 $D6 $D6 $FF $7C $7C $7C $83 $FD $7C $FD $83 $A9 $28 $A9 $D7 $C3 $00 $C3 $FF $FF $00 $FF $FF
+.db $C6 $DE $C6 $67 $D6 $D6 $D6 $FF $D6 $D6 $D6 $FF $7C $7C $7C $83 $7C $FD $7C $02 $28 $A9 $28 $56 $00 $C3 $00 $3C $00 $FF $00 $00
 ; Tile index $038
-.db $DD $CC $DD $7F $DD $CC $DD $FF $79 $78 $79 $FF $B3 $30 $B3 $CF $FB $78 $FB $87 $CD $CC $CD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $6E $CC $DD $CC $EE $78 $79 $78 $FE $30 $B3 $30 $4C $78 $FB $78 $04 $CC $CD $CC $32 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $039
-.db $DD $CC $DD $7F $DD $CC $DD $FF $DD $CC $DD $FF $79 $78 $79 $87 $B3 $30 $B3 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $CC $DD $CC $6E $CC $DD $CC $EE $CC $DD $CC $EE $78 $79 $78 $86 $30 $B3 $30 $4C $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $03A
-.db $FD $FC $FD $7F $FD $FC $FD $FF $19 $18 $19 $FF $F3 $30 $F3 $CF $E7 $60 $E7 $9F $FB $F8 $FB $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $FC $FD $FC $7E $FC $FD $FC $FE $18 $19 $18 $FE $30 $F3 $30 $0C $60 $E7 $60 $18 $F8 $FB $F8 $04 $00 $03 $00 $FC $00 $FF $00 $00
 ; Tile index $03B
-.db $FB $38 $FB $DF $FB $38 $FB $FF $F3 $30 $F3 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $FB $38 $FB $C7 $C3 $00 $C3 $FF $FF $00 $FF $FF
+.db $38 $FB $38 $1C $38 $FB $38 $3C $30 $F3 $30 $3C $30 $F7 $30 $08 $30 $F7 $30 $08 $38 $FB $38 $04 $00 $C3 $00 $3C $00 $FF $00 $00
 ; Tile index $03C
-.db $DF $C0 $DF $7F $6F $60 $6F $FF $B7 $30 $B7 $FF $DB $18 $DB $E7 $ED $0C $ED $F3 $F6 $06 $F6 $F9 $F8 $00 $F8 $FF $FF $00 $FF $FF
+.db $C0 $DF $C0 $60 $60 $6F $60 $F0 $30 $B7 $30 $78 $18 $DB $18 $24 $0C $ED $0C $12 $06 $F6 $06 $09 $00 $F8 $00 $07 $00 $FF $00 $00
 ; Tile index $03D
-.db $FB $38 $FB $DF $FB $38 $FB $FF $DB $18 $DB $FF $FB $18 $FB $E7 $FB $18 $FB $E7 $FB $38 $FB $C7 $C3 $00 $C3 $FF $FF $00 $FF $FF
+.db $38 $FB $38 $1C $38 $FB $38 $3C $18 $DB $18 $3C $18 $FB $18 $04 $18 $FB $18 $04 $38 $FB $38 $04 $00 $C3 $00 $3C $00 $FF $00 $00
 ; Tile index $03E
-.db $FB $18 $FB $EF $F3 $30 $F3 $FF $E7 $20 $E7 $FF $CF $00 $CF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $30 $F3 $30 $3C $20 $E7 $20 $38 $00 $CF $00 $30 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $03F
-.db $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FD $7C $FD $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $7C $FD $7C $02 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $040
-.db $FB $18 $FB $EF $F3 $30 $F3 $FF $E7 $20 $E7 $FF $CF $00 $CF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $30 $F3 $30 $3C $20 $E7 $20 $38 $00 $CF $00 $30 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00 $00 $FF $00 $00
 ; Tile index $041
-.db $FF $00 $FF $FF $FB $78 $FB $BF $8D $0C $8D $FF $FD $7C $FD $83 $CD $CC $CD $33 $7D $7C $7D $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $78 $FB $78 $3C $0C $8D $0C $7E $7C $FD $7C $02 $CC $CD $CC $32 $7C $7D $7C $82 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $042
-.db $DF $C0 $DF $7F $DF $C0 $DF $FF $FB $F8 $FB $FF $FD $FC $FD $03 $CD $CC $CD $33 $F9 $F8 $F9 $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $C0 $DF $C0 $60 $C0 $DF $C0 $E0 $F8 $FB $F8 $FC $FC $FD $FC $02 $CC $CD $CC $32 $F8 $F9 $F8 $06 $00 $03 $00 $FC $00 $FF $00 $00
 ; Tile index $043
-.db $FF $00 $FF $FF $FD $7C $FD $BF $FD $FC $FD $FF $C1 $C0 $C1 $3F $DF $C0 $DF $3F $7B $78 $7B $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $7C $FD $7C $3E $FC $FD $FC $FE $C0 $C1 $C0 $3E $C0 $DF $C0 $20 $78 $7B $78 $84 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $044
-.db $FD $0C $FD $F7 $FD $0C $FD $FF $FD $7C $FD $FF $FD $FC $FD $03 $C5 $C4 $C5 $3B $7D $7C $7D $83 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $0C $FD $0C $06 $0C $FD $0C $0E $7C $FD $7C $7E $FC $FD $FC $02 $C4 $C5 $C4 $3A $7C $7D $7C $82 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $045
-.db $FF $00 $FF $FF $FB $78 $FB $BF $CD $CC $CD $FF $FD $FC $FD $03 $C1 $C0 $C1 $3F $7B $78 $7B $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $78 $FB $78 $3C $CC $CD $CC $FE $FC $FD $FC $02 $C0 $C1 $C0 $3E $78 $7B $78 $84 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $046
-.db $FD $1C $FD $EF $FD $3C $FD $FF $F1 $30 $F1 $FF $FD $7C $FD $83 $B1 $30 $B1 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $1C $FD $1C $0E $3C $FD $3C $3E $30 $F1 $30 $3E $7C $FD $7C $02 $30 $B1 $30 $4E $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $047
-.db $FD $7C $FD $BF $FD $FC $FD $FF $CD $CC $CD $FF $7D $7C $7D $83 $8D $0C $8D $F3 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $7C $FD $7C $3E $FC $FD $FC $FE $CC $CD $CC $FE $7C $7D $7C $82 $0C $8D $0C $72 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $048
-.db $EF $60 $EF $BF $EF $60 $EF $FF $FB $78 $FB $FF $FD $7C $FD $83 $CD $4C $CD $B3 $DD $4C $DD $B3 $91 $00 $91 $FF $FF $00 $FF $FF
+.db $60 $EF $60 $30 $60 $EF $60 $70 $78 $FB $78 $7C $7C $FD $7C $02 $4C $CD $4C $32 $4C $DD $4C $22 $00 $91 $00 $6E $00 $FF $00 $00
 ; Tile index $049
-.db $F7 $30 $F7 $DF $C7 $00 $C7 $FF $F7 $30 $F7 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $00 $C7 $00 $38 $30 $F7 $30 $38 $30 $F7 $30 $08 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $04A
-.db $FB $18 $FB $EF $E3 $00 $E3 $FF $FB $18 $FB $FF $FB $18 $FB $E7 $DB $58 $DB $A7 $F3 $70 $F3 $8F $87 $00 $87 $FF $FF $00 $FF $FF
+.db $18 $FB $18 $0C $00 $E3 $00 $1C $18 $FB $18 $1C $18 $FB $18 $04 $58 $DB $58 $24 $70 $F3 $70 $0C $00 $87 $00 $78 $00 $FF $00 $00
 ; Tile index $04B
-.db $DF $C0 $DF $7F $DD $CC $DD $FF $DD $DC $DD $FF $F9 $F8 $F9 $07 $F3 $F0 $F3 $0F $CD $CC $CD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $C0 $DF $C0 $60 $CC $DD $CC $EE $DC $DD $DC $FE $F8 $F9 $F8 $06 $F0 $F3 $F0 $0C $CC $CD $CC $32 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $04C
-.db $F7 $30 $F7 $DF $F7 $30 $F7 $FF $F7 $30 $F7 $FF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $F7 $30 $F7 $CF $C7 $00 $C7 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $30 $F7 $30 $38 $30 $F7 $30 $38 $30 $F7 $30 $08 $30 $F7 $30 $08 $30 $F7 $30 $08 $00 $C7 $00 $38 $00 $FF $00 $00
 ; Tile index $04D
-.db $FF $00 $FF $FF $ED $EC $ED $7F $FE $FE $FE $FF $D6 $D6 $D6 $29 $D6 $D6 $D6 $29 $D6 $D6 $D6 $29 $00 $00 $00 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $EC $ED $EC $7E $FE $FE $FE $FF $D6 $D6 $D6 $29 $D6 $D6 $D6 $29 $D6 $D6 $D6 $29 $00 $00 $00 $FF $00 $FF $00 $00
 ; Tile index $04E
-.db $FF $00 $FF $FF $FB $F8 $FB $7F $FD $FC $FD $FF $8D $8C $8D $73 $BD $8C $BD $73 $BD $8C $BD $73 $31 $00 $31 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $F8 $FB $F8 $7C $FC $FD $FC $FE $8C $8D $8C $72 $8C $BD $8C $42 $8C $BD $8C $42 $00 $31 $00 $CE $00 $FF $00 $00
 ; Tile index $04F
-.db $FF $00 $FF $FF $FB $78 $FB $BF $FD $FC $FD $FF $CD $CC $CD $33 $DD $CC $DD $33 $79 $78 $79 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $78 $FB $78 $3C $FC $FD $FC $FE $CC $CD $CC $32 $CC $DD $CC $22 $78 $79 $78 $86 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $050
-.db $FF $00 $FF $FF $FB $F8 $FB $7F $FD $FC $FD $FF $CD $CC $CD $33 $F9 $F8 $F9 $07 $C3 $C0 $C3 $3F $1F $00 $1F $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $F8 $FB $F8 $7C $FC $FD $FC $FE $CC $CD $CC $32 $F8 $F9 $F8 $06 $C0 $C3 $C0 $3C $00 $1F $00 $E0 $00 $FF $00 $00
 ; Tile index $051
-.db $FF $00 $FF $FF $FD $7C $FD $BF $FD $FC $FD $FF $CD $CC $CD $33 $7D $7C $7D $83 $8D $0C $8D $F3 $F1 $00 $F1 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $7C $FD $7C $3E $FC $FD $FC $FE $CC $CD $CC $32 $7C $7D $7C $82 $0C $8D $0C $72 $00 $F1 $00 $0E $00 $FF $00 $00
 ; Tile index $052
-.db $FF $00 $FF $FF $ED $6C $ED $BF $ED $6C $ED $FF $F1 $70 $F1 $8F $E7 $60 $E7 $9F $EF $60 $EF $9F $8F $00 $8F $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $6C $ED $6C $3E $6C $ED $6C $7E $70 $F1 $70 $0E $60 $E7 $60 $18 $60 $EF $60 $10 $00 $8F $00 $70 $00 $FF $00 $00
 ; Tile index $053
-.db $FF $00 $FF $FF $FD $7C $FD $BF $FD $FC $FD $FF $61 $60 $61 $9F $BB $38 $BB $C7 $F3 $F0 $F3 $0F $07 $00 $07 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $7C $FD $7C $3E $FC $FD $FC $FE $60 $61 $60 $9E $38 $BB $38 $44 $F0 $F3 $F0 $0C $00 $07 $00 $F8 $00 $FF $00 $00
 ; Tile index $054
-.db $F7 $30 $F7 $DF $FD $7C $FD $FF $FD $7C $FD $FF $B1 $30 $B1 $CF $F7 $30 $F7 $CF $DB $18 $DB $E7 $E3 $00 $E3 $FF $FF $00 $FF $FF
+.db $30 $F7 $30 $18 $7C $FD $7C $7E $7C $FD $7C $7E $30 $B1 $30 $4E $30 $F7 $30 $08 $18 $DB $18 $24 $00 $E3 $00 $1C $00 $FF $00 $00
 ; Tile index $055
-.db $FF $00 $FF $FF $DB $D8 $DB $7F $DB $D8 $DB $FF $DB $D8 $DB $27 $DB $D8 $DB $27 $6D $6C $6D $93 $81 $00 $81 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $D8 $DB $D8 $7C $D8 $DB $D8 $FC $D8 $DB $D8 $24 $D8 $DB $D8 $24 $6C $6D $6C $92 $00 $81 $00 $7E $00 $FF $00 $00
 ; Tile index $056
-.db $FF $00 $FF $FF $ED $6C $ED $BF $ED $6C $ED $FF $ED $6C $ED $93 $B9 $38 $B9 $C7 $D3 $10 $D3 $EF $E7 $00 $E7 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $6C $ED $6C $3E $6C $ED $6C $7E $6C $ED $6C $12 $38 $B9 $38 $46 $10 $D3 $10 $2C $00 $E7 $00 $18 $00 $FF $00 $00
 ; Tile index $057
-.db $FF $00 $FF $FF $DE $C6 $DE $7F $D6 $D6 $D6 $FF $D6 $D6 $D6 $29 $7C $7C $7C $83 $A9 $28 $A9 $D7 $C3 $00 $C3 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $C6 $DE $C6 $67 $D6 $D6 $D6 $FF $D6 $D6 $D6 $29 $7C $7C $7C $83 $28 $A9 $28 $56 $00 $C3 $00 $3C $00 $FF $00 $00
 ; Tile index $058
-.db $FF $00 $FF $FF $DD $CC $DD $7F $DD $CC $DD $FF $79 $78 $79 $87 $B3 $30 $B3 $CF $CD $CC $CD $33 $11 $00 $11 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $CC $DD $CC $6E $CC $DD $CC $EE $78 $79 $78 $86 $30 $B3 $30 $4C $CC $CD $CC $32 $00 $11 $00 $EE $00 $FF $00 $00
 ; Tile index $059
-.db $FF $00 $FF $FF $DD $CC $DD $77 $DD $CC $DD $FF $7D $7C $7D $83 $8D $0C $8D $F3 $F9 $78 $F9 $87 $83 $00 $83 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $CC $DD $CC $66 $CC $DD $CC $EE $7C $7D $7C $82 $0C $8D $0C $72 $78 $F9 $78 $06 $00 $83 $00 $7C $00 $FF $00 $00
 ; Tile index $05A
-.db $FF $00 $FF $FF $FD $FC $FD $7F $F9 $F8 $F9 $FF $33 $30 $33 $CF $E7 $60 $E7 $9F $FB $F8 $FB $07 $03 $00 $03 $FF $FF $00 $FF $FF
+.db $00 $FF $00 $00 $FC $FD $FC $7E $F8 $F9 $F8 $FE $30 $33 $30 $CC $60 $E7 $60 $18 $F8 $FB $F8 $04 $00 $03 $00 $FC $00 $FF $00 $00

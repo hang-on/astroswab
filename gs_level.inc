@@ -359,8 +359,8 @@ run_level:
         call batch_wipe_all_object_triggers_and_enable_trigger
     +:
     ; Put the profiler bee in the SAT.
-    ld ix,bee
-    call mark_scanline_with_game_object
+    ; ld ix,bee
+    ; call mark_scanline_with_game_object
     ++:
   .endif
 jp main_loop
