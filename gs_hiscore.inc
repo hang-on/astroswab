@@ -368,8 +368,8 @@ run_hiscore:
       ld a,(transition_trigger.cycle)
       cp HISCORE_CYCLE_VALUE
       jp z,++
-      ld a,GS_PREPARE_TITLESCREEN
-      call transition_to_gamestate
+        ld a,GS_PREPARE_TITLESCREEN
+        call transition_to_gamestate
     ++:
 
     ;

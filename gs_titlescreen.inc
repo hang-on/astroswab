@@ -35,7 +35,6 @@ prepare_titlescreen:
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
   ;
-  call randomize                  ; Seed the random number generator.
   ;
   ; Stop music and sound effects.
   call PSGSFXStop
@@ -95,7 +94,6 @@ run_titlescreen:
     call initialize_variables_once_per_game
     ld a,GS_PREPARE_LEVEL
     call transition_to_gamestate
-    ;jp setup_new_game           ; up a new game.
   ++:
   ;
   call PSGSFXFrame
@@ -103,6 +101,13 @@ run_titlescreen:
   ;
   ld hl,frame_counter
   inc (hl)
+  ; Re-seed the random number generator.
+  ld a,(frame_counter)
+  ld (rnd_seed+1),a
+  ld b,a
+  ld a,(rnd_seed)
+  add a,b
+  ld (rnd_seed),a
   ;
 jp main_loop
 ; -----------------------------------------------------------------------------
