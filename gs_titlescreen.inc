@@ -41,6 +41,10 @@ prepare_titlescreen:
   call PSGSFXStop
   call PSGStop
   ;
+  ld ix,transition_trigger
+  ld hl,transition_trigger_titlescreen_init_table
+  call initialize_trigger
+  ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1
@@ -73,11 +77,21 @@ run_titlescreen:
   ;
   call get_random_number        ; Randomness based on user input.
   ;
+
+  ld ix,transition_trigger
+  call process_trigger
+  jp nc,+
+    ld a,DISABLED
+    ld (transition_trigger.state),a
+  +:
   call is_button_1_pressed
   jp c,+
   call is_button_2_pressed
   jp nc,++
     +:
+    ld a,(transition_trigger.state)
+    cp DISABLED
+    jp nz,++
     call initialize_variables_once_per_game
     ld a,GS_PREPARE_LEVEL
     call transition_to_gamestate

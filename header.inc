@@ -22,6 +22,8 @@
   ;
 ; Title screen:
   .equ TITLESCREEN_BANK 10
+  .equ TITLESCREEN_INTERVAL 90
+  .equ TITLESCREEN_CYCLE_VALUE 1
 ; Game over:
   .equ GAME_OVER_BANK 10
   .equ GAME_OVER_TEXT_ROW 10
@@ -34,8 +36,9 @@
   .equ CONSOLE_LOGGER_START_ROW 4
   ;
 ; Hiscore:
-  .equ HISCORE_INTERVAL 180
+  .equ HISCORE_INTERVAL 170
   .equ HISCORE_CYCLE_VALUE 3
+
 ;
 ; Pico-related definitions:
   .equ PICO8_PALETTE_SIZE 16

@@ -637,6 +637,7 @@
     .dw UNUSED_WORD ; Timer handler.
     .db DISABLED    ; Timer state.
   ;
+  ; Transition trigger:
   transition_trigger_init_table:
     .db 255, 255
     .db DISABLED, TRANSITION_TRIGGER_CYCLE_INIT
@@ -646,6 +647,9 @@
   transition_trigger_hiscore_init_table:
     .db PERCENT_CHANCE_100, HISCORE_INTERVAL
     .db ENABLED, HISCORE_CYCLE_VALUE
+  transition_trigger_titlescreen_init_table:
+    .db PERCENT_CHANCE_100, TITLESCREEN_INTERVAL
+    .db ENABLED, TITLESCREEN_CYCLE_VALUE
   ;
   difficulty_to_trigger_init_tables:
     .dw difficulty_0_batch_trigger_init_table
