@@ -338,31 +338,32 @@ run_level:
   ld hl,frame_counter
   inc (hl)
   ;
-  .ifdef DEVELOPER_MODE
     ; Exit to developer menu if reset button is pressed.
     call is_reset_pressed
     jp nc,+
-      call PSGSFXStop
-      call PSGStop
-      call FadeOutScreen
-      ld a,GS_PREPARE_DEVMENU
-      ld (game_state),a
-      jp ++
+      .ifdef DEVELOPER_MODE
+        call PSGSFXStop
+        call PSGStop
+        call FadeOutScreen
+        ld a,GS_PREPARE_DEVMENU
+        ld (game_state),a
+      .endif
+      jp init ;!!
     +:
-    ; Press player 2 button 1 to stop enemy objects spawning.
-    call is_player_2_button_1_pressed
-    jp nc,+
-      ld a,(difficulty)
-      cp DIFFICULTY_MAX
-      jp z,+
-        ld ix,transition_trigger
-        call batch_wipe_all_object_triggers_and_enable_trigger
+    .ifdef DEVELOPER_MODE
+      ; Press player 2 button 1 to stop enemy objects spawning.
+      call is_player_2_button_1_pressed
+      jp nc,+
+        ld a,(difficulty)
+        cp DIFFICULTY_MAX
+        jp z,+
+          ld ix,transition_trigger
+          call batch_wipe_all_object_triggers_and_enable_trigger
     +:
     ; Put the profiler bee in the SAT.
     ; ld ix,bee
     ; call mark_scanline_with_game_object
-    ++:
-  .endif
+    .endif
 jp main_loop
 ;
 ;

@@ -109,18 +109,21 @@ run_devmenu:
     call is_button_2_pressed
     jp nz,+
       ; Both buttons are pressed. Reset hiscore table.
-      call reset_scores
-      SELECT_BANK HISCORE_BANK
-      ld hl,hiscore_init        ; Hiscore initialization data.
-      ld de,hiscore_item.1      ; Start of hiscore table.
-      call copy_hiscore_table   ; Initialize hiscore table.
+      ;call reset_scores
+      ;SELECT_BANK HISCORE_BANK
+      ;ld hl,hiscore_init        ; Hiscore initialization data.
+      ;ld de,hiscore_item.1      ; Start of hiscore table.
+      ;call copy_hiscore_table   ; Initialize hiscore table.
+      xor a
       SELECT_EXTRAM
-        ld hl,HISCORE_EXTRAM_ADDRESS
-        call save_hiscore_table_to_extram
+        ld (FIRST_GAME_BYTE),a
+        ;ld hl,HISCORE_EXTRAM_ADDRESS
+        ;call save_hiscore_table_to_extram
       SELECT_ROM
-      ld a,GS_PREPARE_HISCORE
-      call transition_to_gamestate
-      jp main_loop
+      ;ld a,GS_PREPARE_HISCORE
+      ;call transition_to_gamestate
+      jp init
+      ;jp main_loop
   +:
   ;
     call is_down_pressed       ; Move selector downwards if player

@@ -1,6 +1,6 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
-  .equ DEVELOPER_MODE ; Comment out for consumer mode.
+  ;.equ DEVELOPER_MODE ; Comment out for consumer mode.
   ;.equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
 ; -----------------------------------------------------------------------------
 ; External RAM map

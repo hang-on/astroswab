@@ -26,6 +26,10 @@
     ; Run this function once (on game load). Assume we come here from bluelib
     ; boot code with ram, vram, mappers and registers initialized.
     ; Load the pico-8 palette to colors 16-31.
+    ; Note: We can also come here from reset!
+    di
+    call disable_display_and_sound
+    ;
     ld a,SPRITE_PALETTE_START
     ld b,PICO8_PALETTE_SIZE
     ld hl,pico8_palette_sms
