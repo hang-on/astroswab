@@ -104,6 +104,7 @@ run_devmenu:
     jp menu_end
   +:
   ;
+  /*
   call is_button_1_pressed
   jp nz,+
     call is_button_2_pressed
@@ -125,6 +126,7 @@ run_devmenu:
       jp init
       ;jp main_loop
   +:
+  */
   ;
     call is_down_pressed       ; Move selector downwards if player
     jp nc,switch_menu_down_end      ; presses down. menu_state is the menu

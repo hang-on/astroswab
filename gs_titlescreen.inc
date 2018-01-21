@@ -83,18 +83,30 @@ run_titlescreen:
     ld a,DISABLED
     ld (transition_trigger.state),a
   +:
-  call is_button_1_pressed
-  jp c,+
-  call is_button_2_pressed
-  jp nc,++
-    +:
+  ;
+  ld a,(full_reset_keys_end-full_reset_keys)/2
+  ld hl,full_reset_keys
+  call test_multiple_keys_AND
+  jp nc,+
+    xor a
+    SELECT_EXTRAM
+      ld (FIRST_GAME_BYTE),a
+    SELECT_ROM
+    jp init
+  +:
+  ;
+  ld hl,both_player_1_buttons
+  ld a,(both_player_1_buttons_end-both_player_1_buttons)/2
+  call test_multiple_keys_OR
+  jp nc,+
     ld a,(transition_trigger.state)
     cp DISABLED
-    jp nz,++
+    jp nz,+
     call initialize_variables_once_per_game
     ld a,GS_PREPARE_LEVEL
     call transition_to_gamestate
-  ++:
+  +:
+  ;
   ;
   call PSGSFXFrame
   call PSGFrame

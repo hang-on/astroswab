@@ -1,6 +1,6 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
-  ;.equ DEVELOPER_MODE ; Comment out for consumer mode.
+  .equ DEVELOPER_MODE ; Comment out for consumer mode.
   ;.equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
 ; -----------------------------------------------------------------------------
 ; External RAM map
@@ -22,7 +22,7 @@
   ;
 ; Title screen:
   .equ TITLESCREEN_BANK 10
-  .equ TITLESCREEN_INTERVAL 90
+  .equ TITLESCREEN_INTERVAL 70
   .equ TITLESCREEN_CYCLE_VALUE 1
 ; Game over:
   .equ GAME_OVER_BANK 10

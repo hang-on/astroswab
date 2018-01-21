@@ -312,6 +312,15 @@
 .ends
 ;
 ; -----------------------------------------------------------------------------
+.section "hl_ (call hl)" free
+; -----------------------------------------------------------------------------
+  hl_: ; "call _hl"
+    ; Jump to where HL is pointing to. Assume it is a handler that ends in
+    ; ret.
+    jp (hl)
+.ends
+;
+; -----------------------------------------------------------------------------
 .section "clear_extram" free
 ; -----------------------------------------------------------------------------
   ; Clear external ram by writing zeroes to all bytes.

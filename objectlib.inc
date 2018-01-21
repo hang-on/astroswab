@@ -281,13 +281,9 @@
         ld l,(ix+game_object.timer_handler)
         ld h,(ix+game_object.timer_handler+1)
         SAVE_REGISTERS
-          call call_hl
+          call hl_
         RESTORE_REGISTERS
   ret
-    call_hl:
-      ; Jump to where HL is pointing to. Assume it is a handler that ends in
-      ; ret.
-      jp (hl)
   ;
   spawn_game_object_in_invisible_area:
     ; Entry: IX = Pointer to enemy object.
