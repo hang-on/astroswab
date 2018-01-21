@@ -79,6 +79,12 @@
       call save_hiscore_table_to_extram
     +:
     ;
+    SELECT_EXTRAM
+      ld hl,EXTRAM_COUNTER
+      ld a,(hl)
+      inc (hl)
+    SELECT_ROM
+    ;
     call initialize_variables_once_per_gaming_session
     ;
     ;

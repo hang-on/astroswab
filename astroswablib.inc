@@ -516,7 +516,7 @@ ret
       ;
       call PSGStop
       SELECT_BANK SOUND_BANK
-      call PSGSFXStop
+      ;call PSGSFXStop
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay
@@ -538,7 +538,8 @@ ret
       ;
       ;call PSGStop
       SELECT_BANK SOUND_BANK
-      call PSGSFXStop
+      ;call PSGSFXStop
+      call PSGStop
       ld hl,explosion
       ld c,SFX_CHANNELS2AND3
       call PSGSFXPlay

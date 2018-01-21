@@ -158,9 +158,12 @@ run_level:
           ld ix,spinner
           ld iy,spinner_respawn_parameters
           call respawn_game_object
-          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-          ld hl,spinner_coming_down
-          call PSGPlayNoRepeat
+          ld a,(ufo.state)
+          cp ENABLED
+          jp z,+
+            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+            ld hl,spinner_coming_down
+            call PSGPlayNoRepeat
   +:
   ld ix,spinner
   ld iy,update_spinner_parameters
@@ -195,9 +198,12 @@ run_level:
         ld ix,missile
         ld iy,missile_respawn_parameters
         call respawn_game_object
-        SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-        ld hl,missile_warning
-        call PSGPlayNoRepeat
+        ld a,(ufo.state)
+        cp ENABLED
+        jp z,+
+          SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+          ld hl,missile_warning
+          call PSGPlayNoRepeat
   +:
   ;
   ld a,(ix+game_object.y)
@@ -233,9 +239,9 @@ run_level:
         call respawn_game_object
         ld a,ENABLED
         ld (ufo_gun_trigger.state),a
-        ;SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-        ;ld hl,ufo_sound
-        ;call PSGPlay
+        SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+        ld hl,ufo_sound
+        call PSGPlay
   ++:
   ;
   ld ix,ufo

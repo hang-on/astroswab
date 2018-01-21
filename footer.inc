@@ -972,6 +972,13 @@
     .incbin "bank_5\shot_booster.psg"
   missile_warning:
     .incbin "bank_5\missile_warning.psg"
+  ufo_sound:
+    .incbin "bank_5\ufo.psg"
+  title_1:
+    .incbin "bank_5\title_1.psg"
+  machop:
+    .incbin "bank_5\machop.psg"
+
 .ends
 ;
 .bank HISCORE_BANK slot 2

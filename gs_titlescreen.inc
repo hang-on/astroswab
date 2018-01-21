@@ -38,7 +38,19 @@ prepare_titlescreen:
   ;
   ; Stop music and sound effects.
   call PSGSFXStop
-  call PSGStop
+  SELECT_EXTRAM
+    ld a,(EXTRAM_COUNTER)
+  SELECT_ROM
+    bit 0,a
+    jp z,+
+      ld hl,machop
+      jp ++
+    +:
+      ld hl,title_1
+    ++:
+  SELECT_BANK SOUND_BANK
+  call PSGPlay
+  ;call PSGStop
   ;
   ld ix,transition_trigger
   ld hl,transition_trigger_titlescreen_init_table
