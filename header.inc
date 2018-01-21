@@ -1,7 +1,6 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
-  .equ DEVELOPER_MODE ; Comment out for consumer mode.
-  ;.equ DISABLE_NTSC_WARNING ; Comment out to enable the NTSC warning screen.
+  ;.equ DEVELOPER_MODE ; Comment out for consumer mode.
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
@@ -85,6 +84,7 @@
   .equ GS_PREPARE_GAME_OVER 14
   .equ GS_RUN_GAME_OVER 15
   ;
+  ; Initial game state: (Note: First-time warning will trump this).
   .ifdef DEVELOPER_MODE
     ;.equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
     .equ INITIAL_GAME_STATE GS_PREPARE_DEVMENU ; Where to go after boot?
@@ -224,7 +224,7 @@
   .equ SCORE_VRAM_ADDRESS $3d92-2
   .equ PEAK_SCORE_VRAM_ADDRESS SCORE_VRAM_ADDRESS+12
 ; Lives:
-  .equ LIVES_INIT 0
+  .equ LIVES_INIT 2
   .equ LIVES_NAMETABLE_ADDRESS $3dac
 ;
 ; Bullets and gun:
@@ -334,7 +334,7 @@
 .equ ASTEROID_TRIGGER_CHANCE_INIT_0 140 ; 50
 .equ ASTEROID_TRIGGER_INTERVAL_INIT_0 60 ;10
 .equ UFO_TRIGGER_CHANCE_INIT_0 0
-.equ UFO_TRIGGER_INTERVAL_INIT_0 200
+.equ UFO_TRIGGER_INTERVAL_INIT_0 255
 ;
 ; Difficulty 1
 .equ SPINNER_TRIGGER_CHANCE_INIT_1 60 ; 50

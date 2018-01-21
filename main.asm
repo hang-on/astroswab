@@ -61,6 +61,15 @@
         ld (FIRST_GAME_BYTE),a      ; Stamp EXTRAM byte.
       SELECT_ROM
       ;
+      ; If we are on an NTSC system, display warning instead of title screen.
+      ; Only first time the game is run.
+      ld a,(tv_type)
+      cp NTSC
+      jp nz,+
+        ld a,GS_PREPARE_WARNING
+        ld (game_state),a
+      +:
+      ;
       SELECT_BANK HISCORE_BANK
         ld hl,hiscore_init        ; Hiscore initialization data.
         ld de,hiscore_item.1      ; Start of hiscore table.
@@ -72,17 +81,10 @@
     ;
     call initialize_variables_once_per_gaming_session
     ;
+    ;
     call PSGInit
     ;
-    .ifndef DISABLE_NTSC_WARNING
-      ; If we are on an NTSC system, display warning instead of title screen.
-      ld a,(tv_type)
-      cp NTSC
-      jp nz,+
-        ld a,GS_PREPARE_WARNING
-        ld (game_state),a
-      +:
-    .endif
+
   jp main_loop
   ;
   ; ---------------------------------------------------------------------------

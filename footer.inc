@@ -538,7 +538,7 @@
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
-    .db %00000001, 1, 0, 15, 14, SWABBY
+    .db UNUSED_BYTE, 1, 4, 8, 14, SWABBY
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.

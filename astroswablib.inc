@@ -854,8 +854,13 @@ ret
     ld (pause_flag),a                 ; Reset pause flag.
     ;
     ; The initial game state specified in the header.
-    ld a,INITIAL_GAME_STATE
-    ld (game_state),a
+    ; --> if not warning!
+    ld a,(game_state)
+    cp GS_PREPARE_WARNING
+    jp z,+
+      ld a,INITIAL_GAME_STATE
+      ld (game_state),a
+    +:
     ;
     ld ix,ufo_gun_trigger
     ld hl,ufo_gun_trigger_init_table
