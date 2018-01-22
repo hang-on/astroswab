@@ -255,6 +255,7 @@ run_hiscore:
             ld ix,transition_trigger
             ld hl,short_interval_transition
             call initialize_trigger
+            call reset_scores
             jp end_of_input_tests
     +:
     ; -----------------------------------------------------------------------
