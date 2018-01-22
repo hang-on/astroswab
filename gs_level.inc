@@ -317,7 +317,7 @@ run_level:
   jp z,+
     ld a,(game_state)           ; Rot! If we are actually having a game over in
     cp GS_PREPARE_GAME_OVER     ; this frame!
-    jp nz,+
+    jp z,+
       ld iy,peak_score
       ld ix,transition_score
       call compare_scores
