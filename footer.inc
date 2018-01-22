@@ -664,6 +664,9 @@
   short_interval_transition:
     .db PERCENT_CHANCE_100, 150
     .db ENABLED, 1
+  blinking_text_trigger_init_table:
+    .db PERCENT_CHANCE_100, 50
+    .db ENABLED, 2    
   transition_trigger_titlescreen_init_table:
     .db PERCENT_CHANCE_100, TITLESCREEN_INTERVAL
     .db ENABLED, TITLESCREEN_CYCLE_VALUE

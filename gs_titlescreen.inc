@@ -54,11 +54,10 @@ prepare_titlescreen:
   ld ix,transition_trigger
   ld hl,transition_trigger_titlescreen_init_table
   call initialize_trigger
+  ld ix,blinking_text_trigger
+  ld hl,blinking_text_trigger_init_table
+  call initialize_trigger
   ;
-  ld b,20
-  ld c,7
-  ld hl,titlescreen_string_1
-  call print
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -85,6 +84,18 @@ run_titlescreen:
   ;
   call load_sat
 
+  ld b,20
+  ld c,7
+  ld a,(blinking_text_trigger.cycle)
+  cp 1
+  jp z,+
+    ld hl,titlescreen_string_1
+  jp ++
+  +:
+    ld hl,titlescreen_string_2
+  ++:
+  call print
+
   ;
   ; End of (unsafe) VDP-updating...
   ; ---------------------------------------------------------------------------
@@ -93,12 +104,16 @@ run_titlescreen:
   ;
   call get_random_number        ; Randomness based on user input.
   ;
+  ld ix,blinking_text_trigger
+  call process_trigger
 
   ld ix,transition_trigger
   call process_trigger
   jp nc,+
     ld a,DISABLED
     ld (transition_trigger.state),a
+    ld a,GS_PREPARE_HISCORE
+    call transition_to_gamestate
   +:
   ;
   ld a,(full_reset_keys_end-full_reset_keys)/2
@@ -116,9 +131,9 @@ run_titlescreen:
   ld a,(both_player_1_buttons_end-both_player_1_buttons)/2
   call test_multiple_keys_OR
   jp nc,+
-    ld a,(transition_trigger.state)
-    cp DISABLED
-    jp nz,+
+    ld a,(transition_trigger.cycle)
+    cp TITLESCREEN_CYCLE_VALUE
+    jp z,+
     call initialize_variables_once_per_game
     ld a,GS_PREPARE_LEVEL
     call transition_to_gamestate

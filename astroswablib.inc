@@ -1285,6 +1285,8 @@ ret
   ;
   titlescreen_string_1:
     .asc "Press start button#"
+  titlescreen_string_2:
+    .asc "                  #"
   ;
   sound_explosion:
     SELECT_BANK SOUND_BANK

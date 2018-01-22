@@ -22,7 +22,7 @@
 ; Title screen:
   .equ TITLESCREEN_BANK 10
   .equ TITLESCREEN_INTERVAL 70
-  .equ TITLESCREEN_CYCLE_VALUE 1
+  .equ TITLESCREEN_CYCLE_VALUE 12
 ; Game over:
   .equ GAME_OVER_BANK 10
   .equ GAME_OVER_TEXT_ROW 10
@@ -407,6 +407,7 @@
   level db
   difficulty db
   transition_trigger instanceof trigger
+  blinking_text_trigger instanceof trigger
   ;
   ;dev_buffer_2 dsb 4
   swabby instanceof game_object
