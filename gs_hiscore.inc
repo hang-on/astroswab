@@ -3,10 +3,13 @@
 prepare_hiscore:
 ; ---------------------------------------------------------------------------
   di
+
+  call disable_display_and_sound
+
   ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,REGISTER_1
-  call set_register
+  ;ld a,DISPLAY_0_FRAME_0_SIZE_0
+  ;ld b,REGISTER_1
+  ;call set_register
   ;
   xor a
   ld b,VERTICAL_SCROLL_REGISTER
@@ -39,10 +42,6 @@ prepare_hiscore:
   ld hl,hiscore_background_table
   call load_vram_from_table       ; Load the tiles.
   call load_vram_from_table       ; Load the tilemap.
-
-  ; Stop music and sound effects.
-  call PSGSFXStop
-  call PSGStop
   ;
   ;
   ld hl,HISCORE_EXTRAM_ADDRESS
@@ -96,6 +95,8 @@ prepare_hiscore:
   ld a,(new_hiscore)
   cp TRUE
   jp nz,end_new_hiscore_prep
+    ld hl,hiscore_track
+    call PSGPlay
     ; Place cursor at the first char in player initials.
     ld hl,peak_score
     call get_hiscore_table_postion_from_score
@@ -137,6 +138,7 @@ prepare_hiscore:
     ld hl,release_keys_trigger_init_table
     call initialize_trigger
     ;
+
   end_new_hiscore_prep:
   ;
   ; Turn on screen and frame interrupts.
@@ -377,8 +379,10 @@ run_hiscore:
   finish_hiscore_loop:
   ; Both edit and read-only modes end here...
   ;
+  ;SELECT_BANK SOUND_BANK
   call PSGSFXFrame
   call PSGFrame
+  ;SELECT_BANK HISCORE_BANK
   ;
   ld hl,frame_counter
   inc (hl)

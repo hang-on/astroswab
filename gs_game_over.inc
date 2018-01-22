@@ -4,9 +4,8 @@ prepare_game_over:
 ; -----------------------------------------------------------------------------
   di
   ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
-  call set_register
+  call disable_display_and_sound
+  ;
   ;
   ld a,ASCII_SPACE
   ld b,TILE_BANK_1
@@ -45,9 +44,7 @@ prepare_game_over:
   ld ix,transition_trigger
   call initialize_trigger
   ;
-  ; Stop music and sound effects.
-  call PSGSFXStop
-  call PSGStop
+
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
@@ -96,8 +93,8 @@ run_game_over:
     call transition_to_gamestate
   +:
   ;
-  call PSGSFXFrame
   call PSGFrame
+  call PSGSFXFrame
   ;
   ld hl,frame_counter
   inc (hl)

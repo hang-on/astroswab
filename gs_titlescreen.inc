@@ -14,7 +14,7 @@ prepare_titlescreen:
   ;
   ; Load the font tiles.
   SELECT_BANK FONT_BANK
-  ld hl,font_table
+  ld hl,alternative_font_table
   call load_vram_from_table
   ;
   SELECT_BANK SPRITE_BANK
@@ -54,6 +54,11 @@ prepare_titlescreen:
   ld ix,transition_trigger
   ld hl,transition_trigger_titlescreen_init_table
   call initialize_trigger
+  ;
+  ld b,20
+  ld c,7
+  ld hl,titlescreen_string_1
+  call print
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0

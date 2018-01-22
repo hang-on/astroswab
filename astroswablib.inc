@@ -1139,6 +1139,10 @@ ret
     ld b,REGISTER_7
     call set_register
     ;
+    ; Load the font tiles.
+    SELECT_BANK FONT_BANK
+    ld hl,font_table
+    call load_vram_from_table
     ;
     ; Print the dummy text under the playfield.
     ld b,DUMMY_TEXT_ROW
@@ -1210,11 +1214,12 @@ ret
     ; Exit: None
     ; Uses: ?
     push af
-      ;call PSGSFXStop
-      ;call PSGStop
       call FadeOutScreen
     pop af
     ld (game_state),a
+    call PSGSFXStop
+    call PSGStop
+    
   ret
   ;
   ;
@@ -1277,6 +1282,9 @@ ret
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
+  ;
+  titlescreen_string_1:
+    .asc "Press start button#"
   ;
   sound_explosion:
     SELECT_BANK SOUND_BANK

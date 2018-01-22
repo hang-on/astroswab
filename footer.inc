@@ -993,6 +993,7 @@
   grimer:
     .incbin "bank_5\grimer.psg"
 
+
 .ends
 ;
 .bank HISCORE_BANK slot 2
@@ -1035,6 +1036,8 @@ hiscore_background_table:
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw hiscore_background_tilemap
   .dw $0000, $0000                                  ; Filler: 2 words.
+hiscore_track:
+  .incbin "bank_5\finale.psg"
 
 .ends
 ;

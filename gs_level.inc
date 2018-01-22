@@ -54,6 +54,7 @@ run_level:
     call PSGSFXStop
     call PSGStop
     call PSGFrame
+    call PSGSFXFrame
     jp main_loop
   +:
   ;
@@ -314,12 +315,15 @@ run_level:
   ld a,(difficulty)
   cp DIFFICULTY_MAX
   jp z,+
-    ld iy,peak_score
-    ld ix,transition_score
-    call compare_scores
-    jp nc,+
-      ld ix,transition_trigger
-      call batch_wipe_all_object_triggers_and_enable_trigger
+    ld a,(game_state)           ; Rot! If we are actually having a game over in
+    cp GS_PREPARE_GAME_OVER     ; this frame!
+    jp nz,+
+      ld iy,peak_score
+      ld ix,transition_score
+      call compare_scores
+      jp nc,+
+        ld ix,transition_trigger
+        call batch_wipe_all_object_triggers_and_enable_trigger
   +:
   ;
   ; Process transition to next difficulty timer.
