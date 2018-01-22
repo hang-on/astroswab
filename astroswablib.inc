@@ -731,7 +731,7 @@ ret
             cp PSG_PLAYING
             ret z
               SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-              ld c,SFX_CHANNEL2
+              ld c,SFX_CHANNELS2AND3
               ld hl,shot_1
               call PSGSFXPlay           ; Play the swabby shot sound effect.
   ret
@@ -1219,7 +1219,7 @@ ret
     ld (game_state),a
     call PSGSFXStop
     call PSGStop
-    
+
   ret
   ;
   ;
@@ -1289,7 +1289,7 @@ ret
   sound_explosion:
     SELECT_BANK SOUND_BANK
     ld hl,explosion
-    ld c,SFX_CHANNEL2
+    ld c,SFX_CHANNELS2AND3
     call PSGSFXPlay
   ret
   ;

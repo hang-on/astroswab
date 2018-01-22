@@ -661,6 +661,9 @@
   transition_trigger_hiscore_init_table:
     .db PERCENT_CHANCE_100, HISCORE_INTERVAL
     .db ENABLED, HISCORE_CYCLE_VALUE
+  short_interval_transition:
+    .db PERCENT_CHANCE_100, 150
+    .db ENABLED, 1
   transition_trigger_titlescreen_init_table:
     .db PERCENT_CHANCE_100, TITLESCREEN_INTERVAL
     .db ENABLED, TITLESCREEN_CYCLE_VALUE
@@ -1038,6 +1041,8 @@ hiscore_background_table:
   .dw $0000, $0000                                  ; Filler: 2 words.
 hiscore_track:
   .incbin "bank_5\finale.psg"
+tadaa:
+  .incbin "bank_5\tadaa.psg"
 
 .ends
 ;

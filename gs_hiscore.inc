@@ -247,6 +247,14 @@ run_hiscore:
             ld ix,cursor_effect
             ld a,GAME_OBJECT_INACTIVE
             ld (ix+game_object.state),a
+            ;
+            ld hl,tadaa
+            ld c,SFX_CHANNELS2AND3
+            call PSGSFXPlay
+            call PSGStop
+            ld ix,transition_trigger
+            ld hl,short_interval_transition
+            call initialize_trigger
             jp end_of_input_tests
     +:
     ; -----------------------------------------------------------------------
@@ -370,8 +378,11 @@ run_hiscore:
       ld a,(transition_trigger.cycle)
       cp HISCORE_CYCLE_VALUE
       jp z,++
-        ld a,GS_PREPARE_TITLESCREEN
-        call transition_to_gamestate
+        call PSGSFXGetStatus
+        cp PSG_PLAYING
+        jp z,++
+          ld a,GS_PREPARE_TITLESCREEN
+          call transition_to_gamestate
     ++:
 
     ;
