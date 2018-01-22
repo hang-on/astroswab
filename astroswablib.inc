@@ -70,6 +70,13 @@ ret
     .db 8, 24, 7
   ;
   ;
+  asteroid_hits_crt_bottom:
+    ; What happens when an asteroid hits the CRT bottom? (titlescreen).
+    ; Entry: IX points to asteroid object.
+    call deactivate_game_object
+  ret
+  ;
+  ;
   asteroid_hits_ground:
     ; What happens when an asteroid hits the ground?
     ; Entry: IX points to asteroid object.
@@ -454,11 +461,7 @@ ret
           pop ix
           call explode_asteroid_into_shards
         skip_explode:
-        SELECT_BANK SOUND_BANK
-        call PSGSFXStop
-        ld hl,explosion
-        ld c,SFX_CHANNELS2AND3
-        call PSGSFXPlay
+        call sound_explosion
         ;
         ld hl,player_score
         ld a,SCORE_TENS
@@ -473,10 +476,7 @@ ret
       ld (iy+game_object.state),a
       call PSGStop
       SELECT_BANK SOUND_BANK
-      call PSGSFXStop
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
+      call sound_explosion
       ;
       ld hl,player_score
       ld a,SCORE_TENS
@@ -515,11 +515,7 @@ ret
       call add_to_score
       ;
       call PSGStop
-      SELECT_BANK SOUND_BANK
-      ;call PSGSFXStop
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
+      call sound_explosion
       ret
     +:
     cp UFO
@@ -536,17 +532,11 @@ ret
       ld b,1
       call add_to_score
       ;
-      ;call PSGStop
-      SELECT_BANK SOUND_BANK
-      ;call PSGSFXStop
       call PSGStop
-      ld hl,explosion
-      ld c,SFX_CHANNELS2AND3
-      call PSGSFXPlay
-      ; FIXME: Add explosion object
+      call sound_explosion
       ret
     +:
-    cp UFO
+    cp UFO_BOMB
     jp nz,+
       ; Bullet is destroyed but the ufo bombs keeps falling down!
       ret
@@ -614,10 +604,7 @@ ret
     ; cp ANOTHER_GAME_OBJECT...
     ;
     ; All other game objects means death to Swabby!
-    SELECT_BANK SOUND_BANK
-    ld hl,explosion
-    ld c,SFX_CHANNELS2AND3
-    call PSGSFXPlay
+    call sound_explosion
     ;
     ld a,TRUE
     ld (kill_swabby_flag),a
@@ -744,7 +731,7 @@ ret
             cp PSG_PLAYING
             ret z
               SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-              ld c,SFX_CHANNELS2AND3
+              ld c,SFX_CHANNEL2
               ld hl,shot_1
               call PSGSFXPlay           ; Play the swabby shot sound effect.
   ret
@@ -1290,6 +1277,13 @@ ret
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
+  ;
+  sound_explosion:
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNEL2
+    call PSGSFXPlay
+  ret
   ;
   full_reset_keys:
     .dw is_up_pressed, is_button_1_pressed, is_button_2_pressed

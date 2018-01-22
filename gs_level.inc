@@ -239,7 +239,7 @@ run_level:
         call respawn_game_object
         ld a,ENABLED
         ld (ufo_gun_trigger.state),a
-        SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+        SELECT_BANK SOUND_BANK
         ld hl,ufo_sound
         call PSGPlay
   ++:
@@ -340,6 +340,7 @@ run_level:
   ;
   call PSGSFXFrame
   call PSGFrame
+  ;
   ;
   ld hl,frame_counter
   inc (hl)

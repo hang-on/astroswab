@@ -43,14 +43,13 @@ prepare_titlescreen:
   SELECT_ROM
     bit 0,a
     jp z,+
-      ld hl,machop
+      ld hl,grimer
       jp ++
     +:
       ld hl,title_1
     ++:
   SELECT_BANK SOUND_BANK
   call PSGPlay
-  ;call PSGStop
   ;
   ld ix,transition_trigger
   ld hl,transition_trigger_titlescreen_init_table
@@ -80,6 +79,7 @@ run_titlescreen:
   jp nz,-
   ;
   call load_sat
+
   ;
   ; End of (unsafe) VDP-updating...
   ; ---------------------------------------------------------------------------
