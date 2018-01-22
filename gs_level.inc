@@ -158,12 +158,13 @@ run_level:
           ld ix,spinner
           ld iy,spinner_respawn_parameters
           call respawn_game_object
-          ld a,(ufo.state)
-          cp ENABLED
           jp z,+
-            SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
-            ld hl,spinner_coming_down
-            call PSGPlayNoRepeat
+            call PSGGetStatus
+            cp PSG_PLAYING
+            jp z,+
+              SELECT_BANK SOUND_BANK    ; Select the sound assets bank.
+              ld hl,spinner_coming_down
+              call PSGPlayNoRepeat
   +:
   ld ix,spinner
   ld iy,update_spinner_parameters
