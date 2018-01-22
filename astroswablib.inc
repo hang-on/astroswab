@@ -1199,6 +1199,14 @@ ret
   ret
   ;
   ;
+  sound_explosion:
+    SELECT_BANK SOUND_BANK
+    ld hl,explosion
+    ld c,SFX_CHANNELS2AND3
+    call PSGSFXPlay
+  ret
+  ;
+  ;
   start_rumble:
     ; Set the rumble flag and enable the rumble end trigger.
     ld a,FLAG_SET
@@ -1206,6 +1214,53 @@ ret
     ld a,ENABLED
     ld (rumble_end_trigger.state),a
   ret
+  ;
+  ;
+  test_multiple_keys_AND:
+    ; A = Number of keys.
+    ; HL = Pointer to string containing pointers to input test functions.
+    ; Uses AF, B, HL
+    ld b,a
+    -:
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      ex de,hl
+      call hl_
+      jp nc,not_all_keys_match
+      ex de,hl
+    djnz -
+    ; All keys match:
+      scf
+      ret
+    not_all_keys_match:
+      or a                ; Reset carry flag.
+      ret
+  ;
+  ;
+  test_multiple_keys_OR:
+    ; A = Number of keys.
+    ; HL = Pointer to string containing pointers to input test functions.
+    ; Uses AF, B, HL
+    ld b,a
+    -:
+      ld e,(hl)
+      inc hl
+      ld d,(hl)
+      inc hl
+      ex de,hl
+      call hl_
+      jp c,+
+      ex de,hl
+    djnz -
+    ; If we fall through to here, no matching keys was found.
+      or a                ; Reset carry flag.
+      ret
+    +:
+      ; At least one key match!
+      scf
+      ret
   ;
   ;
   transition_to_gamestate:
@@ -1283,70 +1338,9 @@ ret
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
-  titlescreen_string_1:
-    .asc "Press start button#"
-  titlescreen_string_2:
-    .asc "                  #"
   ;
-  sound_explosion:
-    SELECT_BANK SOUND_BANK
-    ld hl,explosion
-    ld c,SFX_CHANNELS2AND3
-    call PSGSFXPlay
-  ret
   ;
-  full_reset_keys:
-    .dw is_up_pressed, is_button_1_pressed, is_button_2_pressed
-  full_reset_keys_end:
   ;
-  both_player_1_buttons:
-    .dw is_button_1_pressed, is_button_2_pressed
-  both_player_1_buttons_end:
-  ;
-  test_multiple_keys_AND:
-    ; A = Number of keys.
-    ; HL = Pointer to string containing pointers to input test functions.
-    ; Uses AF, B, HL
-    ld b,a
-    -:
-      ld e,(hl)
-      inc hl
-      ld d,(hl)
-      inc hl
-      ex de,hl
-      call hl_
-      jp nc,not_all_keys_match
-      ex de,hl
-    djnz -
-    ; All keys match:
-      scf
-      ret
-    not_all_keys_match:
-      or a                ; Reset carry flag.
-      ret
-  ;
-  test_multiple_keys_OR:
-    ; A = Number of keys.
-    ; HL = Pointer to string containing pointers to input test functions.
-    ; Uses AF, B, HL
-    ld b,a
-    -:
-      ld e,(hl)
-      inc hl
-      ld d,(hl)
-      inc hl
-      ex de,hl
-      call hl_
-      jp c,+
-      ex de,hl
-    djnz -
-    ; If we fall through to here, no matching keys was found.
-      or a                ; Reset carry flag.
-      ret
-    +:
-      ; At least one key match!
-      scf
-      ret
 .ends
 ;.ramsection "Sandbox and console variables" slot 3
   ;

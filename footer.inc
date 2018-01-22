@@ -666,7 +666,7 @@
     .db ENABLED, 1
   blinking_text_trigger_init_table:
     .db PERCENT_CHANCE_100, 50
-    .db ENABLED, 2    
+    .db ENABLED, 2
   transition_trigger_titlescreen_init_table:
     .db PERCENT_CHANCE_100, TITLESCREEN_INTERVAL
     .db ENABLED, TITLESCREEN_CYCLE_VALUE
@@ -802,6 +802,19 @@
     .db UFO_TRIGGER_CHANCE_INIT_3, UFO_TRIGGER_INTERVAL_INIT_3
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
+  ;
+  titlescreen_string_1:
+    .asc "Press start button#"
+  titlescreen_string_2:
+    .asc "                  #"
+  ;
+  full_reset_keys:
+    .dw is_up_pressed, is_button_1_pressed, is_button_2_pressed
+  full_reset_keys_end:
+  ;
+  both_player_1_buttons:
+    .dw is_button_1_pressed, is_button_2_pressed
+  both_player_1_buttons_end:
   ;
   ; ---------------------------------------------------------------------------
   ; Menu item strings:
