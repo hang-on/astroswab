@@ -53,6 +53,8 @@ prepare_game_over:
   ei
   call FadeInScreen
   ;
+  call PSGSilenceChannels
+  ;
   ; When all is set, change the game state.
   ;
   ld a,GS_RUN_GAME_OVER
@@ -93,8 +95,8 @@ run_game_over:
     call transition_to_gamestate
   +:
   ;
-  call PSGFrame
-  call PSGSFXFrame
+  ;call PSGFrame
+  ;call PSGSFXFrame
   ;
   ld hl,frame_counter
   inc (hl)

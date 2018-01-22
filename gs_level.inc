@@ -51,10 +51,7 @@ run_level:
   ld a,(pause_flag)
   cp TRUE
   jp nz,+
-    call PSGSFXStop
-    call PSGStop
-    call PSGFrame
-    call PSGSFXFrame
+    call PSGSilenceChannels
     jp main_loop
   +:
   ;
