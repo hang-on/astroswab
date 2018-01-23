@@ -95,8 +95,6 @@ prepare_hiscore:
   ld a,(new_hiscore)
   cp TRUE
   jp nz,end_new_hiscore_prep
-    ld hl,hiscore_track
-    call PSGPlay
     ; Place cursor at the first char in player initials.
     ld hl,peak_score
     call get_hiscore_table_postion_from_score
@@ -148,6 +146,13 @@ prepare_hiscore:
   ;
   ei
   call FadeInScreen
+  ;
+  ld a,(new_hiscore)
+  cp TRUE
+  jp nz,+
+    ld hl,hiscore_track
+    call PSGPlay
+  +:
   ;
   ; When all is set, change the game state.
   ld a,GS_RUN_HISCORE
