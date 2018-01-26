@@ -1011,6 +1011,8 @@
     .incbin "bank_5\title_1.psg"
   grimer:
     .incbin "bank_5\grimer.psg"
+  mutef:
+    .incbin "bank_5\mutef.psg"
 
 
 .ends

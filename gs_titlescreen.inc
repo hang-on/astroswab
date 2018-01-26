@@ -57,10 +57,12 @@ prepare_titlescreen:
   call PSGSFXStop
   SELECT_EXTRAM
     ld a,(EXTRAM_COUNTER)
+    inc a
+    ld (EXTRAM_COUNTER),a
   SELECT_ROM
     bit 0,a
     jp z,+
-      ld hl,grimer
+      ld hl,mutef
       jp ++
     +:
       ld hl,title_1

@@ -357,7 +357,10 @@ run_level:
         ld a,GS_PREPARE_DEVMENU
         ld (game_state),a
       .endif
-      jp init ;!!
+      ;
+      call disable_display_and_sound
+      call initialize_variables_once_per_gaming_session
+      jp main_loop ;!!
     +:
     .ifdef DEVELOPER_MODE
       ; Press player 2 button 1 to stop enemy objects spawning.

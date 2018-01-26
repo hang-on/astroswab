@@ -28,6 +28,9 @@
     ; Load the pico-8 palette to colors 16-31.
     ; Note: We can also come here from reset!
     di
+    ;
+    call PSGInit
+    ;
     call disable_display_and_sound
     ;
     ld a,SPRITE_PALETTE_START
@@ -88,7 +91,7 @@
     call initialize_variables_once_per_gaming_session
     ;
     ;
-    call PSGInit
+
     ;
 
   jp main_loop
