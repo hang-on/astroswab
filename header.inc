@@ -1,6 +1,6 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
-  ;.equ DEVELOPER_MODE ; Comment out for consumer mode.
+; equ DEVELOPER_MODE ; Comment out for consumer mode.
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
