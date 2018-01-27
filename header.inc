@@ -28,6 +28,10 @@
   .equ GAME_OVER_TEXT_ROW 10
   .equ GAME_OVER_TEXT_COLUMN 12
   .equ GAME_OVER_INTERVAL 120
+; Confirm reset:
+  .equ CONFIRM_RESET_TEXT_ROW 5
+  .equ CONFIRM_RESET_TEXT_COLUMN 2
+
 ; Warning (wrong tv-type)
   .equ WARNING_BANK 3
   ;
@@ -83,6 +87,8 @@
   .equ GS_RUN_CONSOLE 13
   .equ GS_PREPARE_GAME_OVER 14
   .equ GS_RUN_GAME_OVER 15
+  .equ GS_PREPARE_CONFIRM_RESET_DATA 16
+  .equ GS_RUN_CONFIRM_RESET_DATA 17
   ;
   ; Initial game state: (Note: First-time warning will trump this).
   .ifdef DEVELOPER_MODE
@@ -468,4 +474,5 @@
   ;
   sandbox_trigger instanceof trigger
   ;
+  lock_input db
 .ends

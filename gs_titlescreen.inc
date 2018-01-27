@@ -124,11 +124,14 @@ run_titlescreen:
   ld hl,full_reset_keys
   call test_multiple_keys_AND
   jp nc,+
-    xor a
-    SELECT_EXTRAM
-      ld (FIRST_GAME_BYTE),a
-    SELECT_ROM
-    jp init
+    ;xor a
+    ;SELECT_EXTRAM
+    ;  ld (FIRST_GAME_BYTE),a
+    ;SELECT_ROM
+    ;jp init
+    ld a,GS_PREPARE_CONFIRM_RESET_DATA
+    call transition_to_gamestate
+    jp main_loop
   +:
   ;
   ld hl,both_player_1_buttons

@@ -46,6 +46,34 @@
   game_over_text:
     .asc "GAME OVER#"
   ;
+  confirm_reset_text_0:
+    .asc "      RESET GAME DATA ?#"
+  confirm_reset_text_1:
+    .asc "Press [down] AND both buttons#"
+  confirm_reset_text_2:
+    .asc "to reset all game data!#"
+  confirm_reset_text_3:
+    .asc "Press button 1 to go safely#"
+  confirm_reset_text_4:
+    .asc "back to title screen...#"
+
+  confirm_reset_batch_print_table:
+    .dw confirm_reset_text_0
+    .db 2, 1
+    .dw confirm_reset_text_1
+    .db 6, 1
+    .dw confirm_reset_text_2
+    .db 7, 1
+    .dw confirm_reset_text_3
+    .db 10, 1
+    .dw confirm_reset_text_4
+    .db 11, 1
+  confirm_reset_batch_print_table_end:
+  ;
+  confirm_full_reset_keys:
+    .dw is_down_pressed, is_button_1_pressed, is_button_2_pressed
+  confirm_full_reset_keys_end:
+  ;
   rumble_end_trigger_init_table:
     .db 255, RUMBLE_END_TRIGGER_INTERVAL
     .db DISABLED, DEFAULT_CYCLE_VALUE
@@ -59,6 +87,7 @@
     .dw prepare_warning, run_warning
     .dw prepare_console, run_console
     .dw prepare_game_over, run_game_over
+    .dw prepare_confirm_reset_data, run_confirm_reset_data
   ;
   meta_background_table:
     ; Used when preparing a level.
