@@ -82,7 +82,7 @@ ret
     ; Entry: IX points to asteroid object.
     call deactivate_game_object
     ld hl,player_score
-    ld a,SCORE_ONES
+    ld a,SCORE_TENS
     ld b,5
     call subtract_from_score
   ret
@@ -444,7 +444,7 @@ ret
       ld a,GAME_OBJECT_INACTIVE
       ld (iy+game_object.state),a
       ld hl,player_score          ; Yes? - award the player some points.
-      ld a,SCORE_TENS             ; FIXME: Varies with difficulty.
+      ld a,SCORE_HUNDREDS
       ld b,2
       call add_to_score
       ret
@@ -464,7 +464,7 @@ ret
         call sound_explosion
         ;
         ld hl,player_score
-        ld a,SCORE_TENS
+        ld a,SCORE_HUNDREDS
         ld b,1
         call add_to_score
       pop ix
@@ -479,7 +479,7 @@ ret
       call sound_explosion
       ;
       ld hl,player_score
-      ld a,SCORE_TENS
+      ld a,SCORE_HUNDREDS
       ld b,4
       call add_to_score
       ;
@@ -491,7 +491,7 @@ ret
       ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
-      ld a,SCORE_TENS
+      ld a,SCORE_HUNDREDS
       ld b,5
       call subtract_from_score
       ;
@@ -510,7 +510,7 @@ ret
       ld (iy+game_object.state),a
       ; Points and stuff here...
       ld hl,player_score
-      ld a,SCORE_TENS
+      ld a,SCORE_HUNDREDS
       ld b,8
       call add_to_score
       ;
@@ -528,7 +528,7 @@ ret
       ld (ufo.timer_state),a
       ; Points and stuff here...
       ld hl,player_score
-      ld a,SCORE_HUNDREDS
+      ld a,SCORE_THOUSANDS
       ld b,1
       call add_to_score
       ;
@@ -560,7 +560,7 @@ ret
       call PSGPlayNoRepeat
       ;
       ld hl,player_score
-      ld a,SCORE_HUNDREDS
+      ld a,SCORE_THOUSANDS
       ld b,1
       call add_to_score
       ;
@@ -579,6 +579,11 @@ ret
     +:
     cp SPINNER
     jp nz,+
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,2
+      call subtract_from_score
+      ;
       call start_rumble
       SELECT_BANK SOUND_BANK
       ld hl,explosion
@@ -591,6 +596,11 @@ ret
     +:
     cp MISSILE
     jp nz,+
+      ld hl,player_score
+      ld a,SCORE_HUNDREDS
+      ld b,2
+      call subtract_from_score
+      ;
       call start_rumble
       SELECT_BANK SOUND_BANK
       ld hl,explosion
@@ -601,9 +611,13 @@ ret
       ld (kill_swabby_flag),a
     ret
     +:
-    ; cp ANOTHER_GAME_OBJECT...
-    ;
+    ; cp ANOTHER_GAME_OBJECT..
     ; All other game objects means death to Swabby!
+    ld hl,player_score
+    ld a,SCORE_HUNDREDS
+    ld b,1
+    call subtract_from_score
+    ;
     call sound_explosion
     ;
     ld a,TRUE
@@ -826,6 +840,7 @@ ret
     ld (gun_level),a
     ;
     call reset_scores                 ; Reset player and peak score.
+    ;
     ld a,LIVES_INIT
     ld (lives),a
   ret
@@ -1162,7 +1177,7 @@ ret
     ; IX points to shard object.
     call deactivate_game_object
     ld hl,player_score
-    ld a,SCORE_TENS
+    ld a,SCORE_HUNDREDS
     ld b,1
     call subtract_from_score
   ret

@@ -338,6 +338,16 @@ run_level:
     call PSGSFXStop
   +:
   ;
+  ; Compare to max score
+  ld iy,player_score
+  ld ix,max_score
+  call compare_scores
+  jp nc,+
+    ld a,GS_PREPARE_GAME_OVER
+    call transition_to_gamestate
+    call PSGStop
+    call PSGSFXStop
+  +:
   ;
   ;
   call PSGSFXFrame

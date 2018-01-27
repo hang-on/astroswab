@@ -21,12 +21,17 @@
     .dw difficulty_0_transition_score, difficulty_1_transition_score
     .dw difficulty_2_transition_score
   difficulty_0_transition_score:
-    .asc "00500"
+    .asc "05000"
   difficulty_1_transition_score:
-    .asc "01500"
+    .asc "15000"
   difficulty_2_transition_score:
-    .asc "03000"
-    ;
+    .asc "35000"
+  max_score:
+    .asc "99000"
+  ;test_start_score:
+  ;  .asc "98700"
+  ;  .asc "   "
+  ;
   gun_level_char_data_init:
     .dw GUN_LEVEL_NAMETABLE_ADDRESS
     .db ASCII_ZERO+GUN_LEVEL_INIT, GUN_LEVEL_NAMETABLE_FLAGS
@@ -1023,25 +1028,25 @@
 ; -----------------------------------------------------------------------------
   ;
 hiscore_init:
+  .asc "10000"
+  .asc "   "
+  .asc "09000"
+  .asc "   "
+  .asc "08000"
+  .asc "   "
+  .asc "07000"
+  .asc "   "
+  .asc "06000"
+  .asc "   "
+  .asc "05000"
+  .asc "   "
+  .asc "04000"
+  .asc "   "
+  .asc "03000"
+  .asc "   "
+  .asc "02000"
+  .asc "   "
   .asc "01000"
-  .asc "   "
-  .asc "00900"
-  .asc "   "
-  .asc "00800"
-  .asc "   "
-  .asc "00700"
-  .asc "   "
-  .asc "00600"
-  .asc "   "
-  .asc "00500"
-  .asc "   "
-  .asc "00400"
-  .asc "   "
-  .asc "00300"
-  .asc "   "
-  .asc "00200"
-  .asc "   "
-  .asc "00100"
   .asc "   "
 ;
 hiscore_background_tiles:
