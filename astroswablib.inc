@@ -691,6 +691,9 @@ ret
       ;
       ld ix,swabby_respawn_trigger
       call batch_wipe_all_object_triggers_and_enable_trigger
+      ; Stop UFO or other spinner.
+      call PSGStop
+
   ret
   ;
   ;

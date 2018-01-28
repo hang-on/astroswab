@@ -29,7 +29,7 @@
   difficulty_3_transition_score:
     .asc "60000"
   max_score:
-    .asc "99000"
+    .asc "90000" ;99000
   ;test_start_score:
   ;  .asc "98700"
   ;  .asc "   "

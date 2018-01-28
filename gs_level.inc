@@ -326,7 +326,7 @@ run_level:
   ; Process transition to next difficulty timer.
   ld ix,transition_trigger
   call process_trigger
-  jp nc,+
+  jp nc,++
   ld a,(difficulty)
   cp DIFFICULTY_MAX
   jp z,+
@@ -336,17 +336,29 @@ run_level:
     call transition_to_gamestate
     call PSGStop
     call PSGSFXStop
+    jp ++
   +:
-  ;
-  ; Compare to max score
-  ld iy,player_score
-  ld ix,max_score
-  call compare_scores
-  jp nc,+
+    ; We are here becuase player has maxxed score...
     ld a,GS_PREPARE_GAME_OVER
     call transition_to_gamestate
     call PSGStop
     call PSGSFXStop
+  ++:
+  ;
+  ; Compare to max score
+  ld a,(transition_trigger.state)
+  cp DISABLED
+  jp nz,+
+  ld iy,player_score
+  ld ix,max_score
+  call compare_scores
+  jp nc,+
+    ;ld a,GS_PREPARE_GAME_OVER
+    ;call transition_to_gamestate
+    ;call PSGStop
+    ;call PSGSFXStop
+    ld ix,transition_trigger
+    call batch_wipe_all_object_triggers_and_enable_trigger
   +:
   ;
   ;
