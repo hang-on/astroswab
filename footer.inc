@@ -19,13 +19,15 @@
     ;
   transition_score_init_table:
     .dw difficulty_0_transition_score, difficulty_1_transition_score
-    .dw difficulty_2_transition_score
+    .dw difficulty_2_transition_score, difficulty_3_transition_score
   difficulty_0_transition_score:
     .asc "05000"
   difficulty_1_transition_score:
     .asc "15000"
   difficulty_2_transition_score:
     .asc "35000"
+  difficulty_3_transition_score:
+    .asc "60000"
   max_score:
     .asc "99000"
   ;test_start_score:
@@ -93,6 +95,7 @@
     ; Used when preparing a level.
     .dw difficulty_0_background_table, difficulty_1_background_table
     .dw difficulty_2_background_table, difficulty_3_background_table
+    .dw difficulty_4_background_table
   ;
   difficulty_0_background_table:
     ; Note: See BACKGROUND_TABLE_MASK!
@@ -111,6 +114,10 @@
     .dw background_3_1, background_3_1
     .dw background_3_1, background_3_1, background_3_2
     .dw background_3_2, background_3_2, background_3_2
+  difficulty_4_background_table:
+    .dw background_4, background_4
+    .dw background_4, background_4, background_4
+    .dw background_4, background_4, background_4
   ;
 
   background_0_1:
@@ -204,10 +211,19 @@
     .dw VISIBLE_NAME_TABLE_SIZE,
     .dw background_11_tilemap
     .dw $0000, $0000                                  ; Filler: 2 words.
+  background_4:
+    .dw NON_ASCII_AREA_START,
+    .dw background_12_tiles_end-background_12_tiles,
+    .dw background_12_tiles
+    .dw NAME_TABLE_START,
+    .dw VISIBLE_NAME_TABLE_SIZE,
+    .dw background_12_tilemap
+    .dw $0000, $0000                                  ; Filler: 2 words.
   ;
   difficulty_to_background_bank_table:
     .db 0, BACKGROUND_BANK, 1, BACKGROUND_BANK_2
     .db 2, BACKGROUND_BANK_3, 3, BACKGROUND_BANK_4
+    .db 4, BACKGROUND_BANK_4
   difficulty_to_background_bank_table_end:
   ;
   batch_game_object_init_table:
@@ -710,6 +726,7 @@
     .dw difficulty_1_batch_trigger_init_table
     .dw difficulty_2_batch_trigger_init_table
     .dw difficulty_3_batch_trigger_init_table
+    .dw difficulty_4_batch_trigger_init_table
   ;
   ; Triggers are batch-disabled to stop enemy spawning.
   batch_wipe_and_disable_all_triggers_table:
@@ -759,6 +776,13 @@
     .dw shard_trigger, shard_trigger_init_table_3
     .dw asteroid_trigger, asteroid_trigger_init_table_3
     .dw ufo_trigger, ufo_trigger_init_table_3
+  difficulty_4_batch_trigger_init_table:
+    .dw spinner_trigger, spinner_trigger_init_table_4
+    .dw booster_trigger, booster_trigger_init_table_4
+    .dw missile_trigger, missile_trigger_init_table_4
+    .dw shard_trigger, shard_trigger_init_table_4
+    .dw asteroid_trigger, asteroid_trigger_init_table_4
+    .dw ufo_trigger, ufo_trigger_init_table_4
   ;
   spinner_trigger_init_table_0:
     .db SPINNER_TRIGGER_CHANCE_INIT_0, SPINNER_TRIGGER_INTERVAL_INIT_0
@@ -834,6 +858,25 @@
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ufo_trigger_init_table_3:
     .db UFO_TRIGGER_CHANCE_INIT_3, UFO_TRIGGER_INTERVAL_INIT_3
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ;
+  spinner_trigger_init_table_4:
+    .db SPINNER_TRIGGER_CHANCE_INIT_4, SPINNER_TRIGGER_INTERVAL_INIT_4
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  booster_trigger_init_table_4:
+    .db BOOSTER_TRIGGER_CHANCE_INIT_4, BOOSTER_TRIGGER_INTERVAL_INIT_4
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  missile_trigger_init_table_4:
+    .db MISSILE_TRIGGER_CHANCE_INIT_4, MISSILE_TRIGGER_INTERVAL_INIT_4
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  shard_trigger_init_table_4:
+    .db SHARD_TRIGGER_CHANCE_INIT_4, SHARD_TRIGGER_INTERVAL_INIT_4
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  asteroid_trigger_init_table_4:
+    .db ASTEROID_TRIGGER_CHANCE_INIT_4, ASTEROID_TRIGGER_INTERVAL_INIT_4
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ufo_trigger_init_table_4:
+    .db UFO_TRIGGER_CHANCE_INIT_4, UFO_TRIGGER_INTERVAL_INIT_4
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
   ;
@@ -1020,6 +1063,12 @@
   background_11_tiles_end:
   background_11_tilemap:
     .include "bank_8\background_11_tilemap.inc"
+    ;
+  background_12_tiles:
+    .include "bank_8\background_12_tiles.inc"
+  background_12_tiles_end:
+  background_12_tilemap:
+    .include "bank_8\background_12_tilemap.inc"
     ;
 .ends
 ;
