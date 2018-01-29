@@ -948,8 +948,9 @@ ret
     ld (gun_timer),a
     ld a,TRUE
     ld (gun_released),a
-    ;
-
+    ; If the player has fiddled with the pause button during break.
+    ld a,FALSE
+    ld (pause_flag),a                 ; Reset pause flag.
   ret
   ;
   ;
