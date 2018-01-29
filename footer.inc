@@ -61,15 +61,15 @@
 
   confirm_reset_batch_print_table:
     .dw confirm_reset_text_0
-    .db 2, 1
+    .db 2, 2
     .dw confirm_reset_text_1
-    .db 6, 1
+    .db 6, 2
     .dw confirm_reset_text_2
-    .db 7, 1
+    .db 7, 2
     .dw confirm_reset_text_3
-    .db 10, 1
+    .db 10, 2
     .dw confirm_reset_text_4
-    .db 11, 1
+    .db 11, 2
   confirm_reset_batch_print_table_end:
   ;
   confirm_full_reset_keys:
