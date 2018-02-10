@@ -13,7 +13,7 @@ prepare_splash_screen:
   ;
   ; Load the font tiles.
   SELECT_BANK FONT_BANK
-  ld hl,font_table
+  ld hl,alternative_font_table
   call load_vram_from_table
   ;
   SELECT_BANK SPRITE_BANK
@@ -22,7 +22,7 @@ prepare_splash_screen:
   ld hl,sprite_tiles
   call load_vram
   ; Set border color.
-  ld a,DARK_BLUE
+  ld a,DARK_PURPLE
   ld b,REGISTER_7
   call set_register
   ; Wipe sprites.
@@ -76,7 +76,8 @@ run_splash_screen:
   call process_trigger
   jp nc,+
     ld a,GS_PREPARE_TITLESCREEN
-    call transition_to_gamestate
+    ld (game_state),a
+    ;call transition_to_gamestate
   +:
   ;
   ld hl,frame_counter
