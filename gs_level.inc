@@ -382,6 +382,7 @@ run_level:
       ;
       call disable_display_and_sound
       call initialize_variables_once_per_gaming_session
+      call reset_scores
       jp main_loop ;!!
     +:
     .ifdef DEVELOPER_MODE
