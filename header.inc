@@ -34,6 +34,8 @@
 
 ; Warning (wrong tv-type)
   .equ WARNING_BANK 3
+; Splash screen
+  .equ SPLASH_SCREEN_INTERVAL 180
   ;
 ; Sandbox and console:
   .equ CONSOLE_LOGGER_START_ROW 4
@@ -87,6 +89,8 @@
   .equ GS_RUN_GAME_OVER 15
   .equ GS_PREPARE_CONFIRM_RESET_DATA 16
   .equ GS_RUN_CONFIRM_RESET_DATA 17
+  .equ GS_PREPARE_SPLASH_SCREEN 18
+  .equ GS_RUN_SPLASH_SCREEN 19
   ;
   ; Initial game state: (Note: First-time warning will trump this).
   .ifdef DEVELOPER_MODE
@@ -95,6 +99,7 @@
     ;.equ INITIAL_GAME_STATE GS_PREPARE_SANDBOX ; Where to go after boot?
     ;.equ INITIAL_GAME_STATE GS_PREPARE_CONSOLE
   .else
+    ;.equ INITIAL_GAME_STATE GS_PREPARE_SPLASH_SCREEN
     .equ INITIAL_GAME_STATE GS_PREPARE_TITLESCREEN
   .endif
 ; Sprites:

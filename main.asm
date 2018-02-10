@@ -1,6 +1,7 @@
 ; main.asm
 ; Main code for astroswab.
 ;
+.sdsctag 1.0, "Astroswab", "Blast asteroids, eat cakes and save the day!", "hang-on Entertainment"
 ; - Abstraction level 3: Generic code.
 .include "bluelib.inc"        ; General library with foundation stuff.
                               ; Includes memory map, help functions etc.
@@ -145,6 +146,11 @@
   ; W A R N I N G
   ; ---------------------------------------------------------------------------
   .include "gs_warning.inc"
+  ;
+  ; ---------------------------------------------------------------------------
+  ; S P L A S H  S C R E E N
+  ; ---------------------------------------------------------------------------
+  .include "gs_splash_screen.inc"
   ;
   ; ---------------------------------------------------------------------------
   ; S A N D B O X  A N D  C O N S O L E

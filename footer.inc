@@ -90,6 +90,7 @@
     .dw prepare_console, run_console
     .dw prepare_game_over, run_game_over
     .dw prepare_confirm_reset_data, run_confirm_reset_data
+    .dw prepare_splash_screen, run_splash_screen
   ;
   meta_background_table:
     ; Used when preparing a level.
@@ -708,6 +709,11 @@
   transition_trigger_game_over_init_table:
     .db PERCENT_CHANCE_100, GAME_OVER_INTERVAL
     .db ENABLED, DEFAULT_CYCLE_VALUE
+  ;
+  transition_trigger_splash_screen_init_table:
+    .db PERCENT_CHANCE_100, SPLASH_SCREEN_INTERVAL
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ;
   transition_trigger_hiscore_init_table:
     .db PERCENT_CHANCE_100, HISCORE_INTERVAL
     .db ENABLED, HISCORE_CYCLE_VALUE
@@ -892,6 +898,21 @@
   both_player_1_buttons:
     .dw is_button_1_pressed, is_button_2_pressed
   both_player_1_buttons_end:
+  splash_message_0:
+    .asc "HANG-ON ENTERTAINMENT#"
+  splash_message_1:
+    .asc "proudly presents...#"
+  splash_message_2:
+    .asc "2018#"
+  splash_batch_print_table:
+    .dw splash_message_0
+    .db 11, 6
+    .dw splash_message_1
+    .db 13, 7
+    .dw splash_message_2
+    .db 1, 27
+  splash_batch_print_table_end:
+
   ;
   ; ---------------------------------------------------------------------------
   ; Menu item strings:
