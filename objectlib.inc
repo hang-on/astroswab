@@ -673,8 +673,8 @@
     ; Entry: IX = Pointer to game object.
     ; Exit:  IY = Pointer to object colliding, carry set/reset.
     ; Uses: AF, B, HL, IY.
-    ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
-    add a,(ix+game_object.y)
+    ;ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
+    ld a,(ix+game_object.y)
     cp COLLISION_TABLE_DIVIDER
     jp nc,+
       ld iy,top_collision_table                 ; Point IY to start of table.
