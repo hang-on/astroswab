@@ -12,8 +12,8 @@
 ; -----------------------------------------------------------------------------
 ; Video memory and initialization:
 .equ NAME_TABLE_START $3800
-.equ VISIBLE_NAME_TABLE_SIZE 2*32*24          ; The whole 'effective area' (SMS/TV).
-.equ FULL_NAME_TABLE_SIZE 2*32*28          ; The whole 'effective area' (SMS/TV).
+.equ VISIBLE_NAME_TABLE_SIZE 2*32*24          
+.equ FULL_NAME_TABLE_SIZE 2*32*28
 .equ SPRITE_BANK_START $2000
 .equ BACKGROUND_BANK_START $0000
 .equ SPRITE_PALETTE_START 16

@@ -91,10 +91,6 @@
     ;
     call initialize_variables_once_per_gaming_session
     ;
-    ;
-
-    ;
-
   jp main_loop
   ;
   ; ---------------------------------------------------------------------------
