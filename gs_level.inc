@@ -9,7 +9,9 @@ prepare_level:
   call disable_display_and_sound
   ;
   call initialize_variables_once_per_level
+  ;
   call setup_level_graphics
+  ;
   call initialize_variables_once_per_life
   ;
   ; Turn on screen, frame interrupts.
