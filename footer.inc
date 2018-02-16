@@ -904,6 +904,19 @@
     .db TITLESCREEN_BANK
     .dw titlescreen_tilemap_table
   ;
+  hiscore_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_PURPLE                   ; Border color
+    ;
+    .db 3                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+    .db HISCORE_BANK
+    .dw hiscore_tiles_table
+    .db HISCORE_BANK
+    .dw hiscore_tilemap_table
+
   ;
   full_reset_keys:
     .dw is_up_pressed, is_button_1_pressed, is_button_2_pressed
@@ -1167,14 +1180,14 @@ hiscore_background_tiles:
 hiscore_background_tiles_end:
 hiscore_background_tilemap:
   .include "bank_9\hiscore_background_tilemap.inc"
-hiscore_background_table:
+hiscore_tiles_table:
   .dw NON_ASCII_AREA_START,
   .dw hiscore_background_tiles_end-hiscore_background_tiles,
   .dw hiscore_background_tiles
+hiscore_tilemap_table:
   .dw NAME_TABLE_START,
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw hiscore_background_tilemap
-  .dw $0000, $0000                                  ; Filler: 2 words.
 hiscore_track:
   .incbin "bank_5\finale.psg"
 tadaa:
