@@ -68,6 +68,7 @@
   .equ CHAR_FROM_BACKGROUND_BANK %00000000
   .equ CHAR_FROM_SPRITE_BANK %00000001
   .equ ASCII_LOWERCASE_X 88
+  .equ ALL_SWITCHES_ON %00001111 ; For arrange_vdp parameter strings.
 ;
 ; Game states:
 ; Note - these must correspond to the addresses in the game state jump table.
