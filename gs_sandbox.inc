@@ -11,7 +11,10 @@ prepare_sandbox:
   ;
   call initialize_variables_once_per_game
   call initialize_variables_once_per_level
-  call setup_level_graphics
+  ;
+  ld hl,level_arrange_vdp_parameters
+  call arrange_vdp
+  call difficulty_to_random_background
   ;
   call initialize_variables_once_per_life
   ;

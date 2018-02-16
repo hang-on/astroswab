@@ -3,41 +3,13 @@
 prepare_titlescreen:
 ; -----------------------------------------------------------------------------
   di
-  ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
-  call set_register
   ;
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
+  call disable_display_and_sound
   ;
-  ; Load the font tiles.
-  SELECT_BANK FONT_BANK
-  ld hl,alternative_font_table
-  call load_vram_from_table
+  ld hl,titlescreen_arrange_vdp_parameters
+  call arrange_vdp
   ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
-  ; Set border color.
-  ld a,DARK_PURPLE
-  ld b,REGISTER_7
-  call set_register
-  ; Wipe sprites.
-  call begin_sprites
-  call load_sat
-  SELECT_BANK TITLESCREEN_BANK
-  ; Background graphics
-  ld hl,titlescreen_background_table
-  call load_vram_from_table       ; Load the tiles.
-  call load_vram_from_table       ; Load the tilemap.
-  ;
-  ;
-
-  ;
+  ; Setup the blinking text.
   ld ix,transition_trigger
   ld hl,transition_trigger_titlescreen_init_table
   call initialize_trigger
@@ -53,8 +25,10 @@ prepare_titlescreen:
   ei
   call FadeInScreen
   ;
-  ; Stop music and sound effects.
+  ; Stop sound effects.
   call PSGSFXStop
+  ;
+  ; Play one of two intro tracks.
   SELECT_EXTRAM
     ld a,(EXTRAM_COUNTER)
     inc a

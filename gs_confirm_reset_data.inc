@@ -5,41 +5,11 @@ prepare_confirm_reset_data:
   di
   ; Turn off display and frame interrupts.
   call disable_display_and_sound
-  call PSGSilenceChannels
   ;
   ;
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
+  ld hl,clean_blue_screen_arrange_vdp_parameters
+  call arrange_vdp
   ;
-  ; Load the font tiles.
-  SELECT_BANK FONT_BANK
-  ld hl,font_table
-  call load_vram_from_table
-  ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
-  ; Set border color.
-  ld a,DARK_BLUE
-  ld b,REGISTER_7
-  call set_register
-  ; Wipe sprites.
-  call begin_sprites
-  call load_sat
-  SELECT_BANK GAME_OVER_BANK
-  ; Background graphics
-  ;ld hl,game_over_background_table
-  ;call load_vram_from_table       ; Load the tiles.
-  ;call load_vram_from_table       ; Load the tilemap.
-  ;
-  ; Print "GAME OVER"
-  ;ld b,CONFIRM_RESET_TEXT_ROW
-  ;ld c,CONFIRM_RESET_TEXT_COLUMN
-  ;ld hl,confirm_reset_text_1
-  ;call print
   ld ix,confirm_reset_batch_print_table
   ld a,(confirm_reset_batch_print_table_end-confirm_reset_batch_print_table)/4
   call batch_print
@@ -54,7 +24,6 @@ prepare_confirm_reset_data:
   call set_register
   ei
   call FadeInScreen
-  ;
   ;
   ; When all is set, change the game state.
   ;

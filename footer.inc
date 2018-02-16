@@ -76,6 +76,29 @@
     .dw is_down_pressed, is_button_1_pressed, is_button_2_pressed
   confirm_full_reset_keys_end:
   ;
+  clean_blue_screen_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_BLUE                     ; Border color
+    ;
+    .db 1                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw font_table                    ; Table in the format used by load_vram_from_table.
+  ;
+  ; Warning screen setup:
+  warning_screen_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_PURPLE                   ; Border color
+    ;
+    .db 3                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+    .db WARNING_BANK
+    .dw warning_tiles_table
+    .db WARNING_BANK
+    .dw warning_tilemap_table
+  ;
   rumble_end_trigger_init_table:
     .db 255, RUMBLE_END_TRIGGER_INTERVAL
     .db DISABLED, DEFAULT_CYCLE_VALUE
@@ -885,11 +908,46 @@
     .db UFO_TRIGGER_CHANCE_INIT_4, UFO_TRIGGER_INTERVAL_INIT_4
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
+  level_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_BLUE                     ; Border color
+    ;
+    .db 1                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw font_table                    ; Table in the format used by load_vram_from_table.
   ;
   titlescreen_string_1:
     .asc "Press start button#"
   titlescreen_string_2:
     .asc "                  #"
+  ;
+  titlescreen_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_PURPLE                   ; Border color
+    ;
+    .db 3                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+    .db TITLESCREEN_BANK
+    .dw titlescreen_tiles_table
+    .db TITLESCREEN_BANK
+    .dw titlescreen_tilemap_table
+  ;
+  hiscore_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_PURPLE                   ; Border color
+    ;
+    .db 3                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+    .db HISCORE_BANK
+    .dw hiscore_tiles_table
+    .db HISCORE_BANK
+    .dw hiscore_tilemap_table
+
   ;
   full_reset_keys:
     .dw is_up_pressed, is_button_1_pressed, is_button_2_pressed
@@ -1153,14 +1211,14 @@ hiscore_background_tiles:
 hiscore_background_tiles_end:
 hiscore_background_tilemap:
   .include "bank_9\hiscore_background_tilemap.inc"
-hiscore_background_table:
+hiscore_tiles_table:
   .dw NON_ASCII_AREA_START,
   .dw hiscore_background_tiles_end-hiscore_background_tiles,
   .dw hiscore_background_tiles
+hiscore_tilemap_table:
   .dw NAME_TABLE_START,
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw hiscore_background_tilemap
-  .dw $0000, $0000                                  ; Filler: 2 words.
 hiscore_track:
   .incbin "bank_5\finale.psg"
 tadaa:
@@ -1187,6 +1245,16 @@ titlescreen_background_table:
   .dw titlescreen_background_tilemap
   .dw $0000, $0000                                  ; Filler: 2 words.
 
+
+titlescreen_tiles_table:
+  .dw NON_ASCII_AREA_START,
+  .dw titlescreen_background_tiles_end-titlescreen_background_tiles,
+  .dw titlescreen_background_tiles
+titlescreen_tilemap_table:
+  .dw NAME_TABLE_START,
+  .dw VISIBLE_NAME_TABLE_SIZE,
+  .dw titlescreen_background_tilemap
+
 .ends
 ;
 .bank WARNING_BANK slot 2
@@ -1199,14 +1267,14 @@ warning_background_tiles:
 warning_background_tiles_end:
 warning_background_tilemap:
   .include "bank_3\warning_background_tilemap.inc"
-warning_background_table:
+warning_tiles_table:
   .dw NON_ASCII_AREA_START,
   .dw warning_background_tiles_end-warning_background_tiles,
   .dw warning_background_tiles
+warning_tilemap_table:
   .dw NAME_TABLE_START,
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw warning_background_tilemap
-  .dw $0000, $0000                                  ; Filler: 2 words.
 ;
 ; Menu item strings:
 warning_string_1:

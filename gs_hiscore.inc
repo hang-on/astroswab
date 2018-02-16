@@ -3,45 +3,15 @@
 prepare_hiscore:
 ; ---------------------------------------------------------------------------
   di
-
-  call disable_display_and_sound
-
-  ; Turn off display and frame interrupts.
-  ;ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ;ld b,REGISTER_1
-  ;call set_register
   ;
+  call disable_display_and_sound
+  ;
+  ld hl,hiscore_arrange_vdp_parameters
+  call arrange_vdp
+
   xor a
   ld b,VERTICAL_SCROLL_REGISTER
   call set_register
-  ;
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
-  ;
-  ; Load the font tiles.
-  SELECT_BANK FONT_BANK
-  ld hl,alternative_font_table
-  call load_vram_from_table
-  ;
-  ; Set border color.
-  ld a,DARK_PURPLE
-  ld b,REGISTER_7
-  call set_register
-  ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
-  ; Wipe sprites.
-  call begin_sprites
-  call load_sat
-  SELECT_BANK HISCORE_BANK
-  ; Background graphics
-  ld hl,hiscore_background_table
-  call load_vram_from_table       ; Load the tiles.
-  call load_vram_from_table       ; Load the tilemap.
   ;
   ;
   ld hl,HISCORE_EXTRAM_ADDRESS
