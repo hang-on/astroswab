@@ -1228,37 +1228,6 @@ ret
   ret
   ;
   ;
-  setup_level_graphics:
-    ; Load various assets into vram and clears SAT.
-    ; Entry: None - uses consts and globals.
-    ; Exit: None.
-    ; Uses: ?
-    ;
-    call difficulty_to_random_background
-    ; Set border color.
-    ld a,DARK_BLUE
-    ld b,REGISTER_7
-    call set_register
-    ;
-    ; Load the font tiles.
-    SELECT_BANK FONT_BANK
-    ld hl,font_table
-    call load_vram_from_table
-    ;
-    ; Print the dummy text under the playfield.
-    ld b,DUMMY_TEXT_ROW
-    ld c,DUMMY_TEXT_COLUMN
-    ld hl,dummy_text
-    call print
-    ; Print the lives meter.
-    ld hl,lives_string
-    ld b,(lives_string_end-lives_string-2)/2
-    call put_string
-    ;
-    call wipe_sprites
-  ret
-  ;
-  ;
   shard_hits_ground:
     ; IX points to shard object.
     call deactivate_game_object

@@ -908,6 +908,14 @@
     .db UFO_TRIGGER_CHANCE_INIT_4, UFO_TRIGGER_INTERVAL_INIT_4
     .db ENABLED, DEFAULT_CYCLE_VALUE
   ;
+  level_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_BLUE                     ; Border color
+    ;
+    .db 1                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw font_table                    ; Table in the format used by load_vram_from_table.
   ;
   titlescreen_string_1:
     .asc "Press start button#"

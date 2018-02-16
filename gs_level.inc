@@ -9,10 +9,21 @@ prepare_level:
   call disable_display_and_sound
   ;
   call initialize_variables_once_per_level
-  ;
-  call setup_level_graphics
-  ;
   call initialize_variables_once_per_life
+  ;
+  ld hl,level_arrange_vdp_parameters
+  call arrange_vdp
+  call difficulty_to_random_background
+  ;
+  ; Print the dummy text under the playfield.
+  ld b,DUMMY_TEXT_ROW
+  ld c,DUMMY_TEXT_COLUMN
+  ld hl,dummy_text
+  call print
+  ; Print the lives meter.
+  ld hl,lives_string
+  ld b,(lives_string_end-lives_string-2)/2
+  call put_string
   ;
   ; Turn on screen, frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
