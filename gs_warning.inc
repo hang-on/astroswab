@@ -7,44 +7,15 @@
 prepare_warning:
 ; -----------------------------------------------------------------------------
   di
-  ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
-  call set_register
+  call disable_display_and_sound
   ;
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
-  ; Load the font tiles.
-  SELECT_BANK FONT_BANK
-  ld hl,alternative_font_table
-  call load_vram_from_table
+  ld hl,warning_screen_arrange_vdp_parameters
+  call arrange_vdp
   ;
-  SELECT_BANK SPRITE_BANK
-  ld bc,sprite_tiles_end-sprite_tiles
-  ld de,SPRITE_BANK_START
-  ld hl,sprite_tiles
-  call load_vram
-  ; Set border color.
-  ld a,DARK_PURPLE
-  ld b,REGISTER_7
-  call set_register
-  ; Wipe sprites.
-  call begin_sprites
-  call load_sat
   SELECT_BANK WARNING_BANK
-  ; Background graphics
-  ld hl,warning_background_table
-  call load_vram_from_table       ; Load the tiles.
-  call load_vram_from_table       ; Load the tilemap.
-  ;
   ld a,(warning_batch_print_table_end-warning_batch_print_table)/SIZE_OF_BATCH_PRINT_ITEM
   ld ix,warning_batch_print_table
   call batch_print
-  ;
-  ; Stop music and sound effects.
-  call PSGSFXStop
-  call PSGStop
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0

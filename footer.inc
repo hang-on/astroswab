@@ -85,7 +85,19 @@
     .db FONT_BANK                     ; Bank
     .dw font_table                    ; Table in the format used by load_vram_from_table.
   ;
-
+  ; Warning screen setup:
+  warning_screen_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_PURPLE                   ; Border color
+    ;
+    .db 3                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+    .db WARNING_BANK
+    .dw warning_tiles_table
+    .db WARNING_BANK
+    .dw warning_tilemap_table
   ;
   rumble_end_trigger_init_table:
     .db 255, RUMBLE_END_TRIGGER_INTERVAL
@@ -1247,14 +1259,14 @@ warning_background_tiles:
 warning_background_tiles_end:
 warning_background_tilemap:
   .include "bank_3\warning_background_tilemap.inc"
-warning_background_table:
+warning_tiles_table:
   .dw NON_ASCII_AREA_START,
   .dw warning_background_tiles_end-warning_background_tiles,
   .dw warning_background_tiles
+warning_tilemap_table:
   .dw NAME_TABLE_START,
   .dw VISIBLE_NAME_TABLE_SIZE,
   .dw warning_background_tilemap
-  .dw $0000, $0000                                  ; Filler: 2 words.
 ;
 ; Menu item strings:
 warning_string_1:
