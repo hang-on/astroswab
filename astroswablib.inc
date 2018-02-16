@@ -510,8 +510,6 @@ ret
   ret
   ;
   ;
-  ;
-  ;
   handle_bullet_collision:
     ; Function for handling what happens when bullet collides with other
     ; objects.
@@ -1380,8 +1378,6 @@ ret
   ret
   ;
   ;
-  ;
-  ;
   within_range_send_to_handler:
     ; Entry: IX = Pointer to struct.
     ;        HL = Pointer to handler.
@@ -1403,7 +1399,6 @@ ret
   ;
 .ends
 ;
-
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
