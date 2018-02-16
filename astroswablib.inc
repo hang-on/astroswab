@@ -190,6 +190,7 @@ ret
   ;
   ;
   disable_display_and_sound:
+    SAVE_REGISTERS
     ; Disable display and frame interrupts.
     ld a,DISPLAY_0_FRAME_0_SIZE_0
     ld b,REGISTER_1
@@ -197,6 +198,7 @@ ret
     ; Disable sound.
     call PSGSFXStop
     call PSGStop
+    RESTORE_REGISTERS
   ret
   ;
   ;
@@ -1357,7 +1359,45 @@ ret
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
+  arrange_vdp:
+    ; Turn off display, then set registers and load various assets into the VDP
+    ; according to switches and parameter data passed in A and HL.
+    ; Swithes (bits in a byte): 0000 00br
+    ; r = Reset name table: char (byte) + tile bank (byte).
+    ; b = Set border color: Color
+    ; Entry:  A = Switches.
+    ;        HL = Pointer to parameter string.
+    ; Exit:
+    ; Uses: HL, possibly changes bank in slot 2,
+    ; Depends on other functions in astroswab.lib.
+    ;
+    call disable_display_and_sound
+    ;
+    bit 0,a ; Should we reset the name table?
+    jp z,+
+      push af
+        ld a,(hl)
+        inc hl
+        ld b,(hl)
+        inc hl
+        call reset_name_table
+      pop af
+    +:
+    bit 1,a ; Should we set the border color?
+    jp z,+
+      push af
+        ld a,(hl)
+        inc hl
+        ld b,REGISTER_7
+        call set_register
+      pop af
+    +:
+  ret
   ;
+  parameter_string:
+    .db ASCII_SPACE, TILE_BANK_1
+    .db DARK_PURPLE
+
   ;
   ;
 .ends

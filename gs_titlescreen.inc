@@ -3,14 +3,14 @@
 prepare_titlescreen:
 ; -----------------------------------------------------------------------------
   di
-  ; Turn off display and frame interrupts.
-  ld a,DISPLAY_0_FRAME_0_SIZE_0
-  ld b,1
-  call set_register
   ;
-  ld a,ASCII_SPACE
-  ld b,TILE_BANK_1
-  call reset_name_table
+  ld a,%00000011
+  ld hl,parameter_string
+  call arrange_vdp
+  ;
+  ;ld a,ASCII_SPACE
+  ;ld b,TILE_BANK_1
+  ;call reset_name_table
   ;
   ; Load the font tiles.
   SELECT_BANK FONT_BANK
@@ -23,9 +23,9 @@ prepare_titlescreen:
   ld hl,sprite_tiles
   call load_vram
   ; Set border color.
-  ld a,DARK_PURPLE
-  ld b,REGISTER_7
-  call set_register
+  ;ld a,DARK_PURPLE
+  ;ld b,REGISTER_7
+  ;call set_register
   ; Wipe sprites.
   call begin_sprites
   call load_sat

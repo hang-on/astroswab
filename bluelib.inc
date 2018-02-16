@@ -12,7 +12,7 @@
 ; -----------------------------------------------------------------------------
 ; Video memory and initialization:
 .equ NAME_TABLE_START $3800
-.equ VISIBLE_NAME_TABLE_SIZE 2*32*24          
+.equ VISIBLE_NAME_TABLE_SIZE 2*32*24
 .equ FULL_NAME_TABLE_SIZE 2*32*28
 .equ SPRITE_BANK_START $2000
 .equ BACKGROUND_BANK_START $0000
@@ -1253,7 +1253,8 @@
     ; Overwrite all name table entries with a specified tile.
     ; Entry: A = Tile index
     ;        B = Bank (1/2) - selects corresponding palette.
-    ; Uses: AF, B, DE, HL
+    ; Uses: None.
+    SAVE_REGISTERS
     push af
     dec b
     jp z,+
@@ -1278,6 +1279,7 @@
       ld a,e
       or d
     jp nz,-
+    RESTORE_REGISTERS
   ret
 .ends
 ;
