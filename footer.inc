@@ -76,6 +76,17 @@
     .dw is_down_pressed, is_button_1_pressed, is_button_2_pressed
   confirm_full_reset_keys_end:
   ;
+  clean_blue_screen_arrange_vdp_parameters:
+    .db ALL_SWITCHES_ON               ; Switches.
+    .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+    .db DARK_BLUE                     ; Border color
+    ;
+    .db 1                             ; Number of block to load into vram
+    .db FONT_BANK                     ; Bank
+    .dw font_table                    ; Table in the format used by load_vram_from_table.
+  ;
+
+  ;
   rumble_end_trigger_init_table:
     .db 255, RUMBLE_END_TRIGGER_INTERVAL
     .db DISABLED, DEFAULT_CYCLE_VALUE

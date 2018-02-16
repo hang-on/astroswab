@@ -70,6 +70,85 @@ ret
     .db 8, 24, 7
   ;
   ;
+  arrange_vdp:
+    ; Turn off display, then set registers and load various assets into the VDP
+    ; according to switches and parameter data passed in HL.
+    ; Swithes (bits in a byte): 0000 lwbr
+    ; r = Reset name table: char (byte) + tile bank (byte).
+    ; b = Set border color: Color
+    ; w = Wipe sprites
+    ; l = Load one or more block of data into vram (tiles, tilemap, etc.).
+    ; -------------------------------------------------------------------------
+    ; Example parameter string:
+      ; .db ALL_SWITCHES_ON               ; Switches.
+      ; .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
+      ; .db DARK_PURPLE                   ; Border color
+      ;
+      ; .db 3                             ; Number of block to load into vram
+      ; .db FONT_BANK                     ; Bank
+      ; .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
+      ; .db TITLESCREEN_BANK
+      ; .dw titlescreen_tiles_table
+      ; .db TITLESCREEN_BANK
+      ; .dw titlescreen_tilemap_table
+    ; -------------------------------------------------------------------------
+    ; Entry:  HL = Pointer to parameter string.
+    ; Exit:
+    ; Uses: HL, possibly changes bank in slot 2,
+    ; Depends on other functions in astroswab.lib.
+    ;
+    ld a,(hl)                     ; Load the switches into A.
+    inc hl
+    bit 0,a                       ; Should we reset the name table?
+    jp z,+
+      push af
+        ld a,(hl)
+        inc hl
+        ld b,(hl)
+        inc hl
+        call reset_name_table
+      pop af
+    +:
+    bit 1,a                       ; Should we set the border color?
+    jp z,+
+      push af
+        ld a,(hl)
+        inc hl
+        ld b,REGISTER_7
+        call set_register
+      pop af
+    +:
+    bit 2,a                       ; Should we wipe the sprites?
+    jp z,+
+      push af
+      push hl
+        call begin_sprites
+        call load_sat
+      pop hl
+      pop af
+    +:
+    bit 3,a                       ; Should we load some blocks now?
+    ret z                         ; Return if not.
+      ld b,(hl)                   ; Get amount of blocks from parameters.
+      inc hl
+      -:
+        push bc
+          ld a,(hl)                     ; Get bank from parameters.
+          inc hl
+          SELECT_BANK_IN_REGISTER_A
+          ld e,(hl)                     ; Get pointer to vram load table.
+          inc hl                        ; LSB...
+          ld d,(hl)
+          inc hl
+          push hl
+            ex de,hl
+            call load_vram_from_table
+          pop hl
+        pop bc                          ; Restore loop counter.
+      djnz -
+  ret
+  ;
+  ;
   asteroid_hits_crt_bottom:
     ; What happens when an asteroid hits the CRT bottom? (titlescreen).
     ; Entry: IX points to asteroid object.
@@ -198,6 +277,7 @@ ret
     ; Disable sound.
     call PSGSFXStop
     call PSGStop
+    call PSGSilenceChannels
     RESTORE_REGISTERS
   ret
   ;
@@ -1358,84 +1438,6 @@ ret
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
-  ;
-  arrange_vdp:
-    ; Turn off display, then set registers and load various assets into the VDP
-    ; according to switches and parameter data passed in HL.
-    ; Swithes (bits in a byte): 0000 lwbr
-    ; r = Reset name table: char (byte) + tile bank (byte).
-    ; b = Set border color: Color
-    ; w = Wipe sprites
-    ; l = Load one or more block of data into vram (tiles, tilemap, etc.).
-    ; -------------------------------------------------------------------------
-    ; Example parameter string:
-      ; .db ALL_SWITCHES_ON               ; Switches.
-      ; .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
-      ; .db DARK_PURPLE                   ; Border color
-      ;
-      ; .db 3                             ; Number of block to load into vram
-      ; .db FONT_BANK                     ; Bank
-      ; .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
-      ; .db TITLESCREEN_BANK
-      ; .dw titlescreen_tiles_table
-      ; .db TITLESCREEN_BANK
-      ; .dw titlescreen_tilemap_table
-    ; -------------------------------------------------------------------------
-    ; Entry:  HL = Pointer to parameter string.
-    ; Exit:
-    ; Uses: HL, possibly changes bank in slot 2,
-    ; Depends on other functions in astroswab.lib.
-    ;
-    ld a,(hl)                     ; Load the switches into A.
-    inc hl
-    bit 0,a                       ; Should we reset the name table?
-    jp z,+
-      push af
-        ld a,(hl)
-        inc hl
-        ld b,(hl)
-        inc hl
-        call reset_name_table
-      pop af
-    +:
-    bit 1,a                       ; Should we set the border color?
-    jp z,+
-      push af
-        ld a,(hl)
-        inc hl
-        ld b,REGISTER_7
-        call set_register
-      pop af
-    +:
-    bit 2,a                       ; Should we wipe the sprites?
-    jp z,+
-      push af
-      push hl
-        call begin_sprites
-        call load_sat
-      pop hl
-      pop af
-    +:
-    bit 3,a                       ; Should we load some blocks now?
-    ret z                         ; Return if not.
-      ld b,(hl)                   ; Get amount of blocks from parameters.
-      inc hl
-      -:
-        push bc
-          ld a,(hl)                     ; Get bank from parameters.
-          inc hl
-          SELECT_BANK_IN_REGISTER_A
-          ld e,(hl)                     ; Get pointer to vram load table.
-          inc hl                        ; LSB...
-          ld d,(hl)
-          inc hl
-          push hl
-            ex de,hl
-            call load_vram_from_table
-          pop hl
-        pop bc                          ; Restore loop counter.
-      djnz -
-  ret
   ;
 .ends
 ;.ramsection "Sandbox and console variables" slot 3
