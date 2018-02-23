@@ -71,7 +71,7 @@ ret
   ;
   ;
   arrange_vdp:
-    ; Turn off display, then set registers and load various assets into the VDP
+    ; Set registers and load various assets into the VDP
     ; according to switches and parameter data passed in HL.
     ; Swithes (bits in a byte): 0000 lwbr
     ; r = Reset name table: char (byte) + tile bank (byte).
@@ -84,10 +84,10 @@ ret
       ; .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
       ; .db DARK_PURPLE                   ; Border color
       ;
-      ; .db 3                             ; Number of block to load into vram
+      ; .db 3                             ; Number of blocks to load into vram
       ; .db FONT_BANK                     ; Bank
       ; .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
-      ; .db TITLESCREEN_BANK
+      ; .db TITLESCREEN_BANK              ; Bank... etc.
       ; .dw titlescreen_tiles_table
       ; .db TITLESCREEN_BANK
       ; .dw titlescreen_tilemap_table
@@ -146,13 +146,6 @@ ret
           pop hl
         pop bc                          ; Restore loop counter.
       djnz -
-  ret
-  ;
-  ;
-  asteroid_hits_crt_bottom:
-    ; What happens when an asteroid hits the CRT bottom? (titlescreen).
-    ; Entry: IX points to asteroid object.
-    call deactivate_game_object
   ret
   ;
   ;

@@ -297,20 +297,6 @@
     ; Put in collision table
     .db TRUE
     ;
-  update_titlescreen_asteroid_parameters:
-    ; Special handler for when the game object is in a specified horizontal zone?
-    .db TRUE
-    .dw asteroid_hits_crt_bottom
-    .db CRT_BOTTOM_BORDER, CRT_BOTTOM_BORDER+8
-    ; Special handler for when the game object is in a specified vertical zone?
-    .db FALSE
-    .dw $0000
-    .db 0, 0
-    ; Animate object
-    .db FALSE
-    ; Put in collision table
-    .db TRUE
-    ;
   asteroid_and_shard_respawn_yspeed_table: ; could vary with difficulty!?
     .rept 120
       .db 1
