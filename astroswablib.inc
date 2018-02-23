@@ -73,11 +73,11 @@ ret
   arrange_vdp:
     ; Set registers and load various assets into the VDP
     ; according to switches and parameter data passed in HL.
-    ; Swithes (bits in a byte): 0000 lwbr
+    ; Swithes (bits in a byte): 000c lwbr
     ; r = Reset name table: char (byte) + tile bank (byte).
     ; b = Set border color: Color
     ; w = Wipe sprites
-    ; l = Load one or more block of data into vram (tiles, tilemap, etc.).
+    ; l = Load one or more blocks of data into vram (tiles, tilemap, etc.).
     ; -------------------------------------------------------------------------
     ; Example parameter string:
       ; .db ALL_SWITCHES_ON               ; Switches.

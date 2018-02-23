@@ -6,6 +6,7 @@ prepare_hiscore:
   ;
   call disable_display_and_sound
   ;
+  call ClearVRam
   ld hl,hiscore_arrange_vdp_parameters
   call arrange_vdp
 

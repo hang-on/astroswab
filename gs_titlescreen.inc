@@ -6,6 +6,7 @@ prepare_titlescreen:
   ;
   call disable_display_and_sound
   ;
+  call ClearVRam
   ld hl,titlescreen_arrange_vdp_parameters
   call arrange_vdp
   ;
