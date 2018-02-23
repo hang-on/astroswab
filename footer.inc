@@ -1042,10 +1042,11 @@
     .dw SPRITE_BANK_START,
     .dw sprite_tiles_end-sprite_tiles
     .dw sprite_tiles
-
+  ;
   sprite_tiles:
     .include "bank_3\spritesheet.png_tiles.inc"
   sprite_tiles_end:
+  ;
 .ends
 .bank BACKGROUND_BANK slot 2
 ; -----------------------------------------------------------------------------
