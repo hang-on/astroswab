@@ -1396,6 +1396,69 @@ ret
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
   ;
+  hiscore_batch_init_table:
+    .dw festplosion, festplosion_init_table, FESTPLOSION_MAX
+  ;
+  festplosion_init_table:
+    .db SPRITE_18, 120, 120, GAME_OBJECT_SHAPE_REGULAR
+    .db 0 0, GAME_OBJECT_ACTIVE
+    .db %00000000, 0, 0, 0, 0, FESTPLOSION
+    .db 0
+    .dw festplosion_anim_table
+    .db UNUSED_BYTE ; Timer.
+    .dw UNUSED_WORD ; Timer handler.
+    .db DISABLED    ; Timer state.
+  ;
+  festplosion_anim_table:
+  .rept 8
+    .rept 8
+      .db SPRITE_29
+    .endr
+    .rept 8
+      .db SPRITE_30
+    .endr
+    .rept 8
+      .db SPRITE_31
+    .endr
+    .rept 8
+      .db SPRITE_32
+    .endr
+  .endr
+  ;
+  festplosion_trigger_init_table:
+    .db 50, 100
+    .db ENABLED, DEFAULT_CYCLE_VALUE
+  ;
+  festplosion_respawn_parameters:
+    .db FESTPLOSION_MAX
+    .dw festplosion_init_table
+    .db FALSE  ; random yspeed?
+    .dw UNUSED_WORD
+    .db FALSE ; random xspeed?
+    .dw UNUSED_WORD
+    .db TRUE ; random horizontal position?
+    .dw game_object_respawn_horizontal_position_table ; pointer to 256 bytes table for rnd xpos.
+    .db FALSE ; random vertical position?
+    .dw UNUSED_WORD
+    .db FALSE ; random sprite?
+    .dw UNUSED_WORD ; pointer to sprite table
+
+  update_festplosion_parameters:
+    ; Special handler for when the game object is in a specified horizontal zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ; Special handler for when the game object is in a specified vertical zone?
+    .db FALSE
+    .dw $0000
+    .db 0, 0
+    ; Animate object.
+    .db TRUE
+    ; Put in collision table
+    .db FALSE
+
+
+
 .ends
 ;.ramsection "Sandbox and console variables" slot 3
   ;

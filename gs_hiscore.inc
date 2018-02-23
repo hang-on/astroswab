@@ -59,8 +59,6 @@ prepare_hiscore:
   ld b,HISCORE_TABLE_COLUMN
   call print_hiscore_table
   ;
-  ;
-  ;
   ; ---------------------------------------------------------------------------
   ; Only when we have a new hiscore - and the player must enter initials...
   ld a,(new_hiscore)
@@ -156,6 +154,7 @@ run_hiscore:
   ;
   ld ix,cursor_effect
   call draw_game_object
+  ;
   ;
   ; Switch case depending on whether we have a new hiscore.
   ld a,(new_hiscore)

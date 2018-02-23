@@ -1,6 +1,6 @@
 ; -----------------------------------------------------------------------------
 ; Enable debugging features and more:
- ; .equ DEVELOPER_MODE ; Comment out for consumer mode.
+ ;.equ DEVELOPER_MODE ; Comment out for consumer mode.
 ; -----------------------------------------------------------------------------
 ; External RAM map
   .equ EXTRAM_COUNTER EXTRAM_START
@@ -127,6 +127,7 @@
   .equ SWABBY_DEATH 10
   .equ UFO 11
   .equ UFO_BOMB 12
+  .equ FESTPLOSION 13
   ;
   .equ NOT_MOVING 0
 
@@ -179,6 +180,13 @@
   .equ SPRITE_26 98
   .equ SPRITE_27 104
   .equ SPRITE_28 106
+
+  .equ SPRITE_29 112
+  .equ SPRITE_30 114
+  .equ SPRITE_31 120
+  .equ SPRITE_32 122
+  .equ SPRITE_33 128
+  .equ SPRITE_34 130
 
 
   ; . . .
@@ -490,4 +498,6 @@
   sandbox_trigger instanceof trigger
   ;
   lock_input db
+  ;
+
 .ends
