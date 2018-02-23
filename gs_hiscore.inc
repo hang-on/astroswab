@@ -109,6 +109,11 @@ prepare_hiscore:
 
   end_new_hiscore_prep:
   ;
+  ; Un-blank left column (mostly for emulators)
+  ld a,SCROLL_0__LCB_0_LINE_0_SPRITES_0
+  ld b,REGISTER_0
+  call set_register
+  ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1

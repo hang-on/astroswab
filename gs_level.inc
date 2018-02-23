@@ -25,6 +25,11 @@ prepare_level:
   ld b,(lives_string_end-lives_string-2)/2
   call put_string
   ;
+  ; Blank left column.
+  ld a,SCROLL_0__LCB_1_LINE_0_SPRITES_0
+  ld b,REGISTER_0
+  call set_register
+  ;
   ; Turn on screen, frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
   ld b,REGISTER_1

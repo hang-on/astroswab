@@ -17,6 +17,11 @@ prepare_titlescreen:
   ld hl,blinking_text_trigger_init_table
   call initialize_trigger
   ;
+  ; Un-blank left column (mostly for emulators)
+  ld a,SCROLL_0__LCB_0_LINE_0_SPRITES_0
+  ld b,REGISTER_0
+  call set_register
+  ;
   ;
   ; Turn on screen and frame interrupts.
   ld a,DISPLAY_1_FRAME_1_SIZE_0
