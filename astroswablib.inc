@@ -1395,6 +1395,7 @@ ret
 ; -----------------------------------------------------------------------------
 .section "Empty section" free
 ; -----------------------------------------------------------------------------
+  ; NOTE: Festplosions are unused at the moment!
   ;
   hiscore_batch_init_table:
     .dw festplosion, festplosion_init_table, FESTPLOSION_MAX
