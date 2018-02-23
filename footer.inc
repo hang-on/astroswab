@@ -899,9 +899,11 @@
     .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
     .db DARK_BLUE                     ; Border color
     ;
-    .db 1                             ; Number of block to load into vram
+    .db 2                             ; Number of blocks to load into vram
     .db FONT_BANK                     ; Bank
     .dw font_table                    ; Table in the format used by load_vram_from_table.
+    .db SPRITE_BANK
+    .dw sprite_load_table
   ;
   titlescreen_string_1:
     .asc "Press start button#"
@@ -1036,6 +1038,11 @@
 ; -----------------------------------------------------------------------------
 .section "Sprite assets" free
 ; -----------------------------------------------------------------------------
+  sprite_load_table:
+    .dw SPRITE_BANK_START,
+    .dw sprite_tiles_end-sprite_tiles
+    .dw sprite_tiles
+
   sprite_tiles:
     .include "bank_3\spritesheet.png_tiles.inc"
   sprite_tiles_end:
