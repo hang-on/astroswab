@@ -928,10 +928,12 @@
     .db ASCII_SPACE, TILE_BANK_1      ; Wipe tilebank with character.
     .db DARK_PURPLE                   ; Border color
     ;
-    .db 3                             ; Number of block to load into vram
-    .db FONT_BANK                     ; Bank
-    .dw alternative_font_table        ; Table in the format used by load_vram_from_table.
-    .db HISCORE_BANK
+    .db 4                             ; Number of block to load into vram
+    .db SPRITE_BANK
+    .dw sprite_load_table             ; Rot! Sprite tiles will be partly over-
+    .db FONT_BANK                     ; written by background tiles, but we
+    .dw alternative_font_table        ; need the cursor at the end of the
+    .db HISCORE_BANK                  ; sprite sheet.
     .dw hiscore_tiles_table
     .db HISCORE_BANK
     .dw hiscore_tilemap_table
