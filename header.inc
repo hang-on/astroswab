@@ -416,7 +416,7 @@
   .equ SOUND_BANK 5
 ;
 ; Collision:
-  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
+  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT+8)
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   ;
