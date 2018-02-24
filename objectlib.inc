@@ -577,10 +577,10 @@
     ; Entry: IX = Pointer to game object.
     ; Uses: None.
     SAVE_REGISTERS
-    ld a,(ix+game_object.y)                   ; Get game object's y-position.
-    add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
-    cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
-    jp nc,+                                   ; On carry, game object must be
+    ;ld a,(ix+game_object.y)                   ; Get game object's y-position.
+    ;add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
+    ;cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
+    ;jp nc,+                                   ; On carry, game object must be
 
       ;add a,(ix+game_object.hitbox_height)
       ;cp COLLISION_TABLE_DIVIDER
@@ -593,10 +593,10 @@
       ld hl,top_collision_table               ; top collision table.
       jp ++
     +:
-      ld hl,objects_in_bottom_collision_table ; Same with bottom coll. table.
-      ld a,(hl)
-      inc (hl)
-      ld hl,bottom_collision_table
+      ;ld hl,objects_in_bottom_collision_table ; Same with bottom coll. table.
+      ;ld a,(hl)
+      ;inc (hl)
+      ;ld hl,bottom_collision_table
     ++:
     ;                                         ; Prepare to calculate offset...
     cp 0                                      ; Special case first game object,
