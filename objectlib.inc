@@ -38,7 +38,7 @@
 ;
 .equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
 ;
-.equ COLLISION_TABLE_MAX_OBJECTS 12
+.equ COLLISION_TABLE_MAX_OBJECTS 24
 .equ COLLISION_TABLE_ELEMENT_SIZE 6             ; y,x,w,h,pointer (word).
 ; -----------------------------------------------------------------------------
 .section "Game objects" free
