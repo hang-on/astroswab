@@ -581,6 +581,12 @@
     add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
     cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
     jp nc,+                                   ; On carry, game object must be
+
+      ;add a,(ix+game_object.hitbox_height)
+      ;cp COLLISION_TABLE_DIVIDER
+      ;jp nc,+
+      ; If this happens - object is in fact in both coll. tables!
+
       ld hl,objects_in_top_collision_table    ; above the divider (top half of
       ld a,(hl)                               ; screen). Increment top coll.
       inc (hl)                                ; table index and point HL to
