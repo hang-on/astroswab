@@ -484,10 +484,9 @@
   gun_level_flag db
   gun_level_char_data dsb 4
   ;
-  top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
-  objects_in_top_collision_table db
-  bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
-  objects_in_bottom_collision_table db
+  ;
+  uni_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
+  objects_in_uni_collision_table db
   ;
   rumble_flag db
   vscroll_value db

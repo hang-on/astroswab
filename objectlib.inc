@@ -38,7 +38,7 @@
 ;
 .equ BATCH_INIT_TABLE_ELEMENT_SIZE 6
 ;
-.equ COLLISION_TABLE_MAX_OBJECTS 12
+.equ COLLISION_TABLE_MAX_OBJECTS 24
 .equ COLLISION_TABLE_ELEMENT_SIZE 6             ; y,x,w,h,pointer (word).
 ; -----------------------------------------------------------------------------
 .section "Game objects" free
@@ -577,27 +577,10 @@
     ; Entry: IX = Pointer to game object.
     ; Uses: None.
     SAVE_REGISTERS
-    ld a,(ix+game_object.y)                   ; Get game object's y-position.
-    add a,(ix+game_object.hitbox_offset_y)    ; Apply hitbox offset.
-    cp COLLISION_TABLE_DIVIDER                ; Compare to divider value.
-    jp nc,+                                   ; On carry, game object must be
-
-      ;add a,(ix+game_object.hitbox_height)
-      ;cp COLLISION_TABLE_DIVIDER
-      ;jp nc,+
-      ; If this happens - object is in fact in both coll. tables!
-
-      ld hl,objects_in_top_collision_table    ; above the divider (top half of
-      ld a,(hl)                               ; screen). Increment top coll.
-      inc (hl)                                ; table index and point HL to
-      ld hl,top_collision_table               ; top collision table.
-      jp ++
-    +:
-      ld hl,objects_in_bottom_collision_table ; Same with bottom coll. table.
-      ld a,(hl)
-      inc (hl)
-      ld hl,bottom_collision_table
-    ++:
+    ld hl,objects_in_uni_collision_table    ; above the divider (top half of
+    ld a,(hl)                               ; screen). Increment top coll.
+    inc (hl)                                ; table index and point HL to
+    ld hl,uni_collision_table               ; top collision table.
     ;                                         ; Prepare to calculate offset...
     cp 0                                      ; Special case first game object,
     jp z,+                                    ; don't apply offset.
@@ -655,8 +638,7 @@
     ; Entry: None.
     ; Uses: AF.
     xor a
-    ld (objects_in_top_collision_table),a
-    ld (objects_in_bottom_collision_table),a
+    ld (objects_in_uni_collision_table),a
     ;
   ret
   ;
@@ -679,21 +661,9 @@
     ; Entry: IX = Pointer to game object.
     ; Exit:  IY = Pointer to object colliding, carry set/reset.
     ; Uses: AF, B, HL, IY.
-    ;ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
-    ld a,(ix+game_object.y)
-    cp COLLISION_TABLE_DIVIDER
-    jp nc,+
-      ld iy,top_collision_table                 ; Point IY to start of table.
-      ld a,(objects_in_top_collision_table)     ; Quick exit if table is empty.
-      or a                                      ; (top collision table).
-      ret z
-      jp ++
-    +:                                          ; Do the same for the bottom
-      ld iy,bottom_collision_table              ; coll. table.
-      ld a,(objects_in_bottom_collision_table)
-      or a
-      ret z
-    ++:                                         ; IX and IY are set up!
+    ;
+    ld iy,uni_collision_table                   ; IX and IY are set up!
+    ld a,(objects_in_uni_collision_table)
     ld b,a                                      ; Loop through all game objects
     -:                                          ; in the collision table.
       push bc                                   ; Save loop counter.
