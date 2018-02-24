@@ -656,7 +656,7 @@
     ; Uses: AF.
     xor a
     ld (objects_in_top_collision_table),a
-    ld (objects_in_bottom_collision_table),a
+    ;ld (objects_in_bottom_collision_table),a
     ;
   ret
   ;
@@ -680,20 +680,20 @@
     ; Exit:  IY = Pointer to object colliding, carry set/reset.
     ; Uses: AF, B, HL, IY.
     ;ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
-    ld a,(ix+game_object.y)
-    cp COLLISION_TABLE_DIVIDER
-    jp nc,+
+    ;ld a,(ix+game_object.y)
+    ;cp COLLISION_TABLE_DIVIDER
+    ;jp nc,+
       ld iy,top_collision_table                 ; Point IY to start of table.
       ld a,(objects_in_top_collision_table)     ; Quick exit if table is empty.
       or a                                      ; (top collision table).
       ret z
-      jp ++
-    +:                                          ; Do the same for the bottom
-      ld iy,bottom_collision_table              ; coll. table.
-      ld a,(objects_in_bottom_collision_table)
-      or a
-      ret z
-    ++:                                         ; IX and IY are set up!
+      ;jp ++
+    ;+:                                          ; Do the same for the bottom
+    ;  ld iy,bottom_collision_table              ; coll. table.
+    ;  ld a,(objects_in_bottom_collision_table)
+  ;    or a
+  ;    ret z
+  ;  ++:                                         ; IX and IY are set up!
     ld b,a                                      ; Loop through all game objects
     -:                                          ; in the collision table.
       push bc                                   ; Save loop counter.
