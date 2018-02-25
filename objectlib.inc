@@ -587,10 +587,10 @@
       ;jp nc,+
       ; If this happens - object is in fact in both coll. tables!
 
-      ld hl,objects_in_top_collision_table    ; above the divider (top half of
+      ld hl,objects_in_collision_table    ; above the divider (top half of
       ld a,(hl)                               ; screen). Increment top coll.
       inc (hl)                                ; table index and point HL to
-      ld hl,top_collision_table               ; top collision table.
+      ld hl,collision_table               ; top collision table.
       jp ++
     +:
       ;ld hl,objects_in_bottom_collision_table ; Same with bottom coll. table.
@@ -655,7 +655,7 @@
     ; Entry: None.
     ; Uses: AF.
     xor a
-    ld (objects_in_top_collision_table),a
+    ld (objects_in_collision_table),a
     ;ld (objects_in_bottom_collision_table),a
     ;
   ret
@@ -683,8 +683,8 @@
     ;ld a,(ix+game_object.y)
     ;cp COLLISION_TABLE_DIVIDER
     ;jp nc,+
-      ld iy,top_collision_table                 ; Point IY to start of table.
-      ld a,(objects_in_top_collision_table)     ; Quick exit if table is empty.
+      ld iy,collision_table                 ; Point IY to start of table.
+      ld a,(objects_in_collision_table)     ; Quick exit if table is empty.
       or a                                      ; (top collision table).
       ret z
       ;jp ++
