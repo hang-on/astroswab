@@ -651,13 +651,11 @@
   ;
   begin_collision_tables:
     ; Place before the first call to "add_game_object_to_collision_table". The
-    ; top and bottom collision table indexes are reset.
+    ; collision table index is reset.
     ; Entry: None.
     ; Uses: AF.
     xor a
     ld (objects_in_collision_table),a
-    ;ld (objects_in_bottom_collision_table),a
-    ;
   ret
   ;
   detect_collision_using_collision_table:
@@ -679,46 +677,35 @@
     ; Entry: IX = Pointer to game object.
     ; Exit:  IY = Pointer to object colliding, carry set/reset.
     ; Uses: AF, B, HL, IY.
-    ;ld a,(ix+game_object.hitbox_offset_y)       ; Determine collision table.
-    ;ld a,(ix+game_object.y)
-    ;cp COLLISION_TABLE_DIVIDER
-    ;jp nc,+
-      ld iy,collision_table                 ; Point IY to start of table.
-      ld a,(objects_in_collision_table)     ; Quick exit if table is empty.
-      or a                                      ; (top collision table).
-      ret z
-      ;jp ++
-    ;+:                                          ; Do the same for the bottom
-    ;  ld iy,bottom_collision_table              ; coll. table.
-    ;  ld a,(objects_in_bottom_collision_table)
-  ;    or a
-  ;    ret z
-  ;  ++:                                         ; IX and IY are set up!
-    ld b,a                                      ; Loop through all game objects
-    -:                                          ; in the collision table.
-      push bc                                   ; Save loop counter.
-        ;
-        call collision_subtest_1                ; Perform the four tests...
-        jp nc,+                                 ; If any one fails, then skip
-        call collision_subtest_2                ; to next object in table.
-        jp nc,+
-        call collision_subtest_3
-        jp nc,+
-        call collision_subtest_4
-        jp nc,+
-          ; Fall through: Collision!
-          ld l,(iy+4)                           ; Return with carry set, and
-          ld h,(iy+5)                           ; with pointer in IY...
-          push hl
-          pop iy
-          pop bc                                ; Align the stack.
-          ret
-        +:
-        ld de,COLLISION_TABLE_ELEMENT_SIZE      ; Apply offset to get next item
-        add iy,de                               ; in table.
-      pop bc                                    ; Restore loop counter.
-    djnz -                                      ; Loop back.
-  ret
+    ld iy,collision_table                 ; Point IY to start of table.
+    ld a,(objects_in_collision_table)     ; Quick exit if table is empty.
+    or a                                      ; (top collision table).
+    ret z
+      ld b,a                                      ; Loop through all game objects
+      -:                                          ; in the collision table.
+        push bc                                   ; Save loop counter.
+          ;
+          call collision_subtest_1                ; Perform the four tests...
+          jp nc,+                                 ; If any one fails, then skip
+          call collision_subtest_2                ; to next object in table.
+          jp nc,+
+          call collision_subtest_3
+          jp nc,+
+          call collision_subtest_4
+          jp nc,+
+            ; Fall through: Collision!
+            ld l,(iy+4)                           ; Return with carry set, and
+            ld h,(iy+5)                           ; with pointer in IY...
+            push hl
+            pop iy
+            pop bc                                ; Align the stack.
+            ret
+          +:
+          ld de,COLLISION_TABLE_ELEMENT_SIZE      ; Apply offset to get next item
+          add iy,de                               ; in table.
+        pop bc                                    ; Restore loop counter.
+      djnz -                                      ; Loop back.
+    ret
     collision_subtest_1:
       ; rect1.x < rect2.x + rect2.width
       ld a,(iy+1) ;
