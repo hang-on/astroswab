@@ -416,7 +416,7 @@
   .equ SOUND_BANK 5
 ;
 ; Collision:
-  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT/2)
+  .equ COLLISION_TABLE_DIVIDER  (SWABBY_Y_INIT+8)
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .ramsection "Main variables" slot 3
   ;
@@ -484,10 +484,10 @@
   gun_level_flag db
   gun_level_char_data dsb 4
   ;
-  top_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
-  objects_in_top_collision_table db
-  bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
-  objects_in_bottom_collision_table db
+  collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
+  objects_in_collision_table db
+  ;bottom_collision_table dsb COLLISION_TABLE_MAX_OBJECTS*COLLISION_TABLE_ELEMENT_SIZE
+  ;objects_in_bottom_collision_table db
   ;
   rumble_flag db
   vscroll_value db

@@ -1272,7 +1272,7 @@ detect_collision_using_collision_table:
   add a,b
   cp COLLISION_TABLE_DIVIDER
   jp nc,+
-    ld hl,top_collision_table
+    ld hl,collision_table
     jp ++
   +:
     ld hl,bottom_collision_table
@@ -1516,16 +1516,16 @@ test_1_asteroid_in_top_table:
   ;call draw_game_object
   ;
   call begin_collision_tables
-  ld a,(objects_in_top_collision_table)
+  ld a,(objects_in_collision_table)
   assertEqualsA 0, "Test 1.0 failed"
   ;
   call add_game_object_to_collision_table
   ;
   ;
   call await_frame_interrupt
-  ld a,(top_collision_table)
+  ld a,(collision_table)
   assertEqualsA 40, "Test 1.1 failed"
-  ld a,(top_collision_table+2)
+  ld a,(collision_table+2)
   assertEqualsA 16, "Test 1.2 failed"
 
 ret
