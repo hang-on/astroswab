@@ -4,6 +4,8 @@ Pico-8 origins
 
 bluelib - astroswablib structure
 
+game states - 
+
 game objects - structs
 
 triggers - structs
