@@ -1,0 +1,34 @@
+; Description.txt
+
+Astroswab
+
+[Short story intro.]
+
+The objective of the game is to score as many points as possible. You guide Swabby the snail through different areas of increasing difficulty, while shooting down asteroids, missiles and even the occasional UFO. Be sure to grab the juice, cakes and other bakery goodies – they will boost your score and make Swabby shoot even faster. Don’t let the flaming asteroids (the so-called spinners) reach the ground!
+
+Please refer to the included instructions sheet for full details on scoring and helpful hints.
+
+
+[Controls]
+
+
+Astroswab is an unlicensed Sega Master System homebrew created for the SMS-Power coding competition in 2018. It is based on the Astroblast game for the Atari 2600, fused together with homebrew hero Swabby the Snail.
+
+The following modifiers apply :)
+Cover art included   = + 20% awesomeness!
+Source code included = + 256% awesomeness!
+
+
+Credits:
+Anders	  - Concept, code, music, graphics
+Lasse	    - Graphics, playtesting
+
+
+Greetings:
+Maxim	    - BMP2Tile tool
+sverx	    - PSGLib sound library and vgm2psg tool
+Calindro	- Emulicious emulator
+Bock	    - Meka emulator
+Kagesan	  - Screen fading routines
+
+SMS-Power	- Community, resources and support

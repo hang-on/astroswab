@@ -1,0 +1,19 @@
+; Posts in astroswab's compo thread.
+
+Pico-8 origins
+
+bluelib - astroswablib structure
+
+game objects - structs
+
+triggers - structs
+
+Development environment - including config.
+
+tool setup: Sprite something
+
+tool setup: Import/convert vgms,
+
+tool setup: Gimp scripts.
+
+unit test structure
