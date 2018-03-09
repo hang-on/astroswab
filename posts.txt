@@ -1,21 +1,14 @@
 ; Posts in astroswab's compo thread.
 
-Pico-8 origins
+Pico-8 origins: tool setup: Sprite something, Import/convert vgms, Gimp scripts.
+Development environment - including config.
 
 bluelib - astroswablib structure
 
-game states - 
+game states -
 
 game objects - structs
 
 triggers - structs
-
-Development environment - including config.
-
-tool setup: Sprite something
-
-tool setup: Import/convert vgms,
-
-tool setup: Gimp scripts.
 
 unit test structure
