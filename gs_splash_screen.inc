@@ -59,11 +59,7 @@ jp main_loop
 run_splash_screen:
 ; -----------------------------------------------------------------------------
   ; Make sure we start at the first line of vblank.
-  -:
-    call await_frame_interrupt
-    in a,(V_COUNTER_PORT)
-    cp FIRST_LINE_OF_VBLANK+1
-  jp nz,-
+  call await_frame_interrupt
   ;
   call load_sat
   ;
