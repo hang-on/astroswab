@@ -60,19 +60,7 @@
     cp FIRST_GAME_ID
     jp z,skip_first_run_initialization
       ; Game is running for the first time...
-      ; Format sram.
-      SELECT_EXTRAM
-        ld bc,EXTRAM_SIZE
-        ld hl,EXTRAM_START
-        -:
-          ld a,$ff
-          ld (hl),a
-          inc hl
-          dec bc
-          ld a,b
-          or c
-        jp nz,-
-      SELECT_ROM
+      call clear_extram
       ;
       ld a,FIRST_GAME_ID
       SELECT_EXTRAM
