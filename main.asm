@@ -33,7 +33,7 @@
     call PSGInit
     ;
     call disable_display_and_sound
-    ;
+    ; Load the pico-8 palette to colors 16-31.
     ld a,SPRITE_PALETTE_START
     ld b,PICO8_PALETTE_SIZE
     ld hl,pico8_palette_sms
@@ -86,7 +86,7 @@
     skip_first_run_initialization:
     ;
     SELECT_EXTRAM                 ; Increment a counter in extram.
-      ld hl,EXTRAM_COUNTER        ; 
+      ld hl,EXTRAM_COUNTER        ;
       ld a,(hl)
       inc (hl)
     SELECT_ROM
