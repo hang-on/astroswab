@@ -63,16 +63,17 @@ run_titlescreen:
   call await_frame_interrupt
   ;
   call load_sat
-
-  ld b,20
-  ld c,7
-  ld a,(blinking_text_trigger.cycle)
+  ;
+  ; "Press start button" blinking text.
+  ld b,20                             ; Row.
+  ld c,7                              ; Column.
+  ld a,(blinking_text_trigger.cycle)  ; On or off?
   cp 1
   jp z,+
-    ld hl,titlescreen_string_1
+    ld hl,titlescreen_string_1        ; "Press start button".
   jp ++
   +:
-    ld hl,titlescreen_string_2
+    ld hl,titlescreen_string_2        ; Empty string.
   ++:
   call print
 
@@ -100,11 +101,6 @@ run_titlescreen:
   ld hl,full_reset_keys
   call test_multiple_keys_AND
   jp nc,+
-    ;xor a
-    ;SELECT_EXTRAM
-    ;  ld (FIRST_GAME_BYTE),a
-    ;SELECT_ROM
-    ;jp init
     ld a,GS_PREPARE_CONFIRM_RESET_DATA
     call transition_to_gamestate
     jp main_loop

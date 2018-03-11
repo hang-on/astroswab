@@ -85,8 +85,8 @@
       call save_hiscore_table_to_extram
     skip_first_run_initialization:
     ;
-    SELECT_EXTRAM
-      ld hl,EXTRAM_COUNTER
+    SELECT_EXTRAM                 ; Increment a counter in extram.
+      ld hl,EXTRAM_COUNTER        ; 
       ld a,(hl)
       inc (hl)
     SELECT_ROM
