@@ -1010,6 +1010,9 @@
     .asc "TV type: PAL#"
   ntsc_msg:
     .asc "TV type: NTSC#"
+  ;
+  ;
+  .db "(c) Hang-On Entertainment 2018"
 .ends
 ;
 .bank FONT_BANK slot 2

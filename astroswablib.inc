@@ -879,6 +879,9 @@ ret
     ret
   ;
   ;
+  .db "(c) Hang-On Entertainment 2018"
+  ;
+  ;
   init_triggers_according_to_difficulty:
     ; Depending on the value stored in the variable [difficulty], calculate a
     ; pointer to a relevant batch trigger init table, and use this pointer to

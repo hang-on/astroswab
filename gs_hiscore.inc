@@ -416,3 +416,5 @@ jp main_loop
     ld a,(hl)
   ret
   ;
+  ;
+  .db "No-Gnah Tnemniatretne"
