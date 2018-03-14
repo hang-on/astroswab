@@ -337,6 +337,11 @@
 ;
 .equ TRANSITION_TRIGGER_CYCLE_INIT 1
 ;
+; Cheat mode:
+.equ CHEAT_MODE_SHIELD_INIT 255
+.equ CHEAT_MODE_SHIELD_MINIMUM 20
+.equ CHEAT_MODE_SHIELD_STEP 20
+;
 ; Difficulty 0
 .equ SPINNER_TRIGGER_CHANCE_INIT_0 55
 .equ SPINNER_TRIGGER_INTERVAL_INIT_0 220
@@ -499,5 +504,7 @@
   ;
   lock_input db
   ;
-
+  cheat_mode_enabled db
+  cheat_mode_shield db
+  ;
 .ends

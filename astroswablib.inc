@@ -686,6 +686,24 @@ ret
     +:
     ; cp ANOTHER_GAME_OBJECT..
     ; All other game objects means death to Swabby!
+    ; Except if cheat mode is enabled!
+    ;
+    ld a,(cheat_mode_enabled)
+    cp TRUE
+    jp nz,++
+      ; Cheat mode is enabled!
+      ld a,(cheat_mode_shield)        ; Get shield strength.
+      cp CHEAT_MODE_SHIELD_MINIMUM    ; Is is below minimum value?
+      jp c,+                          ; Yes ? - skip forward.
+        sub CHEAT_MODE_SHIELD_STEP    ; No ? - decrement shield strength.
+        ld (cheat_mode_shield),a      ; (The shield wear down effect).
+      +:
+      ld b,a                          ; Store shield strength in B.
+      call get_random_number          ; Roll the dice 0-255.
+      cp b                            ; Compare to shield strength.
+      ret c                           ; Skip death if dice roll < shield strength.
+    ++:
+    ; Kill Swabby and deduct from score.
     ld hl,player_score
     ld a,SCORE_HUNDREDS
     ld b,1

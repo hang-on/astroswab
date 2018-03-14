@@ -110,6 +110,21 @@ run_titlescreen:
   ld a,(both_player_1_buttons_end-both_player_1_buttons)/2
   call test_multiple_keys_OR
   jp nc,+
+    ; Toggle secret cheat mode.
+    ld a,FALSE
+    ld (cheat_mode_enabled),a
+    ;
+    call is_left_pressed
+    jp nc,skip_cheat
+      ; Setup cheat mode! Enable a subtle shield that absorbs the hits Swabby
+      ; otherwise would have taken. There is an element of semi-randomness:
+      ; The greater the shield strength, the higher the chance of an effective
+      ; absorbation. The shield strength wears down as it is used.
+      ld a,TRUE
+      ld (cheat_mode_enabled),a                 ; Set cheat mode flag.
+      ld a,CHEAT_MODE_SHIELD_INIT               ; Initialize shield strength.
+      ld (cheat_mode_shield),a                  ;
+    skip_cheat:
     ld a,(transition_trigger.cycle)
     cp TITLESCREEN_CYCLE_VALUE
     jp z,+
