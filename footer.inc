@@ -276,7 +276,7 @@
   asteroid_init_table:
     .db SPRITE_8, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
-    .db UNUSED_BYTE, -(4), 0, 16, 20, ASTEROID
+    .db UNUSED_BYTE, -(4), 0, 16, 16, ASTEROID
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Counter.
@@ -331,7 +331,7 @@
   shard_init_table:
     .db SPRITE_45, 1, 0, GAME_OBJECT_SHAPE_SMALL
     .db INVISIBLE_AREA_BOTTOM_BORDER-8, 0, GAME_OBJECT_INACTIVE
-    .db UNUSED_BYTE, -(1), -(1), 10, 10, SHARD
+    .db UNUSED_BYTE, -(1), -(1), 10, 8, SHARD
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
@@ -436,7 +436,7 @@
   booster_init_table:
     .db SPRITE_18, 1, 0, GAME_OBJECT_SHAPE_REGULAR
     .db INVISIBLE_AREA_BOTTOM_BORDER-16, 0, GAME_OBJECT_INACTIVE
-    .db %00000000, 0, 0, 16, 16, BOOSTER           ; TODO: Might need adjustment!
+    .db %00000000, 0, -2, 20, 16, BOOSTER           ; TODO: Might need adjustment!
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
@@ -612,7 +612,7 @@
   swabby_init_table:
     .db SWABBY_IDLE_SPRITE, NOT_MOVING, NOT_MOVING, GAME_OBJECT_SHAPE_REGULAR
     .db SWABBY_Y_INIT, SWABBY_X_INIT, GAME_OBJECT_ACTIVE
-    .db UNUSED_BYTE, 1, 4, 8, 14, SWABBY
+    .db UNUSED_BYTE, 8, 5, 6, 8, SWABBY ; (1, 4, 8, 14) before diff. tweak.
     .db UNUSED_BYTE ; Animation counter.
     .dw UNUSED_WORD ; Animation pointer.
     .db UNUSED_BYTE ; Timer.
